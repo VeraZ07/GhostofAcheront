@@ -234,7 +234,6 @@ namespace GOA
             {
                 Debug.LogFormat("SessionManager - StartSession succeeded");
                 LogSession();
-                //OnSessionCreated?.Invoke(runner.SessionInfo);
             }
             else
             {

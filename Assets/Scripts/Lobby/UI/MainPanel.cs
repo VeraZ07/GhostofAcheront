@@ -74,8 +74,8 @@ namespace GOA.UI
 
         void CreateMultiplayerMatch()
         {
-            //SessionManager.Instance.HostMatch(false);
-            //GetComponentInParent<MainMenu>().ActivateMultiplayerPanel();
+            EnableInput(false);
+
             SessionManager.Instance.JoinDefaultLobby();
         }
 
@@ -106,8 +106,7 @@ namespace GOA.UI
         /// <param name="player"></param>
         void HandleOnPlayerJoined(NetworkRunner runner, PlayerRef player)
         {
-            //GetComponentInParent<MainMenu>().ActivateLobbyPanel();
-            SessionManager.Instance.JoinDefaultLobby();
+            GetComponentInParent<MainMenu>().ActivateLobbyPanel();
         }
 
         void HandleOnStartSessionFailed(string errorMessage)
@@ -123,7 +122,7 @@ namespace GOA.UI
 
         void HandleOnLobbyJoinFailed(SessionLobby sessionLobby, string errorMessage)
         {
-            
+            EnableInput(true);
         }
 
     }
