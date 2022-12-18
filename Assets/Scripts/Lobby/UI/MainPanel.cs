@@ -1,3 +1,4 @@
+using Fusion;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -42,8 +43,31 @@ namespace GOA.UI
 
         }
 
+        private void OnEnable()
+        {
+            if (SessionManager.Instance)
+            {
+                SessionManager.Instance.OnPlayerJoinedCallback += HandleOnPlayerJoined;
+                SessionManager.Instance.OnStartSessionFailed += HandleOnStartSessionFailed;
+                SessionManager.Instance.OnLobbyJoint += HandleOnLobbyJoint;
+                SessionManager.Instance.OnLobbyJoinFailed += HandleOnLobbyJoinFailed;
+            }
+
+            EnableInput(true);
+        }
+
+        private void OnDisable()
+        {
+            SessionManager.Instance.OnPlayerJoinedCallback -= HandleOnPlayerJoined;
+            SessionManager.Instance.OnStartSessionFailed -= HandleOnStartSessionFailed;
+            SessionManager.Instance.OnLobbyJoint -= HandleOnLobbyJoint;
+            SessionManager.Instance.OnLobbyJoinFailed -= HandleOnLobbyJoinFailed;
+        }
+
         void CreateSingleplayerMatch()
         {
+            EnableInput(false);
+
             // Create singleplayer match
             SessionManager.Instance.PlaySolo();
         }
@@ -51,7 +75,8 @@ namespace GOA.UI
         void CreateMultiplayerMatch()
         {
             //SessionManager.Instance.HostMatch(false);
-            GetComponentInParent<MainMenu>().ActivateMultiplayerPanel();
+            //GetComponentInParent<MainMenu>().ActivateMultiplayerPanel();
+            SessionManager.Instance.JoinDefaultLobby();
         }
 
         void OpenOptionsPanel()
@@ -63,6 +88,44 @@ namespace GOA.UI
         {
             Application.Quit();
         }
+
+        void EnableInput(bool value)
+        {
+            buttonSingleplayerMatch.interactable = value;
+            buttonMultiplayerMatch.interactable = value;
+            buttonOptions.interactable = value;
+            buttonExit.interactable = value;
+            
+        }
+
+
+        /// <summary>
+        /// Called when an offline match started ( solo )
+        /// </summary>
+        /// <param name="runner"></param>
+        /// <param name="player"></param>
+        void HandleOnPlayerJoined(NetworkRunner runner, PlayerRef player)
+        {
+            //GetComponentInParent<MainMenu>().ActivateLobbyPanel();
+            SessionManager.Instance.JoinDefaultLobby();
+        }
+
+        void HandleOnStartSessionFailed(string errorMessage)
+        {
+            EnableInput(true);
+        }
+
+
+        void HandleOnLobbyJoint(SessionLobby sessionLobby)
+        {
+            GetComponentInParent<MainMenu>().ActivateMultiplayerPanel();
+        }
+
+        void HandleOnLobbyJoinFailed(SessionLobby sessionLobby, string errorMessage)
+        {
+            
+        }
+
     }
 
 }

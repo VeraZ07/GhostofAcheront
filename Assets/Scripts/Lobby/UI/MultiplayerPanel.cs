@@ -1,4 +1,6 @@
 using Fusion;
+using Fusion.Sockets;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,9 +19,11 @@ namespace GOA.UI
         [SerializeField]
         Button buttonBack;
 
+        
+
         private void Awake()
         {
-            buttonBack.onClick.AddListener(GetComponentInParent<MainMenu>().ActivateMainPanel);
+            buttonBack.onClick.AddListener(()=> { if (SessionManager.Instance) SessionManager.Instance.LeaveLobby(); });
             buttonHostMatch.onClick.AddListener(HostMatch);
         }
 
@@ -39,40 +43,66 @@ namespace GOA.UI
         {
             if (SessionManager.Instance)
             {
-                SessionManager.Instance.OnSessionCreated += HandleOnSessionCreated;
-                SessionManager.Instance.OnSessionCreationFailed += HandleOnSessionCreationFailed;
+                SessionManager.Instance.OnPlayerJoinedCallback += HandleOnPlayerJoined;
+                SessionManager.Instance.OnStartSessionFailed += HandleOnStartSessionFailed;
+                SessionManager.Instance.OnSessionListUpdatedCallback += HandleOnSessionListUpdated;
+                //SessionManager.Instance.OnLobbyJoint += HandleOnLobbyJoined;
+                //SessionManager.Instance.OnLobbyJoinFailed += HandleOnLobbyJoinFailed;
+                SessionManager.Instance.OnShutdownCallback += HandleOnShutdown;
+                //SessionManager.Instance.JoinDefaultLobby();
             }
-            
+
+            EnableInput(true);
         }
 
         private void OnDisable()
         {
-            SessionManager.Instance.OnSessionCreated -= HandleOnSessionCreated;
-            SessionManager.Instance.OnSessionCreationFailed -= HandleOnSessionCreationFailed;
+            SessionManager.Instance.OnPlayerJoinedCallback -= HandleOnPlayerJoined;
+            SessionManager.Instance.OnStartSessionFailed -= HandleOnStartSessionFailed;
+            SessionManager.Instance.OnSessionListUpdatedCallback -= HandleOnSessionListUpdated;
+            //SessionManager.Instance.OnLobbyJoint -= HandleOnLobbyJoined;
+            //SessionManager.Instance.OnLobbyJoinFailed -= HandleOnLobbyJoinFailed;
+            SessionManager.Instance.OnShutdownCallback -= HandleOnShutdown;
         }
 
         void HostMatch()
         {
-            DisableInput(true);
+            EnableInput(false);
             SessionManager.Instance.HostSession(togglePrivate.isOn);
         }
 
-        void HandleOnSessionCreated(SessionInfo sessionInfo)
-        {
-            GetComponentInParent<MainMenu>().ActivateLobbyPanel();
-        }
 
-        void HandleOnSessionCreationFailed(string errorMessage)
-        {
-            
-        }
-
-        void DisableInput(bool value)
+        void EnableInput(bool value)
         {
             buttonBack.interactable = value;
             buttonHostMatch.interactable = value;
             togglePrivate.interactable = value;
         }
+
+        #region SessionManager callbacks        
+        void HandleOnPlayerJoined(NetworkRunner runner, PlayerRef player)
+        {
+            GetComponentInParent<MainMenu>().ActivateLobbyPanel();
+
+        }
+
+        void HandleOnStartSessionFailed(string errorMessage)
+        {
+            EnableInput(true);
+        }
+
+        void HandleOnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessions)
+        {
+
+        }
+
+        
+        void HandleOnShutdown(NetworkRunner runner, ShutdownReason reason)
+        {
+            GetComponentInParent<MainMenu>().ActivateMainPanel();
+        }
+        #endregion
+
     }
 
 }

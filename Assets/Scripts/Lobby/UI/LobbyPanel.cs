@@ -1,3 +1,4 @@
+using Fusion;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,18 +32,18 @@ namespace GOA.UI
         {
             if(SessionManager.Instance)
             {
-                SessionManager.Instance.OnSessionQuit += HandleOnSessionQuit;
+                SessionManager.Instance.OnShutdownCallback += HandleOnShutdown;
             }
             
         }
 
         private void OnDisable()
         {
-            SessionManager.Instance.OnSessionQuit -= HandleOnSessionQuit;
+            SessionManager.Instance.OnShutdownCallback -= HandleOnShutdown;
         }
 
        
-        void HandleOnSessionQuit()
+        void HandleOnShutdown(NetworkRunner runner, ShutdownReason reason)
         {
             GetComponentInParent<MainMenu>().ActivateMainPanel();
         }

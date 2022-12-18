@@ -3,6 +3,7 @@ using Fusion.Sockets;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -10,9 +11,15 @@ namespace GOA
 {
     public class SessionManager : MonoBehaviour, INetworkRunnerCallbacks
     {
-        public UnityAction<SessionInfo> OnSessionCreated;
-        public UnityAction<String> OnSessionCreationFailed;
-        public UnityAction OnSessionQuit;
+        public UnityAction<NetworkRunner, PlayerRef> OnPlayerJoinedCallback;
+        //public UnityAction<SessionInfo> OnSessionCreated;
+        //public UnityAction<SessionInfo> OnSessionDestroyed;
+        public UnityAction<String> OnStartSessionFailed;
+        ////public UnityAction<String> OnJoinSessionFailed;
+        public UnityAction<NetworkRunner, ShutdownReason> OnShutdownCallback;
+        public UnityAction<NetworkRunner, List<SessionInfo>> OnSessionListUpdatedCallback;
+        public UnityAction<SessionLobby> OnLobbyJoint;
+        public UnityAction<SessionLobby, string> OnLobbyJoinFailed;
 
         public const int MaxPlayers = 6;
 
@@ -21,11 +28,10 @@ namespace GOA
 
 
         NetworkRunner runner;
-        //public NetworkRunner Runner
-        //{
-        //    get { return runner; }
-        //}
+    
         NetworkSceneManagerDefault sceneManager;
+
+        List<SessionInfo> sessionList = new List<SessionInfo>();
 
         private void Awake()
         {
@@ -103,11 +109,13 @@ namespace GOA
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
         {
             Debug.LogFormat("SessionManager - OnPlayerJoint: {0}", player);
+            OnPlayerJoinedCallback?.Invoke(runner, player);
         }
 
         public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
         {
             Debug.LogFormat("SessionManager - OnPlayerLeft: {0}", player);
+            //OnSessionLeft?.Invoke();
         }
 
         public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ArraySegment<byte> data)
@@ -127,13 +135,14 @@ namespace GOA
 
         public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
         {
-            
+            this.sessionList = sessionList;
+            Debug.LogFormat("SessionManager - OnSessionListUpdated - Counts:{0}", sessionList.Count);
         }
 
         public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
         {
             Destroy(runner);
-            OnSessionQuit?.Invoke();
+            OnShutdownCallback?.Invoke(runner, shutdownReason);
         }
 
         public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)
@@ -152,7 +161,8 @@ namespace GOA
                 SessionName = "SoloGame",
                 //MatchmakingMode = Fusion.Photon.Realtime.MatchmakingMode.FillRoom,
                 //PlayerCount = 1,
-                SceneManager = sceneManager
+                SceneManager = sceneManager,
+                //DisableNATPunchthrough = false 
             };
 
             StartSession(args);
@@ -167,6 +177,7 @@ namespace GOA
                 MatchmakingMode = Fusion.Photon.Realtime.MatchmakingMode.FillRoom,
                 PlayerCount = MaxPlayers,
                 SceneManager = sceneManager,
+                DisableNATPunchthrough = true,
                 IsVisible = !isPrivate
             };
 
@@ -180,16 +191,32 @@ namespace GOA
 
         public void QuitSession()
         {
-            if (runner.IsServer)
+            
+            Task t = runner.Shutdown(false, ShutdownReason.Ok, true).ContinueWith((t) =>
             {
-                runner.Shutdown(false, ShutdownReason.GameClosed, true);
-            }
-            else
-            {
-                //runner.Shutdown(false, ShutdownReason., true)
-                runner.Shutdown(false, ShutdownReason.Ok, true);
-            }
+                if (t.IsCompleted)
+                {
+                    Debug.Log("SessionManager - QuitSession succeeded.");
+                }
+                else
+                {
+                    Debug.Log("SessionManager - QuitSession failed.");
+                }
+            });
+           
         }
+
+        public void JoinDefaultLobby()
+        {
+            JoinLobby(SessionLobby.ClientServer);
+        }
+
+        public void LeaveLobby()
+        {
+            sessionList.Clear();
+            runner.Shutdown(false, ShutdownReason.Ok, true);
+        }
+
         #endregion
 
 
@@ -197,7 +224,8 @@ namespace GOA
         async void StartSession(StartGameArgs args)
         {
             // Create the runner
-            runner = gameObject.AddComponent<NetworkRunner>();
+            if(!runner)
+                runner = gameObject.AddComponent<NetworkRunner>();
 
             // Start the new session
             var result = await runner.StartGame(args);
@@ -206,15 +234,35 @@ namespace GOA
             {
                 Debug.LogFormat("SessionManager - StartSession succeeded");
                 LogSession();
-                OnSessionCreated?.Invoke(runner.SessionInfo);
+                //OnSessionCreated?.Invoke(runner.SessionInfo);
             }
             else
             {
                 Debug.LogErrorFormat("SessionManager - StartSession failed - ErrorMessage:{0}", result.ErrorMessage);
-                OnSessionCreationFailed?.Invoke(result.ErrorMessage);
+                OnStartSessionFailed?.Invoke(result.ErrorMessage);
             }
         }
 
+        async void JoinLobby(SessionLobby sessionLobby)
+        {
+            sessionList.Clear();
+
+            if (!runner)
+                runner = gameObject.AddComponent<NetworkRunner>();
+
+            var result = await runner.JoinSessionLobby(sessionLobby);
+
+            if (result.Ok)
+            {
+                Debug.LogFormat("SessionManager - Joined to lobby {0}", sessionLobby);
+                OnLobbyJoint?.Invoke(sessionLobby);
+            }
+            else
+            {
+                Debug.LogFormat("SessionManager - Join to lobby failed - ErrorMessage:{0}", result.ErrorMessage);
+                OnLobbyJoinFailed?.Invoke(sessionLobby, result.ErrorMessage);
+            }
+        }
 
         #endregion
     }
