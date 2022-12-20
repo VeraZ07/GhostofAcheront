@@ -26,12 +26,15 @@ namespace GOA
         public static SessionManager Instance { get; private set; }
 
 
-
         NetworkRunner runner;
     
         NetworkSceneManagerDefault sceneManager;
 
         List<SessionInfo> sessionList = new List<SessionInfo>();
+        public IList<SessionInfo> SessionList
+        {
+            get { return sessionList.AsReadOnly(); }
+        }
 
         private void Awake()
         {
@@ -184,9 +187,19 @@ namespace GOA
             StartSession(args);
         }
 
-        public void JoinSession(String matchName)
+        public void JoinSession(String sessionName)
         {
+            StartGameArgs args = new StartGameArgs()
+            {
+                GameMode = GameMode.Client,
+                SessionName = sessionName,
+                //MatchmakingMode = Fusion.Photon.Realtime.MatchmakingMode.FillRoom,
+                //PlayerCount = 1,
+                //SceneManager = sceneManager,
+                DisableNATPunchthrough = true 
+            };
 
+            StartSession(args);
         }
 
         public void QuitSession()

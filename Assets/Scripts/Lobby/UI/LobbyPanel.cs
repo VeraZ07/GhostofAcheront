@@ -11,6 +11,8 @@ namespace GOA.UI
         [SerializeField]
         Button buttonQuitMatch;
 
+        
+
         private void Awake()
         {
             buttonQuitMatch.onClick.AddListener(()=>SessionManager.Instance.QuitSession());

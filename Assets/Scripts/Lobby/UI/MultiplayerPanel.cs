@@ -19,7 +19,7 @@ namespace GOA.UI
         [SerializeField]
         Button buttonBack;
 
-        
+        List<SessionItem> sessionItemList = new List<SessionItem>();
 
         private void Awake()
         {
@@ -46,10 +46,10 @@ namespace GOA.UI
                 SessionManager.Instance.OnPlayerJoinedCallback += HandleOnPlayerJoined;
                 SessionManager.Instance.OnStartSessionFailed += HandleOnStartSessionFailed;
                 SessionManager.Instance.OnSessionListUpdatedCallback += HandleOnSessionListUpdated;
-                //SessionManager.Instance.OnLobbyJoint += HandleOnLobbyJoined;
-                //SessionManager.Instance.OnLobbyJoinFailed += HandleOnLobbyJoinFailed;
                 SessionManager.Instance.OnShutdownCallback += HandleOnShutdown;
-                //SessionManager.Instance.JoinDefaultLobby();
+
+                // Get online sessions 
+                LoadOnlineSessions();
             }
 
             EnableInput(true);
@@ -77,6 +77,21 @@ namespace GOA.UI
             buttonBack.interactable = value;
             buttonHostMatch.interactable = value;
             togglePrivate.interactable = value;
+        }
+
+        void JoinSession(string sessionName)
+        {
+
+            SessionManager.Instance.JoinSession(sessionName);
+        }
+
+        void LoadOnlineSessions()
+        {
+            // Clear all the session items
+
+            
+            ICollection<SessionInfo> sessions = SessionManager.Instance.SessionList;
+
         }
 
         #region SessionManager callbacks        
