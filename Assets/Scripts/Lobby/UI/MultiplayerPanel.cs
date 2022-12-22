@@ -19,6 +19,12 @@ namespace GOA.UI
         [SerializeField]
         Button buttonBack;
 
+        [SerializeField]
+        GameObject sessionItemPrefab;
+
+        [SerializeField]
+        GameObject sessionItemContainer;
+
         List<SessionItem> sessionItemList = new List<SessionItem>();
 
         private void Awake()
@@ -41,28 +47,22 @@ namespace GOA.UI
 
         private void OnEnable()
         {
-            if (SessionManager.Instance)
-            {
-                SessionManager.Instance.OnPlayerJoinedCallback += HandleOnPlayerJoined;
-                SessionManager.Instance.OnStartSessionFailed += HandleOnStartSessionFailed;
-                SessionManager.Instance.OnSessionListUpdatedCallback += HandleOnSessionListUpdated;
-                SessionManager.Instance.OnShutdownCallback += HandleOnShutdown;
-
-                // Get online sessions 
-                LoadOnlineSessions();
-            }
+            
+            SessionManager.OnPlayerJoinedCallback += HandleOnPlayerJoined;
+            SessionManager.OnStartSessionFailed += HandleOnStartSessionFailed;
+            SessionManager.OnSessionListUpdatedCallback += HandleOnSessionListUpdated;
+            SessionManager.OnShutdownCallback += HandleOnShutdown;
 
             EnableInput(true);
         }
 
         private void OnDisable()
         {
-            SessionManager.Instance.OnPlayerJoinedCallback -= HandleOnPlayerJoined;
-            SessionManager.Instance.OnStartSessionFailed -= HandleOnStartSessionFailed;
-            SessionManager.Instance.OnSessionListUpdatedCallback -= HandleOnSessionListUpdated;
-            //SessionManager.Instance.OnLobbyJoint -= HandleOnLobbyJoined;
-            //SessionManager.Instance.OnLobbyJoinFailed -= HandleOnLobbyJoinFailed;
-            SessionManager.Instance.OnShutdownCallback -= HandleOnShutdown;
+            SessionManager.OnPlayerJoinedCallback -= HandleOnPlayerJoined;
+            SessionManager.OnStartSessionFailed -= HandleOnStartSessionFailed;
+            SessionManager.OnSessionListUpdatedCallback -= HandleOnSessionListUpdated;
+            SessionManager.OnShutdownCallback -= HandleOnShutdown;
+            
         }
 
         void HostMatch()
@@ -87,18 +87,40 @@ namespace GOA.UI
 
         void LoadOnlineSessions()
         {
-            // Clear all the session items
+            Debug.Log("LoadOnlineSessions");
 
-            
+            // Clear all session items
+            int count = sessionItemContainer.transform.childCount;
+            for (int i = 0; i < count; i++)
+            {
+                Destroy(sessionItemContainer.transform.GetChild(0).gameObject);
+            }
+
+            // Get all the sessions            
             ICollection<SessionInfo> sessions = SessionManager.Instance.SessionList;
 
+            if (sessions.Count == 0)
+                return;
+
+            // Fill the list
+            foreach(SessionInfo session in sessions)
+            {
+                GameObject sessionItem = Instantiate(sessionItemPrefab, sessionItemContainer.transform);
+                sessionItem.GetComponent<SessionItem>().Init(session, JoinSession);
+            }
         }
 
+        IEnumerator ActivateLobbyPanel()
+        {
+            yield return new WaitForSeconds(1f);
+            GetComponentInParent<MainMenu>().ActivateLobbyPanel();
+        }
+      
         #region SessionManager callbacks        
         void HandleOnPlayerJoined(NetworkRunner runner, PlayerRef player)
         {
-            GetComponentInParent<MainMenu>().ActivateLobbyPanel();
-
+            // We need to wait for lobby players to spawn
+            StartCoroutine(ActivateLobbyPanel());
         }
 
         void HandleOnStartSessionFailed(string errorMessage)
@@ -108,12 +130,14 @@ namespace GOA.UI
 
         void HandleOnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessions)
         {
-
+            // Get online sessions 
+            LoadOnlineSessions();
         }
 
         
         void HandleOnShutdown(NetworkRunner runner, ShutdownReason reason)
         {
+            
             GetComponentInParent<MainMenu>().ActivateMainPanel();
         }
         #endregion

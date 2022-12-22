@@ -11,23 +11,24 @@ namespace GOA
 {
     public class SessionManager : MonoBehaviour, INetworkRunnerCallbacks
     {
-        public UnityAction<NetworkRunner, PlayerRef> OnPlayerJoinedCallback;
-        //public UnityAction<SessionInfo> OnSessionCreated;
-        //public UnityAction<SessionInfo> OnSessionDestroyed;
-        public UnityAction<String> OnStartSessionFailed;
-        ////public UnityAction<String> OnJoinSessionFailed;
-        public UnityAction<NetworkRunner, ShutdownReason> OnShutdownCallback;
-        public UnityAction<NetworkRunner, List<SessionInfo>> OnSessionListUpdatedCallback;
-        public UnityAction<SessionLobby> OnLobbyJoint;
-        public UnityAction<SessionLobby, string> OnLobbyJoinFailed;
+        public static UnityAction<NetworkRunner, PlayerRef> OnPlayerJoinedCallback;
+        public static UnityAction<String> OnStartSessionFailed;
+        public static UnityAction<NetworkRunner, ShutdownReason> OnShutdownCallback;
+        public static UnityAction<NetworkRunner, List<SessionInfo>> OnSessionListUpdatedCallback;
+        public static UnityAction<SessionLobby> OnLobbyJoint;
+        public static UnityAction<SessionLobby, string> OnLobbyJoinFailed;
 
-        public const int MaxPlayers = 6;
+        [SerializeField]
+        NetworkObject playerPrefab;
+    
+        public const int MaxPlayers = 4;
 
         public static SessionManager Instance { get; private set; }
 
 
         NetworkRunner runner;
-    
+        
+        
         NetworkSceneManagerDefault sceneManager;
 
         List<SessionInfo> sessionList = new List<SessionInfo>();
@@ -36,6 +37,11 @@ namespace GOA
             get { return sessionList.AsReadOnly(); }
         }
 
+        
+        public Dictionary<PlayerRef, NetworkObject> LoggedPlayers { get; } = new Dictionary<PlayerRef, NetworkObject>();
+
+        
+
         private void Awake()
         {
             if (!Instance)
@@ -43,23 +49,13 @@ namespace GOA
                 Instance = this;
                 
                 sceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>();
+
+              
             }
             else
             {
                 Destroy(gameObject);
             }
-        }
-
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
         }
 
         void LogSession()
@@ -112,13 +108,40 @@ namespace GOA
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
         {
             Debug.LogFormat("SessionManager - OnPlayerJoint: {0}", player);
+
+            // The server spawns the new player
+            if(runner.IsServer)
+            {
+                string playerName = string.Format("Player_{0}", player.PlayerId);
+                NetworkObject playerObj = runner.Spawn(playerPrefab, Vector3.zero, Quaternion.identity, player);
+                LoggedPlayers.Add(player, playerObj);
+            }
+            
             OnPlayerJoinedCallback?.Invoke(runner, player);
         }
+
+        
 
         public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
         {
             Debug.LogFormat("SessionManager - OnPlayerLeft: {0}", player);
-            //OnSessionLeft?.Invoke();
+
+            // The server despawns the player
+            if (runner.IsServer)
+            {
+                if (LoggedPlayers.ContainsKey(player))
+                {
+                    NetworkObject playerObj = LoggedPlayers[player];
+                    if (playerObj)
+                        runner.Despawn(playerObj);
+
+                    // Remove from dictionary
+                    LoggedPlayers.Remove(player);
+                }
+            }
+            
+           
+            
         }
 
         public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ArraySegment<byte> data)
@@ -140,10 +163,18 @@ namespace GOA
         {
             this.sessionList = sessionList;
             Debug.LogFormat("SessionManager - OnSessionListUpdated - Counts:{0}", sessionList.Count);
+            OnSessionListUpdatedCallback?.Invoke(runner, sessionList);
         }
 
         public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
         {
+            foreach(PlayerRef key in LoggedPlayers.Keys)
+            {
+                NetworkObject obj = LoggedPlayers[key];
+                if (obj)
+                    runner.Despawn(obj);
+            }
+            LoggedPlayers.Clear();
             Destroy(runner);
             OnShutdownCallback?.Invoke(runner, shutdownReason);
         }
@@ -230,6 +261,8 @@ namespace GOA
             runner.Shutdown(false, ShutdownReason.Ok, true);
         }
 
+        
+
         #endregion
 
 
@@ -261,6 +294,8 @@ namespace GOA
 
             if (!runner)
                 runner = gameObject.AddComponent<NetworkRunner>();
+
+            
 
             var result = await runner.JoinSessionLobby(sessionLobby);
 

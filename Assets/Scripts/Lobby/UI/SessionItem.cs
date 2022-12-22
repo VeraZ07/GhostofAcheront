@@ -17,9 +17,6 @@ namespace GOA.UI
         TMP_Text textSessionName;
 
         [SerializeField]
-        TMP_Text textMaxPlayers;
-
-        [SerializeField]
         TMP_Text textPlayerCount;
 
         SessionInfo info;
@@ -41,9 +38,9 @@ namespace GOA.UI
         {
             this.info = info;
             
-            textSessionName.text = info.Name;
-            textMaxPlayers.text = info.MaxPlayers.ToString();
-            textPlayerCount.text = info.PlayerCount.ToString();
+            textSessionName.text = info.Name.Substring(0, 10);
+            textPlayerCount.text = string.Format("{0}/{1}", info.PlayerCount, info.MaxPlayers);
+                        
 
             buttonJoin.onClick.AddListener(() => { JoinSession(info.Name); });
         }

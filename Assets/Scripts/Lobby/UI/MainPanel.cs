@@ -45,23 +45,22 @@ namespace GOA.UI
 
         private void OnEnable()
         {
-            if (SessionManager.Instance)
-            {
-                SessionManager.Instance.OnPlayerJoinedCallback += HandleOnPlayerJoined;
-                SessionManager.Instance.OnStartSessionFailed += HandleOnStartSessionFailed;
-                SessionManager.Instance.OnLobbyJoint += HandleOnLobbyJoint;
-                SessionManager.Instance.OnLobbyJoinFailed += HandleOnLobbyJoinFailed;
-            }
+            SessionManager.OnPlayerJoinedCallback += HandleOnPlayerJoined;
+            SessionManager.OnStartSessionFailed += HandleOnStartSessionFailed;
+            SessionManager.OnLobbyJoint += HandleOnLobbyJoint;
+            SessionManager.OnLobbyJoinFailed += HandleOnLobbyJoinFailed;
+            
 
             EnableInput(true);
         }
 
         private void OnDisable()
         {
-            SessionManager.Instance.OnPlayerJoinedCallback -= HandleOnPlayerJoined;
-            SessionManager.Instance.OnStartSessionFailed -= HandleOnStartSessionFailed;
-            SessionManager.Instance.OnLobbyJoint -= HandleOnLobbyJoint;
-            SessionManager.Instance.OnLobbyJoinFailed -= HandleOnLobbyJoinFailed;
+            SessionManager.OnPlayerJoinedCallback -= HandleOnPlayerJoined;
+            SessionManager.OnStartSessionFailed -= HandleOnStartSessionFailed;
+            SessionManager.OnLobbyJoint -= HandleOnLobbyJoint;
+            SessionManager.OnLobbyJoinFailed -= HandleOnLobbyJoinFailed;
+            
         }
 
         void CreateSingleplayerMatch()
