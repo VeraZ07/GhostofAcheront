@@ -1,6 +1,7 @@
 using Fusion;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +10,7 @@ namespace GOA.UI
     public class LobbyPanel : MonoBehaviour
     {
         [SerializeField]
-        Toggle buttonReady;
+        Button buttonReady;
         
         [SerializeField]
         Button buttonQuitMatch;
@@ -35,7 +36,7 @@ namespace GOA.UI
             buttonQuitMatch.onClick.AddListener(()=>SessionManager.Instance.QuitSession());
             buttonJoinHomeTeam.onClick.AddListener(TryJoinHomeTeam);
             buttonJoinAwayTeam.onClick.AddListener(TryJoinAwayTeam);
-            //buttonReady.onValueChanged.AddListener(ToggleReady);
+            buttonReady.onClick.AddListener(ToggleReady);
         }
 
         // Start is called before the first frame update
@@ -53,45 +54,42 @@ namespace GOA.UI
         private void OnEnable()
         {
             SessionManager.OnShutdownCallback += HandleOnShutdown;
-            Player.OnTeamChangedCallback += HandleOnTeamChanged;
+            Player.OnTeamChangedCallback += HandleOnTeamJoined;
+            Player.OnDespawned += HandleOnPlayerDespawned;
+            Player.OnReadyChangedCallback += HandleOnReadyChanged;
 
             ClearAll();
 
             // Get session if exists
-            SessionManager sessionManager = FindObjectOfType<SessionManager>();
+            
             NetworkRunner runner = FindObjectOfType<NetworkRunner>();
             if (runner && runner.SessionInfo)
             {
+                List<Player> players = new List<Player>(FindObjectsOfType<Player>());
                 foreach(PlayerRef pRef in runner.ActivePlayers)
                 {
                     // Get the player
-                    Debug.Log("LoggedPlayer.Count:" + sessionManager.LoggedPlayers.Count);
-                    Player player = sessionManager.LoggedPlayers[pRef].GetComponent<Player>();
+                    Debug.Log("LoggedPlayer.Count:" + players.Count);
+                    Player player = players.Find(p => p.PlayerRef == pRef);
 
                     Debug.LogFormat("LobbyPanel - PlayerName:{0}", player.Name);
 
-                    if(player.Team != 0)
+                    if(player.HasTeam)
                     {
-                        HandleOnTeamChanged(player);
+                        HandleOnTeamJoined(player);
+                        //buttonReady.interactable = true;
                     }
+                    else
+                    {
+                        CheckJoinTeamButtons();
+                    //    buttonReady.GetComponentInChildren<TMP_Text>().text = "Not Ready";
+                    //    buttonReady.interactable = false;
+                    }
+
+                    HandleOnReadyChanged(player);
+                    //SetReadyButton(false);
                 }
 
-                // Check buttons
-                int homeCount = runner.SessionInfo.MaxPlayers / 2;
-                int awayCount = homeCount;
-                foreach (PlayerRef pRef in runner.ActivePlayers)
-                {
-                    byte team = sessionManager.LoggedPlayers[pRef].GetComponent<Player>().Team;
-                    if (team > 0)
-                    {
-                        if (team == 1)
-                            homeCount--;
-                        else
-                            awayCount--;
-                    }
-                }
-                buttonJoinHomeTeam.interactable = homeCount == 0 ? false : true;
-                buttonJoinAwayTeam.interactable = awayCount == 0 ? false : true;
             }
 
         }
@@ -99,17 +97,25 @@ namespace GOA.UI
         private void OnDisable()
         {
             SessionManager.OnShutdownCallback -= HandleOnShutdown;
-            Player.OnTeamChangedCallback -= HandleOnTeamChanged;
+            Player.OnTeamChangedCallback -= HandleOnTeamJoined;
+            Player.OnDespawned -= HandleOnPlayerDespawned;
         }
 
-        void ToggleReady(bool value)
+        void ToggleReady()
         {
-            
-        }
+            NetworkRunner runner = FindObjectOfType<NetworkRunner>();
+            Player player = new List<Player>(FindObjectsOfType<Player>()).Find(p => p.PlayerRef == runner.LocalPlayer);
+            if (!player.HasTeam)
+                return;
 
-       void HandleOnTeamChanged(Player player)
+            player.RpcSetReady(!player.Ready);
+        }
+         
+
+       void HandleOnTeamJoined(Player player)
         {
-            List<PlayerItem> items = player.Team == 1 ? homePlayerList : awayPlayerList;
+            // Join the team
+            List<PlayerItem> items = player.TeamId == 1 ? homePlayerList : awayPlayerList;
             foreach (PlayerItem item in items)
             {
                 if (item.IsEmpty)
@@ -118,13 +124,102 @@ namespace GOA.UI
                     break;
                 }
             }
+
+            // Check buttons
+            CheckJoinTeamButtons();
+
+            buttonReady.interactable = true;
         }
 
 
 
+        void HandleOnPlayerDespawned(Player player)
+        {
+            if (!player.HasTeam)
+                return;
+
+            List<PlayerItem> playerItemList = player.TeamId == TeamManager.HomeTeamId ? homePlayerList : awayPlayerList;
+            PlayerItem item = playerItemList.Find(p => p.Player == player);
+            if (item)
+            {
+                item.Reset();
+            }
+
+            // Check buttons
+            CheckJoinTeamButtons();
+        }
+
+        void HandleOnReadyChanged(Player player)
+        {
+            NetworkRunner runner = FindObjectOfType<NetworkRunner>();
+            
+            // Is local player?
+            if(player.PlayerRef == runner.LocalPlayer)
+            {
+                // Check the ready button
+                if (!player.Ready)
+                {
+                    buttonReady.GetComponentInChildren<TMP_Text>().text = "Not Ready";
+                }
+                else
+                {
+                    buttonReady.GetComponentInChildren<TMP_Text>().text = "Ready";
+                }
+
+                buttonReady.interactable = player.HasTeam ? true : false;
+
+            }
+                       
+            // For all
+            if (player.HasTeam)
+            {
+                List<PlayerItem> items = player.TeamId == TeamManager.HomeTeamId ? homePlayerList : awayPlayerList;
+                PlayerItem item = items.Find(p => p.Player == player);
+                item.SetReady(player.Ready);
+            }
+            
+        }
+
         void HandleOnShutdown(NetworkRunner runner, ShutdownReason reason)
         {
             GetComponentInParent<MainMenu>().ActivateMainPanel();
+        }
+
+      
+
+        void CheckJoinTeamButtons()
+        {
+            NetworkRunner runner = FindObjectOfType<NetworkRunner>();
+            
+            // Is the local player already logged?
+            
+            Player localPlayer = new List<Player>(FindObjectsOfType<Player>()).Find(p => p.PlayerRef == runner.LocalPlayer);
+            if(localPlayer.HasTeam)
+            {
+                buttonJoinHomeTeam.interactable = false;
+                buttonJoinAwayTeam.interactable = false;
+                return;
+            }
+
+            // Home team
+            if(TeamManager.HomeTeamIsFull())
+            {
+                buttonJoinHomeTeam.interactable = false;
+            }
+            else
+            {
+                buttonJoinHomeTeam.interactable = true;
+            }
+
+            if (TeamManager.AwayTeamIsFull())
+            {
+                buttonJoinAwayTeam.interactable = false;
+            }
+            else
+            {
+                buttonJoinAwayTeam.interactable = true;
+            }
+
         }
 
         void ClearAll()
@@ -143,48 +238,35 @@ namespace GOA.UI
             
             // Check if the team is full
             NetworkRunner runner = FindObjectOfType<NetworkRunner>();
-            SessionManager sessionManager = FindObjectOfType<SessionManager>();
+      
+            if (TeamManager.TeamIsFull(team))
+                return false;
 
-            SessionInfo info = runner.SessionInfo;
-            int count = info.MaxPlayers / 2;
-            foreach(PlayerRef pRef in runner.ActivePlayers)
-            {
-                Player player = sessionManager.LoggedPlayers[pRef].GetComponent<Player>();
-                if (player.Team == team)
-                    count--;
-            }
+            Player player = new List<Player>(FindObjectsOfType<Player>()).Find(p => p.PlayerRef == runner.LocalPlayer);
+            player.RpcSetTeam(team);
 
-            if(count > 0) // Not full yet
-            {
-                // Set the player team
-                Player player = sessionManager.LoggedPlayers[runner.LocalPlayer].GetComponent<Player>();
-                player.RpcSetTeam(team);
-              
-
-                return true;
-            }
-
-            return false;
+            return true;
         }
 
         void TryJoinHomeTeam()
         {
-            if (TryJoinTeam(1))
+            if (!TryJoinTeam(TeamManager.HomeTeamId))
             {
-                buttonJoinHomeTeam.interactable = false;
-                buttonJoinAwayTeam.interactable = false;
+                Debug.LogWarning("Can't join home team.");
             }
-                
+            
+
+            CheckJoinTeamButtons();
         }
 
         void TryJoinAwayTeam()
         {
-            if (TryJoinTeam(2))
+            if (!TryJoinTeam(TeamManager.AwayTeamId))
             {
-                buttonJoinHomeTeam.interactable = false;
-                buttonJoinAwayTeam.interactable = false;
+                Debug.LogWarning("Can't join away team.");
             }
-
+            
+            CheckJoinTeamButtons();
         }
     }
 

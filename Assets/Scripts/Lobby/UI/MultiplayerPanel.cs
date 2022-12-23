@@ -17,7 +17,12 @@ namespace GOA.UI
         Toggle togglePrivate;
 
         [SerializeField]
+        Button buttonReloadSessions;
+
+        [SerializeField]
         Button buttonBack;
+
+
 
         [SerializeField]
         GameObject sessionItemPrefab;
@@ -31,6 +36,7 @@ namespace GOA.UI
         {
             buttonBack.onClick.AddListener(()=> { if (SessionManager.Instance) SessionManager.Instance.LeaveLobby(); });
             buttonHostMatch.onClick.AddListener(HostMatch);
+            buttonReloadSessions.onClick.AddListener(LoadOnlineSessions);
         }
 
         // Start is called before the first frame update
@@ -93,7 +99,7 @@ namespace GOA.UI
             int count = sessionItemContainer.transform.childCount;
             for (int i = 0; i < count; i++)
             {
-                Destroy(sessionItemContainer.transform.GetChild(0).gameObject);
+                DestroyImmediate(sessionItemContainer.transform.GetChild(0).gameObject);
             }
 
             // Get all the sessions            
@@ -109,6 +115,8 @@ namespace GOA.UI
                 sessionItem.GetComponent<SessionItem>().Init(session, JoinSession);
             }
         }
+
+
 
         IEnumerator ActivateLobbyPanel()
         {

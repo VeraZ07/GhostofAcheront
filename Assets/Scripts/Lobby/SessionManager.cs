@@ -12,16 +12,17 @@ namespace GOA
     public class SessionManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         public static UnityAction<NetworkRunner, PlayerRef> OnPlayerJoinedCallback;
+        public static UnityAction<NetworkRunner, PlayerRef> OnPlayerLeftCallback;
         public static UnityAction<String> OnStartSessionFailed;
         public static UnityAction<NetworkRunner, ShutdownReason> OnShutdownCallback;
         public static UnityAction<NetworkRunner, List<SessionInfo>> OnSessionListUpdatedCallback;
         public static UnityAction<SessionLobby> OnLobbyJoint;
         public static UnityAction<SessionLobby, string> OnLobbyJoinFailed;
-
+        
         [SerializeField]
         NetworkObject playerPrefab;
     
-        public const int MaxPlayers = 4;
+        public const int MaxPlayers = 2;
 
         public static SessionManager Instance { get; private set; }
 
@@ -37,10 +38,6 @@ namespace GOA
             get { return sessionList.AsReadOnly(); }
         }
 
-        
-        public Dictionary<PlayerRef, NetworkObject> LoggedPlayers { get; } = new Dictionary<PlayerRef, NetworkObject>();
-
-        
 
         private void Awake()
         {
@@ -112,9 +109,7 @@ namespace GOA
             // The server spawns the new player
             if(runner.IsServer)
             {
-                string playerName = string.Format("Player_{0}", player.PlayerId);
                 NetworkObject playerObj = runner.Spawn(playerPrefab, Vector3.zero, Quaternion.identity, player);
-                LoggedPlayers.Add(player, playerObj);
             }
             
             OnPlayerJoinedCallback?.Invoke(runner, player);
@@ -122,25 +117,20 @@ namespace GOA
 
         
 
-        public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+        public void OnPlayerLeft(NetworkRunner runner, PlayerRef playerRef)
         {
-            Debug.LogFormat("SessionManager - OnPlayerLeft: {0}", player);
+            Debug.LogFormat("SessionManager - OnPlayerLeft: {0}", playerRef);
 
             // The server despawns the player
             if (runner.IsServer)
             {
-                if (LoggedPlayers.ContainsKey(player))
-                {
-                    NetworkObject playerObj = LoggedPlayers[player];
-                    if (playerObj)
-                        runner.Despawn(playerObj);
-
-                    // Remove from dictionary
-                    LoggedPlayers.Remove(player);
-                }
+                Player player = new List<Player>(FindObjectsOfType<Player>()).Find(p=>p.PlayerRef == playerRef);
+                if (player)
+                    runner.Despawn(player.GetComponent<NetworkObject>());
+              
             }
-            
-           
+
+            OnPlayerLeftCallback?.Invoke(runner, playerRef);
             
         }
 
@@ -168,13 +158,14 @@ namespace GOA
 
         public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
         {
-            foreach(PlayerRef key in LoggedPlayers.Keys)
+            // Destroy all the player objects
+            Player[] players = FindObjectsOfType<Player>();
+            for(int i=0; i<players.Length; i++)
             {
-                NetworkObject obj = LoggedPlayers[key];
-                if (obj)
-                    runner.Despawn(obj);
+                Destroy(players[i].gameObject);
             }
-            LoggedPlayers.Clear();
+
+       
             Destroy(runner);
             OnShutdownCallback?.Invoke(runner, shutdownReason);
         }

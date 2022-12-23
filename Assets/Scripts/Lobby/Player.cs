@@ -9,36 +9,37 @@ namespace GOA
     public class Player: NetworkBehaviour
     {
         public static UnityAction<Player> OnTeamChangedCallback;
+        public static UnityAction<Player> OnDespawned;
+        public static UnityAction<Player> OnReadyChangedCallback;
 
         [UnitySerializeField]
         [Networked] public string Name { get; private set; }
 
-        [Networked] public NetworkBool Ready { get; private set; }
+        [Networked(OnChanged = nameof(OnReadyChanged))] public NetworkBool Ready { get; private set; }
 
         /// <summary>
         /// 0: none
         /// 1: home
         /// 2: away
         /// </summary>
-        [Networked(OnChanged = nameof(OnTeamChanged))] public byte Team { get; private set; } = 0;
+        [Networked(OnChanged = nameof(OnTeamChanged))] public byte TeamId { get; private set; } = 0;
 
+        public bool HasTeam
+        {
+            get { return TeamId > 0; }
+        }
+
+        PlayerRef playerRef;
+        public PlayerRef PlayerRef
+        {
+            get { return playerRef; }
+        }
 
         private void Update()
         {
             if (!HasInputAuthority)
                 return;
-
-            if (Input.GetKeyDown(KeyCode.A))
-            {
-
-                RpcSetName("AAAAAAAAAAAA");
-                
-            }
-            if (Input.GetKeyDown(KeyCode.B))
-            {
-                RpcSetName("BBBBBBB");
-                
-            }
+           
         }
 
         /// <summary>
@@ -47,18 +48,15 @@ namespace GOA
         public override void Spawned()
         {
             base.Spawned();
-            
-            if (Runner.IsClient)
-            {
-                // Add the player to the local session manager dictionary
-                SessionManager.Instance.LoggedPlayers.Add(Object.InputAuthority, GetComponent<NetworkObject>());
-            }
+
+            playerRef = Object.InputAuthority;  
             
             if (HasInputAuthority)
             {
                 Name = string.Format("Player_{0}", Object.InputAuthority.PlayerId);
                 RpcSetName(string.Format("Player_{0}", Object.InputAuthority.PlayerId));
                 RpcSetTeam(0);
+
             }
         }
 
@@ -71,21 +69,8 @@ namespace GOA
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
             base.Despawned(runner, hasState);
-           
-            if (Runner.IsClient)
-            {
-                // Remove from the local sassion manager dictionary
-                if (SessionManager.Instance.LoggedPlayers.ContainsValue(GetComponent<NetworkObject>()))
-                {
-                    // We are no longer able to access the PlayerRef who has input authority over this object, so we need to 
-                    // use the network object that still exists.
-                    PlayerRef key = new List<PlayerRef>(SessionManager.Instance.LoggedPlayers.Keys).Find(k => SessionManager.Instance.LoggedPlayers[k] == GetComponent<NetworkObject>());
-
-                    // Remove from dictionary
-                    SessionManager.Instance.LoggedPlayers.Remove(key);
-
-                }
-            }
+          
+            OnDespawned?.Invoke(this);
         }
 
         public override string ToString()
@@ -105,7 +90,13 @@ namespace GOA
         [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
         public void RpcSetTeam(byte team)
         {
-            Team = team;
+            TeamId = team;
+        }
+
+        [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+        public void RpcSetReady(bool ready)
+        {
+            Ready = ready;
         }
 
         #endregion
@@ -115,6 +106,12 @@ namespace GOA
         {
             Debug.LogFormat("OnTeamChanged:{0}", changed.Behaviour.Name);
             OnTeamChangedCallback?.Invoke(changed.Behaviour);
+        }
+
+        public static void OnReadyChanged(Changed<Player> changed)
+        {
+            Debug.LogFormat("OnTeamChanged:{0}", changed.Behaviour.Name);
+            OnReadyChangedCallback?.Invoke(changed.Behaviour);
         }
         #endregion
 

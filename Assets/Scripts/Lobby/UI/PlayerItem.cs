@@ -15,6 +15,10 @@ namespace GOA.UI
         Image imageReady;
 
         Player player;
+        public Player Player
+        {
+            get { return player; }
+        }
         
         public bool IsEmpty
         {
@@ -52,7 +56,10 @@ namespace GOA.UI
             imageReady.color = Color.red;
         }
 
-
+        public void SetReady(bool value)
+        {
+            imageReady.color = value ? Color.green : Color.red;
+        }
     }
 
 }
