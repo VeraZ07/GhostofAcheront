@@ -239,7 +239,8 @@ namespace GOA.UI
             // Check if the team is full
             NetworkRunner runner = FindObjectOfType<NetworkRunner>();
       
-            if (TeamManager.TeamIsFull(team))
+            // The button should be disabled at this point... who knows
+            if (TeamManager.TeamIsFull(team) && runner.GameMode != GameMode.Single)
                 return false;
 
             Player player = new List<Player>(FindObjectsOfType<Player>()).Find(p => p.PlayerRef == runner.LocalPlayer);

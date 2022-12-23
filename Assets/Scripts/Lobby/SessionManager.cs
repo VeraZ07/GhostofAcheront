@@ -165,7 +165,9 @@ namespace GOA
                 Destroy(players[i].gameObject);
             }
 
-       
+            // Destroy teams
+            TeamManager.Clear();
+
             Destroy(runner);
             OnShutdownCallback?.Invoke(runner, shutdownReason);
         }
@@ -269,6 +271,8 @@ namespace GOA
 
             if (result.Ok)
             {
+                TeamManager.Init(runner);
+
                 Debug.LogFormat("SessionManager - StartSession succeeded");
                 LogSession();
             }
