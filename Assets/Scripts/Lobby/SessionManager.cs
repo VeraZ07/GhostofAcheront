@@ -1,5 +1,6 @@
 using Fusion;
 using Fusion.Sockets;
+using GOA.Assets;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -38,6 +39,9 @@ namespace GOA
             get { return sessionList.AsReadOnly(); }
         }
 
+        bool loading = false;
+
+
 
         private void Awake()
         {
@@ -47,12 +51,59 @@ namespace GOA
                 
                 sceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>();
 
-              
+                
             }
             else
             {
                 Destroy(gameObject);
             }
+        }
+
+        private void Update()
+        {
+            // Check for the match to start
+            if (runner != null && runner.IsServer && (runner.SessionInfo.IsValid || runner.GameMode == GameMode.Single ) && !loading)
+            {
+                // Is the room full?
+                if (ReadyToPlay())
+                    StartCoroutine(StartMatch());
+            }
+    
+        }
+
+        IEnumerator StartMatch()
+        {
+            loading = true;
+            float delay = 2f;
+            yield return new WaitForSeconds(delay);
+            
+            if (ReadyToPlay())
+            {
+                // Load game scene
+                runner.SetActiveScene(1);
+            }
+            else
+            {
+                loading = false;
+            }
+        }
+
+        bool ReadyToPlay()
+        {
+          
+            // Is the room full?
+            if (runner.GameMode != GameMode.Single && runner.SessionInfo.PlayerCount < runner.SessionInfo.MaxPlayers)
+                return false;
+          
+            // Check if all the players are ready
+            Player[] players = FindObjectsOfType<Player>();
+            foreach (Player player in players)
+            {
+                if (!player.Ready)
+                    return false;
+            }
+
+            return true;
         }
 
         void LogSession()
@@ -141,7 +192,52 @@ namespace GOA
 
         public void OnSceneLoadDone(NetworkRunner runner)
         {
-            
+            if(runner.CurrentScene > 0) // Game scene
+            {
+                if (runner.IsServer)
+                {
+                    // Create a character for each human player
+                    // Load the asset collection
+                    List<CharacterAsset> assets = new List<CharacterAsset>(Resources.LoadAll<CharacterAsset>(CharacterAsset.ResourceFolder));
+                    // Find all the human players
+                    Player[] players = FindObjectsOfType<Player>();
+                    // Init spawn data
+                    int spHomeIndex = 0;
+                    int spAwayIndex = 0;
+                    Transform spHome = GameObject.FindGameObjectWithTag("SP_Home").transform;
+                    Transform spAway = GameObject.FindGameObjectWithTag("SP_Away").transform;
+                    // Spawn characters
+                    foreach (Player player in players)
+                    {
+                        // Get the character asset 
+                        CharacterAsset asset = assets.Find(a => a.CharacterId == player.CharacterId);
+
+                        // Get the next spown point
+                        Transform sp = null;
+                        if(player.TeamId == TeamManager.HomeTeamId)
+                        {
+                            sp = spHome.GetChild(spHomeIndex);
+                            spHomeIndex++;
+                        }
+                        else
+                        {
+                            sp = spAway.GetChild(spAwayIndex);
+                            spAwayIndex++;
+                        }
+                        // Spawn
+                        NetworkObject character = runner.Spawn(asset.CharacterPrefab, sp.position, sp.rotation, player.PlayerRef);
+                    }
+                }
+            }
+            else // Menu scene
+            {
+                // Destroy all the characters
+                PlayerCharacter[] characters = FindObjectsOfType<PlayerCharacter>();
+                for(int i=0; i<characters.Length; i++)
+                {
+                    Destroy(characters[i].gameObject);
+                }
+            }
         }
 
         public void OnSceneLoadStart(NetworkRunner runner)
@@ -262,8 +358,10 @@ namespace GOA
         #region private methods
         async void StartSession(StartGameArgs args)
         {
+            loading = false;
+
             // Create the runner
-            if(!runner)
+            if (!runner)
                 runner = gameObject.AddComponent<NetworkRunner>();
 
             // Start the new session

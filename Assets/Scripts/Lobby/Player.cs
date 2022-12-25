@@ -24,15 +24,23 @@ namespace GOA
         /// </summary>
         [Networked(OnChanged = nameof(OnTeamChanged))] public byte TeamId { get; private set; } = 0;
 
+        [Networked(OnChanged = nameof(OnTeamChanged))] public byte CharacterId { get; private set; } = 0;
+
         public bool HasTeam
         {
             get { return TeamId > 0; }
         }
 
+
         PlayerRef playerRef;
         public PlayerRef PlayerRef
         {
             get { return playerRef; }
+        }
+
+        private void Awake()
+        {
+            DontDestroyOnLoad(gameObject);
         }
 
         private void Update()
@@ -97,6 +105,12 @@ namespace GOA
         public void RpcSetReady(bool ready)
         {
             Ready = ready;
+        }
+
+        [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+        public void RpcSetCharacterId(byte characterId)
+        {
+            CharacterId = characterId;
         }
 
         #endregion
