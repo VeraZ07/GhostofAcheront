@@ -12,6 +12,7 @@ namespace GOA
 {
     public class SessionManager : MonoBehaviour, INetworkRunnerCallbacks
     {
+        // Callbacks
         public static UnityAction<NetworkRunner, PlayerRef> OnPlayerJoinedCallback;
         public static UnityAction<NetworkRunner, PlayerRef> OnPlayerLeftCallback;
         public static UnityAction<String> OnStartSessionFailed;
@@ -50,8 +51,6 @@ namespace GOA
                 Instance = this;
                 
                 sceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>();
-
-                
             }
             else
             {
@@ -59,7 +58,7 @@ namespace GOA
             }
         }
 
-        private void Update()
+        private void LateUpdate()
         {
             // Check for the match to start
             if (runner != null && runner.IsServer && (runner.SessionInfo.IsValid || runner.GameMode == GameMode.Single ) && !loading)
@@ -90,13 +89,15 @@ namespace GOA
 
         bool ReadyToPlay()
         {
-          
-            // Is the room full?
-            if (runner.GameMode != GameMode.Single && runner.SessionInfo.PlayerCount < runner.SessionInfo.MaxPlayers)
-                return false;
-          
+
             // Check if all the players are ready
             Player[] players = FindObjectsOfType<Player>();
+
+            // Is the room full?
+            // If a player quit the game the session info is not updated soon, so we must check the actual number of players 
+            if (runner.GameMode != GameMode.Single && ( runner.SessionInfo.PlayerCount < runner.SessionInfo.MaxPlayers || players.Length < runner.SessionInfo.MaxPlayers))
+                return false;
+            
             foreach (Player player in players)
             {
                 if (!player.Ready)
@@ -145,6 +146,12 @@ namespace GOA
 
         public void OnInput(NetworkRunner runner, NetworkInput input)
         {
+            if(runner.CurrentScene > 0)
+            {
+                // Get input from the player
+                input.Set(PlayerInput.GetInput());
+            }
+            
             
         }
 
@@ -196,16 +203,16 @@ namespace GOA
             {
                 if (runner.IsServer)
                 {
+                   
                     // Create a character for each human player
                     // Load the asset collection
                     List<CharacterAsset> assets = new List<CharacterAsset>(Resources.LoadAll<CharacterAsset>(CharacterAsset.ResourceFolder));
                     // Find all the human players
                     Player[] players = FindObjectsOfType<Player>();
                     // Init spawn data
-                    int spHomeIndex = 0;
-                    int spAwayIndex = 0;
-                    Transform spHome = GameObject.FindGameObjectWithTag("SP_Home").transform;
-                    Transform spAway = GameObject.FindGameObjectWithTag("SP_Away").transform;
+                    int spIndex = 0;
+                    GameObject[] spawnPointList = GameObject.FindGameObjectsWithTag("PlayerSpawnPoint");
+                    
                     // Spawn characters
                     foreach (Player player in players)
                     {
@@ -214,25 +221,20 @@ namespace GOA
 
                         // Get the next spown point
                         Transform sp = null;
-                        if(player.TeamId == TeamManager.HomeTeamId)
-                        {
-                            sp = spHome.GetChild(spHomeIndex);
-                            spHomeIndex++;
-                        }
-                        else
-                        {
-                            sp = spAway.GetChild(spAwayIndex);
-                            spAwayIndex++;
-                        }
+                        sp = spawnPointList[spIndex].transform;
+                        spIndex++;
+                        
                         // Spawn
                         NetworkObject character = runner.Spawn(asset.CharacterPrefab, sp.position, sp.rotation, player.PlayerRef);
                     }
+
+
                 }
             }
             else // Menu scene
             {
-                // Destroy all the characters
-                PlayerCharacter[] characters = FindObjectsOfType<PlayerCharacter>();
+                // Destroy all characters
+                PlayerController[] characters = FindObjectsOfType<PlayerController>();
                 for(int i=0; i<characters.Length; i++)
                 {
                     Destroy(characters[i].gameObject);
@@ -260,9 +262,6 @@ namespace GOA
             {
                 Destroy(players[i].gameObject);
             }
-
-            // Destroy teams
-            TeamManager.Clear();
 
             Destroy(runner);
             OnShutdownCallback?.Invoke(runner, shutdownReason);
@@ -369,8 +368,7 @@ namespace GOA
 
             if (result.Ok)
             {
-                TeamManager.Init(runner);
-
+               
                 Debug.LogFormat("SessionManager - StartSession succeeded");
                 LogSession();
             }

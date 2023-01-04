@@ -8,35 +8,23 @@ namespace GOA
 {
     public class Player: NetworkBehaviour
     {
-        public static UnityAction<Player> OnTeamChangedCallback;
         public static UnityAction<Player> OnDespawned;
         public static UnityAction<Player> OnReadyChangedCallback;
+        public static UnityAction<Player> OnNameChangedCallback;
 
         [UnitySerializeField]
-        [Networked] public string Name { get; private set; }
+        [Networked(OnChanged = nameof(OnNameChanged))] public string Name { get; private set; }
 
         [Networked(OnChanged = nameof(OnReadyChanged))] public NetworkBool Ready { get; private set; }
 
-        /// <summary>
-        /// 0: none
-        /// 1: home
-        /// 2: away
-        /// </summary>
-        [Networked(OnChanged = nameof(OnTeamChanged))] public byte TeamId { get; private set; } = 0;
-
-        [Networked(OnChanged = nameof(OnTeamChanged))] public byte CharacterId { get; private set; } = 0;
-
-        public bool HasTeam
-        {
-            get { return TeamId > 0; }
-        }
-
+        [Networked] public byte CharacterId { get; private set; } = 0;
 
         PlayerRef playerRef;
         public PlayerRef PlayerRef
         {
             get { return playerRef; }
         }
+                
 
         private void Awake()
         {
@@ -57,15 +45,16 @@ namespace GOA
         {
             base.Spawned();
 
-            playerRef = Object.InputAuthority;  
+            playerRef = Object.InputAuthority;
+
             
             if (HasInputAuthority)
             {
                 Name = string.Format("Player_{0}", Object.InputAuthority.PlayerId);
                 RpcSetName(string.Format("Player_{0}", Object.InputAuthority.PlayerId));
-                RpcSetTeam(0);
-
             }
+
+            
         }
 
         
@@ -94,13 +83,6 @@ namespace GOA
             Name = name;
         }
 
-
-        [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-        public void RpcSetTeam(byte team)
-        {
-            TeamId = team;
-        }
-
         [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
         public void RpcSetReady(bool ready)
         {
@@ -112,21 +94,24 @@ namespace GOA
         {
             CharacterId = characterId;
         }
+              
 
         #endregion
 
         #region networked OnChanged() calls
-        public static void OnTeamChanged(Changed<Player> changed)
-        {
-            Debug.LogFormat("OnTeamChanged:{0}", changed.Behaviour.Name);
-            OnTeamChangedCallback?.Invoke(changed.Behaviour);
-        }
-
+        
         public static void OnReadyChanged(Changed<Player> changed)
         {
-            Debug.LogFormat("OnTeamChanged:{0}", changed.Behaviour.Name);
+            Debug.LogFormat("OnReadyChanged:{0}", changed.Behaviour.Name);
             OnReadyChangedCallback?.Invoke(changed.Behaviour);
         }
+
+        public static void OnNameChanged(Changed<Player> changed)
+        {
+            Debug.LogFormat("OnReadyChanged:{0}", changed.Behaviour.Name);
+            OnNameChangedCallback?.Invoke(changed.Behaviour);
+        }
+
         #endregion
 
     }
