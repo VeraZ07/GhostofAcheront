@@ -4,17 +4,15 @@ using UnityEngine;
 
 namespace GOA.Assets
 {
-    
-    public class RoomAsset : ScriptableObject
+    public class CorridorAsset : ScriptableObject
     {
-        public const string ResourceFolder = "Rooms";
+        public const string ResourceFolder = "Corridors";
 
         [SerializeField]
         int connectionCount;
 
         [SerializeField]
         Vector2 size = Vector2.one;
-
     }
 
 }
