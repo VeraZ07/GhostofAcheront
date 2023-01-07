@@ -100,10 +100,10 @@ namespace GOA.Level
             [SerializeField]
             public List<int> tileIds = new List<int>();
 
-            [SerializeField]
-            public List<int> connectedSectorIds = new List<int>();
+            //[SerializeField]
+            //public List<int> connectedSectorIds = new List<int>();
 
-       
+           
         }
 
         Tile[] tiles;
@@ -198,6 +198,8 @@ namespace GOA.Level
       
         }
 
+        
+
         void ConnectSectors()
         {
             if (sectors.Length == 1)
@@ -256,29 +258,81 @@ namespace GOA.Level
 
             if (sectors.Length > 2)
             {
-                int inSectorId = tiles[connections.Find(c => c.IsInitialConnection()).sourceTileId].sectorIndex;
-                int outSectorId = tiles[connections.Find(c => c.IsFinalConnection()).sourceTileId].sectorIndex;
-            
+                // Create al list with all the possible sources
+                List<int> srcIds = new List<int>();
+                for(int i=0;i<sectors.Length; i++)
+                {
+                    if (!IsFinalSector(i))
+                        srcIds.Add(i);
+                }
 
-                // Create a list with all sectors except for the final one
-                List<int> secIds = new List<int>();
+                // Create a list with all the possible targets
+                // An element on this list can only be used once, so we can loop through until the list is empty
+                List<int> trgIds = new List<int>();
                 for (int i = 0; i < sectors.Length; i++)
-                    secIds.Add(i);
-                secIds.Remove(outSectorId);
+                {
+                    if (!IsInitialSector(i))
+                        trgIds.Add(i);
+                }
 
-                // Only one sector can be connected to the final sector
-                int toLastId = secIds[Random.Range(0, secIds.Count)];
-                connections.Add(Connection.CreateNormalConnection(toLastId, outSectorId));
-                connections.Add(Connection.CreateNormalConnection(outSectorId, toLastId));
+                Debug.Log("SrcIds.Count:" + srcIds.Count);
 
-                //List<Tile> tList = new List<Tile>(tiles);
+                while(srcIds.Count > 0)
+                {
+                    // Get a random source sector
+                    int src = srcIds[Random.Range(0, srcIds.Count)];
+
+                    // Create a temp list with all the possible targets
+                    List<int> tmp = new List<int>();
+                    foreach(int id in trgIds)
+                    {
+                        if (id == src)
+                            continue;
+
+                        if (!SectorsBorderOneOnother(src, id))
+                            continue;
+
+                        if (connections.Exists(c => c.sourceTileId == src && c.targetTileId == id))
+                            continue;
+
+                        tmp.Add(id);
+                    }
+
+                    // If the source has no available targets then remove it from the source list
+                    if(tmp.Count == 0)
+                    {
+                        srcIds.Remove(src);
+                        continue;
+                    }
+
+                    // Choose a random target from the list
+                    int dst = tmp[Random.Range(0, tmp.Count)];
+
+                    // Logic
+                    int srcTileId, dstTileId;
+                    TryGetRandomBorderBetweenSectors(src, dst, out srcTileId, out dstTileId);
+                    connections.Add(Connection.CreateNormalConnection(srcTileId, dstTileId));
+                    connections.Add(Connection.CreateNormalConnection(dstTileId, srcTileId));
+
+                    // Geometry
+                    tiles[srcTileId].code = tiles[srcTileId].code.Substring(0, 2) + "CC" + tiles[srcTileId].code.Substring(4, 2);
+                    tiles[dstTileId].code = tiles[dstTileId].code.Substring(0, 2) + "CC" + tiles[dstTileId].code.Substring(4, 2);
+
+                    // Remove the target sector from the target list
+                    trgIds.Remove(dst);
+
+                    
+
+                }
+
+
+           
 
             }
 
 
 
         }
-
 
 
         void CreateRooms()
@@ -451,7 +505,8 @@ namespace GOA.Level
             sectors = new Sector[sectorCount];
             for (int i = 0; i < sectorCount; i++)
                 sectors[i] = new Sector();
-            
+
+            connections.Clear();
         }
 
         void ShapeSectors()
@@ -510,6 +565,94 @@ namespace GOA.Level
                     
                     break;
             }
+        }
+
+        bool TryGetRandomBorderBetweenSectors(int sector1Id, int sector2Id, out int tile1Id, out int tile2Id)
+        {
+            tile1Id = -1;
+            tile2Id = -1;
+
+            List<int> list1 = new List<int>();
+            List<int> list2 = new List<int>();
+
+            int size = (int)Mathf.Sqrt(tiles.Length);
+
+            Sector s1 = sectors[sector1Id];
+            Sector s2 = sectors[sector2Id];
+            for (int i = 0; i < s1.tileIds.Count; i++)
+            {
+                int tileId = s1.tileIds[i];
+                if (tileId % size > 0 && tiles[tileId - 1].sectorIndex == sector2Id)
+                {
+                    list1.Add(tileId);
+                    list2.Add(tileId - 1);
+                }
+                if (tileId % size < size - 1 && tiles[tileId + 1].sectorIndex == sector2Id)
+                {
+                    list1.Add(tileId);
+                    list2.Add(tileId + 1);
+                }
+                if (tileId / size > 0 && tiles[tileId - size].sectorIndex == sector2Id)
+                {
+                    list1.Add(tileId);
+                    list2.Add(tileId - size);
+                }
+                if (tileId / size < size - 1 && tiles[tileId + size].sectorIndex == sector2Id)
+                {
+                    list1.Add(tileId);
+                    list2.Add(tileId + size);
+                }
+            }
+
+            if (list1.Count == 0)
+                return false;
+
+            int id = Random.Range(0, list1.Count);
+            tile1Id = list1[id];
+            tile2Id = list2[id];
+            return true;
+        }
+
+        bool SectorsBorderOneOnother(int sector1Id, int sector2Id)
+        {
+
+            int size = (int)Mathf.Sqrt(tiles.Length);
+
+            Sector s1 = sectors[sector1Id];
+            Sector s2 = sectors[sector2Id];
+            for (int i = 0; i < s1.tileIds.Count; i++)
+            {
+                int tileId = s1.tileIds[i];
+                if (tileId % size > 0 && tiles[tileId - 1].sectorIndex == sector2Id)
+                {
+                    return true;
+                }
+                if (tileId % size < size - 1 && tiles[tileId + 1].sectorIndex == sector2Id)
+                {
+                    return true;
+                }
+                if (tileId / size > 0 && tiles[tileId - size].sectorIndex == sector2Id)
+                {
+                    return true;
+                }
+                if (tileId / size < size - 1 && tiles[tileId + size].sectorIndex == sector2Id)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+
+        }
+
+        bool IsInitialSector(int index)
+        {
+            return index == tiles[connections.Find(c => c.IsInitialConnection()).sourceTileId].sectorIndex;
+        }
+
+        bool IsFinalSector(int index)
+        {
+            return index == tiles[connections.Find(c => c.IsFinalConnection()).sourceTileId].sectorIndex;
         }
 
         void DebugTiles()
