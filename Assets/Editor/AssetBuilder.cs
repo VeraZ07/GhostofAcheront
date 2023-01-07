@@ -35,11 +35,11 @@ namespace GOA.Editor
         [MenuItem("Assets/Create/GOA/Room")]
         public static void CreateRoomAsset()
         {
-            RoomAsset asset = ScriptableObject.CreateInstance<RoomAsset>();
+            TileAsset asset = ScriptableObject.CreateInstance<TileAsset>();
 
             string name = "Room.asset";
 
-            string folder = System.IO.Path.Combine(ResourceFolder, RoomAsset.ResourceFolder);
+            string folder = System.IO.Path.Combine(ResourceFolder, TileAsset.ResourceFolder);
                                                                                              
             if (!System.IO.Directory.Exists(folder))
                 System.IO.Directory.CreateDirectory(folder);
@@ -53,14 +53,14 @@ namespace GOA.Editor
             Selection.activeObject = asset;
         }
 
-        [MenuItem("Assets/Create/GOA/Corridor")]
-        public static void CreateCorridorAsset()
+        [MenuItem("Assets/Create/GOA/Tile")]
+        public static void CreateTilesAsset()
         {
-            CorridorAsset asset = ScriptableObject.CreateInstance<CorridorAsset>();
+            TileAsset asset = ScriptableObject.CreateInstance<TileAsset>();
 
-            string name = "Corridor.asset";
+            string name = "Tile.asset";
 
-            string folder = System.IO.Path.Combine(ResourceFolder, CorridorAsset.ResourceFolder);
+            string folder = System.IO.Path.Combine(ResourceFolder, TileAsset.ResourceFolder);
 
             if (!System.IO.Directory.Exists(folder))
                 System.IO.Directory.CreateDirectory(folder);

@@ -22,12 +22,21 @@ namespace GOA.Level
             /// BB: is the tile closed or for example is a door? Is the initial tile?
             /// CC: the type of tile ( simple wall? room? )
             /// Some codes:
-            /// AA: tl, tc, tr, lc, cc, rc, bl, bc, br 
-            /// BB: DD=default, cc=tile_connection, ca=start, cb=end
-            /// CC: wa=wall, ra=room
+            /// AA: tl, tc, tr, cl, cc, cr, bl, bc, br 
+            /// BB: dd=default, cc=tile_connection, ca=start, cb=end
+            /// CC: WA=, RA=room
             /// </summary>
-            public string code = "AA--WA";
+            public string code = "AAddWA";
             public int sectorIndex;
+
+            /// <summary>
+            /// 0: default rot
+            /// 1: 90 degrees
+            /// 2: 180 degrees
+            /// 3: 270 degrees
+            /// -1: remove
+            /// </summary>
+            public float wall = 0;
 
 
             public override string ToString()
@@ -79,6 +88,8 @@ namespace GOA.Level
             /// </summary>
             [SerializeField]
             int type = 0;
+
+
 
             public bool IsInitialConnection()
             {
@@ -182,23 +193,67 @@ namespace GOA.Level
             //
             ConnectSectors();
 
+            // 
+            // Rotate walls
+            //
+            //RotateWalls();
+
             //
             // Create rooms
             //
             CreateRooms();
 
+            DebugTiles();
 
             // 
             // Load geometry
             //
-            //LoadGeometry();
+            BuildGeometry();
 
 
-            DebugTiles();
+            
       
         }
 
-        
+        void BuildGeometry()
+        {
+            float tileSize = 4f;
+
+            // Load assets
+            List<TileAsset> assets = new List<TileAsset>(Resources.LoadAll<TileAsset>(TileAsset.ResourceFolder));
+
+            Debug.Log("Assets.Count:" + assets.Count);
+
+            // Create root
+            GameObject root = new GameObject("Geometry");
+            root.transform.position = Vector3.zero;
+            root.transform.rotation = Quaternion.identity;
+
+            int size = (int)Mathf.Sqrt(tiles.Length);
+
+            // Create tiles
+            for(int i=0; i<tiles.Length; i++)
+            {
+                TileAsset asset = assets.Find(t => t.name.ToLower() == tiles[i].code.ToLower());
+                GameObject tile = Instantiate(asset.Prefab, root.transform);
+                tile.transform.localPosition = new Vector3((i % size) * tileSize, 0f, -(i / size) * tileSize);
+                tile.transform.localRotation = Quaternion.identity;
+
+                if(tiles[i].wall != 0)
+                {
+                    Transform pivot = new List<Transform>(tile.GetComponentsInChildren<Transform>()).Find(t => t.tag == "WallPivot");
+                    if(tiles[i].wall < 0)
+                    {
+                        DestroyImmediate(pivot.gameObject);
+                    }
+                    else
+                    {
+                        pivot.transform.eulerAngles = new Vector3(0f,90f*tiles[i].wall,0f);
+                    }
+                }
+            }
+
+        }
 
         void ConnectSectors()
         {
@@ -249,7 +304,7 @@ namespace GOA.Level
                 
                 // Logic
                 connections.Add(Connection.CreateNormalConnection(srcId, trgId));
-                connections.Add(Connection.CreateNormalConnection(trgId, srcId));
+                //connections.Add(Connection.CreateNormalConnection(trgId, srcId));
                 
                 // Geometry
                 tiles[srcId].code = tiles[srcId].code.Substring(0, 2) + "CC" + tiles[srcId].code.Substring(4, 2);
@@ -312,7 +367,7 @@ namespace GOA.Level
                     int srcTileId, dstTileId;
                     TryGetRandomBorderBetweenSectors(src, dst, out srcTileId, out dstTileId);
                     connections.Add(Connection.CreateNormalConnection(srcTileId, dstTileId));
-                    connections.Add(Connection.CreateNormalConnection(dstTileId, srcTileId));
+                    //connections.Add(Connection.CreateNormalConnection(dstTileId, srcTileId));
 
                     // Geometry
                     tiles[srcTileId].code = tiles[srcTileId].code.Substring(0, 2) + "CC" + tiles[srcTileId].code.Substring(4, 2);
@@ -394,7 +449,7 @@ namespace GOA.Level
             int enteringTileIndex = indices[Random.Range(0, indices.Count)];
             
             // Geometry
-            tiles[enteringTileIndex].code = tiles[enteringTileIndex].code.Substring(0, 2) + "CA" + tiles[enteringTileIndex].code.Substring(4, 2);
+            tiles[enteringTileIndex].code = tiles[enteringTileIndex].code.Substring(0, 2) + "CC" + tiles[enteringTileIndex].code.Substring(4, 2);
 
             // Logic
             connections.Add(Connection.CreateInitialConnection(enteringTileIndex));
@@ -419,7 +474,7 @@ namespace GOA.Level
 
             int exitingTileIndex = indices[Random.Range(0, indices.Count)];
             // Geometry
-            tiles[exitingTileIndex].code = tiles[exitingTileIndex].code.Substring(0, 2) + "CB" + tiles[exitingTileIndex].code.Substring(4, 2);
+            tiles[exitingTileIndex].code = tiles[exitingTileIndex].code.Substring(0, 2) + "CC" + tiles[exitingTileIndex].code.Substring(4, 2);
             // Logic
             connections.Add(Connection.CreateFinalConnection(exitingTileIndex));
         }
@@ -449,9 +504,12 @@ namespace GOA.Level
                 bool right = (col == size - 1 || tiles[tileId + 1].sectorIndex != sectorIndex);
                 bool bottom = (row == size - 1 || tiles[tileId + size].sectorIndex != sectorIndex);
 
+                bool rotate = false;
+
                 if(!top && !left && !right && !bottom)
                 {
                     tiles[tileId].code = "CC" + tiles[tileId].code.Substring(2);
+                    rotate = true;
                 }
                 else
                 {
@@ -466,13 +524,31 @@ namespace GOA.Level
                     else if (right)
                         code = code.Substring(0, 1) + "R";
 
+                    if ((top && !right) || (left && !bottom))
+                        rotate = true;
+
+                
                     tiles[tileId].code = code + tiles[tileId].code.Substring(2);
+                }
+
+                if (rotate)
+                {
+                    List<int> rot = new List<int>(new int[] { 0, 1, 2, 3 });
+
+                    
+                    // Rotate 
+                    int rotCode = rot[Random.Range(0, rot.Count)];
+                    tiles[tileId].wall = rotCode;
                 }
             }
         }
 
         void Init()
         {
+            Transform g = new List<Transform>(FindObjectsOfType<Transform>()).Find(o => o.name == "Geometry");
+            if (g)
+                DestroyImmediate(g.gameObject);
+
             int tileCount = 0;
             int sectorCount = 0;
 
@@ -655,6 +731,7 @@ namespace GOA.Level
             return index == tiles[connections.Find(c => c.IsFinalConnection()).sourceTileId].sectorIndex;
         }
 
+        
         void DebugTiles()
         {
             int size = (int) Mathf.Sqrt(tiles.Length);
