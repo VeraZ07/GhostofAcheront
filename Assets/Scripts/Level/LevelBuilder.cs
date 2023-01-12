@@ -12,10 +12,10 @@ namespace GOA.Level
         // From 0 to N, 0 is the smaller.
         public static int LevelSize = 0;
 
-        
-
         class Tile
         {
+            LevelBuilder builder;
+
             /// <summary>
             /// Code AABBCC
             /// AA: the position of the tile ( ex. TL for top left )
@@ -38,6 +38,10 @@ namespace GOA.Level
             /// </summary>
             public float wall = 0;
 
+            public Tile(LevelBuilder builder)
+            {
+                this.builder = builder;
+            }
 
             public override string ToString()
             {
@@ -49,31 +53,39 @@ namespace GOA.Level
         [System.Serializable]
         class Connection
         {
+            
+
             [SerializeField]
             public int sourceTileId = -1;
             [SerializeField]
             public int targetTileId = -1;
-            
-            public static Connection CreateNormalConnection(int sourceTileId, int targetTileId)
+
+
+            LevelBuilder builder;
+
+            public static Connection CreateNormalConnection(LevelBuilder builder, int sourceTileId, int targetTileId)
             {
                 Connection c = new Connection();
+                c.builder = builder;
                 c.sourceTileId = sourceTileId;
                 c.targetTileId = targetTileId;
                 c.type = 0;
                 return c;
             }
 
-            public static Connection CreateInitialConnection(int sourceTileId)
+            public static Connection CreateInitialConnection(LevelBuilder builder, int sourceTileId)
             {
                 Connection c = new Connection();
+                c.builder = builder;
                 c.sourceTileId = sourceTileId;
                 c.type = 1;
                 return c;
             }
 
-            public static Connection CreateFinalConnection(int sourceTileId)
+            public static Connection CreateFinalConnection(LevelBuilder builder, int sourceTileId)
             {
                 Connection c = new Connection();
+                c.builder = builder;
                 c.sourceTileId = sourceTileId;
                 c.type = 2;
                 return c;
@@ -108,13 +120,80 @@ namespace GOA.Level
         [System.Serializable]
         class Sector
         {
+            LevelBuilder builder;
+
             [SerializeField]
             public List<int> tileIds = new List<int>();
 
-            //[SerializeField]
-            //public List<int> connectedSectorIds = new List<int>();
 
-           
+            public int width = 0;
+            public int height = 0;
+
+            public Sector(LevelBuilder builder)
+            {
+                this.builder = builder;
+            }
+
+            public void Build() 
+            {
+                //Sector sector = sectors[sectorIndex];
+                int sectorIndex = new List<Sector>(builder.sectors).FindIndex(s => s == this);
+
+                int size = (int)Mathf.Sqrt(builder.tiles.Length); // Columns
+
+                // Loop through each tile of the current sector
+                for (int i = 0; i < tileIds.Count; i++)
+                {
+                    int tileId = tileIds[i];
+                    int col = tileId % size;
+                    int row = tileId / size;
+
+                    // Check whether the current tile is at the edge of the sector or not
+                    bool top = (row == 0 || builder.tiles[tileId - size].sectorIndex != sectorIndex);
+                    bool left = (col == 0 || builder.tiles[tileId - 1].sectorIndex != sectorIndex);
+                    bool right = (col == size - 1 || builder.tiles[tileId + 1].sectorIndex != sectorIndex);
+                    bool bottom = (row == size - 1 || builder.tiles[tileId + size].sectorIndex != sectorIndex);
+
+                    bool rotate = false;
+
+                    if (!top && !left && !right && !bottom)
+                    {
+                        builder.tiles[tileId].code = "CC" + builder.tiles[tileId].code.Substring(2);
+                        rotate = true;
+                    }
+                    else
+                    {
+                        string code = "CC";
+                        if (top)
+                            code = "T" + code.Substring(1);
+                        else if (bottom)
+                            code = "B" + code.Substring(1);
+
+                        if (left)
+                            code = code.Substring(0, 1) + "L";
+                        else if (right)
+                            code = code.Substring(0, 1) + "R";
+
+                        if ((top && !right) || (left && !bottom))
+                            rotate = true;
+
+
+                        builder.tiles[tileId].code = code + builder.tiles[tileId].code.Substring(2);
+                    }
+
+                    // Rotate walls to shape the maze
+                    if (rotate)
+                    {
+                        List<int> rot = new List<int>(new int[] { 0, 1, 2, 3 });
+
+
+                        // Rotate 
+                        int rotCode = rot[Random.Range(0, rot.Count)];
+                        builder.tiles[tileId].wall = rotCode;
+                    }
+                }
+            }
+
         }
 
         Tile[] tiles;
@@ -123,6 +202,37 @@ namespace GOA.Level
 
         [SerializeField]
         List<Connection> connections = new List<Connection>();
+
+        [System.Serializable]
+        class Room
+        {
+            public List<int> tileIds = new List<int>();
+
+            public Room(LevelBuilder builder, int sectorId, int width, int height)
+            {
+                this.sectorId = sectorId;
+                this.width = width;
+                this.height = height;
+                this.builder = builder;
+            }
+
+            public int width;
+            public int height;
+            public int sectorId;
+
+            LevelBuilder builder;
+
+            public void Create()
+            {
+                Debug.LogFormat("[Room W:{0}, H:{1}, Tiles.Count:{2}, Sector:{3}", width, height, tileIds.Count, sectorId);
+                string s = "";
+                foreach (int id in tileIds)
+                    s += id.ToString() + " ";
+                Debug.Log(s);
+            }
+        }
+
+        List<Room> rooms = new List<Room>();
 
         private void Awake()
         {
@@ -171,13 +281,7 @@ namespace GOA.Level
             //
             Init();
 
-            //
-            // Distribute tiles among sectors.
-            // Just create the shape of each sector in the whole level.
-            //
-            ShapeSectors();
-
-
+           
             //
             // Build sectors
             //
@@ -192,11 +296,6 @@ namespace GOA.Level
             // Connect sectors
             //
             ConnectSectors();
-
-            // 
-            // Rotate walls
-            //
-            //RotateWalls();
 
             //
             // Create rooms
@@ -234,6 +333,7 @@ namespace GOA.Level
             // Create tiles
             for(int i=0; i<tiles.Length; i++)
             {
+                Debug.Log("TileCode:" + tiles[i].code.ToLower());
                 TileAsset asset = assets.Find(t => t.name.ToLower() == tiles[i].code.ToLower());
                 GameObject tile = Instantiate(asset.Prefab, root.transform);
                 tile.transform.localPosition = new Vector3((i % size) * tileSize, 0f, -(i / size) * tileSize);
@@ -303,7 +403,7 @@ namespace GOA.Level
 
                 
                 // Logic
-                connections.Add(Connection.CreateNormalConnection(srcId, trgId));
+                connections.Add(Connection.CreateNormalConnection(this, srcId, trgId));
                 //connections.Add(Connection.CreateNormalConnection(trgId, srcId));
                 
                 // Geometry
@@ -366,7 +466,7 @@ namespace GOA.Level
                     // Logic
                     int srcTileId, dstTileId;
                     TryGetRandomBorderBetweenSectors(src, dst, out srcTileId, out dstTileId);
-                    connections.Add(Connection.CreateNormalConnection(srcTileId, dstTileId));
+                    connections.Add(Connection.CreateNormalConnection(this, srcTileId, dstTileId));
                     //connections.Add(Connection.CreateNormalConnection(dstTileId, srcTileId));
 
                     // Geometry
@@ -394,39 +494,57 @@ namespace GOA.Level
         {
             for(int i=0; i<sectors.Length;i++)
             {
-                int min = 0;
-                int max = sectors[i].tileIds.Count / 30;
-                int roomCount = Random.Range(min, max + 1);
-                if (roomCount > 0)
-                    CreateRooms(roomCount, i);
-            }
-        }
+                Sector sector = sectors[i];
+                int sizeInTiles = sector.width + sector.height; // In tiles
 
-        void CreateRooms(int roomCount, int sectorId)
-        {
-            // Copy all the available tiles into a new list
-            List<int> ids = new List<int>();
-            foreach(int id in sectors[sectorId].tileIds)
-            {
-                ids.Add(id);
-            }
+                // Max room tiles
+                int maxTiles = sizeInTiles * 20 / 100;
+                int maxTilesWidth = sector.width;
+                int maxTilesHeight = sector.height;
 
-            List<int> roomsTiles = new List<int>();
-
-            for(int i=0; i<roomCount; i++)
-            {
-                int maxWidth = Random.Range(2, 5);
-                int maxHeight = Random.Range(2, 5);
-
-                // Create a list with all the possible origins given the width and the height of the room
-                List<int> tmp = new List<int>();
-                foreach(int id in ids)
+                // Try to create the max number of rooms
+                while(maxTiles > 0)
                 {
-                    //if(id + maxWidth < )
+                    int maxWidth = Mathf.Min(8, maxTilesWidth);
+                    int maxHeight = Mathf.Min(8, maxTilesHeight);
+
+                    int minWidth = Mathf.Min(2, maxTilesWidth);
+                    int minHeight = Mathf.Min(2, maxTilesHeight);
+
+                    // We only create commons rooms for now
+                    int w = Random.Range(minWidth, maxWidth + 1);
+                    int h = Random.Range(minHeight, maxHeight + 1);
+                    Room room = new Room(this, i, w, h);
+                    rooms.Add(room);
+                    maxTiles -= (w * h);
+
+                    if (maxTiles < 4)
+                        maxTiles = 0;
                 }
+
+                List<int> notAllowed = new List<int>();
+                // Create rooms
+                for(int j= 0; j<rooms.Count; j++)
+                {
+                    Room room = rooms[j];
+                    // Get available tiles
+                    List<int> tiles = GetTilesForRoom(room.sectorId, room.width, room.height, notAllowed);
+
+                    if(tiles.Count > 0)
+                    {
+                        // We can't use the same tile twice
+                        notAllowed.AddRange(tiles);
+
+                        room.tileIds = tiles;
+
+                        room.Create();
+                    }
+                }
+                
             }
         }
 
+        
         void ChooseEnteringAndExitingTiles()
         {
             // Get a random tile along the external edge 
@@ -452,7 +570,7 @@ namespace GOA.Level
             tiles[enteringTileIndex].code = tiles[enteringTileIndex].code.Substring(0, 2) + "CC" + tiles[enteringTileIndex].code.Substring(4, 2);
 
             // Logic
-            connections.Add(Connection.CreateInitialConnection(enteringTileIndex));
+            connections.Add(Connection.CreateInitialConnection(this, enteringTileIndex));
 
             if (sectors.Length == 1)
             {
@@ -476,73 +594,10 @@ namespace GOA.Level
             // Geometry
             tiles[exitingTileIndex].code = tiles[exitingTileIndex].code.Substring(0, 2) + "CC" + tiles[exitingTileIndex].code.Substring(4, 2);
             // Logic
-            connections.Add(Connection.CreateFinalConnection(exitingTileIndex));
+            connections.Add(Connection.CreateFinalConnection(this, exitingTileIndex));
         }
 
-        void BuildSectors()
-        {
-            for (int i = 0; i < sectors.Length; i++)
-                BuildSector(i);
-        }
-
-        void BuildSector(int sectorIndex)
-        {
-            Sector sector = sectors[sectorIndex];
-
-            int size = (int)Mathf.Sqrt(tiles.Length); // Columns
-
-            // Loop through each tile of the current sector
-            for(int i=0; i<sector.tileIds.Count; i++)
-            {
-                int tileId = sector.tileIds[i];
-                int col = tileId % size;
-                int row = tileId / size;
-
-                // Check whether the current tile is at the edge of the sector or not
-                bool top = (row == 0 || tiles[tileId - size].sectorIndex != sectorIndex);
-                bool left = (col == 0 || tiles[tileId - 1].sectorIndex != sectorIndex);
-                bool right = (col == size - 1 || tiles[tileId + 1].sectorIndex != sectorIndex);
-                bool bottom = (row == size - 1 || tiles[tileId + size].sectorIndex != sectorIndex);
-
-                bool rotate = false;
-
-                if(!top && !left && !right && !bottom)
-                {
-                    tiles[tileId].code = "CC" + tiles[tileId].code.Substring(2);
-                    rotate = true;
-                }
-                else
-                {
-                    string code = "CC";
-                    if (top)
-                        code = "T" + code.Substring(1);
-                    else if(bottom)
-                        code = "B" + code.Substring(1);
-
-                    if(left)
-                        code = code.Substring(0,1) + "L";
-                    else if (right)
-                        code = code.Substring(0, 1) + "R";
-
-                    if ((top && !right) || (left && !bottom))
-                        rotate = true;
-
-                
-                    tiles[tileId].code = code + tiles[tileId].code.Substring(2);
-                }
-
-                if (rotate)
-                {
-                    List<int> rot = new List<int>(new int[] { 0, 1, 2, 3 });
-
-                    
-                    // Rotate 
-                    int rotCode = rot[Random.Range(0, rot.Count)];
-                    tiles[tileId].wall = rotCode;
-                }
-            }
-        }
-
+       
         void Init()
         {
             Transform g = new List<Transform>(FindObjectsOfType<Transform>()).Find(o => o.name == "Geometry");
@@ -576,16 +631,17 @@ namespace GOA.Level
 
             tiles = new Tile[tileCount];
             for (int i = 0; i < tiles.Length; i++)
-                tiles[i] = new Tile();
+                tiles[i] = new Tile(this);
 
             sectors = new Sector[sectorCount];
             for (int i = 0; i < sectorCount; i++)
-                sectors[i] = new Sector();
+                sectors[i] = new Sector(this);
 
             connections.Clear();
+            rooms.Clear();
         }
 
-        void ShapeSectors()
+        void BuildSectors()
         {
             switch (sectors.Length)
             {
@@ -641,6 +697,42 @@ namespace GOA.Level
                     
                     break;
             }
+
+            // Set width and heigh for each sector
+            for(int i=0; i<sectors.Length; i++)
+            {
+                int size = (int)Mathf.Sqrt(tiles.Length);
+                int minX = 0, maxX = 0, minZ = 0, maxZ = 0;
+                Sector sector = sectors[i];
+                // Get boundaries
+                for(int j=0; j<sector.tileIds.Count; j++)
+                {
+                    int index = sector.tileIds[j];
+                    int w = index % size;
+                    int h = index / size;
+                    if (j == 0)
+                    {
+                        minX = maxX = w;
+                        minZ = maxZ = h;
+                    }
+                    else
+                    {
+                        if (minX > w) minX = w;
+                        if (maxX < w) maxX = w;
+                        if (minZ > h) minZ = h;
+                        if (maxZ < h) maxZ = h;
+                    }
+                }
+
+                // Compute width and heigh
+                sector.width = maxX - minX + 1;
+                sector.height = maxZ - minZ + 1;
+
+                sectors[i].Build();
+            }
+
+            //for (int i = 0; i < sectors.Length; i++)
+            //    sectors[i].Create(this);
         }
 
         bool TryGetRandomBorderBetweenSectors(int sector1Id, int sector2Id, out int tile1Id, out int tile2Id)
@@ -731,9 +823,74 @@ namespace GOA.Level
             return index == tiles[connections.Find(c => c.IsFinalConnection()).sourceTileId].sectorIndex;
         }
 
+        bool IsBorderTile(int tileId)
+        {
+
+            int size = (int)Mathf.Sqrt(tiles.Length);
+            int sectorId = tiles[tileId].sectorIndex;
+
+            if (tileId % size > 0 && tiles[tileId - 1].sectorIndex != sectorId)
+            {
+                return true;
+            }
+            if (tileId % size < size - 1 && tiles[tileId + 1].sectorIndex != sectorId)
+            {
+                return true;
+            }
+            if (tileId / size > 0 && tiles[tileId - size].sectorIndex != sectorId)
+            {
+                return true;
+            }
+            if (tileId / size < size - 1 && tiles[tileId + size].sectorIndex != sectorId)
+            {
+                return true;
+            }
+
+            return false;
+        }
         
+        List<int> GetTilesForRoom(int sectorIndex, int width, int height, List<int> notAllowedTileIds)
+        {
+            int[] tmp = new int[sectors[sectorIndex].tileIds.Count];
+            sectors[sectorIndex].tileIds.CopyTo(tmp);
+            List<int> tileIds = new List<int>(tmp);
+            tileIds.RemoveAll(id => notAllowedTileIds.Contains(id));
+
+            int size = (int)Mathf.Sqrt(tiles.Length);
+
+            List<int> ret = new List<int>();
+
+            bool found = false;
+            while(!found && tileIds.Count > 0)
+            {
+                // Extract a random tile
+                int origin = tileIds[Random.Range(0, tileIds.Count)];
+                tileIds.Remove(origin);
+
+               
+                ret.Clear();
+                // From top-left to bottom-rigth
+                for(int i=0; i<width * height; i++)
+                {
+                    int id = origin + i % width + i / width * size;
+                    if (!sectors[sectorIndex].tileIds.Contains(id))
+                        continue;
+                    if (notAllowedTileIds.Contains(id))
+                        continue;
+
+                    ret.Add(id);
+                }
+
+                found = true;
+            }
+
+            return ret;
+        }
+
         void DebugTiles()
         {
+            
+
             int size = (int) Mathf.Sqrt(tiles.Length);
             string log = "";
             for(int i=0; i<size; i++)
