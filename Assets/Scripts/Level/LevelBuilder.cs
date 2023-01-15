@@ -46,17 +46,35 @@ namespace GOA.Level
             /// 3: 270 degrees
             /// -1: no wall
             /// </summary>
-            public float wall = 0;
+            public float roteableWall = -1;
 
-            public int type;
+            /// <summary>
+            /// Indicates if a tile has wall in any of the cardinal directions.
+            /// </summary>
+            public bool hasUpperWall = false;
+            public bool hasLeftWall = false;
+            public bool hasRightWall = false;
+            public bool hasBottomWall = false;
+
+            /// <summary>
+            /// Tells us if the tile is the border of any sector
+            /// </summary>
+            public bool isUpperBorder = false;
+            public bool isLeftBorder = false;
+            public bool isRightBorder = false;
+            public bool isBottomBorder = false;
+
+            //public int type;
 
             /// <summary>
             /// 0: wall - default
             /// 1: room
             /// </summary>
-            public int style = 0; 
+            public bool isRoomTile = false; 
 
             public Vector3 openDirection = Vector3.zero;
+                        
+            
 
             public Tile(LevelBuilder builder)
             {
@@ -66,40 +84,62 @@ namespace GOA.Level
             public string GetCode()
             {
                 string code = "";
-                switch (type)
+                if(!hasUpperWall && !hasBottomWall)
                 {
-                    case (int)TileType.TopLeft:
-                        code = "tl";
-                        break;
-                    case (int)TileType.TopCenter:
-                        code = "tc";
-                        break;
-                    case (int)TileType.TopRight:
-                        code = "tr";
-                        break;
-                    case (int)TileType.Left:
-                        code = "ll";
-                        break;
-                    case (int)TileType.Right:
-                        code = "rr";
-                        break;
-                    case (int)TileType.Center:
-                        code = "cc";
-                        break;
-                    case (int)TileType.BottomLeft:
-                        code = "bl";
-                        break;
-                    case (int)TileType.BottomCenter:
-                        code = "bc";
-                        break;
-                    case (int)TileType.BottomRight:
-                        code = "br";
-                        break;
+                    code = "c";
                 }
+                else
+                {
+                    code = hasUpperWall ? "t" : "b";
+                }
+                if (!hasRightWall && !hasLeftWall)
+                {
+                    code += "c";
+                }
+                else
+                {
+                    code += hasRightWall ? "r" : "l";
+                }
+
+                if (code == "cl")
+                    code = "ll";
+                if (code == "cr")
+                    code = "rr";
+
+                //switch (type)
+                //{
+                //    case (int)TileType.TopLeft:
+                //        code = "tl";
+                //        break;
+                //    case (int)TileType.TopCenter:
+                //        code = "tc";
+                //        break;
+                //    case (int)TileType.TopRight:
+                //        code = "tr";
+                //        break;
+                //    case (int)TileType.Left:
+                //        code = "ll";
+                //        break;
+                //    case (int)TileType.Right:
+                //        code = "rr";
+                //        break;
+                //    case (int)TileType.Center:
+                //        code = "cc";
+                //        break;
+                //    case (int)TileType.BottomLeft:
+                //        code = "bl";
+                //        break;
+                //    case (int)TileType.BottomCenter:
+                //        code = "bc";
+                //        break;
+                //    case (int)TileType.BottomRight:
+                //        code = "br";
+                //        break;
+                //}
 
                 code += (openDirection != Vector3.zero) ? "cc" : "dd";
 
-                code += style == 0 ? "wa" : "ra";
+                code += !isRoomTile  ? "wa" : "ra";
 
                 return code;
             }
@@ -210,55 +250,66 @@ namespace GOA.Level
                     int row = tileId / size;
 
                     // Check whether the current tile is at the edge of the sector or not
-                    bool top = (row == 0 || builder.tiles[tileId - size].sectorIndex != sectorIndex);
-                    bool left = (col == 0 || builder.tiles[tileId - 1].sectorIndex != sectorIndex);
-                    bool right = (col == size - 1 || builder.tiles[tileId + 1].sectorIndex != sectorIndex);
-                    bool bottom = (row == size - 1 || builder.tiles[tileId + size].sectorIndex != sectorIndex);
+                    //bool top = (row == 0 || builder.tiles[tileId - size].sectorIndex != sectorIndex);
+                    //bool left = (col == 0 || builder.tiles[tileId - 1].sectorIndex != sectorIndex);
+                    //bool right = (col == size - 1 || builder.tiles[tileId + 1].sectorIndex != sectorIndex);
+                    //bool bottom = (row == size - 1 || builder.tiles[tileId + size].sectorIndex != sectorIndex);
+                    builder.tiles[tileId].hasUpperWall = (row == 0 || builder.tiles[tileId - size].sectorIndex != sectorIndex);
+                    builder.tiles[tileId].hasLeftWall = (col == 0 || builder.tiles[tileId - 1].sectorIndex != sectorIndex);
+                    builder.tiles[tileId].hasRightWall = (col == size - 1 || builder.tiles[tileId + 1].sectorIndex != sectorIndex);
+                    builder.tiles[tileId].hasBottomWall = (row == size - 1 || builder.tiles[tileId + size].sectorIndex != sectorIndex);
+
+                    builder.tiles[tileId].isUpperBorder = builder.tiles[tileId].hasUpperWall;
+                    builder.tiles[tileId].isRightBorder = builder.tiles[tileId].hasRightWall;
+                    builder.tiles[tileId].isBottomBorder = builder.tiles[tileId].hasBottomWall;
+                    builder.tiles[tileId].isLeftBorder = builder.tiles[tileId].hasLeftWall;
 
                     bool rotate = false;
 
-                    if (!top && !left && !right && !bottom)
+                    if (!builder.tiles[tileId].hasUpperWall && !builder.tiles[tileId].hasLeftWall &&
+                        !builder.tiles[tileId].hasRightWall && !builder.tiles[tileId].hasBottomWall)
                     {
-                        //builder.tiles[tileId].code = "CC" + builder.tiles[tileId].code.Substring(2);
-                        builder.tiles[tileId].type = (int)TileType.Center;
+                        //builder.tiles[tileId].type = (int)TileType.Center;
+                          
                         rotate = true;
                     }
                     else
                     {
-                       
-                        if (top)
-                        {
-                            if (left)
-                                builder.tiles[tileId].type = (int)TileType.TopLeft;
-                            else if(right)
-                                builder.tiles[tileId].type = (int)TileType.TopRight;
-                            else
-                                builder.tiles[tileId].type = (int)TileType.TopCenter;
-                        }
-                        else
-                        {
-                            if (bottom)
-                            {
-                                if (left)
-                                    builder.tiles[tileId].type = (int)TileType.BottomLeft;
-                                else if (right)
-                                    builder.tiles[tileId].type = (int)TileType.BottomRight;
-                                else
-                                    builder.tiles[tileId].type = (int)TileType.BottomCenter;
-                            }
-                            else
-                            {
-                                if (left)
-                                    builder.tiles[tileId].type = (int)TileType.Left;
-                                else if (right)
-                                    builder.tiles[tileId].type = (int)TileType.Right;
-                                else
-                                    builder.tiles[tileId].type = (int)TileType.Center;
-
-                            }
-                        }
-                        if ((top && !right) || (left && !bottom))
+                        if ((builder.tiles[tileId].hasUpperWall && !builder.tiles[tileId].hasRightWall) ||
+                            (builder.tiles[tileId].hasLeftWall && !builder.tiles[tileId].hasBottomWall))
                             rotate = true;
+                        //if (top)
+                        //{
+                        //    if (left)
+                        //        builder.tiles[tileId].type = (int)TileType.TopLeft;
+                        //    else if(right)
+                        //        builder.tiles[tileId].type = (int)TileType.TopRight;
+                        //    else
+                        //        builder.tiles[tileId].type = (int)TileType.TopCenter;
+                        //}
+                        //else
+                        //{
+                        //    if (bottom)
+                        //    {
+                        //        if (left)
+                        //            builder.tiles[tileId].type = (int)TileType.BottomLeft;
+                        //        else if (right)
+                        //            builder.tiles[tileId].type = (int)TileType.BottomRight;
+                        //        else
+                        //            builder.tiles[tileId].type = (int)TileType.BottomCenter;
+                        //    }
+                        //    else
+                        //    {
+                        //        if (left)
+                        //            builder.tiles[tileId].type = (int)TileType.Left;
+                        //        else if (right)
+                        //            builder.tiles[tileId].type = (int)TileType.Right;
+                        //        else
+                        //            builder.tiles[tileId].type = (int)TileType.Center;
+
+                        //    }
+                        //}
+
 
 
                         //builder.tiles[tileId].code = code + builder.tiles[tileId].code.Substring(2);
@@ -267,13 +318,28 @@ namespace GOA.Level
                     // Rotate walls to shape the maze
                     if (rotate)
                     {
+                        // Avoid overriding
+                        List<int> avoidList = new List<int>();
+                        if (tileIds.Contains(tileId - 1))
+                        {
+                            if (builder.tiles[tileId - 1].roteableWall == 1)
+                                avoidList.Add(3);
+                        }
+                        if(tileIds.Contains(tileId - size))
+                        {
+                            if (builder.tiles[tileId - size].roteableWall == 2)
+                                avoidList.Add(0);
+                        }
+
                         List<int> rot = new List<int>(new int[] { 0, 1, 2, 3 });
+                        rot.RemoveAll(t => avoidList.Contains(t));
 
 
                         // Rotate 
                         int rotCode = rot[Random.Range(0, rot.Count)];
-                        builder.tiles[tileId].wall = rotCode;
+                        builder.tiles[tileId].roteableWall = rotCode;
                     }
+                    
                 }
             }
 
@@ -310,42 +376,58 @@ namespace GOA.Level
                 int size = (int)Mathf.Sqrt(builder.tiles.Length);
 
                 Debug.LogFormat("[Room W:{0}, H:{1}, Tiles.Count:{2}, Sector:{3}", width, height, tileIds.Count, sectorId);
-                string s = "";
+                
                 for (int i = 0; i < tileIds.Count; i++)
                 {
                     int id = tileIds[i];
                     Tile tile = builder.tiles[id];
 
-                    tile.wall = 0; // Eventually reset the wall to avoid builder trying to rotate it
-                    tile.style = 1;
+                    tile.roteableWall = 0; // Eventually reset the wall to avoid builder trying to rotate it
+                    tile.isRoomTile = true;
 
                     // Set the type of tile
                     if (i == 0)
-                        tile.type = (int)TileType.TopLeft;
+                    {
+                        tile.hasUpperWall = tile.hasLeftWall = true;
+                    }
                     else if (i == width - 1)
-                        tile.type = (int)TileType.TopRight;
+                    {
+                        tile.hasUpperWall = tile.hasRightWall = true;
+                    }
                     else if (i == width * (height - 1))
-                        tile.type = (int)TileType.BottomLeft;
+                    {
+                        tile.hasBottomWall = tile.hasLeftWall = true;
+                    }
                     else if (i == width * (height - 1) + width - 1)
-                        tile.type = (int)TileType.BottomRight;
+                    {
+                        tile.hasBottomWall = tile.hasRightWall = true;
+                    }
                     else if (i % width == 0)
-                        tile.type = (int)TileType.Left;
-                    else if (i % width == width-1)
-                        tile.type = (int)TileType.Right;
+                    {
+                        tile.hasLeftWall = true;
+                    }
+                    else if (i % width == width - 1)
+                    {
+                        tile.hasRightWall = true;
+                    }
                     else if (i / width == 0)
-                        tile.type = (int)TileType.TopCenter;
+                    {
+                        tile.hasUpperWall = true;
+                    }
                     else if (i / width == height - 1)
-                        tile.type = (int)TileType.BottomCenter;
-                    else
-                        tile.type = (int)TileType.Center;
+                    {
+                        tile.hasBottomWall = true;
+                    }
+                    //else
+                    //    tile.type = (int)TileType.Center;
 
                     // Check adjacent tiles
                     if (i % width == 0 && builder.sectors[sectorId].tileIds.Contains(id - 1))
-                        builder.tiles[id - 1].wall = -1;
+                        builder.tiles[id - 1].roteableWall = -1;
                     if (i / width == 0 && builder.sectors[sectorId].tileIds.Contains(id - size))
-                        builder.tiles[id - size].wall = -1;
+                        builder.tiles[id - size].roteableWall = -1;
                     if (i / width == 0 && i % width == 0 && builder.sectors[sectorId].tileIds.Contains(id - size - 1))
-                        builder.tiles[id - size - 1].wall = -1;
+                        builder.tiles[id - size - 1].roteableWall = -1;
                 }
 
 
@@ -459,17 +541,24 @@ namespace GOA.Level
                 tile.transform.localPosition = new Vector3((i % size) * tileSize, 0f, -(i / size) * tileSize);
                 tile.transform.localRotation = Quaternion.identity;
 
-                if(tiles[i].wall != 0)
+                if(tiles[i].roteableWall != 0)
                 {
-                    Transform pivot = new List<Transform>(tile.GetComponentsInChildren<Transform>()).Find(t => t.tag == "WallPivot");
-                    if(tiles[i].wall < 0)
+                    Transform pivot = new List<Transform>(tile.GetComponentsInChildren<Transform>()).Find(t => "pv".Equals(t.name.ToLower()));
+                    if(tiles[i].roteableWall < 0)
                     {
-                        DestroyImmediate(pivot.gameObject);
+                        if(pivot)
+                            DestroyImmediate(pivot.gameObject);
                     }
                     else
                     {
-                        pivot.transform.eulerAngles = new Vector3(0f,90f*tiles[i].wall,0f);
+                        pivot.transform.eulerAngles = new Vector3(0f,90f*tiles[i].roteableWall,0f);
                     }
+                }
+
+                // Check for room tiles
+                if (tiles[i].isRoomTile)
+                {
+
                 }
             }
 
@@ -691,25 +780,29 @@ namespace GOA.Level
                         maxTiles = 0;
                 }
 
-                List<int> notAllowed = new List<int>();
-                // Create rooms
-                for(int j= 0; j<rooms.Count; j++)
-                {
-                    Room room = rooms[j];
-                    // Get available tiles
-                    List<int> tiles = GetTilesForRoom(room.sectorId, room.width, room.height, notAllowed);
-
-                    if(tiles.Count > 0)
-                    {
-                        // We can't use the same tile twice
-                        notAllowed.AddRange(tiles);
-
-                        room.tileIds = tiles;
-
-                        room.Create();
-                    }
-                }
                 
+                
+            }
+
+            List<int> notAllowed = new List<int>();
+            Debug.Log("Rooms.Count:" + rooms.Count);
+            // Create rooms
+            for (int j = 0; j < rooms.Count; j++)
+            {
+                Room room = rooms[j];
+                // Get available tiles
+                List<int> tiles = GetTilesForRoom(room.sectorId, room.width, room.height, notAllowed);
+
+               
+                if (tiles.Count > 0)
+                {
+                    // We can't use the same tile twice
+                    notAllowed.AddRange(tiles);
+
+                    room.tileIds = tiles;
+
+                    room.Create();
+                }
             }
         }
 
@@ -885,7 +978,7 @@ namespace GOA.Level
                     break;
             }
 
-            // Set width and heigh for each sector
+            // Set width and height for each sector
             for(int i=0; i<sectors.Length; i++)
             {
                 int size = (int)Mathf.Sqrt(tiles.Length);
@@ -1053,7 +1146,6 @@ namespace GOA.Level
                 // Extract a random tile
                 int origin = tileIds[Random.Range(0, tileIds.Count)];
                 tileIds.Remove(origin);
-
                
                 ret.Clear();
                 // From top-left to bottom-rigth
@@ -1066,11 +1158,16 @@ namespace GOA.Level
                     if (notAllowedTileIds.Contains(id))
                         break;
 
-                    // If one of the corner of the candidate room falls in a north or south tile connection then continue
+                    if ((origin / size) + (i / width) != id / size)
+                        break;
+
+                    // If one of the corner of the candidate room falls in a north or south tile connection then break
                     if ((i == 0 || i == width - 1) && tiles[id].openDirection != Vector3.zero)
                         break;
                     if ((i == width * (height - 1) || i == width * (height - 1) + width - 1) && tiles[id].openDirection != Vector3.zero)
                         break;
+
+
 
                     ret.Add(id);
                 }
