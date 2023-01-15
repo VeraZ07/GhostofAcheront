@@ -15,28 +15,14 @@ namespace GOA.Level
         public enum TileType { TopLeft, TopCenter, TopRight, Left, Center, Right, BottomLeft, BottomCenter, BottomRight}
 
         
-
+        [System.Serializable]
         class Tile
         {
 
 
             LevelBuilder builder;
 
-            /// <summary>
-            /// Code AABBCC
-            /// AA: the position of the tile ( ex. TL for top left )
-            /// BB: is the tile closed or for example is a door? Is the initial tile?
-            /// CC: the type of tile ( simple wall? room? )
-            /// Some codes:
-            /// AA: tl, tc, tr, cl, cc, cr, bl, bc, br 
-            /// BB: dd=default, cc=tile_connection, ca=start, cb=end
-            /// CC: WA=, RA=room
-            /// </summary>
-            //public string code = "AAddWA";
-            //public string Code
-            //{
-            //    get { return GetCode(); }
-            //}
+            
             public int sectorIndex;
 
             /// <summary>
@@ -64,8 +50,7 @@ namespace GOA.Level
             public bool isRightBorder = false;
             public bool isBottomBorder = false;
 
-            //public int type;
-
+    
             /// <summary>
             /// 0: wall - default
             /// 1: room
@@ -83,65 +68,8 @@ namespace GOA.Level
 
             public string GetCode()
             {
-                string code = "";
-                if(!hasUpperWall && !hasBottomWall)
-                {
-                    code = "c";
-                }
-                else
-                {
-                    code = hasUpperWall ? "t" : "b";
-                }
-                if (!hasRightWall && !hasLeftWall)
-                {
-                    code += "c";
-                }
-                else
-                {
-                    code += hasRightWall ? "r" : "l";
-                }
+                return isRoomTile ? "room_000" : "maze_000";
 
-                if (code == "cl")
-                    code = "ll";
-                if (code == "cr")
-                    code = "rr";
-
-                //switch (type)
-                //{
-                //    case (int)TileType.TopLeft:
-                //        code = "tl";
-                //        break;
-                //    case (int)TileType.TopCenter:
-                //        code = "tc";
-                //        break;
-                //    case (int)TileType.TopRight:
-                //        code = "tr";
-                //        break;
-                //    case (int)TileType.Left:
-                //        code = "ll";
-                //        break;
-                //    case (int)TileType.Right:
-                //        code = "rr";
-                //        break;
-                //    case (int)TileType.Center:
-                //        code = "cc";
-                //        break;
-                //    case (int)TileType.BottomLeft:
-                //        code = "bl";
-                //        break;
-                //    case (int)TileType.BottomCenter:
-                //        code = "bc";
-                //        break;
-                //    case (int)TileType.BottomRight:
-                //        code = "br";
-                //        break;
-                //}
-
-                code += (openDirection != Vector3.zero) ? "cc" : "dd";
-
-                code += !isRoomTile  ? "wa" : "ra";
-
-                return code;
             }
 
             public override string ToString()
@@ -249,16 +177,12 @@ namespace GOA.Level
                     int col = tileId % size;
                     int row = tileId / size;
 
+
                     // Check whether the current tile is at the edge of the sector or not
-                    //bool top = (row == 0 || builder.tiles[tileId - size].sectorIndex != sectorIndex);
-                    //bool left = (col == 0 || builder.tiles[tileId - 1].sectorIndex != sectorIndex);
-                    //bool right = (col == size - 1 || builder.tiles[tileId + 1].sectorIndex != sectorIndex);
-                    //bool bottom = (row == size - 1 || builder.tiles[tileId + size].sectorIndex != sectorIndex);
                     builder.tiles[tileId].hasUpperWall = (row == 0 || builder.tiles[tileId - size].sectorIndex != sectorIndex);
                     builder.tiles[tileId].hasLeftWall = (col == 0 || builder.tiles[tileId - 1].sectorIndex != sectorIndex);
                     builder.tiles[tileId].hasRightWall = (col == size - 1 || builder.tiles[tileId + 1].sectorIndex != sectorIndex);
                     builder.tiles[tileId].hasBottomWall = (row == size - 1 || builder.tiles[tileId + size].sectorIndex != sectorIndex);
-
                     builder.tiles[tileId].isUpperBorder = builder.tiles[tileId].hasUpperWall;
                     builder.tiles[tileId].isRightBorder = builder.tiles[tileId].hasRightWall;
                     builder.tiles[tileId].isBottomBorder = builder.tiles[tileId].hasBottomWall;
@@ -278,41 +202,7 @@ namespace GOA.Level
                         if ((builder.tiles[tileId].hasUpperWall && !builder.tiles[tileId].hasRightWall) ||
                             (builder.tiles[tileId].hasLeftWall && !builder.tiles[tileId].hasBottomWall))
                             rotate = true;
-                        //if (top)
-                        //{
-                        //    if (left)
-                        //        builder.tiles[tileId].type = (int)TileType.TopLeft;
-                        //    else if(right)
-                        //        builder.tiles[tileId].type = (int)TileType.TopRight;
-                        //    else
-                        //        builder.tiles[tileId].type = (int)TileType.TopCenter;
-                        //}
-                        //else
-                        //{
-                        //    if (bottom)
-                        //    {
-                        //        if (left)
-                        //            builder.tiles[tileId].type = (int)TileType.BottomLeft;
-                        //        else if (right)
-                        //            builder.tiles[tileId].type = (int)TileType.BottomRight;
-                        //        else
-                        //            builder.tiles[tileId].type = (int)TileType.BottomCenter;
-                        //    }
-                        //    else
-                        //    {
-                        //        if (left)
-                        //            builder.tiles[tileId].type = (int)TileType.Left;
-                        //        else if (right)
-                        //            builder.tiles[tileId].type = (int)TileType.Right;
-                        //        else
-                        //            builder.tiles[tileId].type = (int)TileType.Center;
-
-                        //    }
-                        //}
-
-
-
-                        //builder.tiles[tileId].code = code + builder.tiles[tileId].code.Substring(2);
+                     
                     }
 
                     // Rotate walls to shape the maze
@@ -535,9 +425,10 @@ namespace GOA.Level
             // Create tiles
             for(int i=0; i<tiles.Length; i++)
             {
-                Debug.Log("TileCode:" + tiles[i].GetCode().ToLower());
+                Debug.Log("Creating TileId:" + i);
                 TileAsset asset = assets.Find(t => t.name.ToLower() == tiles[i].GetCode().ToLower());
                 GameObject tile = Instantiate(asset.Prefab, root.transform);
+                tile.name = string.Format("{0}.{1}", i, tile.name); 
                 tile.transform.localPosition = new Vector3((i % size) * tileSize, 0f, -(i / size) * tileSize);
                 tile.transform.localRotation = Quaternion.identity;
 
@@ -555,11 +446,131 @@ namespace GOA.Level
                     }
                 }
 
-                // Check for room tiles
-                if (tiles[i].isRoomTile)
-                {
+                // Check fixed walls
+                Transform[] children = new Transform[tile.transform.childCount];
+                for (int k = 0; k < children.Length; k++)
+                    children[k] = tile.transform.GetChild(k);
 
+                for(int c=0; c<children.Length; c++)
+                {
+                    Debug.Log("Check tile " + children[c].name);
+                    if (!tiles[i].isRoomTile)
+                    {
+                        if (children[c].name.ToLower().StartsWith("ub_"))
+                        {
+                            if ((!tiles[i].isUpperBorder) ||
+                                (tiles[i].openDirection == Vector3.forward && children[c].name.ToLower().EndsWith("_c")) ||
+                                (tiles[i].openDirection != Vector3.forward && children[c].name.ToLower().EndsWith("_o")))
+                            {
+                                DestroyImmediate(children[c].gameObject);
+                            }
+                            continue;
+                        }
+                        if (children[c].name.ToLower().StartsWith("rb_"))
+                        {
+                            if ((!tiles[i].isRightBorder) ||
+                                (tiles[i].openDirection == Vector3.right && children[c].name.ToLower().EndsWith("_c")) ||
+                                (tiles[i].openDirection != Vector3.right && children[c].name.ToLower().EndsWith("_o")))
+                            {
+                                DestroyImmediate(children[c].gameObject);
+                            }
+                            continue;
+                        }
+                        if (children[c].name.ToLower().StartsWith("bb_"))
+                        {
+                            if ((!tiles[i].isBottomBorder) ||
+                                (tiles[i].openDirection == Vector3.back && children[c].name.ToLower().EndsWith("_c")) ||
+                                (tiles[i].openDirection != Vector3.back && children[c].name.ToLower().EndsWith("_o")))
+                            {
+                                DestroyImmediate(children[c].gameObject);
+                            }
+                            continue;
+                        }
+                        if (children[c].name.ToLower().StartsWith("lb_"))
+                        {
+                            if ((!tiles[i].isLeftBorder) ||
+                                (tiles[i].openDirection == Vector3.left && children[c].name.ToLower().EndsWith("_c")) ||
+                                (tiles[i].openDirection != Vector3.left && children[c].name.ToLower().EndsWith("_o")))
+                            {
+                                DestroyImmediate(children[c].gameObject);
+                            }
+                            continue;
+                        }
+                    }
+                    else // It's a room
+                    {
+
+                        if (children[c].name.ToLower().StartsWith("uw_") || children[c].name.ToLower().StartsWith("ub_"))
+                        {
+                            if ((tiles[i].openDirection == Vector3.forward && children[c].name.ToLower().EndsWith("_c")) ||
+                                (tiles[i].openDirection != Vector3.forward && children[c].name.ToLower().EndsWith("_o")) ||
+                                (!tiles[i].hasUpperWall))
+                            {
+                                DestroyImmediate(children[c].gameObject);
+                            }
+                            else
+                            {
+                                if (children[c].name.ToLower().StartsWith("uw_") && tiles[i].isUpperBorder)
+                                    DestroyImmediate(children[c].gameObject);
+                            }
+                            continue;
+                        }
+                        
+                        if (children[c].name.ToLower().StartsWith("rw_") || children[c].name.ToLower().StartsWith("rb_"))
+                        {
+                            if ((tiles[i].openDirection == Vector3.right && children[c].name.ToLower().EndsWith("_c")) ||
+                                (tiles[i].openDirection != Vector3.right && children[c].name.ToLower().EndsWith("_o")) ||
+                                (!tiles[i].hasRightWall))
+                            {
+                                DestroyImmediate(children[c].gameObject);
+                            }
+                            else
+                            {
+                                if (children[c].name.ToLower().StartsWith("rw_") && tiles[i].isRightBorder)
+                                    DestroyImmediate(children[c].gameObject);
+                            }
+                            continue;
+                        }
+                        if (children[c].name.ToLower().StartsWith("bw_") || children[c].name.ToLower().StartsWith("bb_"))
+                        {
+                            if ((tiles[i].openDirection == Vector3.back && children[c].name.ToLower().EndsWith("_c")) ||
+                                (tiles[i].openDirection != Vector3.back && children[c].name.ToLower().EndsWith("_o")) ||
+                                (!tiles[i].hasBottomWall))
+                            {
+                                
+                                DestroyImmediate(children[c].gameObject);
+                            }
+                            else
+                            {
+                                if(children[c].name.ToLower().StartsWith("bw_") && tiles[i].isBottomBorder)
+                                    DestroyImmediate(children[c].gameObject);
+                            }
+                            continue;
+                        }
+                        if (children[c].name.ToLower().StartsWith("lw_") || children[c].name.ToLower().StartsWith("lb_"))
+                        {
+                            if ((tiles[i].openDirection == Vector3.left && children[c].name.ToLower().EndsWith("_c")) ||
+                                (tiles[i].openDirection != Vector3.left && children[c].name.ToLower().EndsWith("_o")) ||
+                                (!tiles[i].hasLeftWall))
+                            {
+                                DestroyImmediate(children[c].gameObject);
+                            }
+                            else
+                            {
+                                if (children[c].name.ToLower().StartsWith("lw_") && tiles[i].isLeftBorder)
+                                    DestroyImmediate(children[c].gameObject);
+                            }
+                            continue;
+                        }
+                    }
+                   
+                   
+                    
+                   
                 }
+              
+
+               
             }
 
         }
@@ -830,17 +841,18 @@ namespace GOA.Level
 
             // Geometry
             if (enteringTileIndex % size == 0)
-                tiles[enteringTileIndex].openDirection = Vector3.right;
-            else if (enteringTileIndex % size == size - 1)
                 tiles[enteringTileIndex].openDirection = Vector3.left;
+            else if (enteringTileIndex % size == size - 1)
+                tiles[enteringTileIndex].openDirection = Vector3.right;
             else if (enteringTileIndex / size == 0)
-                tiles[enteringTileIndex].openDirection = Vector3.back;
-            else
                 tiles[enteringTileIndex].openDirection = Vector3.forward;
+            else
+                tiles[enteringTileIndex].openDirection = Vector3.back;
             //tiles[enteringTileIndex].code = tiles[enteringTileIndex].code.Substring(0, 2) + "CC" + tiles[enteringTileIndex].code.Substring(4, 2);
 
             // Logic
             connections.Add(Connection.CreateInitialConnection(this, enteringTileIndex));
+          
 
             if (sectors.Length == 1)
             {
@@ -863,13 +875,13 @@ namespace GOA.Level
             int exitingTileIndex = indices[Random.Range(0, indices.Count)];
 
             if (exitingTileIndex % size == 0)
-                tiles[exitingTileIndex].openDirection = Vector3.right;
-            else if (exitingTileIndex % size == size - 1)
                 tiles[exitingTileIndex].openDirection = Vector3.left;
+            else if (exitingTileIndex % size == size - 1)
+                tiles[exitingTileIndex].openDirection = Vector3.right;
             else if (exitingTileIndex / size == 0)
-                tiles[exitingTileIndex].openDirection = Vector3.back;
-            else
                 tiles[exitingTileIndex].openDirection = Vector3.forward;
+            else
+                tiles[exitingTileIndex].openDirection = Vector3.back;
 
             // Geometry
             //tiles[exitingTileIndex].code = tiles[exitingTileIndex].code.Substring(0, 2) + "CC" + tiles[exitingTileIndex].code.Substring(4, 2);
