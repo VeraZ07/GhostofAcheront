@@ -37,18 +37,18 @@ namespace GOA.Level
             /// <summary>
             /// Indicates if a tile has wall in any of the cardinal directions.
             /// </summary>
-            public bool hasUpperWall = false;
-            public bool hasLeftWall = false;
-            public bool hasRightWall = false;
-            public bool hasBottomWall = false;
-
-            /// <summary>
-            /// Tells us if the tile is the border of any sector
-            /// </summary>
             public bool isUpperBorder = false;
             public bool isLeftBorder = false;
             public bool isRightBorder = false;
             public bool isBottomBorder = false;
+
+            /// <summary>
+            /// Tells us if the tile is the border of any sector
+            /// </summary>
+            public bool isUpperBoundary = false;
+            public bool isLeftBoundary = false;
+            public bool isRightBoundary = false;
+            public bool isBottomBoundary = false;
 
     
             /// <summary>
@@ -70,6 +70,16 @@ namespace GOA.Level
             {
                 return isRoomTile ? "room_000" : "maze_000";
 
+            }
+
+            public bool IsBoundary()
+            {
+                return isBottomBoundary || isUpperBoundary || isRightBoundary || isLeftBoundary;
+            }
+
+            public bool IsBorder()
+            {
+                return isUpperBorder || isRightBorder || isLeftBorder || isBottomBorder;
             }
 
             public override string ToString()
@@ -179,19 +189,19 @@ namespace GOA.Level
 
 
                     // Check whether the current tile is at the edge of the sector or not
-                    builder.tiles[tileId].hasUpperWall = (row == 0 || builder.tiles[tileId - size].sectorIndex != sectorIndex);
-                    builder.tiles[tileId].hasLeftWall = (col == 0 || builder.tiles[tileId - 1].sectorIndex != sectorIndex);
-                    builder.tiles[tileId].hasRightWall = (col == size - 1 || builder.tiles[tileId + 1].sectorIndex != sectorIndex);
-                    builder.tiles[tileId].hasBottomWall = (row == size - 1 || builder.tiles[tileId + size].sectorIndex != sectorIndex);
-                    builder.tiles[tileId].isUpperBorder = builder.tiles[tileId].hasUpperWall;
-                    builder.tiles[tileId].isRightBorder = builder.tiles[tileId].hasRightWall;
-                    builder.tiles[tileId].isBottomBorder = builder.tiles[tileId].hasBottomWall;
-                    builder.tiles[tileId].isLeftBorder = builder.tiles[tileId].hasLeftWall;
+                    builder.tiles[tileId].isUpperBorder = (row == 0 || builder.tiles[tileId - size].sectorIndex != sectorIndex);
+                    builder.tiles[tileId].isLeftBorder = (col == 0 || builder.tiles[tileId - 1].sectorIndex != sectorIndex);
+                    builder.tiles[tileId].isRightBorder = (col == size - 1 || builder.tiles[tileId + 1].sectorIndex != sectorIndex);
+                    builder.tiles[tileId].isBottomBorder = (row == size - 1 || builder.tiles[tileId + size].sectorIndex != sectorIndex);
+                    builder.tiles[tileId].isUpperBoundary = builder.tiles[tileId].isUpperBorder;
+                    builder.tiles[tileId].isRightBoundary = builder.tiles[tileId].isRightBorder;
+                    builder.tiles[tileId].isBottomBoundary = builder.tiles[tileId].isBottomBorder;
+                    builder.tiles[tileId].isLeftBoundary = builder.tiles[tileId].isLeftBorder;
 
                     bool rotate = false;
 
-                    if (!builder.tiles[tileId].hasUpperWall && !builder.tiles[tileId].hasLeftWall &&
-                        !builder.tiles[tileId].hasRightWall && !builder.tiles[tileId].hasBottomWall)
+                    if (!builder.tiles[tileId].isUpperBorder && !builder.tiles[tileId].isLeftBorder &&
+                        !builder.tiles[tileId].isRightBorder && !builder.tiles[tileId].isBottomBorder)
                     {
                         //builder.tiles[tileId].type = (int)TileType.Center;
                           
@@ -199,8 +209,8 @@ namespace GOA.Level
                     }
                     else
                     {
-                        if ((builder.tiles[tileId].hasUpperWall && !builder.tiles[tileId].hasRightWall) ||
-                            (builder.tiles[tileId].hasLeftWall && !builder.tiles[tileId].hasBottomWall))
+                        if ((builder.tiles[tileId].isUpperBorder && !builder.tiles[tileId].isRightBorder) ||
+                            (builder.tiles[tileId].isLeftBorder && !builder.tiles[tileId].isBottomBorder))
                             rotate = true;
                      
                     }
@@ -278,35 +288,35 @@ namespace GOA.Level
                     // Set the type of tile
                     if (i == 0)
                     {
-                        tile.hasUpperWall = tile.hasLeftWall = true;
+                        tile.isUpperBorder = tile.isLeftBorder = true;
                     }
                     else if (i == width - 1)
                     {
-                        tile.hasUpperWall = tile.hasRightWall = true;
+                        tile.isUpperBorder = tile.isRightBorder = true;
                     }
                     else if (i == width * (height - 1))
                     {
-                        tile.hasBottomWall = tile.hasLeftWall = true;
+                        tile.isBottomBorder = tile.isLeftBorder = true;
                     }
                     else if (i == width * (height - 1) + width - 1)
                     {
-                        tile.hasBottomWall = tile.hasRightWall = true;
+                        tile.isBottomBorder = tile.isRightBorder = true;
                     }
                     else if (i % width == 0)
                     {
-                        tile.hasLeftWall = true;
+                        tile.isLeftBorder = true;
                     }
                     else if (i % width == width - 1)
                     {
-                        tile.hasRightWall = true;
+                        tile.isRightBorder = true;
                     }
                     else if (i / width == 0)
                     {
-                        tile.hasUpperWall = true;
+                        tile.isUpperBorder = true;
                     }
                     else if (i / width == height - 1)
                     {
-                        tile.hasBottomWall = true;
+                        tile.isBottomBorder = true;
                     }
                     //else
                     //    tile.type = (int)TileType.Center;
@@ -320,6 +330,54 @@ namespace GOA.Level
                         builder.tiles[id - size - 1].roteableWall = -1;
                 }
 
+                // Check for entrances
+                // At this point we can only have opening to another sector ( or from the initial or to the final room ), so we
+                // must at least add a new opening to the sector the room belongs to
+                //int openingCount = tileIds.FindAll(t => builder.tiles[t].openDirection != Vector3.zero).Count;
+                // Get all the possible tiles for a new opening
+                List<int> candidates = tileIds.FindAll(id => !builder.tiles[id].IsBoundary() && builder.tiles[id].IsBorder());
+                candidates.RemoveAll(id => builder.tiles[id].openDirection != Vector3.zero);
+
+                int openingCount = Random.Range(1, Mathf.Max(2, candidates.Count / 2));
+                while(candidates.Count > 0 && openingCount > 0)
+                {
+                    // Create a new opening
+                    // Get a random tile
+                    int id = candidates[Random.Range(0, candidates.Count)];
+                    candidates.Remove(id);
+
+                    Sector sector = builder.sectors[sectorId];
+                    if (sector.tileIds.Contains(id - 1) && !tileIds.Contains(id-1)) // Open left
+                    {
+                        builder.connections.Add(Connection.CreateNormalConnection(builder, id, id - 1));
+                        builder.tiles[id].openDirection = Vector3.left;
+                        openingCount--;
+                        continue;
+                    }
+                    if (sector.tileIds.Contains(id + 1) && !tileIds.Contains(id + 1)) // Open right
+                    {
+                        builder.connections.Add(Connection.CreateNormalConnection(builder, id, id + 1));
+                        builder.tiles[id].openDirection = Vector3.right;
+                        openingCount--;
+                        continue;
+                    }
+                    if (sector.tileIds.Contains(id - size) && !tileIds.Contains(id - size)) // Open up
+                    {
+                        builder.connections.Add(Connection.CreateNormalConnection(builder, id, id - size));
+                        builder.tiles[id].openDirection = Vector3.forward;
+                        openingCount--;
+                        continue;
+                    }
+                    if (sector.tileIds.Contains(id + size) && !tileIds.Contains(id + size)) // Open down
+                    {
+                        builder.connections.Add(Connection.CreateNormalConnection(builder, id, id + size));
+                        builder.tiles[id].openDirection = Vector3.back;
+                        openingCount--;
+                        continue;
+                    }
+                }
+                
+                
 
             }
         }
@@ -458,7 +516,7 @@ namespace GOA.Level
                     {
                         if (children[c].name.ToLower().StartsWith("ub_"))
                         {
-                            if ((!tiles[i].isUpperBorder) ||
+                            if ((!tiles[i].isUpperBoundary) ||
                                 (tiles[i].openDirection == Vector3.forward && children[c].name.ToLower().EndsWith("_c")) ||
                                 (tiles[i].openDirection != Vector3.forward && children[c].name.ToLower().EndsWith("_o")))
                             {
@@ -468,7 +526,7 @@ namespace GOA.Level
                         }
                         if (children[c].name.ToLower().StartsWith("rb_"))
                         {
-                            if ((!tiles[i].isRightBorder) ||
+                            if ((!tiles[i].isRightBoundary) ||
                                 (tiles[i].openDirection == Vector3.right && children[c].name.ToLower().EndsWith("_c")) ||
                                 (tiles[i].openDirection != Vector3.right && children[c].name.ToLower().EndsWith("_o")))
                             {
@@ -478,7 +536,7 @@ namespace GOA.Level
                         }
                         if (children[c].name.ToLower().StartsWith("bb_"))
                         {
-                            if ((!tiles[i].isBottomBorder) ||
+                            if ((!tiles[i].isBottomBoundary) ||
                                 (tiles[i].openDirection == Vector3.back && children[c].name.ToLower().EndsWith("_c")) ||
                                 (tiles[i].openDirection != Vector3.back && children[c].name.ToLower().EndsWith("_o")))
                             {
@@ -488,7 +546,7 @@ namespace GOA.Level
                         }
                         if (children[c].name.ToLower().StartsWith("lb_"))
                         {
-                            if ((!tiles[i].isLeftBorder) ||
+                            if ((!tiles[i].isLeftBoundary) ||
                                 (tiles[i].openDirection == Vector3.left && children[c].name.ToLower().EndsWith("_c")) ||
                                 (tiles[i].openDirection != Vector3.left && children[c].name.ToLower().EndsWith("_o")))
                             {
@@ -504,13 +562,13 @@ namespace GOA.Level
                         {
                             if ((tiles[i].openDirection == Vector3.forward && children[c].name.ToLower().EndsWith("_c")) ||
                                 (tiles[i].openDirection != Vector3.forward && children[c].name.ToLower().EndsWith("_o")) ||
-                                (!tiles[i].hasUpperWall))
+                                (!tiles[i].isUpperBorder))
                             {
                                 DestroyImmediate(children[c].gameObject);
                             }
                             else
                             {
-                                if (children[c].name.ToLower().StartsWith("uw_") && tiles[i].isUpperBorder)
+                                if (children[c].name.ToLower().StartsWith("uw_") && tiles[i].isUpperBoundary)
                                     DestroyImmediate(children[c].gameObject);
                             }
                             continue;
@@ -520,13 +578,13 @@ namespace GOA.Level
                         {
                             if ((tiles[i].openDirection == Vector3.right && children[c].name.ToLower().EndsWith("_c")) ||
                                 (tiles[i].openDirection != Vector3.right && children[c].name.ToLower().EndsWith("_o")) ||
-                                (!tiles[i].hasRightWall))
+                                (!tiles[i].isRightBorder))
                             {
                                 DestroyImmediate(children[c].gameObject);
                             }
                             else
                             {
-                                if (children[c].name.ToLower().StartsWith("rw_") && tiles[i].isRightBorder)
+                                if (children[c].name.ToLower().StartsWith("rw_") && tiles[i].isRightBoundary)
                                     DestroyImmediate(children[c].gameObject);
                             }
                             continue;
@@ -535,14 +593,14 @@ namespace GOA.Level
                         {
                             if ((tiles[i].openDirection == Vector3.back && children[c].name.ToLower().EndsWith("_c")) ||
                                 (tiles[i].openDirection != Vector3.back && children[c].name.ToLower().EndsWith("_o")) ||
-                                (!tiles[i].hasBottomWall))
+                                (!tiles[i].isBottomBorder))
                             {
                                 
                                 DestroyImmediate(children[c].gameObject);
                             }
                             else
                             {
-                                if(children[c].name.ToLower().StartsWith("bw_") && tiles[i].isBottomBorder)
+                                if(children[c].name.ToLower().StartsWith("bw_") && tiles[i].isBottomBoundary)
                                     DestroyImmediate(children[c].gameObject);
                             }
                             continue;
@@ -551,13 +609,13 @@ namespace GOA.Level
                         {
                             if ((tiles[i].openDirection == Vector3.left && children[c].name.ToLower().EndsWith("_c")) ||
                                 (tiles[i].openDirection != Vector3.left && children[c].name.ToLower().EndsWith("_o")) ||
-                                (!tiles[i].hasLeftWall))
+                                (!tiles[i].isLeftBorder))
                             {
                                 DestroyImmediate(children[c].gameObject);
                             }
                             else
                             {
-                                if (children[c].name.ToLower().StartsWith("lw_") && tiles[i].isLeftBorder)
+                                if (children[c].name.ToLower().StartsWith("lw_") && tiles[i].isLeftBoundary)
                                     DestroyImmediate(children[c].gameObject);
                             }
                             continue;
