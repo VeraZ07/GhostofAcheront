@@ -42,7 +42,8 @@ namespace GOA
 
         bool loading = false;
 
-
+        [Networked]
+        public int MatchSeed { get; private set; } = 0;
 
         private void Awake()
         {
@@ -78,6 +79,7 @@ namespace GOA
             
             if (ReadyToPlay())
             {
+                MatchSeed = (int)UnityEngine.Random.Range(-Mathf.Infinity, Mathf.Infinity);
                 // Load game scene
                 runner.SetActiveScene(1);
             }
@@ -146,10 +148,11 @@ namespace GOA
 
         public void OnInput(NetworkRunner runner, NetworkInput input)
         {
+            
             if(runner.CurrentScene > 0)
             {
-                // Get input from the player
-                input.Set(PlayerInput.GetInput());
+                if(PlayerInput.Instance)
+                    input.Set(PlayerInput.Instance.GetInput());
             }
             
             
@@ -203,7 +206,9 @@ namespace GOA
             {
                 if (runner.IsServer)
                 {
-                   
+
+                    //GameObject.FindObjectOfType<Level.LevelBuilder>().Build(runner);
+
                     // Create a character for each human player
                     // Load the asset collection
                     List<CharacterAsset> assets = new List<CharacterAsset>(Resources.LoadAll<CharacterAsset>(CharacterAsset.ResourceFolder));
@@ -212,7 +217,9 @@ namespace GOA
                     // Init spawn data
                     int spIndex = 0;
                     GameObject[] spawnPointList = GameObject.FindGameObjectsWithTag("PlayerSpawnPoint");
-                    
+
+                    Debug.Log("SpawnPoint.Count:" + spawnPointList.Length);
+
                     // Spawn characters
                     foreach (Player player in players)
                     {

@@ -73,6 +73,8 @@ namespace GOA.Editor
 
             Selection.activeObject = asset;
         }
+
+
     }
 
 }

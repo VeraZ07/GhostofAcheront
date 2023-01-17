@@ -68,7 +68,7 @@ namespace GOA.Level
 
             public string GetCode()
             {
-                return isRoomTile ? "room_000" : "maze_000";
+                return isRoomTile ? "roomTile_000" : "mazeTile_000";
 
             }
 
@@ -384,6 +384,8 @@ namespace GOA.Level
 
         List<Room> rooms = new List<Room>();
 
+        NetworkRunner runner;
+
         private void Awake()
         {
             
@@ -391,35 +393,39 @@ namespace GOA.Level
 
         private void Start()
         {
+            Random.InitState(10);// SessionManager.Instance.MatchSeed);
+            //// Find the runner 
+            //runner = FindObjectOfType<NetworkRunner>();
+
+            //if (runner.IsServer)
             Create();
+            //else
+            //    DestroyImmediate(gameObject);
         }
 
         private void Update()
         {
 
-            if (Input.GetKeyDown(KeyCode.A))
+            if (Input.GetKeyDown(KeyCode.Alpha1))
             {
                 LevelSize = 0;
                 Create();
             }
-            if (Input.GetKeyDown(KeyCode.S))
+            if (Input.GetKeyDown(KeyCode.Alpha2))
             {
                 LevelSize = 1;
                 Create();
             }
-            if (Input.GetKeyDown(KeyCode.D))
+            if (Input.GetKeyDown(KeyCode.Alpha3))
             {
                 LevelSize = 2;
                 Create();
             }
-            if (Input.GetKeyDown(KeyCode.F))
+            if (Input.GetKeyDown(KeyCode.Alpha4))
             {
                 LevelSize = 3;
                 Create();
             }
-
-
-
         }
 
         void Create()
@@ -466,6 +472,8 @@ namespace GOA.Level
 
         void BuildGeometry()
         {
+            
+
             float tileSize = 4f;
 
             // Load assets
@@ -486,6 +494,7 @@ namespace GOA.Level
                 Debug.Log("Creating TileId:" + i);
                 TileAsset asset = assets.Find(t => t.name.ToLower() == tiles[i].GetCode().ToLower());
                 GameObject tile = Instantiate(asset.Prefab, root.transform);
+                //GameObject tile = runner.Spawn(asset.Prefab, root.transform.position + new Vector3((i % size) * tileSize, 0f, -(i / size) * tileSize), Quaternion.identity).gameObject;
                 tile.name = string.Format("{0}.{1}", i, tile.name); 
                 tile.transform.localPosition = new Vector3((i % size) * tileSize, 0f, -(i / size) * tileSize);
                 tile.transform.localRotation = Quaternion.identity;
@@ -630,6 +639,48 @@ namespace GOA.Level
 
                
             }
+
+
+            // Add starting and final rooms
+            int startingTileId = connections.Find(c => c.IsInitialConnection()).sourceTileId;
+            int finalTileId = connections.Find(c => c.IsFinalConnection()).sourceTileId;
+
+            TileAsset tmpAsset = Resources.Load<TileAsset>(System.IO.Path.Combine(TileAsset.ResourceFolder, "startingRoom_000"));
+            Vector3 dir = tiles[startingTileId].openDirection;
+
+            GameObject tileObj = new List<Transform>(FindObjectsOfType<Transform>()).Find(t => t.name.ToLower().StartsWith(string.Format("{0}.", startingTileId))).gameObject;
+            GameObject room = Instantiate(tmpAsset.Prefab, root.transform);
+            room.transform.rotation = Quaternion.LookRotation(-dir);
+
+            Vector3 move = Vector3.zero;
+            if (dir == Vector3.forward)
+                move = Vector3.right * tileSize;
+            else if (dir == Vector3.right)
+                move = Vector3.right * tileSize + Vector3.back * tileSize;
+            else if(dir == Vector3.back)
+                move = Vector3.back * tileSize;
+            
+
+            room.transform.position = tileObj.transform.position + move;// + dir * tileSize/* + Vector3.Cross(Vector3.up, dir) * tileSize*/;
+
+            // Final room 
+            tmpAsset = Resources.Load<TileAsset>(System.IO.Path.Combine(TileAsset.ResourceFolder, "finalRoom_000"));
+            dir = tiles[finalTileId].openDirection;
+
+            tileObj = new List<Transform>(FindObjectsOfType<Transform>()).Find(t => t.name.ToLower().StartsWith(string.Format("{0}.", finalTileId))).gameObject;
+            room = Instantiate(tmpAsset.Prefab, root.transform);
+            room.transform.rotation = Quaternion.LookRotation(-dir);
+
+            move = Vector3.zero;
+            if (dir == Vector3.forward)
+                move = Vector3.right * tileSize;
+            else if (dir == Vector3.right)
+                move = Vector3.right * tileSize + Vector3.back * tileSize;
+            else if (dir == Vector3.back)
+                move = Vector3.back * tileSize;
+
+
+            room.transform.position = tileObj.transform.position + move;
 
         }
 
@@ -1247,6 +1298,12 @@ namespace GOA.Level
             }
 
             return ret;
+        }
+
+        public void Build(NetworkRunner runner)
+        {
+            this.runner = runner;
+            Create();
         }
 
         void DebugTiles()

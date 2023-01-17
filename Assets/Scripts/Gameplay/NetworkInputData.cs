@@ -7,8 +7,9 @@ namespace GOA
 {
     public struct NetworkInputData : INetworkInput
     {
-        public Vector2 leftAxis;
-
+        public Vector2 move;
+        public float yaw;
+        public NetworkBool run;
     }
 
 }

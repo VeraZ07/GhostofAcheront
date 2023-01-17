@@ -7,13 +7,22 @@ namespace GOA
 {
     public class PlayerInput : MonoBehaviour
     {
-        static PlayerInput instance;
+        public static PlayerInput Instance { get; private set; }
+        
+        Vector2 moveInput;
+        Vector2 lookInput;
+        bool run;
+
+        PlayerController playerController;
 
         private void Awake()
         {
-            if (!instance)
+            if (!Instance)
             {
-                instance = this;
+                Instance = this;
+                playerController = GetComponent<PlayerController>();
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
             }
             else
             {
@@ -24,21 +33,36 @@ namespace GOA
         // Start is called before the first frame update
         void Start()
         {
-
+           
         }
 
         // Update is called once per frame
         void Update()
         {
+            moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+            moveInput.Normalize();
+                
+            lookInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
 
+            playerController.SetCameraPitch(lookInput.y);
+
+            run = Input.GetAxisRaw("Fire3") == 1f;
         }
 
-        public static NetworkInputData GetInput()
+        private void OnDestroy()
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+
+        public NetworkInputData GetInput()
         {
             var data = new NetworkInputData();
-            data.leftAxis = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-            if (data.leftAxis.magnitude > 1f)
-                data.leftAxis = data.leftAxis.normalized;
+            data.move = moveInput;
+
+            data.yaw = lookInput.x;
+
+            data.run = run;
 
             return data;
         }
