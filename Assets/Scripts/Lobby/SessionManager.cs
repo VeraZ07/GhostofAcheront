@@ -23,6 +23,9 @@ namespace GOA
         
         [SerializeField]
         NetworkObject playerPrefab;
+
+        [SerializeField]
+        NetworkObject gameManagerPrefab;
     
         public const int MaxPlayers = 2;
 
@@ -42,8 +45,7 @@ namespace GOA
 
         bool loading = false;
 
-        [Networked]
-        public int MatchSeed { get; private set; } = 0;
+        bool resumingFromHostMigration = false;
 
         private void Awake()
         {
@@ -52,6 +54,7 @@ namespace GOA
                 Instance = this;
                 
                 sceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>();
+                DontDestroyOnLoad(gameObject);
             }
             else
             {
@@ -71,15 +74,38 @@ namespace GOA
     
         }
 
+        void Update()
+        {
+            if(Input.GetKeyDown(KeyCode.L))
+            {
+                if(GameManager.Instance)
+                    Debug.Log("GameSeed:" + GameManager.Instance.GameSeed);
+                else
+                    Debug.Log("ERROR - GameManager not found");
+            }
+
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                if (GameManager.Instance)
+                    runner.Despawn(GameManager.Instance.GetComponent<NetworkObject>());
+                else
+                    Debug.Log("ERROR - GameManager not found");
+            }
+
+            
+        }
+
         IEnumerator StartMatch()
         {
+            //MatchManager.Instance.MatchSeed = (int)UnityEngine.Random.Range(-Mathf.Infinity, Mathf.Infinity);
+            GameManager.Instance.CreateNewSeed();
             loading = true;
             float delay = 2f;
             yield return new WaitForSeconds(delay);
             
             if (ReadyToPlay())
             {
-                MatchSeed = (int)UnityEngine.Random.Range(-Mathf.Infinity, Mathf.Infinity);
+                
                 // Load game scene
                 runner.SetActiveScene(1);
             }
@@ -141,19 +167,39 @@ namespace GOA
             Debug.LogFormat("SessionManager - OnDisconnectedToServer.");
         }
 
-        public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken)
+        public async void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken)
         {
+            Debug.LogFormat("SessionManager - OnHostMigration");
+
+            await runner.Shutdown(shutdownReason: ShutdownReason.HostMigration);
+
+            runner = gameObject.AddComponent<NetworkRunner>();
             
+            StartGameResult result = await runner.StartGame(new StartGameArgs()
+            {
+                HostMigrationToken = hostMigrationToken,   // contains all necessary info to restart the Runner
+                                                           //HostMigrationResume = HostMigrationResume, // this will be invoked to resume the simulation
+                                                           // other args
+                HostMigrationResume = HostMigrationResume
+            }); 
+        }
+
+        
+        void HostMigrationResume(NetworkRunner runner)
+        {
+            Debug.Log("HostMigrationResume");
+
+            resumingFromHostMigration = true;
+
+            if (GameManager.Instance)
+                DestroyImmediate(GameManager.Instance);
         }
 
         public void OnInput(NetworkRunner runner, NetworkInput input)
         {
             
-            if(runner.CurrentScene > 0)
-            {
-                if(PlayerInput.Instance)
-                    input.Set(PlayerInput.Instance.GetInput());
-            }
+            if(PlayerInput.Instance)
+                input.Set(PlayerInput.Instance.GetInput());
             
             
         }
@@ -167,13 +213,121 @@ namespace GOA
         {
             Debug.LogFormat("SessionManager - OnPlayerJoint: {0}", player);
 
-            // The server spawns the new player
-            if(runner.IsServer)
+            if (!resumingFromHostMigration)
             {
-                NetworkObject playerObj = runner.Spawn(playerPrefab, Vector3.zero, Quaternion.identity, player);
+                // The server spawns the new player
+                if (runner.IsServer)
+                {
+                    NetworkObject playerObj = runner.Spawn(playerPrefab, Vector3.zero, Quaternion.identity, player);
+
+                    // Create the game manager
+                    if (!GameManager.Instance)
+                        runner.Spawn(gameManagerPrefab, Vector3.zero, Quaternion.identity, player);
+                }
+
+                OnPlayerJoinedCallback?.Invoke(runner, player);
+            }
+            else
+            {
+                if (runner.IsServer)
+                {
+                    Debug.Log("ResumeSnapshot.Count:" + new List<NetworkObject>(runner.GetResumeSnapshotNetworkObjects()).Count);
+
+                    //new List<NetworkObject>(runner.GetResumeSnapshotNetworkObjects()).FindAll(o=>o.GetBehaviour<)
+                    foreach (var resNO in runner.GetResumeSnapshotNetworkObjects())
+                    {
+                        // The old player-0 becomes the new host, so the old player-1 becomes the new player-0 and so on.
+                        int resNOPlayerId = 0;
+                        if (player.PlayerId < runner.SessionInfo.MaxPlayers)
+                            resNOPlayerId = player.PlayerId + 1;
+                            
+
+                        if (resNO.TryGetBehaviour<Player>(out var ppOut))
+                        {
+                            Debug.Log("Founr player to resume -> playerId:" + resNO.InputAuthority.PlayerId);
+                            if (resNO.InputAuthority.PlayerId == resNOPlayerId)
+                            {
+                                runner.Spawn(resNO, inputAuthority: player,
+                                    onBeforeSpawned: (runner, newNO) =>
+                                    {
+
+                                        // One key aspects of the Host Migration is to have a simple way of restoring the old NetworkObjects state
+                                        // If all state of the old NetworkObject is all what is necessary, just call the NetworkObject.CopyStateFrom
+                                        newNO.CopyStateFrom(resNO);
+
+                                        // and/or
+
+                                        // If only partial State is necessary, it is possible to copy it only from specific NetworkBehaviours
+                                        if (resNO.TryGetBehaviour<NetworkBehaviour>(out var myCustomNetworkBehaviour))
+                                        {
+                                            newNO.GetComponent<NetworkBehaviour>().CopyStateFrom(myCustomNetworkBehaviour);
+                                        }
+                                    });
+
+                                //NetworkObject playerObj = runner.Spawn(resNO, Vector3.zero, Quaternion.identity, player);
+                            }
+                        }
+                        if (resNO.TryGetBehaviour<NetworkCharacterControllerPrototypeCustom>(out var pOut))
+                        {
+
+                            Debug.Log("Founr player to resume -> playerId:" + resNO.InputAuthority.PlayerId);
+                            if (resNO.InputAuthority.PlayerId == resNOPlayerId)
+                            {
+                                runner.Spawn(resNO, position: pOut.ReadPosition(), rotation: pOut.ReadRotation(), inputAuthority: player,
+                                    onBeforeSpawned: (runner, newNO) =>
+                                        {
+
+                                            // One key aspects of the Host Migration is to have a simple way of restoring the old NetworkObjects state
+                                            // If all state of the old NetworkObject is all what is necessary, just call the NetworkObject.CopyStateFrom
+                                            newNO.CopyStateFrom(resNO);
+
+                                            // and/or
+
+                                            // If only partial State is necessary, it is possible to copy it only from specific NetworkBehaviours
+                                            if (resNO.TryGetBehaviour<NetworkBehaviour>(out var myCustomNetworkBehaviour))
+                                            {
+                                                newNO.GetComponent<NetworkBehaviour>().CopyStateFrom(myCustomNetworkBehaviour);
+                                            }
+                                        });
+
+                                
+                            }
+                        }
+
+
+                        if (resNO.TryGetBehaviour<GameManager>(out var gmOut))
+                        {
+                            Debug.Log("Founr Object: GameManager");
+                            if (player.PlayerId >= runner.SessionInfo.MaxPlayers)
+                            {
+                                runner.Spawn(resNO, inputAuthority: player,
+                                    onBeforeSpawned: (runner, newNO) =>
+                                    {
+
+                                        // One key aspects of the Host Migration is to have a simple way of restoring the old NetworkObjects state
+                                        // If all state of the old NetworkObject is all what is necessary, just call the NetworkObject.CopyStateFrom
+                                        newNO.CopyStateFrom(resNO);
+
+                                        // and/or
+
+                                        // If only partial State is necessary, it is possible to copy it only from specific NetworkBehaviours
+                                        if (resNO.TryGetBehaviour<NetworkBehaviour>(out var myCustomNetworkBehaviour))
+                                        {
+                                            newNO.GetComponent<NetworkBehaviour>().CopyStateFrom(myCustomNetworkBehaviour);
+                                        }
+                                    });
+
+                                //NetworkObject playerObj = runner.Spawn(resNO, Vector3.zero, Quaternion.identity, player);
+                            }
+                        }
+                        //if (!GameManager.Instance)
+                        //    runner.Spawn(gameManagerPrefab, Vector3.zero, Quaternion.identity, player);
+                    }
+
+                    
+                }
             }
             
-            OnPlayerJoinedCallback?.Invoke(runner, player);
         }
 
         
@@ -263,15 +417,30 @@ namespace GOA
 
         public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
         {
-            // Destroy all the player objects
-            Player[] players = FindObjectsOfType<Player>();
-            for(int i=0; i<players.Length; i++)
+            if(shutdownReason == ShutdownReason.HostMigration)
             {
-                Destroy(players[i].gameObject);
+                Debug.LogFormat("Runner shutdown for host migration");
+                DestroyImmediate(runner);
+                runner = null;
             }
-
-            Destroy(runner);
-            OnShutdownCallback?.Invoke(runner, shutdownReason);
+            else
+            {
+                resumingFromHostMigration = false;
+                // Destroy all the player objects
+                Player[] players = FindObjectsOfType<Player>();
+                for (int i = 0; i < players.Length; i++)
+                {
+                    Destroy(players[i].gameObject);
+                }
+                // Destroy match manager
+                if (GameManager.Instance)
+                    Destroy(GameManager.Instance.gameObject);
+                // Reset runner
+                DestroyImmediate(runner);
+                runner = null;
+                OnShutdownCallback?.Invoke(runner, shutdownReason);
+            }
+           
         }
 
         public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)
@@ -284,6 +453,7 @@ namespace GOA
         #region public methods
         public void PlaySolo()
         {
+            
             StartGameArgs args = new StartGameArgs()
             {
                 GameMode = GameMode.Single,
@@ -366,16 +536,21 @@ namespace GOA
         {
             loading = false;
 
+                            
             // Create the runner
             if (!runner)
+            {
                 runner = gameObject.AddComponent<NetworkRunner>();
+            }
 
+            
             // Start the new session
             var result = await runner.StartGame(args);
 
             if (result.Ok)
             {
-               
+                
+
                 Debug.LogFormat("SessionManager - StartSession succeeded");
                 LogSession();
             }
@@ -388,13 +563,14 @@ namespace GOA
 
         async void JoinLobby(SessionLobby sessionLobby)
         {
+           
             sessionList.Clear();
 
             if (!runner)
+            {
                 runner = gameObject.AddComponent<NetworkRunner>();
-
+            }
             
-
             var result = await runner.JoinSessionLobby(sessionLobby);
 
             if (result.Ok)

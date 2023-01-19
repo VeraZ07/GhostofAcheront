@@ -393,7 +393,9 @@ namespace GOA.Level
 
         private void Start()
         {
-            Random.InitState(10);// SessionManager.Instance.MatchSeed);
+            int seed = GameManager.Instance.GameSeed;
+            Random.InitState(seed);
+            Debug.Log("Seed:" + seed);
             //// Find the runner 
             //runner = FindObjectOfType<NetworkRunner>();
 
@@ -1303,6 +1305,7 @@ namespace GOA.Level
         public void Build(NetworkRunner runner)
         {
             this.runner = runner;
+            
             Create();
         }
 

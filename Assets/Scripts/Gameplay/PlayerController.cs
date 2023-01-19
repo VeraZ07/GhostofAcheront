@@ -42,7 +42,7 @@ namespace GOA
         {
             base.Spawned();
 
-           
+            Debug.Log("Spawned - HasInputAuthority:" + HasInputAuthority);
             if (HasInputAuthority)
             {
                 gameObject.AddComponent<PlayerInput>();
