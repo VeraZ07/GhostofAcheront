@@ -9,23 +9,25 @@ namespace GOA
     public class GameManager : NetworkBehaviour
     {
         
-        public static GameManager Instance { get; private set; }
+        //public static GameManager Instance { get; private set; }
 
         [Networked] public int GameSeed { get; private set; } = 0;
 
         private void Awake()
         {
-            if (!Instance)
-            {
-                Instance = this;
-                DontDestroyOnLoad(gameObject);
-            }
-            else
-            {
+            //if (!Instance)
+            //{
+            //    Instance = this;
+            //    DontDestroyOnLoad(gameObject);
+            //}
+            //else
+            //{
                 
-                Destroy(gameObject);
+            //    Destroy(gameObject);
                 
-            }
+            //}
+
+            DontDestroyOnLoad(gameObject);
         }
 
         // Start is called before the first frame update
@@ -43,7 +45,7 @@ namespace GOA
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
             base.Despawned(runner, hasState);
-            Instance = null;
+            
         }
 
 

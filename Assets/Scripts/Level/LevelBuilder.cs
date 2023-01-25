@@ -393,7 +393,8 @@ namespace GOA.Level
 
         private void Start()
         {
-            int seed = GameManager.Instance.GameSeed;
+            int seed = FindObjectOfType<GameManager>().GameSeed;
+
             Random.InitState(seed);
             Debug.Log("Seed:" + seed);
             //// Find the runner 

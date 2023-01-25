@@ -36,7 +36,7 @@ namespace GOA
         
         
         NetworkSceneManagerDefault sceneManager;
-
+        
         List<SessionInfo> sessionList = new List<SessionInfo>();
         public IList<SessionInfo> SessionList
         {
@@ -78,18 +78,18 @@ namespace GOA
         {
             if(Input.GetKeyDown(KeyCode.L))
             {
-                if(GameManager.Instance)
-                    Debug.Log("GameSeed:" + GameManager.Instance.GameSeed);
-                else
-                    Debug.Log("ERROR - GameManager not found");
+                //if(GameManager.Instance)
+                //    Debug.Log("GameSeed:" + GameManager.Instance.GameSeed);
+                //else
+                //    Debug.Log("ERROR - GameManager not found");
             }
 
             if (Input.GetKeyDown(KeyCode.K))
             {
-                if (GameManager.Instance)
-                    runner.Despawn(GameManager.Instance.GetComponent<NetworkObject>());
-                else
-                    Debug.Log("ERROR - GameManager not found");
+                //if (GameManager.Instance)
+                //    runner.Despawn(GameManager.Instance.GetComponent<NetworkObject>());
+                //else
+                //    Debug.Log("ERROR - GameManager not found");
             }
 
             
@@ -98,14 +98,16 @@ namespace GOA
         IEnumerator StartMatch()
         {
             //MatchManager.Instance.MatchSeed = (int)UnityEngine.Random.Range(-Mathf.Infinity, Mathf.Infinity);
-            GameManager.Instance.CreateNewSeed();
+            
+            
+            
             loading = true;
             float delay = 2f;
             yield return new WaitForSeconds(delay);
             
             if (ReadyToPlay())
             {
-                
+                FindObjectOfType<GameManager>().CreateNewSeed();
                 // Load game scene
                 runner.SetActiveScene(1);
             }
@@ -191,8 +193,9 @@ namespace GOA
 
             resumingFromHostMigration = true;
 
-            if (GameManager.Instance)
-                DestroyImmediate(GameManager.Instance);
+            GameManager gm = FindObjectOfType<GameManager>();
+            if (gm)
+                DestroyImmediate(gm.gameObject);
         }
 
         public void OnInput(NetworkRunner runner, NetworkInput input)
@@ -221,7 +224,8 @@ namespace GOA
                     NetworkObject playerObj = runner.Spawn(playerPrefab, Vector3.zero, Quaternion.identity, player);
 
                     // Create the game manager
-                    if (!GameManager.Instance)
+                    GameManager gm = FindObjectOfType<GameManager>();
+                    if (!gm)
                         runner.Spawn(gameManagerPrefab, Vector3.zero, Quaternion.identity, player);
                 }
 
@@ -316,18 +320,11 @@ namespace GOA
                                             newNO.GetComponent<NetworkBehaviour>().CopyStateFrom(myCustomNetworkBehaviour);
                                         }
                                     });
-
-                                //NetworkObject playerObj = runner.Spawn(resNO, Vector3.zero, Quaternion.identity, player);
                             }
                         }
-                        //if (!GameManager.Instance)
-                        //    runner.Spawn(gameManagerPrefab, Vector3.zero, Quaternion.identity, player);
                     }
-
-                    
                 }
             }
-            
         }
 
         
@@ -433,8 +430,9 @@ namespace GOA
                     Destroy(players[i].gameObject);
                 }
                 // Destroy match manager
-                if (GameManager.Instance)
-                    Destroy(GameManager.Instance.gameObject);
+                GameManager gm = FindObjectOfType<GameManager>();
+                if (gm)
+                    Destroy(gm.gameObject);
                 // Reset runner
                 DestroyImmediate(runner);
                 runner = null;
@@ -550,7 +548,6 @@ namespace GOA
             if (result.Ok)
             {
                 
-
                 Debug.LogFormat("SessionManager - StartSession succeeded");
                 LogSession();
             }
