@@ -58,8 +58,8 @@ namespace GOA.Level
             public bool isRoomTile = false; 
 
             public Vector3 openDirection = Vector3.zero;
-                        
-            
+
+            bool unreachable = false;
 
             public Tile(LevelBuilder builder)
             {
@@ -462,6 +462,11 @@ namespace GOA.Level
             CreateRooms();
 
             DebugTiles();
+
+            // 
+            // Set the monster spawn tile
+            //
+            ChooseTheMonsterSpawnTile();
 
             // 
             // Load geometry
@@ -1301,6 +1306,21 @@ namespace GOA.Level
             }
 
             return ret;
+        }
+
+        void ChooseTheMonsterSpawnTile()
+        {
+            // Get the starting tile
+            Connection startConnection = connections.Find(c => c.IsInitialConnection());
+            int tileId = startConnection.sourceTileId;
+            Vector3 direction = tiles[tileId].openDirection * -1f;
+            Sector sector = sectors[tiles[tileId].sectorIndex];
+
+            List<int> candidates = new List<int>();
+            // Get all the tiles at a minimum X from the start
+
+
+            // Get all the tiles at a minimum Z from the start
         }
 
         public void Build(NetworkRunner runner)

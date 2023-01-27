@@ -6,7 +6,7 @@ using UnityEngine.AI;
 
 namespace GOA
 {
-    public class Monster : MonoBehaviour
+    public class Monster : NetworkBehaviour
     {
         [SerializeField]
         GameObject meshRoot;
@@ -26,6 +26,12 @@ namespace GOA
         System.DateTime lastPathTime;
         float pathTime = 5f;
 
+        System.DateTime lastPlayerTime; // The last time the monster went for one of the players
+        float playerTime = 120f;
+
+        List<PlayerController> playerControllers;
+        float wanderingRange = 10f;
+
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
@@ -39,32 +45,72 @@ namespace GOA
             NavMesh.pathfindingIterationsPerFrame = 500;
         }
 
-        // Update is called once per frame
-        void Update()
+        public override void Spawned()
         {
-            if (hidden)
-                return;
+            base.Spawned();
 
-            destination = target.position;
+            playerControllers = new List<PlayerController>(FindObjectsOfType<PlayerController>());
+        }
 
-            if((System.DateTime.Now - lastPathTime).TotalSeconds > pathTime)
+        // Update is called once per frame
+        public override void FixedUpdateNetwork()
+        {
+            base.FixedUpdateNetwork();
+
+            if (Runner.IsServer)
             {
-                lastPathTime = System.DateTime.Now;
-                agent.SetDestination(target.position);
+                destination = target.position;
+
+                if ((System.DateTime.Now - lastPathTime).TotalSeconds > pathTime)
+                {
+                    // Only try to get a new destination if you don't have any 
+                    if (!agent.hasPath)
+                    {
+                        if (GetDestination(out destination))
+                        {
+                            lastPathTime = System.DateTime.Now;
+                            agent.SetDestination(destination);
+                        }
+                    }
+
+                }
             }
+
+          
+           
             
         }
 
-        public void Show()
+        
+        /// <summary>
+        /// Returns a reacheable point in the navmesh
+        /// </summary>
+        /// <returns></returns>
+        public bool GetDestination(out Vector3 destination)
         {
-            hidden = false;
-            meshRoot.SetActive(true);
-        }
+            destination = Vector3.zero;
 
-        public void Hide()
-        {
-            hidden = true;
-            meshRoot.SetActive(false);
+            Vector3 origin = transform.position;
+
+            if((System.DateTime.Now - lastPlayerTime).TotalSeconds > playerTime)
+            {
+                lastPlayerTime = System.DateTime.Now;
+                // Get a random player
+                PlayerController target = playerControllers[Random.Range(0, playerControllers.Count)];
+                origin = target.transform.position;
+                 
+            }
+               
+
+            Vector3 point = origin + Random.insideUnitSphere * wanderingRange;
+            NavMeshHit hit;
+            if(NavMesh.SamplePosition(point, out hit, 1.0f, NavMesh.AllAreas))
+            {
+                destination = hit.position;
+                return true;
+            }
+
+            return false;
         }
     }
 

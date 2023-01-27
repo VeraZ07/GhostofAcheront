@@ -332,6 +332,7 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 6511887328113569427}
+  - {fileID: 2410193084856851999}
   SimulationBehaviours: []
 --- !u!114 &6511887328113569427
 MonoBehaviour:
@@ -373,8 +374,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33e6ba765b4c1414ca4cb230c60ff684, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
   meshRoot: {fileID: 5188498993014477991}
   sightRange: 8
+  target: {fileID: 0}
 --- !u!1 &5188498993014477991
 GameObject:
   m_ObjectHideFlags: 0
