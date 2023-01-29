@@ -59,7 +59,7 @@ namespace GOA.Level
 
             public Vector3 openDirection = Vector3.zero;
 
-            bool unreachable = false;
+            //bool unreachable = false;
 
             public Tile(LevelBuilder builder)
             {
@@ -282,7 +282,7 @@ namespace GOA.Level
                     int id = tileIds[i];
                     Tile tile = builder.tiles[id];
 
-                    tile.roteableWall = 0; // Eventually reset the wall to avoid builder trying to rotate it
+                    tile.roteableWall = -1;
                     tile.isRoomTile = true;
 
                     // Set the type of tile
@@ -462,6 +462,8 @@ namespace GOA.Level
             CreateRooms();
 
             DebugTiles();
+
+            CheckForUnreachableTiles();
 
             // 
             // Set the monster spawn tile
@@ -1321,6 +1323,122 @@ namespace GOA.Level
 
 
             // Get all the tiles at a minimum Z from the start
+        }
+
+        
+
+        void CheckForUnreachableTiles()
+        {
+            int size = (int)Mathf.Sqrt(tiles.Length);
+
+          
+            List<int> closedWalls = new List<int>();
+            
+
+            // Loop through all the wall tiles
+            for(int i=0; i<tiles.Length; i++)
+            {
+                if (tiles[i].roteableWall < 0)
+                    continue;
+
+                if (closedWalls.Contains(i))
+                    continue;
+
+                List<int> tl = new List<int>();
+                // Starting from the current wall we try to draw a closed shape using wall from the other tiles
+                
+                bool closed = false;
+
+                int current = i;
+
+                List<int> candidates = new List<int>();
+  
+
+                while (true)
+                {
+                 
+                    candidates.Add(current);
+                    
+                    int wallRot = (int)tiles[current].roteableWall;
+                    int next = -1;
+                    switch (wallRot)
+                    {
+                        case 0:
+                            if(current / size > 0)
+                                next = current - size;
+                            break;
+                        case 1:
+                            if(current % size < size - 1)
+                                next = current + 1;
+                            break;
+                        case 2:
+                            if(current / size < size - 1)
+                                next = current + size;
+                            break;
+                        case 3:
+                            if(current % size > 0)
+                                next = current - 1;
+                            break;
+                    }
+
+                   
+
+                    if (next < 0)
+                        break;
+
+                    if (next == i)
+                    {
+                        closed = true;
+                        break;
+                    }
+
+                    if (candidates.Contains(next))
+                        break;
+                    
+                    if (tiles[next].roteableWall < 0)
+                    {
+                        break;
+                    }
+                        
+                    current = next;
+
+                   
+                }
+
+                if (closed)
+                {
+                  
+
+                    //// Get the top left tile
+                    //int minCol = 0;
+                    //int minRow = 0;
+                    //int topLeft = -1;
+                    //for(int j=0; j<candidates.Count; j++)
+                    //{
+                    //    int col = candidates[j] % size;
+                    //    int row = candidates[j] / size;
+                    //    if(topLeft == -1 || col < minCol || (col == minCol && row < minRow))
+                    //    {
+                    //        topLeft = j;
+                    //        minCol = col;
+                    //        minRow = row;
+                    //    }
+
+                    //}
+
+                    tiles[candidates[Random.Range(0, candidates.Count)]].roteableWall = -1;
+
+                    // This is the first tile we can tell not reachable
+                    //int firstUnreachableId = candidates[topLeft] + size + 1;
+                    
+
+                    //_testUnreachables.AddRange(candidates);
+                    closedWalls.AddRange(candidates);
+                }
+            }
+
+            
+
         }
 
         public void Build(NetworkRunner runner)
