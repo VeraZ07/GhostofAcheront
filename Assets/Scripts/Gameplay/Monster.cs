@@ -27,7 +27,7 @@ namespace GOA
         float pathTime = 5f;
 
         System.DateTime lastPlayerTime; // The last time the monster went for one of the players
-        float playerTime = 120f;
+        float playerTime = 3;//120f;
 
         List<PlayerController> playerControllers;
         float wanderingRange = 10f;
@@ -57,6 +57,8 @@ namespace GOA
         {
             base.FixedUpdateNetwork();
 
+            
+
             if (Runner.IsServer)
             {
                 destination = target.position;
@@ -81,7 +83,12 @@ namespace GOA
             
         }
 
-        
+        private void Update()
+        {
+            agent.SetDestination(target.position);
+            
+        }
+
         /// <summary>
         /// Returns a reacheable point in the navmesh
         /// </summary>

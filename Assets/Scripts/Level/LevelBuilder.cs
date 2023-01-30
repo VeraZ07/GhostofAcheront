@@ -59,7 +59,7 @@ namespace GOA.Level
 
             public Vector3 openDirection = Vector3.zero;
 
-            //bool unreachable = false;
+            public bool unreachable = false;
 
             public Tile(LevelBuilder builder)
             {
@@ -385,6 +385,8 @@ namespace GOA.Level
         List<Room> rooms = new List<Room>();
 
         NetworkRunner runner;
+
+        bool onClosedPathRemoveWall = false;
 
         private void Awake()
         {
@@ -1341,8 +1343,13 @@ namespace GOA.Level
                 if (tiles[i].roteableWall < 0)
                     continue;
 
+                if (tiles[i].unreachable)
+                    continue;
+
                 if (closedWalls.Contains(i))
                     continue;
+
+                
 
                 List<int> tl = new List<int>();
                 // Starting from the current wall we try to draw a closed shape using wall from the other tiles
@@ -1407,29 +1414,37 @@ namespace GOA.Level
 
                 if (closed)
                 {
-                  
 
-                    //// Get the top left tile
-                    //int minCol = 0;
-                    //int minRow = 0;
-                    //int topLeft = -1;
-                    //for(int j=0; j<candidates.Count; j++)
-                    //{
-                    //    int col = candidates[j] % size;
-                    //    int row = candidates[j] / size;
-                    //    if(topLeft == -1 || col < minCol || (col == minCol && row < minRow))
-                    //    {
-                    //        topLeft = j;
-                    //        minCol = col;
-                    //        minRow = row;
-                    //    }
+                    if (!onClosedPathRemoveWall)
+                    {
+                        // Get the top left tile
+                        int minCol = 0;
+                        int minRow = 0;
+                        int topLeft = -1;
+                        for (int j = 0; j < candidates.Count; j++)
+                        {
+                            int col = candidates[j] % size;
+                            int row = candidates[j] / size;
+                            if (topLeft == -1 || col < minCol || (col == minCol && row < minRow))
+                            {
+                                topLeft = j;
+                                minCol = col;
+                                minRow = row;
+                            }
 
-                    //}
+                        }
 
-                    tiles[candidates[Random.Range(0, candidates.Count)]].roteableWall = -1;
+                        // This is the first tile we can tell not reachable
+                        int startTileId = candidates[topLeft] + size + 1;
 
-                    // This is the first tile we can tell not reachable
-                    //int firstUnreachableId = candidates[topLeft] + size + 1;
+                        Debug.Log("Start Tile Id:" + startTileId);
+                        RecursiveSetUnreachable(startTileId);
+
+                    }
+                    else
+                    {
+                        tiles[candidates[Random.Range(0, candidates.Count)]].roteableWall = -1;
+                    }
                     
 
                     //_testUnreachables.AddRange(candidates);
@@ -1438,6 +1453,33 @@ namespace GOA.Level
             }
 
             
+
+        }
+
+        void RecursiveSetUnreachable(int startTileId)
+        {
+            Debug.Log("Recursive tile id:" + startTileId);
+            tiles[startTileId].unreachable = true;
+            int size = (int)Mathf.Sqrt(tiles.Length);
+           
+            // North
+            if (!tiles[startTileId-size].unreachable && tiles[startTileId - size].roteableWall != 3 && tiles[startTileId - size - 1].roteableWall != 1)
+                RecursiveSetUnreachable(startTileId - size);
+
+            
+            // East
+            if (!tiles[startTileId + 1].unreachable && tiles[startTileId].roteableWall != 0 && tiles[startTileId-size].roteableWall != 2)
+                RecursiveSetUnreachable(startTileId + 1);
+
+            
+            // South
+            if (!tiles[startTileId + size].unreachable && tiles[startTileId].roteableWall != 3 && tiles[startTileId-1].roteableWall!=1)
+                RecursiveSetUnreachable(startTileId + size);
+
+            // West
+            if (!tiles[startTileId - 1].unreachable && tiles[startTileId - 1].roteableWall != 0 && tiles[startTileId - size - 1].roteableWall != 2)
+                RecursiveSetUnreachable(startTileId - 1);
+
 
         }
 
