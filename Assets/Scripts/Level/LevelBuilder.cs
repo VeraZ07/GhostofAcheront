@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GOA.Assets;
 using Fusion;
+using Unity.AI.Navigation;
 
 namespace GOA.Level
 {
@@ -14,11 +15,12 @@ namespace GOA.Level
 
         public enum TileType { TopLeft, TopCenter, TopRight, Left, Center, Right, BottomLeft, BottomCenter, BottomRight}
 
+        public enum CustomObjectType { Gate }
         
         [System.Serializable]
         class Tile
         {
-
+            public const float Size = 4;
 
             LevelBuilder builder;
 
@@ -61,6 +63,12 @@ namespace GOA.Level
 
             public bool unreachable = false;
 
+            public int customObjectId = -1;
+
+            public string style = "000";
+
+            public GameObject sceneObject;
+
             public Tile(LevelBuilder builder)
             {
                 this.builder = builder;
@@ -68,7 +76,7 @@ namespace GOA.Level
 
             public string GetCode()
             {
-                return isRoomTile ? "roomTile_000" : "mazeTile_000";
+                return isRoomTile ? string.Format("roomTile_{0}", style) : string.Format("mazeTile_{0}", style);
 
             }
 
@@ -80,6 +88,22 @@ namespace GOA.Level
             public bool IsBorder()
             {
                 return isUpperBorder || isRightBorder || isLeftBorder || isBottomBorder;
+            }
+
+            public Vector3 GetPosition()
+            {
+                int index = new List<Tile>(builder.tiles).IndexOf(this);
+
+                int levelSize = (int)Mathf.Sqrt(builder.tiles.Length);
+
+                int col = index % levelSize;
+                int row = index / levelSize;
+
+                Vector3 pos = Vector3.zero;
+                pos.x = col * Size;
+                pos.z = -row * Size;
+
+                return pos;
             }
 
             public override string ToString()
@@ -99,6 +123,7 @@ namespace GOA.Level
             [SerializeField]
             public int targetTileId = -1;
 
+            public int gateIndex;
 
             LevelBuilder builder;
 
@@ -245,12 +270,15 @@ namespace GOA.Level
 
         }
 
+        [SerializeField]
         Tile[] tiles;
 
+        [SerializeField]
         Sector[] sectors;
 
         [SerializeField]
         List<Connection> connections = new List<Connection>();
+                
 
         [System.Serializable]
         class Room
@@ -349,28 +377,28 @@ namespace GOA.Level
                     Sector sector = builder.sectors[sectorId];
                     if (sector.tileIds.Contains(id - 1) && !tileIds.Contains(id-1)) // Open left
                     {
-                        builder.connections.Add(Connection.CreateNormalConnection(builder, id, id - 1));
+                        //builder.connections.Add(Connection.CreateNormalConnection(builder, id, id - 1));
                         builder.tiles[id].openDirection = Vector3.left;
                         openingCount--;
                         continue;
                     }
                     if (sector.tileIds.Contains(id + 1) && !tileIds.Contains(id + 1)) // Open right
                     {
-                        builder.connections.Add(Connection.CreateNormalConnection(builder, id, id + 1));
+                        //builder.connections.Add(Connection.CreateNormalConnection(builder, id, id + 1));
                         builder.tiles[id].openDirection = Vector3.right;
                         openingCount--;
                         continue;
                     }
                     if (sector.tileIds.Contains(id - size) && !tileIds.Contains(id - size)) // Open up
                     {
-                        builder.connections.Add(Connection.CreateNormalConnection(builder, id, id - size));
+                        //builder.connections.Add(Connection.CreateNormalConnection(builder, id, id - size));
                         builder.tiles[id].openDirection = Vector3.forward;
                         openingCount--;
                         continue;
                     }
                     if (sector.tileIds.Contains(id + size) && !tileIds.Contains(id + size)) // Open down
                     {
-                        builder.connections.Add(Connection.CreateNormalConnection(builder, id, id + size));
+                        //builder.connections.Add(Connection.CreateNormalConnection(builder, id, id + size));
                         builder.tiles[id].openDirection = Vector3.back;
                         openingCount--;
                         continue;
@@ -383,6 +411,40 @@ namespace GOA.Level
         }
 
         List<Room> rooms = new List<Room>();
+
+        [System.Serializable]
+        class CustomObject
+        {
+
+            LevelBuilder builder;
+
+            public GameObject sceneObject;
+
+           
+            public Vector3 direction;
+
+            public int tileId;
+
+            string codePrefix;
+
+            public int type = -1;
+
+            public string style = "000";
+
+            public CustomObject(LevelBuilder builder, int type)
+            {
+                this.builder = builder;
+                this.type = type;
+                this.codePrefix = ((CustomObjectType)type).ToString().ToLower();
+            }
+
+            public string GetCode()
+            {
+                return string.Format("{0}_{1}", codePrefix, style);
+            } 
+        }
+
+        List<CustomObject> customObjects = new List<CustomObject>();
 
         NetworkRunner runner;
 
@@ -459,6 +521,11 @@ namespace GOA.Level
             ConnectSectors();
 
             //
+            // Add gates to connections
+            //
+            CreateGates();
+
+            //
             // Create rooms
             //
             CreateRooms();
@@ -506,7 +573,7 @@ namespace GOA.Level
                 Debug.Log("Creating TileId:" + i);
                 TileAsset asset = assets.Find(t => t.name.ToLower() == tiles[i].GetCode().ToLower());
                 GameObject tile = Instantiate(asset.Prefab, root.transform);
-                //GameObject tile = runner.Spawn(asset.Prefab, root.transform.position + new Vector3((i % size) * tileSize, 0f, -(i / size) * tileSize), Quaternion.identity).gameObject;
+                tiles[i].sceneObject = tile; // Set the scene object reference
                 tile.name = string.Format("{0}.{1}", i, tile.name); 
                 tile.transform.localPosition = new Vector3((i % size) * tileSize, 0f, -(i / size) * tileSize);
                 tile.transform.localRotation = Quaternion.identity;
@@ -694,6 +761,35 @@ namespace GOA.Level
 
             room.transform.position = tileObj.transform.position + move;
 
+            // 
+            // Create objects
+            //
+
+
+            // Create gates
+            List<CustomObjectAsset> gateAssets = new List<CustomObjectAsset>(Resources.LoadAll<CustomObjectAsset>(CustomObjectAsset.ResourceFolder + "/Gates"));
+            List<CustomObject> gates = new List<CustomObject>(customObjects).FindAll(c => c.type == (int)CustomObjectType.Gate);
+            foreach (CustomObject gate in gates)
+            {
+                // Get the custom object
+                //CustomObject customObject = customObjects[conn.gateIndex];
+                // Find the resource
+                CustomObjectAsset gateAsset = gateAssets.Find(g => g.name.ToLower().Equals(gate.GetCode().ToLower()));
+                // Instantiate the scene object
+                GameObject gateObj = Instantiate(gateAsset.Prefab, root.transform);
+                
+                // Set date
+                gate.sceneObject = gateObj;
+
+                // Position the object
+                Tile tile = tiles[gate.tileId];
+                Vector3 position = tile.GetPosition() + new Vector3(Tile.Size/2f,0f,-Tile.Size/2f);
+                gateObj.transform.position = position;
+                gateObj.transform.GetChild(0).forward = gate.direction;
+            }
+
+            // Bake navigation mesh
+            FindObjectOfType<NavMeshSurface>().BuildNavMesh();
         }
 
         void ConnectSectors()
@@ -825,8 +921,7 @@ namespace GOA.Level
                     int srcId, trgId;
                     TryGetRandomBorderBetweenSectors(src, dst, out srcId, out trgId);
                     connections.Add(Connection.CreateNormalConnection(this, srcId, trgId));
-                    //connections.Add(Connection.CreateNormalConnection(dstTileId, srcTileId));
-
+                 
                     // Geometry
                     Vector3 dir = Vector3.zero;
                     if (srcId < trgId)
@@ -845,9 +940,7 @@ namespace GOA.Level
                     }
                     tiles[srcId].openDirection = dir;
                     tiles[trgId].openDirection = -dir;
-                    //tiles[srcTileId].code = tiles[srcTileId].code.Substring(0, 2) + "CC" + tiles[srcTileId].code.Substring(4, 2);
-                    //tiles[dstTileId].code = tiles[dstTileId].code.Substring(0, 2) + "CC" + tiles[dstTileId].code.Substring(4, 2);
-
+                 
                     // Remove the target sector from the target list
                     trgIds.Remove(dst);
 
@@ -1049,9 +1142,11 @@ namespace GOA.Level
             sectors = new Sector[sectorCount];
             for (int i = 0; i < sectorCount; i++)
                 sectors[i] = new Sector(this);
+                       
 
             connections.Clear();
             rooms.Clear();
+            customObjects.Clear();
         }
 
         void BuildSectors()
@@ -1481,6 +1576,26 @@ namespace GOA.Level
                 RecursiveSetUnreachable(startTileId - 1);
 
 
+        }
+
+        void CreateGates()
+        {
+            // Loop through every connection
+            foreach(Connection conn in connections)
+            {
+                if (conn.IsInitialConnection())
+                    continue;
+
+                int tileId = conn.sourceTileId;
+
+                // Create the new gate 
+                CustomObject co = new CustomObject(this, (int)CustomObjectType.Gate);
+                customObjects.Add(co);
+                co.direction = tiles[tileId].openDirection;
+                co.tileId = tileId;
+                conn.gateIndex = customObjects.Count - 1;
+                tiles[tileId].customObjectId = customObjects.Count-1;
+            }
         }
 
         public void Build(NetworkRunner runner)

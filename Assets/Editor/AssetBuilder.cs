@@ -54,7 +54,7 @@ namespace GOA.Editor
         }
 
         [MenuItem("Assets/Create/GOA/Tile")]
-        public static void CreateTilesAsset()
+        public static void CreateTileAsset()
         {
             TileAsset asset = ScriptableObject.CreateInstance<TileAsset>();
 
@@ -74,7 +74,26 @@ namespace GOA.Editor
             Selection.activeObject = asset;
         }
 
+        [MenuItem("Assets/Create/GOA/CustomObjectAsset")]
+        public static void CreateCustomObjectAsset()
+        {
+            CustomObjectAsset asset = ScriptableObject.CreateInstance<CustomObjectAsset>();
 
+            string name = "CustomObject.asset";
+
+            string folder = System.IO.Path.Combine(ResourceFolder, CustomObjectAsset.ResourceFolder);
+
+            if (!System.IO.Directory.Exists(folder))
+                System.IO.Directory.CreateDirectory(folder);
+
+            AssetDatabase.CreateAsset(asset, System.IO.Path.Combine(folder, name));
+
+            AssetDatabase.SaveAssets();
+
+            EditorUtility.FocusProjectWindow();
+
+            Selection.activeObject = asset;
+        }
     }
 
 }
