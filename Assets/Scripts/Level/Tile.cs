@@ -1,0 +1,107 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace GOA.Level
+{
+    public partial class LevelBuilder : MonoBehaviour
+    {
+        public enum TileType { TopLeft, TopCenter, TopRight, Left, Center, Right, BottomLeft, BottomCenter, BottomRight }
+
+
+        [System.Serializable]
+        class Tile
+        {
+            public const float Size = 4;
+
+            LevelBuilder builder;
+
+
+            public int sectorIndex;
+
+            /// <summary>
+            /// 0: default rot
+            /// 1: 90 degrees
+            /// 2: 180 degrees
+            /// 3: 270 degrees
+            /// -1: no wall
+            /// </summary>
+            public float roteableWall = -1;
+
+            /// <summary>
+            /// Indicates if a tile has wall in any of the cardinal directions.
+            /// </summary>
+            public bool isUpperBorder = false;
+            public bool isLeftBorder = false;
+            public bool isRightBorder = false;
+            public bool isBottomBorder = false;
+
+            /// <summary>
+            /// Tells us if the tile is the border of any sector
+            /// </summary>
+            public bool isUpperBoundary = false;
+            public bool isLeftBoundary = false;
+            public bool isRightBoundary = false;
+            public bool isBottomBoundary = false;
+
+
+            /// <summary>
+            /// 0: wall - default
+            /// 1: room
+            /// </summary>
+            public bool isRoomTile = false;
+
+            public Vector3 openDirection = Vector3.zero;
+
+            public bool unreachable = false;
+
+            public string style = "000";
+
+            public GameObject sceneObject;
+
+            public Tile(LevelBuilder builder)
+            {
+                this.builder = builder;
+            }
+
+            public string GetCode()
+            {
+                return isRoomTile ? string.Format("roomTile_{0}", style) : string.Format("mazeTile_{0}", style);
+
+            }
+
+            public bool IsBoundary()
+            {
+                return isBottomBoundary || isUpperBoundary || isRightBoundary || isLeftBoundary;
+            }
+
+            public bool IsBorder()
+            {
+                return isUpperBorder || isRightBorder || isLeftBorder || isBottomBorder;
+            }
+
+            public Vector3 GetPosition()
+            {
+                int index = new List<Tile>(builder.tiles).IndexOf(this);
+
+                int levelSize = (int)Mathf.Sqrt(builder.tiles.Length);
+
+                int col = index % levelSize;
+                int row = index / levelSize;
+
+                Vector3 pos = Vector3.zero;
+                pos.x = col * Size;
+                pos.z = -row * Size;
+
+                return pos;
+            }
+
+            public override string ToString()
+            {
+                return string.Format(" {0}:{1} ", sectorIndex, GetCode());
+            }
+
+        }
+    }
+
+}
