@@ -94,6 +94,27 @@ namespace GOA.Editor
 
             Selection.activeObject = asset;
         }
+
+        [MenuItem("Assets/Create/GOA/PuzzleAsset")]
+        public static void CreatePuzzleAsset()
+        {
+            PuzzleAsset asset = ScriptableObject.CreateInstance<PuzzleAsset>();
+
+            string name = "Puzzle.asset";
+
+            string folder = System.IO.Path.Combine(ResourceFolder, PuzzleAsset.ResourceFolder);
+
+            if (!System.IO.Directory.Exists(folder))
+                System.IO.Directory.CreateDirectory(folder);
+
+            AssetDatabase.CreateAsset(asset, System.IO.Path.Combine(folder, name));
+
+            AssetDatabase.SaveAssets();
+
+            EditorUtility.FocusProjectWindow();
+
+            Selection.activeObject = asset;
+        }
     }
 
 }

@@ -36,6 +36,8 @@ namespace GOA.Level
 
         class Gate : CustomObject
         {
+            public Puzzle puzzle;
+
             public Gate(LevelBuilder builder) : base(builder)
             {
                 codePrefix = "gate";

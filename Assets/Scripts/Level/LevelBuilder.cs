@@ -32,9 +32,11 @@ namespace GOA.Level
 
         bool onClosedPathRemoveWall = false;
 
+       
+
         private void Awake()
         {
-            
+           
         }
 
         private void Start()
@@ -135,7 +137,7 @@ namespace GOA.Level
         {
             
 
-            float tileSize = 4f;
+            //float tileSize = 4f;
 
             // Load assets
             List<TileAsset> assets = new List<TileAsset>(Resources.LoadAll<TileAsset>(TileAsset.ResourceFolder));
@@ -157,7 +159,7 @@ namespace GOA.Level
                 GameObject tile = Instantiate(asset.Prefab, root.transform);
                 tiles[i].sceneObject = tile; // Set the scene object reference
                 tile.name = string.Format("{0}.{1}", i, tile.name); 
-                tile.transform.localPosition = new Vector3((i % size) * tileSize, 0f, -(i / size) * tileSize);
+                tile.transform.localPosition = new Vector3((i % size) * Tile.Size, 0f, -(i / size) * Tile.Size);
                 tile.transform.localRotation = Quaternion.identity;
 
                 if(tiles[i].roteableWall != 0)
@@ -315,11 +317,11 @@ namespace GOA.Level
 
             Vector3 move = Vector3.zero;
             if (dir == Vector3.forward)
-                move = Vector3.right * tileSize;
+                move = Vector3.right * Tile.Size;
             else if (dir == Vector3.right)
-                move = Vector3.right * tileSize + Vector3.back * tileSize;
+                move = Vector3.right * Tile.Size + Vector3.back * Tile.Size;
             else if(dir == Vector3.back)
-                move = Vector3.back * tileSize;
+                move = Vector3.back * Tile.Size;
             
 
             room.transform.position = tileObj.transform.position + move;// + dir * tileSize/* + Vector3.Cross(Vector3.up, dir) * tileSize*/;
@@ -334,11 +336,11 @@ namespace GOA.Level
 
             move = Vector3.zero;
             if (dir == Vector3.forward)
-                move = Vector3.right * tileSize;
+                move = Vector3.right * Tile.Size;
             else if (dir == Vector3.right)
-                move = Vector3.right * tileSize + Vector3.back * tileSize;
+                move = Vector3.right * Tile.Size + Vector3.back * Tile.Size;
             else if (dir == Vector3.back)
-                move = Vector3.back * tileSize;
+                move = Vector3.back * Tile.Size;
 
 
             room.transform.position = tileObj.transform.position + move;
@@ -347,7 +349,7 @@ namespace GOA.Level
             // Create objects
             //
 
-
+            //
             // Create gates
             List<CustomObjectAsset> gateAssets = new List<CustomObjectAsset>(Resources.LoadAll<CustomObjectAsset>(CustomObjectAsset.ResourceFolder + "/Gates"));
             List<CustomObject> gates = new List<CustomObject>(customObjects).FindAll(c => c.GetType() == typeof(Gate));
@@ -365,7 +367,7 @@ namespace GOA.Level
 
                 // Position the object
                 Tile tile = tiles[gate.tileId];
-                Vector3 position = tile.GetPosition() + new Vector3(Tile.Size/2f,0f,-Tile.Size/2f);
+                Vector3 position = tile.GetPosition();// + new Vector3(Tile.Size/2f,0f,-Tile.Size/2f);
                 gateObj.transform.position = position;
                 gateObj.transform.GetChild(0).forward = gate.direction;
             }
@@ -1176,6 +1178,10 @@ namespace GOA.Level
                 co.direction = tiles[tileId].openDirection;
                 co.tileId = tileId;
                 conn.gateIndex = customObjects.Count - 1;
+
+                // Create a new puzzle to open the gate
+                List<PuzzleAsset> puzzleCollection = new List<PuzzleAsset>(Resources.LoadAll<PuzzleAsset>(PuzzleAsset.ResourceFolder));
+                co.puzzle = new Puzzle(puzzleCollection[Random.Range(0, puzzleCollection.Count)]);
             }
         }
 
