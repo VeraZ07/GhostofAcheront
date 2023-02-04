@@ -1,3 +1,4 @@
+using GOA.Assets;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,10 +33,15 @@ namespace GOA.Level
 
                 Debug.LogFormat("[Room W:{0}, H:{1}, Tiles.Count:{2}, Sector:{3}", width, height, tileIds.Count, sectorId);
 
+                List<TileAsset> assets = new List<TileAsset>(Resources.LoadAll<TileAsset>(System.IO.Path.Combine(TileAsset.ResourceFolder, builder.theme.ToString()))).FindAll(t => t.name.ToLower().StartsWith("roomtile_"));
+
                 for (int i = 0; i < tileIds.Count; i++)
                 {
                     int id = tileIds[i];
                     Tile tile = builder.tiles[id];
+
+                    // Set the asset
+                    tile.asset = assets[Random.Range(0, assets.Count)];
 
                     tile.roteableWall = -1;
                     tile.isRoomTile = true;

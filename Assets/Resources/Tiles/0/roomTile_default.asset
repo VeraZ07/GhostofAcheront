@@ -10,6 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 95c6c2d8a05948e41a56cd15202d5d5f, type: 3}
-  m_Name: startingRoom_000
+  m_Name: roomTile_default
   m_EditorClassIdentifier: 
-  prefab: {fileID: 6686367906975563222, guid: 295783fa782eb7147bc020ff625b0180, type: 3}
+  prefab: {fileID: 8740522992677677654, guid: b15a51872d608d94eb3b9f82d789ba90, type: 3}

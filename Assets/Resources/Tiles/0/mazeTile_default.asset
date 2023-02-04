@@ -10,6 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 95c6c2d8a05948e41a56cd15202d5d5f, type: 3}
-  m_Name: mazeTile_000
+  m_Name: mazeTile_default
   m_EditorClassIdentifier: 
   prefab: {fileID: 8740522992677677654, guid: 02cd34c4f32956744af45af26927e211, type: 3}

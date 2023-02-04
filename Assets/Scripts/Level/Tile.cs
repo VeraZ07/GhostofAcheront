@@ -1,3 +1,4 @@
+using GOA.Assets;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -55,7 +56,9 @@ namespace GOA.Level
 
             public bool unreachable = false;
 
-            public string style = "000";
+            //public string style = "000";
+
+            public TileAsset asset;
 
             public GameObject sceneObject;
 
@@ -64,11 +67,11 @@ namespace GOA.Level
                 this.builder = builder;
             }
 
-            public string GetCode()
-            {
-                return isRoomTile ? string.Format("roomTile_{0}", style) : string.Format("mazeTile_{0}", style);
+            //public string GetCode()
+            //{
+            //    return isRoomTile ? string.Format("roomTile_{0}", style) : string.Format("mazeTile_{0}", style);
 
-            }
+            //}
 
             public bool IsBoundary()
             {
@@ -98,7 +101,7 @@ namespace GOA.Level
 
             public override string ToString()
             {
-                return string.Format(" {0}:{1} ", sectorIndex, GetCode());
+                return string.Format(" {0}:{1} ", sectorIndex, asset.name);
             }
 
         }

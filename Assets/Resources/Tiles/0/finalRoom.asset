@@ -10,6 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 95c6c2d8a05948e41a56cd15202d5d5f, type: 3}
-  m_Name: finalRoom_000
+  m_Name: finalRoom
   m_EditorClassIdentifier: 
   prefab: {fileID: 6686367906975563222, guid: 69c760ae14c4db848adf2f20881fcd47, type: 3}

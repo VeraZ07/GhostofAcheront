@@ -10,6 +10,7 @@ namespace GOA.Level
     public partial class LevelBuilder : MonoBehaviour
     {
 
+        
         // From 0 to N, 0 is the smaller.
         public static int LevelSize = 0;
 
@@ -23,16 +24,17 @@ namespace GOA.Level
         [SerializeField]
         List<Connection> connections = new List<Connection>();
                 
-
+        [SerializeField]
         List<Room> rooms = new List<Room>();
 
+        [SerializeField]
         List<CustomObject> customObjects = new List<CustomObject>();
 
         NetworkRunner runner;
 
         bool onClosedPathRemoveWall = false;
 
-       
+        int theme = 0;
 
         private void Awake()
         {
@@ -140,9 +142,9 @@ namespace GOA.Level
             //float tileSize = 4f;
 
             // Load assets
-            List<TileAsset> assets = new List<TileAsset>(Resources.LoadAll<TileAsset>(TileAsset.ResourceFolder));
+            //List<TileAsset> assets = new List<TileAsset>(Resources.LoadAll<TileAsset>(TileAsset.ResourceFolder));
 
-            Debug.Log("Assets.Count:" + assets.Count);
+            //Debug.Log("Assets.Count:" + assets.Count);
 
             // Create root
             GameObject root = new GameObject("Geometry");
@@ -155,7 +157,8 @@ namespace GOA.Level
             for(int i=0; i<tiles.Length; i++)
             {
                 Debug.Log("Creating TileId:" + i);
-                TileAsset asset = assets.Find(t => t.name.ToLower() == tiles[i].GetCode().ToLower());
+                //TileAsset asset = assets.Find(t => t.name.ToLower() == tiles[i].GetCode().ToLower());
+                TileAsset asset = tiles[i].asset;
                 GameObject tile = Instantiate(asset.Prefab, root.transform);
                 tiles[i].sceneObject = tile; // Set the scene object reference
                 tile.name = string.Format("{0}.{1}", i, tile.name); 
@@ -308,7 +311,8 @@ namespace GOA.Level
             int startingTileId = connections.Find(c => c.IsInitialConnection()).sourceTileId;
             int finalTileId = connections.Find(c => c.IsFinalConnection()).sourceTileId;
 
-            TileAsset tmpAsset = Resources.Load<TileAsset>(System.IO.Path.Combine(TileAsset.ResourceFolder, "startingRoom_000"));
+
+            TileAsset tmpAsset = Resources.Load<TileAsset>(System.IO.Path.Combine(TileAsset.ResourceFolder, theme.ToString(), "startingRoom"));
             Vector3 dir = tiles[startingTileId].openDirection;
 
             GameObject tileObj = new List<Transform>(FindObjectsOfType<Transform>()).Find(t => t.name.ToLower().StartsWith(string.Format("{0}.", startingTileId))).gameObject;
@@ -327,7 +331,7 @@ namespace GOA.Level
             room.transform.position = tileObj.transform.position + move;// + dir * tileSize/* + Vector3.Cross(Vector3.up, dir) * tileSize*/;
 
             // Final room 
-            tmpAsset = Resources.Load<TileAsset>(System.IO.Path.Combine(TileAsset.ResourceFolder, "finalRoom_000"));
+            tmpAsset = Resources.Load<TileAsset>(System.IO.Path.Combine(TileAsset.ResourceFolder, theme.ToString(), "finalRoom"));
             dir = tiles[finalTileId].openDirection;
 
             tileObj = new List<Transform>(FindObjectsOfType<Transform>()).Find(t => t.name.ToLower().StartsWith(string.Format("{0}.", finalTileId))).gameObject;

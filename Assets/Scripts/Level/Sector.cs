@@ -1,3 +1,4 @@
+using GOA.Assets;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -98,6 +99,8 @@ namespace GOA.Level
 
                 int size = (int)Mathf.Sqrt(builder.tiles.Length); // Columns
 
+                List<TileAsset> assets = new List<TileAsset>(Resources.LoadAll<TileAsset>(System.IO.Path.Combine(TileAsset.ResourceFolder, builder.theme.ToString()))).FindAll(t => t.name.ToLower().StartsWith("mazetile_"));
+
                 // Loop through each tile of the current sector
                 for (int i = 0; i < tileIds.Count; i++)
                 {
@@ -105,6 +108,8 @@ namespace GOA.Level
                     int col = tileId % size;
                     int row = tileId / size;
 
+                    // Set the asset
+                    builder.tiles[tileId].asset = assets[Random.Range(0, assets.Count)];
 
                     // Check whether the current tile is at the edge of the sector or not
                     builder.tiles[tileId].isUpperBorder = (row == 0 || builder.tiles[tileId - size].sectorIndex != sectorIndex);
