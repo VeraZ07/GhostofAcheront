@@ -120,6 +120,9 @@ namespace GOA.Level
 
             CheckForUnreachableTiles();
 
+            // Create puzzles
+
+
             // 
             // Set the monster spawn tile
             //
@@ -355,14 +358,15 @@ namespace GOA.Level
 
             //
             // Create gates
-            List<CustomObjectAsset> gateAssets = new List<CustomObjectAsset>(Resources.LoadAll<CustomObjectAsset>(CustomObjectAsset.ResourceFolder + "/Gates"));
+            //List<CustomObjectAsset> gateAssets = new List<CustomObjectAsset>(Resources.LoadAll<CustomObjectAsset>(CustomObjectAsset.ResourceFolder + "/Gates"));
             List<CustomObject> gates = new List<CustomObject>(customObjects).FindAll(c => c.GetType() == typeof(Gate));
             foreach (CustomObject gate in gates)
             {
                 // Get the custom object
                 //CustomObject customObject = customObjects[conn.gateIndex];
                 // Find the resource
-                CustomObjectAsset gateAsset = gateAssets.Find(g => g.name.ToLower().Equals(gate.GetCode().ToLower()));
+                //CustomObjectAsset gateAsset = gateAssets.Find(g => g.name.ToLower().Equals(gate.GetCode().ToLower()));
+                CustomObjectAsset gateAsset = gate.asset;
                 // Instantiate the scene object
                 GameObject gateObj = Instantiate(gateAsset.Prefab, root.transform);
                 
@@ -1168,8 +1172,10 @@ namespace GOA.Level
 
         void CreateGates()
         {
+            List<CustomObjectAsset> gateAssets = new List<CustomObjectAsset>(Resources.LoadAll<CustomObjectAsset>(CustomObjectAsset.ResourceFolder + "/Gates"));
+
             // Loop through every connection
-            foreach(Connection conn in connections)
+            foreach (Connection conn in connections)
             {
                 if (conn.IsInitialConnection())
                     continue;
@@ -1177,7 +1183,7 @@ namespace GOA.Level
                 int tileId = conn.sourceTileId;
 
                 // Create the new gate 
-                Gate co = new Gate(this);
+                Gate co = new Gate(this, gateAssets[Random.Range(0, gateAssets.Count)]);
                 customObjects.Add(co);
                 co.direction = tiles[tileId].openDirection;
                 co.tileId = tileId;
