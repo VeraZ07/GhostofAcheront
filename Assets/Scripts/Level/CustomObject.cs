@@ -31,19 +31,16 @@ namespace GOA.Level
                 this.asset = asset;
             }
 
-            //public string GetCode()
-            //{
-            //    return string.Format("{0}_{1}", codePrefix, style);
-            //}
+           
         }
 
         class Gate : CustomObject
         {
-            public Puzzle puzzle;
+            public int puzzleIndex;
 
             public Gate(LevelBuilder builder, CustomObjectAsset asset) : base(builder, asset)
             {
-                //codePrefix = "gate";
+                
             }
         }
 

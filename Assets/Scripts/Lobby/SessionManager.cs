@@ -27,7 +27,7 @@ namespace GOA
         [SerializeField]
         NetworkObject gameManagerPrefab;
     
-        public const int MaxPlayers = 2;
+        public const int MaxPlayers = 3;
 
         public static SessionManager Instance { get; private set; }
 
@@ -193,9 +193,17 @@ namespace GOA
 
             resumingFromHostMigration = true;
 
+            // Destroy the game manager
             GameManager gm = FindObjectOfType<GameManager>();
             if (gm)
                 DestroyImmediate(gm.gameObject);
+
+            // Destroy all the puzzle controllers
+            PuzzleController[] pcl = FindObjectsOfType<PuzzleController>();
+            foreach(PuzzleController pc in pcl)
+            {
+                DestroyImmediate(pc.gameObject);
+            }
         }
 
         public void OnInput(NetworkRunner runner, NetworkInput input)
@@ -245,10 +253,10 @@ namespace GOA
                         if (player.PlayerId < runner.SessionInfo.MaxPlayers)
                             resNOPlayerId = player.PlayerId + 1;
                             
-
+                        // Player
                         if (resNO.TryGetBehaviour<Player>(out var ppOut))
                         {
-                            Debug.Log("Founr player to resume -> playerId:" + resNO.InputAuthority.PlayerId);
+                            Debug.Log("Found player to resume -> playerId:" + resNO.InputAuthority.PlayerId);
                             if (resNO.InputAuthority.PlayerId == resNOPlayerId)
                             {
                                 runner.Spawn(resNO, inputAuthority: player,
@@ -271,6 +279,8 @@ namespace GOA
                                 //NetworkObject playerObj = runner.Spawn(resNO, Vector3.zero, Quaternion.identity, player);
                             }
                         }
+
+                        // Character controller
                         if (resNO.TryGetBehaviour<NetworkCharacterControllerPrototypeCustom>(out var pOut))
                         {
 
@@ -298,10 +308,37 @@ namespace GOA
                             }
                         }
 
-
+                        // Game manager
                         if (resNO.TryGetBehaviour<GameManager>(out var gmOut))
                         {
-                            Debug.Log("Founr Object: GameManager");
+                            Debug.Log("Found Object: GameManager");
+                            if (player.PlayerId >= runner.SessionInfo.MaxPlayers)
+                            {
+                                runner.Spawn(resNO, inputAuthority: player,
+                                    onBeforeSpawned: (runner, newNO) =>
+                                    {
+
+                                        // One key aspects of the Host Migration is to have a simple way of restoring the old NetworkObjects state
+                                        // If all state of the old NetworkObject is all what is necessary, just call the NetworkObject.CopyStateFrom
+                                        newNO.CopyStateFrom(resNO);
+
+                                        // and/or
+
+                                        // If only partial State is necessary, it is possible to copy it only from specific NetworkBehaviours
+                                        if (resNO.TryGetBehaviour<NetworkBehaviour>(out var myCustomNetworkBehaviour))
+                                        {
+                                            newNO.GetComponent<NetworkBehaviour>().CopyStateFrom(myCustomNetworkBehaviour);
+                                        }
+                                    });
+
+                                
+                            }
+                        }
+
+                        // Puzzle controller
+                        if (resNO.TryGetBehaviour<PuzzleController>(out var pzOut))
+                        {
+                            Debug.Log("Found Object: PuzzleController");
                             if (player.PlayerId >= runner.SessionInfo.MaxPlayers)
                             {
                                 runner.Spawn(resNO, inputAuthority: player,

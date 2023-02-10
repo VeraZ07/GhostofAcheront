@@ -30,6 +30,9 @@ namespace GOA.Level
         [SerializeField]
         List<CustomObject> customObjects = new List<CustomObject>();
 
+        [SerializeField]
+        List<Puzzle> puzzles = new List<Puzzle>();
+
         NetworkRunner runner;
 
         bool onClosedPathRemoveWall = false;
@@ -47,13 +50,9 @@ namespace GOA.Level
 
             Random.InitState(seed);
             Debug.Log("Seed:" + seed);
-            //// Find the runner 
-            //runner = FindObjectOfType<NetworkRunner>();
-
-            //if (runner.IsServer)
+            
             Create();
-            //else
-            //    DestroyImmediate(gameObject);
+            
         }
 
         private void Update()
@@ -110,6 +109,11 @@ namespace GOA.Level
             // Add gates to connections
             //
             CreateGates();
+
+            //
+            // Create puzzles
+            //
+            CreatePuzzles();
 
             //
             // Create rooms
@@ -352,20 +356,14 @@ namespace GOA.Level
 
             room.transform.position = tileObj.transform.position + move;
 
-            // 
-            // Create objects
-            //
-
+            
             //
             // Create gates
-            //List<CustomObjectAsset> gateAssets = new List<CustomObjectAsset>(Resources.LoadAll<CustomObjectAsset>(CustomObjectAsset.ResourceFolder + "/Gates"));
+            //
             List<CustomObject> gates = new List<CustomObject>(customObjects).FindAll(c => c.GetType() == typeof(Gate));
             foreach (CustomObject gate in gates)
             {
-                // Get the custom object
-                //CustomObject customObject = customObjects[conn.gateIndex];
-                // Find the resource
-                //CustomObjectAsset gateAsset = gateAssets.Find(g => g.name.ToLower().Equals(gate.GetCode().ToLower()));
+                // Get the asset
                 CustomObjectAsset gateAsset = gate.asset;
                 // Instantiate the scene object
                 GameObject gateObj = Instantiate(gateAsset.Prefab, root.transform);
@@ -375,9 +373,17 @@ namespace GOA.Level
 
                 // Position the object
                 Tile tile = tiles[gate.tileId];
-                Vector3 position = tile.GetPosition();// + new Vector3(Tile.Size/2f,0f,-Tile.Size/2f);
+                Vector3 position = tile.GetPosition();
                 gateObj.transform.position = position;
                 gateObj.transform.GetChild(0).forward = gate.direction;
+            }
+
+            //
+            // Create puzzles object
+            //
+            foreach(Puzzle puzzle in puzzles)
+            {
+
             }
 
             // Bake navigation mesh
@@ -1189,9 +1195,20 @@ namespace GOA.Level
                 co.tileId = tileId;
                 conn.gateIndex = customObjects.Count - 1;
 
-                // Create a new puzzle to open the gate
-                List<PuzzleAsset> puzzleCollection = new List<PuzzleAsset>(Resources.LoadAll<PuzzleAsset>(PuzzleAsset.ResourceFolder));
-                co.puzzle = new Puzzle(puzzleCollection[Random.Range(0, puzzleCollection.Count)]);
+            }
+        }
+
+        void CreatePuzzles()
+        {
+            List<PuzzleAsset> puzzleCollection = new List<PuzzleAsset>(Resources.LoadAll<PuzzleAsset>(PuzzleAsset.ResourceFolder));
+
+            // Get all gates
+            List<CustomObject> gates = customObjects.FindAll(g => g.GetType() == typeof(Gate));
+            foreach(Gate gate in gates)
+            {
+                Puzzle puzzle = new Puzzle(puzzleCollection[Random.Range(0, puzzleCollection.Count)]);
+                puzzles.Add(puzzle);
+                gate.puzzleIndex = puzzles.Count - 1;
             }
         }
 

@@ -42,6 +42,8 @@ namespace GOA
             
         }
 
+       
+
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
             base.Despawned(runner, hasState);
@@ -55,6 +57,8 @@ namespace GOA
 
             GameSeed = (int)System.DateTime.UtcNow.Ticks;
         }
+
+     
     }
 
 }

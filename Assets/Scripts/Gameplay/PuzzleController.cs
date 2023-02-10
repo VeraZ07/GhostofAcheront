@@ -6,11 +6,11 @@ using UnityEngine.Events;
 
 namespace GOA
 {
-    public class PuzzleController : NetworkBehaviour
+    public abstract class PuzzleController : NetworkBehaviour
     {
-        public static UnityAction<PuzzleController> OnStateChangedCallback;
+        public static UnityAction<PuzzleController> OnSolvedChangedCallback;
 
-        [Networked(OnChanged = nameof(OnStateChanged))] int State { get; set; } = 0;
+        [Networked(OnChanged = nameof(OnSolvedChanged))] NetworkBool Solved { get; set; } = false;
 
         // Start is called before the first frame update
         void Start()
@@ -29,10 +29,10 @@ namespace GOA
             base.Spawned();
         }
 
-        public static void OnStateChanged(Changed<PuzzleController> changed)
+        public static void OnSolvedChanged(Changed<PuzzleController> changed)
         {
-            Debug.LogFormat("OnStateChanged:{0}", changed.Behaviour.State);
-            OnStateChangedCallback?.Invoke(changed.Behaviour);
+            Debug.LogFormat("OnSolvedChanged:{0}", changed.Behaviour.Solved);
+            OnSolvedChangedCallback?.Invoke(changed.Behaviour);
         }
     }
 

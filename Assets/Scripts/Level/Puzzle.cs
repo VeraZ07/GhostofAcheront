@@ -8,10 +8,11 @@ namespace GOA.Level
     public partial class LevelBuilder : MonoBehaviour
     {
         
-
+        [System.Serializable]
         class Puzzle
         {
-            PuzzleAsset asset;
+            [SerializeField]
+            public PuzzleAsset asset;
 
             public Puzzle(PuzzleAsset asset)
             {
