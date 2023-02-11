@@ -3,7 +3,12 @@ guid: a17e509c83e6fb94292370b3e1f6f18b
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tentacolo
+    second: {fileID: 2100000, guid: f9498b97490a7f945b7b84057ed2352a, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
