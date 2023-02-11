@@ -95,12 +95,12 @@ namespace GOA.Editor
             Selection.activeObject = asset;
         }
 
-        [MenuItem("Assets/Create/GOA/PuzzleAsset")]
+        [MenuItem("Assets/Create/GOA/Puzzles/MultiStatePuzzleAsset")]
         public static void CreatePuzzleAsset()
         {
-            PuzzleAsset asset = ScriptableObject.CreateInstance<PuzzleAsset>();
+            MultiStatePuzzleAsset asset = ScriptableObject.CreateInstance<MultiStatePuzzleAsset>();
 
-            string name = "Puzzle.asset";
+            string name = "MultiStatePuzzle.asset";
 
             string folder = System.IO.Path.Combine(ResourceFolder, PuzzleAsset.ResourceFolder);
 

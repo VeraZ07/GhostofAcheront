@@ -12,6 +12,9 @@ namespace GOA
 
         [Networked(OnChanged = nameof(OnSolvedChanged))] NetworkBool Solved { get; set; } = false;
 
+        [Networked] public int PuzzleIndex { get; set; } = 0;
+        
+
         // Start is called before the first frame update
         void Start()
         {
@@ -34,6 +37,8 @@ namespace GOA
             Debug.LogFormat("OnSolvedChanged:{0}", changed.Behaviour.Solved);
             OnSolvedChangedCallback?.Invoke(changed.Behaviour);
         }
+
+        
     }
 
 }

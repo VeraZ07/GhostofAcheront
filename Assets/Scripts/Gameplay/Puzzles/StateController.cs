@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace GOA
 {
-    public class OnOffController : NetworkBehaviour
+    public class StateController : MonoBehaviour
     {
         // Start is called before the first frame update
         void Start()

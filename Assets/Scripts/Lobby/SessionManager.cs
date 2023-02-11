@@ -1,6 +1,7 @@
 using Fusion;
 using Fusion.Sockets;
 using GOA.Assets;
+using GOA.Level;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -284,7 +285,7 @@ namespace GOA
                         if (resNO.TryGetBehaviour<NetworkCharacterControllerPrototypeCustom>(out var pOut))
                         {
 
-                            Debug.Log("Founr player to resume -> playerId:" + resNO.InputAuthority.PlayerId);
+                            Debug.Log("Found player to resume -> playerId:" + resNO.InputAuthority.PlayerId);
                             if (resNO.InputAuthority.PlayerId == resNOPlayerId)
                             {
                                 runner.Spawn(resNO, position: pOut.ReadPosition(), rotation: pOut.ReadRotation(), inputAuthority: player,
@@ -392,6 +393,9 @@ namespace GOA
         {
             if(runner.CurrentScene > 0) // Game scene
             {
+                // Build both on clients and server
+                FindObjectOfType<LevelBuilder>().Build(FindObjectOfType<GameManager>().GameSeed);
+
                 if (runner.IsServer)
                 {
 
@@ -422,9 +426,9 @@ namespace GOA
                         // Spawn
                         NetworkObject character = runner.Spawn(asset.CharacterPrefab, sp.position, sp.rotation, player.PlayerRef);
                     }
-
-
                 }
+
+                
             }
             else // Menu scene
             {
@@ -561,10 +565,11 @@ namespace GOA
             runner.Shutdown(false, ShutdownReason.Ok, true);
         }
 
-        
-
         #endregion
 
+        #region spawn methods
+
+        #endregion
 
         #region private methods
         async void StartSession(StartGameArgs args)

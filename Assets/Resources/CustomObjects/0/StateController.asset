@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d25bb8207a2b21242b77cc4a86468a7d, type: 3}
-  m_Name: PullTheLever
+  m_Script: {fileID: 11500000, guid: 42b49e6945c69c142b0c8a9ba6789206, type: 3}
+  m_Name: StateController
   m_EditorClassIdentifier: 
-  minimumPlayers: 1
-  prefab: {fileID: 0}
+  prefab: {fileID: 5946766457648286713, guid: a94c1f6105e673641add20a94d712564, type: 3}

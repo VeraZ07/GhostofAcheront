@@ -11,8 +11,8 @@ namespace GOA.Level
     {
 
         
-        // From 0 to N, 0 is the smaller.
-        public static int LevelSize = 0;
+        // From 0 to N, 0 is the smallest one.
+        public static int LevelSize = 1;
 
 
         [SerializeField]
@@ -39,6 +39,8 @@ namespace GOA.Level
 
         int theme = 0;
 
+        Transform geometryRoot;
+        
         private void Awake()
         {
            
@@ -46,12 +48,12 @@ namespace GOA.Level
 
         private void Start()
         {
-            int seed = FindObjectOfType<GameManager>().GameSeed;
+            //int seed = FindObjectOfType<GameManager>().GameSeed;
 
-            Random.InitState(seed);
-            Debug.Log("Seed:" + seed);
+            //Random.InitState(seed);
+            //Debug.Log("Seed:" + seed);
             
-            Create();
+            //Create();
             
         }
 
@@ -144,7 +146,7 @@ namespace GOA.Level
 
         void BuildGeometry()
         {
-            
+
 
             //float tileSize = 4f;
 
@@ -154,9 +156,9 @@ namespace GOA.Level
             //Debug.Log("Assets.Count:" + assets.Count);
 
             // Create root
-            GameObject root = new GameObject("Geometry");
-            root.transform.position = Vector3.zero;
-            root.transform.rotation = Quaternion.identity;
+            geometryRoot = new GameObject("Geometry").transform;
+            geometryRoot.position = Vector3.zero;
+            geometryRoot.rotation = Quaternion.identity;
 
             int size = (int)Mathf.Sqrt(tiles.Length);
 
@@ -166,7 +168,7 @@ namespace GOA.Level
                 Debug.Log("Creating TileId:" + i);
                 //TileAsset asset = assets.Find(t => t.name.ToLower() == tiles[i].GetCode().ToLower());
                 TileAsset asset = tiles[i].asset;
-                GameObject tile = Instantiate(asset.Prefab, root.transform);
+                GameObject tile = Instantiate(asset.Prefab, geometryRoot);
                 tiles[i].sceneObject = tile; // Set the scene object reference
                 tile.name = string.Format("{0}.{1}", i, tile.name); 
                 tile.transform.localPosition = new Vector3((i % size) * Tile.Size, 0f, -(i / size) * Tile.Size);
@@ -323,7 +325,7 @@ namespace GOA.Level
             Vector3 dir = tiles[startingTileId].openDirection;
 
             GameObject tileObj = new List<Transform>(FindObjectsOfType<Transform>()).Find(t => t.name.ToLower().StartsWith(string.Format("{0}.", startingTileId))).gameObject;
-            GameObject room = Instantiate(tmpAsset.Prefab, root.transform);
+            GameObject room = Instantiate(tmpAsset.Prefab, geometryRoot);
             room.transform.rotation = Quaternion.LookRotation(-dir);
 
             Vector3 move = Vector3.zero;
@@ -342,7 +344,7 @@ namespace GOA.Level
             dir = tiles[finalTileId].openDirection;
 
             tileObj = new List<Transform>(FindObjectsOfType<Transform>()).Find(t => t.name.ToLower().StartsWith(string.Format("{0}.", finalTileId))).gameObject;
-            room = Instantiate(tmpAsset.Prefab, root.transform);
+            room = Instantiate(tmpAsset.Prefab, geometryRoot);
             room.transform.rotation = Quaternion.LookRotation(-dir);
 
             move = Vector3.zero;
@@ -366,7 +368,7 @@ namespace GOA.Level
                 // Get the asset
                 CustomObjectAsset gateAsset = gate.asset;
                 // Instantiate the scene object
-                GameObject gateObj = Instantiate(gateAsset.Prefab, root.transform);
+                GameObject gateObj = Instantiate(gateAsset.Prefab, geometryRoot);
                 
                 // Set date
                 gate.sceneObject = gateObj;
@@ -381,9 +383,15 @@ namespace GOA.Level
             //
             // Create puzzles object
             //
+            NetworkRunner runner = FindObjectOfType<NetworkRunner>();
+            Player localPlayer = new List<Player>(FindObjectsOfType<Player>()).Find(p => p.HasStateAuthority);
             foreach(Puzzle puzzle in puzzles)
             {
-
+                runner.Spawn(puzzle.asset.Prefab, Vector3.zero, Quaternion.identity, null, 
+                    (runner, obj)=> 
+                    { 
+                        obj.GetComponent<PuzzleController>().PuzzleIndex = puzzles.IndexOf(puzzle); 
+                    });
             }
 
             // Bake navigation mesh
@@ -1178,7 +1186,9 @@ namespace GOA.Level
 
         void CreateGates()
         {
-            List<CustomObjectAsset> gateAssets = new List<CustomObjectAsset>(Resources.LoadAll<CustomObjectAsset>(CustomObjectAsset.ResourceFolder + "/Gates"));
+            
+
+            List<CustomObjectAsset> gateAssets = new List<CustomObjectAsset>(Resources.LoadAll<CustomObjectAsset>(System.IO.Path.Combine(CustomObjectAsset.ResourceFolder, theme.ToString(), "Gates")));
 
             // Loop through every connection
             foreach (Connection conn in connections)
@@ -1198,26 +1208,48 @@ namespace GOA.Level
             }
         }
 
+        //[SerializeField]
+        //List<Test> tests = new List<Test>();
         void CreatePuzzles()
         {
-            List<PuzzleAsset> puzzleCollection = new List<PuzzleAsset>(Resources.LoadAll<PuzzleAsset>(PuzzleAsset.ResourceFolder));
+            
+            List<PuzzleAsset> puzzleCollection = new List<PuzzleAsset>(Resources.LoadAll<PuzzleAsset>(System.IO.Path.Combine(PuzzleAsset.ResourceFolder, theme.ToString())));
+
+            Resources.LoadAll <PuzzleAsset> ("");
 
             // Get all gates
             List<CustomObject> gates = customObjects.FindAll(g => g.GetType() == typeof(Gate));
             foreach(Gate gate in gates)
             {
-                Puzzle puzzle = new Puzzle(puzzleCollection[Random.Range(0, puzzleCollection.Count)]);
-                puzzles.Add(puzzle);
-                gate.puzzleIndex = puzzles.Count - 1;
+                PuzzleAsset asset = puzzleCollection[Random.Range(0, puzzleCollection.Count)];
+                Debug.Log("PuzzleAssets.Count" + puzzleCollection.Count);
+                // We need to find the connection to get the sector this puzzle belongs to.
+                int gateIndex = customObjects.IndexOf(gate);
+                Connection connection = connections.Find(c => c.gateIndex == gateIndex);
+
+                Puzzle puzzle = PuzzleFactory.CreatePuzzle(this, asset, tiles[connection.sourceTileId].sectorIndex);
+                //puzzles.Add(puzzle);
+                //gate.puzzleIndex = puzzles.Count - 1;
+
+                
             }
         }
 
-        public void Build(NetworkRunner runner)
+        public void Build(int seed)
         {
-            this.runner = runner;
-            
+            Random.InitState(seed);
+
             Create();
         }
+
+        //public int CreateCustomObject(GameObject prefab)
+        //{
+        //    // We must add the object to a tile 
+        //    //CustomObject co = new CustomObject(this, )
+        //    GameObject obj = Instantiate(prefab, geometryRoot);
+        //    customObjects.Add(obj.GetComponent<CustomObject>());
+
+        //}
 
         void DebugTiles()
         {

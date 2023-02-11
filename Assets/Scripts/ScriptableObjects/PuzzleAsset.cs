@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace GOA.Assets
 {
-    public class PuzzleAsset : ScriptableObject
+    public abstract class PuzzleAsset : ScriptableObject
     {
         public const string ResourceFolder = "Puzzles";
 
@@ -18,6 +18,17 @@ namespace GOA.Assets
         public GameObject Prefab
         {
             get { return prefab; }
+        }
+    }
+
+    public class MultiStatePuzzleAsset: PuzzleAsset
+    {
+        [SerializeField]
+        CustomObjectAsset elementAsset;
+
+        public CustomObjectAsset ElementAsset
+        {
+            get { return elementAsset; }
         }
     }
 
