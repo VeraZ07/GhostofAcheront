@@ -27,10 +27,10 @@ namespace GOA.Level
         [SerializeField]
         List<Room> rooms = new List<Room>();
 
-        [SerializeField]
+        [SerializeReference]
         List<CustomObject> customObjects = new List<CustomObject>();
 
-        [SerializeField]
+        [SerializeReference]
         List<Puzzle> puzzles = new List<Puzzle>();
 
         NetworkRunner runner;
@@ -113,21 +113,16 @@ namespace GOA.Level
             CreateGates();
 
             //
-            // Create puzzles
-            //
-            CreatePuzzles();
-
-            //
             // Create rooms
             //
             CreateRooms();
 
-            DebugTiles();
-
             CheckForUnreachableTiles();
 
+            //
             // Create puzzles
-
+            //
+            CreatePuzzles();
 
             // 
             // Set the monster spawn tile
@@ -317,7 +312,7 @@ namespace GOA.Level
 
 
             // Add starting and final rooms
-            int startingTileId = connections.Find(c => c.IsInitialConnection()).sourceTileId;
+            int startingTileId = connections.Find(c => c.IsInitialConnection()).targetTileId;
             int finalTileId = connections.Find(c => c.IsFinalConnection()).sourceTileId;
 
 
@@ -473,20 +468,22 @@ namespace GOA.Level
 
             if (sectors.Length > 2)
             {
-                // Create al list with all the possible sources
+                // Create a list with all the possible sources
                 List<int> srcIds = new List<int>();
                 for(int i=0;i<sectors.Length; i++)
                 {
-                    if (!IsFinalSector(i))
+                    //if (!IsFinalSector(i))
+                    if(!sectors[i].IsFinalSector())
                         srcIds.Add(i);
                 }
 
                 // Create a list with all the possible targets
-                // An element on this list can only be used once, so we can loop through until the list is empty
+                // Each element on this list can only be used once, so we can loop throughout until the list is empty
                 List<int> trgIds = new List<int>();
                 for (int i = 0; i < sectors.Length; i++)
                 {
-                    if (!IsInitialSector(i))
+                    //if (!IsInitialSector(i))
+                    if(!sectors[i].IsInitialSector())
                         trgIds.Add(i);
                 }
 
@@ -559,7 +556,15 @@ namespace GOA.Level
 
             }
 
-
+            // We better reorder all the connections from the initial to the last one.
+            if(sectors.Length > 1)
+            {
+                List<Connection> orderedList = new List<Connection>();
+                orderedList.Add(connections[0]);
+                for (int i = 0; i < connections.Count - 1; i++)
+                    orderedList.Add(connections[connections.Count - 1 - i]);
+                connections = orderedList;
+            }
 
         }
 
@@ -753,6 +758,7 @@ namespace GOA.Level
             connections.Clear();
             rooms.Clear();
             customObjects.Clear();
+            puzzles.Clear();
         }
 
         void BuildSectors()
@@ -927,41 +933,17 @@ namespace GOA.Level
 
         }
 
-        bool IsInitialSector(int index)
-        {
-            return index == tiles[connections.Find(c => c.IsInitialConnection()).sourceTileId].sectorIndex;
-        }
+        //bool IsInitialSector(int index)
+        //{
+        //    return index == tiles[connections.Find(c => c.IsInitialConnection()).targetTileId].sectorIndex;
+        //}
 
-        bool IsFinalSector(int index)
-        {
-            return index == tiles[connections.Find(c => c.IsFinalConnection()).sourceTileId].sectorIndex;
-        }
+        //bool IsFinalSector(int index)
+        //{
+        //    return index == tiles[connections.Find(c => c.IsFinalConnection()).sourceTileId].sectorIndex;
+        //}
 
-        bool IsBorderTile(int tileId)
-        {
 
-            int size = (int)Mathf.Sqrt(tiles.Length);
-            int sectorId = tiles[tileId].sectorIndex;
-
-            if (tileId % size > 0 && tiles[tileId - 1].sectorIndex != sectorId)
-            {
-                return true;
-            }
-            if (tileId % size < size - 1 && tiles[tileId + 1].sectorIndex != sectorId)
-            {
-                return true;
-            }
-            if (tileId / size > 0 && tiles[tileId - size].sectorIndex != sectorId)
-            {
-                return true;
-            }
-            if (tileId / size < size - 1 && tiles[tileId + size].sectorIndex != sectorId)
-            {
-                return true;
-            }
-
-            return false;
-        }
         
         List<int> GetTilesForRoom(int sectorIndex, int width, int height, List<int> notAllowedTileIds)
         {
@@ -1017,7 +999,7 @@ namespace GOA.Level
         {
             // Get the starting tile
             Connection startConnection = connections.Find(c => c.IsInitialConnection());
-            int tileId = startConnection.sourceTileId;
+            int tileId = startConnection.targetTileId;
             Vector3 direction = tiles[tileId].openDirection * -1f;
             Sector sector = sectors[tiles[tileId].sectorIndex];
 
@@ -1208,8 +1190,6 @@ namespace GOA.Level
             }
         }
 
-        //[SerializeField]
-        //List<Test> tests = new List<Test>();
         void CreatePuzzles()
         {
             
@@ -1219,20 +1199,23 @@ namespace GOA.Level
 
             // Get all gates
             List<CustomObject> gates = customObjects.FindAll(g => g.GetType() == typeof(Gate));
-            foreach(Gate gate in gates)
+            
+            // In the target sector of the current connection we have the puzzle to open the next connection in the list
+            for(int i=0; i<connections.Count-1; i++)
             {
+                // The connection source tile must be in the sector this puzzle belongs to
+                int trgId = connections[i].targetTileId;
+                int sectorId = tiles[trgId].sectorIndex;
+                int gateId = connections[i+1].gateIndex; // The gate of the next connection in the list
+
+                // Get a random puzzle
                 PuzzleAsset asset = puzzleCollection[Random.Range(0, puzzleCollection.Count)];
-                Debug.Log("PuzzleAssets.Count" + puzzleCollection.Count);
-                // We need to find the connection to get the sector this puzzle belongs to.
-                int gateIndex = customObjects.IndexOf(gate);
-                Connection connection = connections.Find(c => c.gateIndex == gateIndex);
-
-                Puzzle puzzle = PuzzleFactory.CreatePuzzle(this, asset, tiles[connection.sourceTileId].sectorIndex);
-                //puzzles.Add(puzzle);
-                //gate.puzzleIndex = puzzles.Count - 1;
-
-                
+                // Build the puzzle
+                Puzzle puzzle = PuzzleFactory.CreatePuzzle(this, asset, sectorId);
+                puzzles.Add(puzzle);
+                (customObjects[gateId] as Gate).puzzleIndex = puzzles.Count - 1;
             }
+            
         }
 
         public void Build(int seed)
@@ -1242,33 +1225,9 @@ namespace GOA.Level
             Create();
         }
 
-        //public int CreateCustomObject(GameObject prefab)
-        //{
-        //    // We must add the object to a tile 
-        //    //CustomObject co = new CustomObject(this, )
-        //    GameObject obj = Instantiate(prefab, geometryRoot);
-        //    customObjects.Add(obj.GetComponent<CustomObject>());
+ 
 
-        //}
-
-        void DebugTiles()
-        {
-            
-
-            int size = (int) Mathf.Sqrt(tiles.Length);
-            string log = "";
-            for(int i=0; i<size; i++)
-            {
-                for(int j=0; j<size; j++)
-                {
-                    if (j % size == 0)
-                        log += "\n|";
-                    log += tiles[i * size + j % size] + "|";
-                }
-            }
-
-            Debug.Log(log);
-        }
+       
 
 
     }

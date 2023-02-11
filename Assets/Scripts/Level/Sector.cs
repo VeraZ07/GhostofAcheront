@@ -35,7 +35,7 @@ namespace GOA.Level
             {
                 Connection c = new Connection();
                 c.builder = builder;
-                c.sourceTileId = sourceTileId;
+                c.targetTileId = sourceTileId;
                 c.type = 1;
                 return c;
             }
@@ -166,6 +166,19 @@ namespace GOA.Level
                 }
             }
 
+
+            public bool IsInitialSector()
+            {
+                return builder.tiles[builder.connections.Find(c => c.IsInitialConnection()).targetTileId].sectorIndex == new List<Sector>(builder.sectors).IndexOf(this);
+
+                //return index == tiles[connections.Find(c => c.IsInitialConnection()).targetTileId].sectorIndex;
+            }
+
+            public bool IsFinalSector()
+            {
+                return builder.tiles[builder.connections.Find(c => c.IsFinalConnection()).sourceTileId].sectorIndex == new List<Sector>(builder.sectors).IndexOf(this);
+                //return index == tiles[connections.Find(c => c.IsFinalConnection()).sourceTileId].sectorIndex;
+            }
         }
     }
 

@@ -30,7 +30,8 @@ namespace GOA.Level
             public float roteableWall = -1;
 
             /// <summary>
-            /// Indicates if a tile has wall in any of the cardinal directions.
+            /// This means that the tile has walls in some directions.
+            /// Having a fixed wall doesn't mean the tile is a border of its sector ( for example rooms have fixed walls )
             /// </summary>
             public bool isUpperBorder = false;
             public bool isLeftBorder = false;
@@ -38,18 +39,16 @@ namespace GOA.Level
             public bool isBottomBorder = false;
 
             /// <summary>
-            /// Tells us if the tile is the border of any sector
+            /// This means the tile is a border for its sector ( a boundary with another sector )
             /// </summary>
             public bool isUpperBoundary = false;
             public bool isLeftBoundary = false;
             public bool isRightBoundary = false;
             public bool isBottomBoundary = false;
 
-
             /// <summary>
-            /// 0: wall - default
-            /// 1: room
-            /// </summary>
+            /// Is it a regular tile or a room tile?
+            /// </summary>            
             public bool isRoomTile = false;
 
             public Vector3 openDirection = Vector3.zero;

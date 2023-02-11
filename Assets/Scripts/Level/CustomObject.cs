@@ -86,10 +86,11 @@ namespace GOA.Level
                         }
 
                         int tmpId = id - size;
-                        if (builder.sectors[sectorId].tileIds.Contains(tmpId))
+                        if (tmpId >= 0)//  builder.sectors[sectorId].tileIds.Contains(tmpId))
                         {
                             Tile tmpTile = builder.tiles[tmpId];
-                            if(tmpTile.roteableWall == 3 && dir == Vector3.forward)
+                            if((tmpTile.roteableWall == 3 && dir == Vector3.forward) ||
+                               (tmpTile.roteableWall == 2 && dir == Vector3.right))
                             {
                                 found = true;
                                 direction = dir;
@@ -97,10 +98,11 @@ namespace GOA.Level
                             }
                         }
                         tmpId = id - 1;
-                        if(id % size > 0 && builder.sectors[sectorId].tileIds.Contains(tmpId))
+                        if(tmpId % size < size - 1)// && builder.sectors[sectorId].tileIds.Contains(tmpId))
                         {
                             Tile tmpTile = builder.tiles[tmpId];
-                            if (tmpTile.roteableWall == 0 && dir == Vector3.left)
+                            if ((tmpTile.roteableWall == 0 && dir == Vector3.left) ||
+                                (tmpTile.roteableWall == 1 && dir == Vector3.back))
                             {
                                 found = true;
                                 direction = dir;
@@ -119,6 +121,7 @@ namespace GOA.Level
            
         }
 
+        [System.Serializable]
         class Gate : CustomObject
         {
             public int puzzleIndex;

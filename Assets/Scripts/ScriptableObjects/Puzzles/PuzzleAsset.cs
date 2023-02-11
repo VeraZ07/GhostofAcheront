@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace GOA.Assets
 {
+    [System.Serializable]
     public abstract class PuzzleAsset : ScriptableObject
     {
         public const string ResourceFolder = "Puzzles";
@@ -13,7 +14,7 @@ namespace GOA.Assets
         //int minimumPlayers = 1;
 
         [SerializeField]
-        GameObject prefab;
+        GameObject prefab; // The scene object prefab
 
         public GameObject Prefab
         {
@@ -21,15 +22,5 @@ namespace GOA.Assets
         }
     }
 
-    public class MultiStatePuzzleAsset: PuzzleAsset
-    {
-        [SerializeField]
-        CustomObjectAsset elementAsset;
-
-        public CustomObjectAsset ElementAsset
-        {
-            get { return elementAsset; }
-        }
-    }
 
 }
