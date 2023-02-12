@@ -84,7 +84,8 @@ namespace GOA.Level
 
         void Create()
         {
-            Debug.Log("Buildind level...");
+            
+            System.DateTime startTime = System.DateTime.Now;
 
             //
             // Init data
@@ -135,20 +136,12 @@ namespace GOA.Level
             BuildGeometry();
 
 
-            
-      
+            Debug.LogFormat("LevelBuilder - Level built in {0} seconds.", (System.DateTime.Now-startTime).TotalSeconds);
+
         }
 
         void BuildGeometry()
         {
-
-
-            //float tileSize = 4f;
-
-            // Load assets
-            //List<TileAsset> assets = new List<TileAsset>(Resources.LoadAll<TileAsset>(TileAsset.ResourceFolder));
-
-            //Debug.Log("Assets.Count:" + assets.Count);
 
             // Create root
             geometryRoot = new GameObject("Geometry").transform;
@@ -160,7 +153,7 @@ namespace GOA.Level
             // Create tiles
             for(int i=0; i<tiles.Length; i++)
             {
-                Debug.Log("Creating TileId:" + i);
+                
                 //TileAsset asset = assets.Find(t => t.name.ToLower() == tiles[i].GetCode().ToLower());
                 TileAsset asset = tiles[i].asset;
                 GameObject tile = Instantiate(asset.Prefab, geometryRoot);
@@ -190,7 +183,7 @@ namespace GOA.Level
 
                 for(int c=0; c<children.Length; c++)
                 {
-                    Debug.Log("Check tile " + children[c].name);
+                    
                     if (!tiles[i].isRoomTile)
                     {
                         if (children[c].name.ToLower().StartsWith("ub_"))
@@ -487,7 +480,6 @@ namespace GOA.Level
                         trgIds.Add(i);
                 }
 
-                Debug.Log("SrcIds.Count:" + srcIds.Count);
 
                 while(srcIds.Count > 0)
                 {
@@ -593,9 +585,7 @@ namespace GOA.Level
                     // We only create commons rooms for now
                     int w = Random.Range(minWidth, maxWidth + 1);
                     int h = Random.Range(minHeight, maxHeight + 1);
-                    Debug.Log("W:" + w);
-                    Debug.Log("H:" + h);
-                    Debug.Log("MaxTiles:" + maxTiles);
+                   
                     if (w * h > maxTiles)
                     {
                         if(w < h)
@@ -621,7 +611,7 @@ namespace GOA.Level
             }
 
             List<int> notAllowed = new List<int>();
-            Debug.Log("Rooms.Count:" + rooms.Count);
+            
             // Create rooms
             for (int j = 0; j < rooms.Count; j++)
             {
@@ -658,9 +648,7 @@ namespace GOA.Level
                     
             }
 
-            for (int i = 0; i < indices.Count; i++)
-                Debug.Log(indices[i]);
-
+           
             // Set a random tile as the starting one
             int enteringTileIndex = indices[Random.Range(0, indices.Count)];
 
@@ -1120,7 +1108,6 @@ namespace GOA.Level
                         // This is the first tile we can tell not reachable
                         int startTileId = candidates[topLeft] + size + 1;
 
-                        Debug.Log("Start Tile Id:" + startTileId);
                         RecursiveSetUnreachable(startTileId);
 
                     }
@@ -1141,7 +1128,7 @@ namespace GOA.Level
 
         void RecursiveSetUnreachable(int startTileId)
         {
-            Debug.Log("Recursive tile id:" + startTileId);
+            
             tiles[startTileId].unreachable = true;
             int size = (int)Mathf.Sqrt(tiles.Length);
            

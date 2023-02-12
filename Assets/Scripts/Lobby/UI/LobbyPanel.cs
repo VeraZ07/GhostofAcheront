@@ -45,7 +45,7 @@ namespace GOA.UI
             ClearAll();
 
             // Get session if exists
-            Debug.Log("Lobby.OnEnable()");
+            
             NetworkRunner runner = FindObjectOfType<NetworkRunner>();
             if ( runner && ( runner.SessionInfo || runner.GameMode == GameMode.Single ) )
             {
@@ -54,10 +54,8 @@ namespace GOA.UI
                 foreach(PlayerRef pRef in runner.ActivePlayers)
                 {
                     // Get the player
-                    Debug.Log("LoggedPlayer.Count:" + players.Count);
+                   
                     Player player = players.Find(p => p.PlayerRef == pRef);
-
-                    Debug.LogFormat("LobbyPanel - PlayerName:{0}", player.Name);
 
                     // Set player item
                     PlayerItem playerItem = new List<PlayerItem>(GetComponentsInChildren<PlayerItem>()).Find(p => p.Player == null);

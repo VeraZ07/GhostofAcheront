@@ -410,8 +410,6 @@ namespace GOA
                     int spIndex = 0;
                     GameObject[] spawnPointList = GameObject.FindGameObjectsWithTag("PlayerSpawnPoint");
 
-                    Debug.Log("SpawnPoint.Count:" + spawnPointList.Length);
-
                     // Spawn characters
                     foreach (Player player in players)
                     {

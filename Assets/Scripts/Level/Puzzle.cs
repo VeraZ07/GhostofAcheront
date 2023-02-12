@@ -61,7 +61,7 @@ namespace GOA.Level
                     elementIds.Add(builder.customObjects.Count - 1);
 
                     // Attach to a random tile
-                    co.AttachRandomly(sectorId);
+                    co.AttachRandomly(sectorId, false);
 
 
                 }

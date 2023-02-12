@@ -102,13 +102,11 @@ namespace GOA
         
         public static void OnReadyChanged(Changed<Player> changed)
         {
-            Debug.LogFormat("OnReadyChanged:{0}", changed.Behaviour.Name);
             OnReadyChangedCallback?.Invoke(changed.Behaviour);
         }
 
         public static void OnNameChanged(Changed<Player> changed)
         {
-            Debug.LogFormat("OnReadyChanged:{0}", changed.Behaviour.Name);
             OnNameChangedCallback?.Invoke(changed.Behaviour);
         }
 

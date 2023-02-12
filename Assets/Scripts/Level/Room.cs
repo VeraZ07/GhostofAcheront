@@ -31,8 +31,6 @@ namespace GOA.Level
             {
                 int size = (int)Mathf.Sqrt(builder.tiles.Length);
 
-                Debug.LogFormat("[Room W:{0}, H:{1}, Tiles.Count:{2}, Sector:{3}", width, height, tileIds.Count, sectorId);
-
                 List<TileAsset> assets = new List<TileAsset>(Resources.LoadAll<TileAsset>(System.IO.Path.Combine(TileAsset.ResourceFolder, builder.theme.ToString()))).FindAll(t => t.name.ToLower().StartsWith("roomtile_"));
 
                 for (int i = 0; i < tileIds.Count; i++)
