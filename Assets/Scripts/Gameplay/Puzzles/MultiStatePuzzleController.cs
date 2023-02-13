@@ -3,6 +3,7 @@ using GOA.Level;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static GOA.Level.LevelBuilder;
 
 namespace GOA
 {
@@ -11,23 +12,10 @@ namespace GOA
     /// </summary>
     public class MultiStatePuzzleController : PuzzleController
     {
-
-        [SerializeField]
-        GameObject stateControllerPrefab; // Create OnOffController script
-
-        /// <summary>
-        /// The key is the index of the corresponding object in the builder list; the value is the state of that object.
-        /// </summary>
-        [Networked]
-        //[Capacity(6)]
         [UnitySerializeField]
-        NetworkDictionary<int, int> StateControllerDictionary => default;
-
-        //[Networked]
-        [UnitySerializeField]
-        int StateControllerCount { get; set; } = 0;
-
-
+        [Capacity(10)]
+        [Networked(OnChanged = nameof(OnStateArrayChanged))] 
+        NetworkArray<int> StateArray { get; } = default;
 
         // Start is called before the first frame update
         void Start()
@@ -47,16 +35,50 @@ namespace GOA
 
             if (!Runner.IsHostMigrationEnabled)
             {
-                // Create state controllers from scratch
-                int count = Random.Range(1, 5);
-                LevelBuilder builder = FindObjectOfType<LevelBuilder>();
+                //if (Runner.IsServer)
+                //{
+                //    // Attach the puzzle previously created by the builder
+                //    LevelBuilder builder = FindObjectOfType<LevelBuilder>();
 
+                //    // Get the puzzle and set all the states
+                //    MultiStatePuzzle puzzle = builder.GetPuzzle(PuzzleIndex) as MultiStatePuzzle;
+
+                //    List<int> objIds = new List<int>(puzzle.ElementsIds);
+                //    foreach(int id in objIds)
+                //    {
+                        
+                //    }
+                //}
 
             }
             else
             {
                 // Resume state controllers from the builder
             }
+        }
+
+        public static void OnStateArrayChanged(Changed<MultiStatePuzzleController> changed)
+        {
+            Debug.LogFormat("OnSolvedChanged:{0}", changed.Behaviour.StateArray);
+            //OnSolvedChangedCallback?.Invoke(changed.Behaviour);
+        }
+
+        public override void Initialize()
+        {
+            // Attach the puzzle previously created by the builder
+            LevelBuilder builder = FindObjectOfType<LevelBuilder>();
+
+            // Get the puzzle and set all the states
+            MultiStatePuzzle puzzle = builder.GetPuzzle(PuzzleIndex) as MultiStatePuzzle;
+
+            List<int> objIds = new List<int>(puzzle.ElementsIds);
+            //StateArray = new NetworkArray<int>[objIds.Count];
+            for(int i=0; i<objIds.Count; i++)
+            {
+                StateArray.Set(i, 1);
+            }
+
+
         }
     }
 

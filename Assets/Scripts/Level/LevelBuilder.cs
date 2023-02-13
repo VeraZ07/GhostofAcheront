@@ -40,6 +40,10 @@ namespace GOA.Level
         int theme = 0;
 
         Transform geometryRoot;
+        public Transform GeometryRoot
+        {
+            get { return geometryRoot; }
+        }
         
         private void Awake()
         {
@@ -353,36 +357,57 @@ namespace GOA.Level
             List<CustomObject> gates = new List<CustomObject>(customObjects).FindAll(c => c.GetType() == typeof(Gate));
             foreach (CustomObject gate in gates)
             {
-                // Get the asset
-                CustomObjectAsset gateAsset = gate.asset;
-                // Instantiate the scene object
-                GameObject gateObj = Instantiate(gateAsset.Prefab, geometryRoot);
+                gate.CreateSceneObject();
+                //// Get the asset
+                //CustomObjectAsset gateAsset = gate.asset;
+                //// Instantiate the scene object
+                //GameObject gateObj = Instantiate(gateAsset.Prefab, geometryRoot);
                 
-                // Set date
-                gate.sceneObject = gateObj;
+                //// Set date
+                //gate.sceneObject = gateObj;
 
-                // Position the object
-                Tile tile = tiles[gate.tileId];
-                Vector3 position = tile.GetPosition();
-                gateObj.transform.position = position;
-                gateObj.transform.GetChild(0).forward = gate.direction;
+                //// Position the object
+                //Tile tile = tiles[gate.tileId];
+                //Vector3 position = tile.GetPosition();
+                //gateObj.transform.position = position;
+                //gateObj.transform.GetChild(0).forward = gate.direction;
             }
 
             //
             // Create puzzles object
             //
-            NetworkRunner runner = FindObjectOfType<NetworkRunner>();
-            Player localPlayer = new List<Player>(FindObjectsOfType<Player>()).Find(p => p.HasStateAuthority);
+            
             foreach(Puzzle puzzle in puzzles)
             {
-                runner.Spawn(puzzle.asset.Prefab, Vector3.zero, Quaternion.identity, null, 
-                    (runner, obj)=> 
-                    { 
-                        obj.GetComponent<PuzzleController>().PuzzleIndex = puzzles.IndexOf(puzzle); 
-                    });
+                // First create scene objects
+                puzzle.CreateSceneObjects();
+
             }
 
-            // Bake navigation mesh
+            //
+            // Server only
+            //
+            //
+            // Create puzzle controllers
+            //
+            NetworkRunner runner = FindObjectOfType<NetworkRunner>();
+            if (runner.IsServer)
+            {
+                Player localPlayer = new List<Player>(FindObjectsOfType<Player>()).Find(p => p.HasStateAuthority);
+                foreach (Puzzle puzzle in puzzles)
+                {
+                    runner.Spawn(puzzle.Asset.ControllerPrefab, Vector3.zero, Quaternion.identity, null,
+                        (runner, obj) =>
+                        {
+                            obj.GetComponent<PuzzleController>().PuzzleIndex = puzzles.IndexOf(puzzle);
+                            obj.GetComponent<PuzzleController>().Initialize();
+                        });
+                }
+            }
+            
+            //
+            // Bake the navigation mesh
+            //
             FindObjectOfType<NavMeshSurface>().BuildNavMesh();
         }
 
@@ -1212,7 +1237,10 @@ namespace GOA.Level
             Create();
         }
 
- 
+        public Puzzle GetPuzzle(int puzzleId)
+        {
+            return puzzles[puzzleId];
+        }
 
        
 

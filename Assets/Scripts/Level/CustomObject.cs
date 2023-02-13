@@ -31,6 +31,13 @@ namespace GOA.Level
                 this.asset = asset;
             }
 
+            public void CreateSceneObject()
+            {
+                sceneObject = Instantiate(asset.Prefab, builder.GeometryRoot);
+                sceneObject.transform.position = builder.tiles[tileId].GetPosition();
+                sceneObject.transform.GetChild(0).transform.forward = direction;
+            }
+
             public void AttachRandomly(int sectorId, bool inTheMiddle, List<int> exclusionList = null)
             {
                 List<int> tileIds = new List<int>(builder.sectors[sectorId].tileIds);

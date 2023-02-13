@@ -24,27 +24,44 @@ namespace GOA.Level
         }
 
         [System.Serializable]
-        abstract class Puzzle
+        public abstract class Puzzle
         {
             [SerializeField]
-            public PuzzleAsset asset;
+            PuzzleAsset asset;
+            public PuzzleAsset Asset
+            {
+                get { return asset; }
+            }
 
             //[SerializeField]
-            public int sectorId;
+            int sectorId;
+
+            //public List<GameObject> sceneObjects = new List<GameObject>();
+
+            //public PuzzleController puzzleController;
+
+            protected LevelBuilder builder;
 
             public Puzzle(LevelBuilder builder, PuzzleAsset asset, int sectorId)
             {
                 this.asset = asset;
                 this.sectorId = sectorId;
+                this.builder = builder;
             }
+
+            public abstract void CreateSceneObjects();
 
             
         }
 
-        class MultiStatePuzzle: Puzzle
+        public class MultiStatePuzzle: Puzzle
         {
         
-            public List<int> elementIds = new List<int>();
+            List<int> elementIds = new List<int>();
+            public ICollection<int> ElementsIds
+            {
+                get { return elementIds.AsReadOnly(); }
+            }
 
             public MultiStatePuzzle(LevelBuilder builder, PuzzleAsset asset, int sectorId): base(builder, asset, sectorId)
             {
@@ -67,7 +84,14 @@ namespace GOA.Level
                 }
             }
 
-            
+            public override void CreateSceneObjects()
+            {
+                // Loop through all the ids
+                for(int i=0; i<elementIds.Count; i++)
+                {
+                    builder.customObjects[elementIds[i]].CreateSceneObject();
+                }
+            }
         }
     }
 

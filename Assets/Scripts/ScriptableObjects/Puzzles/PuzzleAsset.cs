@@ -14,11 +14,11 @@ namespace GOA.Assets
         //int minimumPlayers = 1;
 
         [SerializeField]
-        GameObject prefab; // The scene object prefab
+        GameObject controllerPrefab; // The scene object prefab
 
-        public GameObject Prefab
+        public GameObject ControllerPrefab
         {
-            get { return prefab; }
+            get { return controllerPrefab; }
         }
     }
 
