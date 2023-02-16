@@ -350,7 +350,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &165659412
 Light:
   m_ObjectHideFlags: 0
@@ -550,6 +550,54 @@ MonoBehaviour:
   m_PointlightHDType: 0
   m_SpotLightShape: 0
   m_AreaLightShape: 0
+--- !u!1 &290740424
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 290740426}
+  - component: {fileID: 290740425}
+  m_Layer: 0
+  m_Name: LightingManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &290740425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 290740424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2aa884b7dbd04c5488bcb4a2bb4719bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  globalVolumePrefab: {fileID: 705222808106588541, guid: ab15ed540b2e41047b614aca33527333,
+    type: 3}
+  localVolumetricFogPrefab: {fileID: 8742450213894873476, guid: 90fe8f485e8f2524287a729c08cbe53f,
+    type: 3}
+--- !u!4 &290740426
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 290740424}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &292291673
 GameObject:
   m_ObjectHideFlags: 0
@@ -579,7 +627,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 340bf145ea8b45a4cb71d4319d45b682, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tiles: []
+  sectors: []
   connections: []
+  rooms: []
+  customObjects: []
+  puzzles: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!4 &292291675
 Transform:
   m_ObjectHideFlags: 0
