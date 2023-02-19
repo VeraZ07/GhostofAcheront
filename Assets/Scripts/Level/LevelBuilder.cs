@@ -18,6 +18,7 @@ namespace GOA.Level
         [SerializeField]
         Tile[] tiles;
 
+
         [SerializeField]
         Sector[] sectors;
 
@@ -124,6 +125,9 @@ namespace GOA.Level
 
             CheckForUnreachableTiles();
 
+
+            
+
             //
             // Create puzzles
             //
@@ -138,6 +142,11 @@ namespace GOA.Level
             // Load geometry
             //
             BuildGeometry();
+
+            // 
+            // Create lighting
+            //
+            CreateLighting();
 
 
             Debug.LogFormat("LevelBuilder - Level built in {0} seconds.", (System.DateTime.Now-startTime).TotalSeconds);
@@ -1242,7 +1251,7 @@ namespace GOA.Level
             return puzzles[puzzleId];
         }
 
-       
+        
 
 
     }

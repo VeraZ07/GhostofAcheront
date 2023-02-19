@@ -91,6 +91,8 @@ namespace GOA.Level
                 return pos;
             }
 
+           
+           
             public override string ToString()
             {
                 return string.Format(" {0}:{1} ", sectorIndex, asset.name);
