@@ -589,6 +589,9 @@ MonoBehaviour:
     type: 3}
   localVolumetricFogPrefab: {fileID: 8742450213894873476, guid: 90fe8f485e8f2524287a729c08cbe53f,
     type: 3}
+  floatingLightPrefabList:
+  - {fileID: 701811009306465393, guid: 0839a3a08299f2c49a1e22a9230e727d, type: 3}
+  crackLightPrefabList: []
   references:
     version: 2
     RefIds: []

@@ -13,11 +13,24 @@ namespace GOA.Level
         [SerializeField]
         GameObject localVolumetricFogPrefab;
 
+        [SerializeField]
+        List<GameObject> floatingLightPrefabList;
+
+        [SerializeField]
+        List<GameObject> crackLightPrefabList;
+
         GameObject globalVolume;
         
         Transform lightingRoot;
 
         Dictionary<int, GameObject> localVolumetricFogDictionary = new Dictionary<int, GameObject>();
+
+        Dictionary<int, GameObject> floatingLightDictionary = new Dictionary<int, GameObject>();
+        
+        Dictionary<int, GameObject> crackLightDictionary = new Dictionary<int, GameObject>();
+
+        
+        
 
         // Start is called before the first frame update
         //void Start()
@@ -53,7 +66,9 @@ namespace GOA.Level
 
             localVolumetricFogDictionary.Clear();
 
-            float ratio = Random.Range(0.2f, 0.45f);
+            float minRatio = 0.2f;
+            float maxRatio = 0.45f;
+            float ratio = Random.Range(minRatio, maxRatio);
             int size = (int)Mathf.Sqrt(tiles.Length);
            
             int max = (int)(tiles.Length * ratio);
@@ -67,7 +82,7 @@ namespace GOA.Level
                     availables.Add(i);
             }
 
-            while(localVolumetricFogDictionary.Keys.Count < max)
+            while(localVolumetricFogDictionary.Keys.Count < max && availables.Count > 0)
             {
                 // Get a random tile that has not been taken yet
                 int id = availables[Random.Range(0, availables.Count)];
@@ -105,7 +120,7 @@ namespace GOA.Level
                     // Check if these two tiles are connected
                     if (!tiles[id].isUpperBorder && !tiles[id].isUpperBoundary &&
                         tiles[top].roteableWall != 3 && // Top
-                        (left == -1 || tiles[left].roteableWall != 1)) // Left
+                        (left == -1 || tiles[top-1].roteableWall != 1)) // Left
                     {
                         // We must attach these two volumes
                         fogVolume.parameters.positiveFade.z = 0;
@@ -157,6 +172,81 @@ namespace GOA.Level
             
         }
 
+        void CreateFloatingLights()
+        {
+            foreach(GameObject light in floatingLightDictionary.Values)
+            {
+                DestroyImmediate(light);
+            }
+            floatingLightDictionary.Clear();
+
+            // How many lights
+            float minRatio = 0.05f;
+            float maxRatio = 0.12f;
+            float ratio = Random.Range(minRatio, maxRatio);
+            int size = (int)Mathf.Sqrt(tiles.Length);
+
+            int max = (int)(tiles.Length * ratio);
+
+            // Create an array of available tiles      
+            List<int> availables = new List<int>();
+            for (int i = 0; i < tiles.Length; i++)
+            {
+                if (!tiles[i].unreachable)
+                    availables.Add(i);
+            }
+
+            while (floatingLightDictionary.Keys.Count < max && availables.Count > 0)
+            {
+                // Get the next tile
+                int id = availables[Random.Range(0, availables.Count)];
+
+                // Remove the current tile and the adjacent ones if they are connected
+                availables.Remove(id);
+                
+                int top = id - size >= 0 ? id - size : -1;
+                int right = id + 1 < tiles.Length && id + 1 % size != 0 ? id + 1 : -1;
+                int down = id + size < tiles.Length ? id + size : -1;
+                int left = id - 1 >= 0 && id - 1 % size != size - 1 ? id - 1 : -1;
+                
+                if (top != -1)
+                    availables.Remove(top);
+            
+                if (top != -1 && right != -1)
+                    availables.Remove(top+1);
+
+                if (right != -1)
+                    availables.Remove(right);
+
+                if (right != -1 && down != -1)
+                    availables.Remove(down + 1);
+
+                if (down != -1)
+                    availables.Remove(down);
+
+                if (down != -1 && left != -1)
+                    availables.Remove(down - 1);
+
+                if (left != -1)
+                    availables.Remove(left);
+
+                if (top != -1 && left != -1)
+                    availables.Remove(top - 1);
+
+                // Create the light
+                GameObject light = Instantiate(floatingLightPrefabList[Random.Range(0, floatingLightPrefabList.Count)], lightingRoot);
+                light.transform.position = tiles[id].GetPosition();
+                light.transform.rotation = Quaternion.identity;
+                floatingLightDictionary.Add(id, light);
+            }
+
+        }
+
+        void CreateCrackLights()
+        {
+
+        }
+
         void CreateLighting()
         {
             
@@ -165,6 +255,10 @@ namespace GOA.Level
             CreateGlobalVolume();
 
             CreateLocalFogVolumes();
+
+            CreateFloatingLights();
+
+            CreateCrackLights();
         }
 
 

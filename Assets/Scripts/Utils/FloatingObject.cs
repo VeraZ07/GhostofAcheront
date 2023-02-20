@@ -29,12 +29,13 @@ namespace GOA
 
         private void Awake()
         {
-            center = transform.position;
+            
         }
 
         // Start is called before the first frame update
         void Start()
         {
+            center = transform.position;
             targetPosition = GetNewTargetPosition();
             speed = Random.Range(minSpeed, maxSpeed);
         }
