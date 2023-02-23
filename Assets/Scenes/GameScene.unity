@@ -8,8 +8,9 @@ OcclusionCullingSettings:
     smallestOccluder: 5
     smallestHole: 0.25
     backfaceThreshold: 100
-  m_SceneGUID: 00000000000000000000000000000000
-  m_OcclusionCullingData: {fileID: 0}
+  m_SceneGUID: 0d3db1d5a73ddd24fa2921aa08ee5418
+  m_OcclusionCullingData: {fileID: 36300000, guid: 4125b194d9a4b8844a96a421cebd2e49,
+    type: 2}
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
@@ -591,7 +592,8 @@ MonoBehaviour:
     type: 3}
   floatingLightPrefabList:
   - {fileID: 701811009306465393, guid: 0839a3a08299f2c49a1e22a9230e727d, type: 3}
-  crackLightPrefabList: []
+  crackLightPrefabList:
+  - {fileID: 4572779524035204726, guid: 75c1b2c3b481c084a847d7b4cbe5adfe, type: 3}
   references:
     version: 2
     RefIds: []

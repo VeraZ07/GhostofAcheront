@@ -244,6 +244,149 @@ namespace GOA.Level
 
         void CreateCrackLights()
         {
+            foreach (GameObject light in crackLightDictionary.Values)
+            {
+                DestroyImmediate(light);
+            }
+            crackLightDictionary.Clear();
+
+            // How many lights
+            float minRatio = 0.02f;
+            float maxRatio = 0.06f;
+            float ratio = Random.Range(minRatio, maxRatio);
+            int size = (int)Mathf.Sqrt(tiles.Length);
+
+            int max = (int)(tiles.Length * ratio);
+
+            // Create an array of available tiles       
+            List<int> availables = new List<int>();
+            for (int i = 0; i < tiles.Length; i++)
+            {
+                bool hasWall = false;
+                if (tiles[i].isBottomBorder || tiles[i].isBottomBoundary || tiles[i].isUpperBorder || tiles[i].isUpperBoundary ||
+                   tiles[i].isLeftBorder || tiles[i].isLeftBoundary || tiles[i].isRightBorder || tiles[i].isRightBoundary ||
+                   tiles[i].roteableWall == 0 || tiles[i].roteableWall == 3)
+                    hasWall = true;
+
+
+
+                if (!hasWall)
+                {
+                    int top = i - size >= 0 ? i - size : -1;
+                    int right = i + 1 < tiles.Length && i + 1 % size != 0 ? i + 1 : -1;
+                    int down = i + size < tiles.Length ? i + size : -1;
+                    int left = i - 1 >= 0 && i - 1 % size != size - 1 ? i - 1 : -1;
+
+                    if ((top != -1 && (tiles[top].roteableWall == 2 || tiles[top].roteableWall == 3)) ||
+                       (left != -1 && (tiles[left].roteableWall == 0 || tiles[left].roteableWall == 1)))
+                        hasWall = true;
+
+                }
+
+
+
+                if (!tiles[i].unreachable && !floatingLightDictionary.ContainsKey(i))
+                    availables.Add(i);
+            }
+
+            while (crackLightDictionary.Keys.Count < max && availables.Count > 0)
+            {
+                // Get the next tile
+                int id = availables[Random.Range(0, availables.Count)];
+
+                // Remove the current tile and the adjacent ones if they are connected
+                availables.Remove(id);
+
+                // Check adjacent tiles
+                int top = id - size >= 0 ? id - size : -1;
+                int right = id + 1 < tiles.Length && id + 1 % size != 0 ? id + 1 : -1;
+                int down = id + size < tiles.Length ? id + size : -1;
+                int left = id - 1 >= 0 && id - 1 % size != size - 1 ? id - 1 : -1;
+
+                // Check a wall
+                bool found = false;
+                List<int> dirs = new List<int>(new int[] { 0, 1, 2, 3 });
+                Quaternion rot = Quaternion.identity;
+                while(dirs.Count > 0 && !found)
+                {
+                    int dir = dirs[Random.Range(0, dirs.Count)];
+                    dirs.Remove(dir);
+                                        
+                    switch (dir)
+                    {
+                        case 0: // Forward
+                            if (tiles[id].isUpperBorder || tiles[id].isUpperBoundary || 
+                                (top != -1 && tiles[top].roteableWall == 3))
+                            {
+                                found = true;
+                                rot = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+                            }
+                                break;
+                        //case 1: // Right
+                        //    if (tiles[id].isRightBorder || tiles[id].isRightBoundary || tiles[id].roteableWall == 0 ||
+                        //        (top != -1 && tiles[top].roteableWall == 2))
+                        //    {
+                        //        found = true;
+                        //        rot = Quaternion.LookRotation(Vector3.right, Vector3.up);
+                        //    }
+                        //    break;
+                        //case 2: // Back
+                        //    if (tiles[id].isBottomBorder || tiles[id].isBottomBoundary || tiles[id].roteableWall == 3 ||
+                        //        (left != -1 && tiles[left].roteableWall == 1))
+                        //    {
+                        //        found = true;
+                        //        rot = Quaternion.LookRotation(Vector3.back, Vector3.up);
+                        //    }
+                        //    break;
+                        //case 3: // Left
+                        //    if (tiles[id].isLeftBorder || tiles[id].isLeftBoundary || 
+                        //        (left != -1 && tiles[left].roteableWall == 0))
+                        //    {
+                        //        found = true;
+                        //        rot = Quaternion.LookRotation(Vector3.left, Vector3.up);
+                        //    }
+                        //    break;
+                    }
+                }
+
+                if (found)
+                {
+                    if (top != -1)
+                        availables.Remove(top);
+
+                    if (top != -1 && right != -1)
+                        availables.Remove(top + 1);
+
+                    if (right != -1)
+                        availables.Remove(right);
+
+                    if (right != -1 && down != -1)
+                        availables.Remove(down + 1);
+
+                    if (down != -1)
+                        availables.Remove(down);
+
+                    if (down != -1 && left != -1)
+                        availables.Remove(down - 1);
+
+                    if (left != -1)
+                        availables.Remove(left);
+
+                    if (top != -1 && left != -1)
+                        availables.Remove(top - 1);
+
+                    // Create the light
+                    GameObject light = Instantiate(crackLightPrefabList[Random.Range(0, crackLightPrefabList.Count)], lightingRoot);
+                    light.transform.position = tiles[id].GetPosition();
+                    light.transform.GetChild(0).rotation = rot;
+                    crackLightDictionary.Add(id, light);
+                }
+                
+
+               
+
+                
+            }
 
         }
 
@@ -258,7 +401,7 @@ namespace GOA.Level
 
             CreateFloatingLights();
 
-            CreateCrackLights();
+            //CreateCrackLights();
         }
 
 
