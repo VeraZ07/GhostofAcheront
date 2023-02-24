@@ -159,10 +159,10 @@ Material:
     - _AlphaSrcBlend: 1
     - _AlphaToMask: 0
     - _AlphaToMaskInspectorValue: 0
-    - _Anisotropy: -0.606
+    - _Anisotropy: 0.784
     - _BlendMode: 0
     - _BumpScale: 0.2
-    - _CoatMask: 0.752
+    - _CoatMask: 0.1
     - _CullMode: 0
     - _CullModeForward: 0
     - _Cutoff: 0.032
@@ -206,12 +206,12 @@ Material:
     - _IridescenceThickness: 1
     - _LinkDetailsWithBase: 1
     - _MaterialID: 2
-    - _Metallic: 0.641
+    - _Metallic: 0.764
     - _MetallicRemapMax: 1
     - _MetallicRemapMin: 0
     - _Mode: 0
     - _NormalMapSpace: 0
-    - _NormalScale: 0.44
+    - _NormalScale: 0.3
     - _OcclusionStrength: 1
     - _OpaqueCullMode: 2
     - _PPDLodThreshold: 5
@@ -224,7 +224,7 @@ Material:
     - _ReceivesSSR: 1
     - _ReceivesSSRTransparent: 0
     - _RefractionModel: 0
-    - _Smoothness: 0.708
+    - _Smoothness: 0.217
     - _SmoothnessRemapMax: 0.99999994
     - _SmoothnessRemapMin: 0
     - _SmoothnessTextureChannel: 0
