@@ -8,6 +8,9 @@ namespace GOA
     public class PlayerController : NetworkBehaviour
     {
 
+        [SerializeField]
+        new Light light;
+
         NetworkCharacterControllerPrototypeCustom cc;
 
         bool running = false;
@@ -30,6 +33,7 @@ namespace GOA
         // Start is called before the first frame update
         void Start()
         {
+            
 
         }
 
@@ -55,6 +59,9 @@ namespace GOA
             {
                 //cam.SetActive(false) ;
                 DestroyImmediate(cam.gameObject);
+
+                // Destory light
+                DestroyImmediate(light);
             }
             
 

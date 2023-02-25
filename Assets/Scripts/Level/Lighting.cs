@@ -181,7 +181,7 @@ namespace GOA.Level
             floatingLightDictionary.Clear();
 
             // How many lights
-            float minRatio = 0.05f;
+            float minRatio = 0.08f;
             float maxRatio = 0.12f;
             float ratio = Random.Range(minRatio, maxRatio);
             int size = (int)Mathf.Sqrt(tiles.Length);
@@ -208,30 +208,44 @@ namespace GOA.Level
                 int right = id + 1 < tiles.Length && id + 1 % size != 0 ? id + 1 : -1;
                 int down = id + size < tiles.Length ? id + size : -1;
                 int left = id - 1 >= 0 && id - 1 % size != size - 1 ? id - 1 : -1;
-                
-                if (top != -1)
-                    availables.Remove(top);
+
+                Debug.Log("Light ID:" + id);
+
+                int count = 9;
+                for(int k=0; k<count; k++)
+                {
+                    int r = ( k - (count-1)/2 ) * size;
+                    for(int j=0; j<count; j++)
+                    {
+                        int c = j - (count - 1) / 2;
+                        availables.Remove(id + r + c);
+                        Debug.Log("Removing id:" + (id + r + c));
+                    }
+                }
+
+                //if (top != -1)
+                //    availables.Remove(top);
             
-                if (top != -1 && right != -1)
-                    availables.Remove(top+1);
+                //if (top != -1 && right != -1)
+                //    availables.Remove(top+1);
 
-                if (right != -1)
-                    availables.Remove(right);
+                //if (right != -1)
+                //    availables.Remove(right);
 
-                if (right != -1 && down != -1)
-                    availables.Remove(down + 1);
+                //if (right != -1 && down != -1)
+                //    availables.Remove(down + 1);
 
-                if (down != -1)
-                    availables.Remove(down);
+                //if (down != -1)
+                //    availables.Remove(down);
 
-                if (down != -1 && left != -1)
-                    availables.Remove(down - 1);
+                //if (down != -1 && left != -1)
+                //    availables.Remove(down - 1);
 
-                if (left != -1)
-                    availables.Remove(left);
+                //if (left != -1)
+                //    availables.Remove(left);
 
-                if (top != -1 && left != -1)
-                    availables.Remove(top - 1);
+                //if (top != -1 && left != -1)
+                //    availables.Remove(top - 1);
 
                 // Create the light
                 GameObject light = Instantiate(floatingLightPrefabList[Random.Range(0, floatingLightPrefabList.Count)], lightingRoot);
@@ -283,8 +297,7 @@ namespace GOA.Level
 
                 }
 
-
-
+                
                 if (!tiles[i].unreachable && !floatingLightDictionary.ContainsKey(i))
                     availables.Add(i);
             }
