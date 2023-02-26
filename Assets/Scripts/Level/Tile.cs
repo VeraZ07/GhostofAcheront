@@ -91,8 +91,161 @@ namespace GOA.Level
                 return pos;
             }
 
-           
-           
+            public void CheckForPillars()
+            {
+                int index = new List<Tile>(builder.tiles).FindIndex(t=>t == this);
+                int size = (int)Mathf.Sqrt(builder.tiles.Length);
+
+                
+                GameObject obj = sceneObject;
+                if (isUpperBorder && isLeftBorder)
+                {
+                    Transform t = new List<Transform>(obj.GetComponentsInChildren<Transform>()).Find(t => "ul_pillar".Equals(t.name.ToLower()));
+                    if (t)
+                    {
+                        DestroyImmediate(t.gameObject);
+                        return;
+                    }
+                }
+                if (isUpperBorder && isRightBorder)
+                {
+                    Transform t = new List<Transform>(obj.GetComponentsInChildren<Transform>()).Find(t => "ur_pillar".Equals(t.name.ToLower()));
+                    if (t)
+                    {
+                        DestroyImmediate(t.gameObject);
+                        return;
+                    }
+                }
+                if (isBottomBorder && isRightBorder)
+                {
+                    Transform t = new List<Transform>(obj.GetComponentsInChildren<Transform>()).Find(t => "br_pillar".Equals(t.name.ToLower()));
+                    if (t)
+                    {
+                        DestroyImmediate(t.gameObject);
+                        return;
+                    }
+                }
+                if (isBottomBorder && isLeftBorder)
+                {
+                    Transform t = new List<Transform>(obj.GetComponentsInChildren<Transform>()).Find(t => "bl_pillar".Equals(t.name.ToLower()));
+                    if (t)
+                    {
+                        DestroyImmediate(t.gameObject);
+                        return;
+                    }
+                }
+
+                int top = index - size >= 0 ? index - size : -1;
+                int right = index % size < size - 1 ? index + 1 : -1;
+                int bottom = index + size < builder.tiles.Length ? index + size : -1;
+                int left = index % size > 0 ? index - 1 : -1;
+
+                // Upper left
+                if(top != -1 && left != -1 && builder.tiles[top].roteableWall == 3 && builder.tiles[top-1].roteableWall == 2)
+                {
+                    Transform t = new List<Transform>(obj.GetComponentsInChildren<Transform>()).Find(t => "ul_pillar".Equals(t.name.ToLower()));
+                    if (t)
+                    {
+                        DestroyImmediate(t.gameObject);
+                        return;
+                    }
+                }
+
+                // Upper right
+                if (top != -1 && builder.tiles[top].roteableWall == 3 && builder.tiles[index].roteableWall == 0)
+                {
+                    Transform t = new List<Transform>(obj.GetComponentsInChildren<Transform>()).Find(t => "ur_pillar".Equals(t.name.ToLower()));
+                    if (t)
+                    {
+                        DestroyImmediate(t.gameObject);
+                        return;
+                    }
+                }
+
+                if (top != -1 && left != -1 && builder.tiles[top-1].roteableWall == 1 && builder.tiles[index].roteableWall == 0)
+                {
+                    Transform t = new List<Transform>(obj.GetComponentsInChildren<Transform>()).Find(t => "ur_pillar".Equals(t.name.ToLower()));
+                    if (t)
+                    {
+                        DestroyImmediate(t.gameObject);
+                        return;
+                    }
+                }
+
+                if (top != -1 && left != -1 && builder.tiles[top - 1].roteableWall == 1 && builder.tiles[top].roteableWall == 2)
+                {
+                    Transform t = new List<Transform>(obj.GetComponentsInChildren<Transform>()).Find(t => "ur_pillar".Equals(t.name.ToLower()));
+                    if (t)
+                    {
+                        DestroyImmediate(t.gameObject);
+                        return;
+                    }
+                }
+
+                // Bottom right
+                if (top != -1 && builder.tiles[top].roteableWall == 2 && builder.tiles[index].roteableWall == 3)
+                {
+                    Transform t = new List<Transform>(obj.GetComponentsInChildren<Transform>()).Find(t => "br_pillar".Equals(t.name.ToLower()));
+                    if (t)
+                    {
+                        DestroyImmediate(t.gameObject);
+                        return;
+                    }
+                }
+
+                if (top != -1 && left != -1 && builder.tiles[top].roteableWall == 2 && builder.tiles[left].roteableWall == 1)
+                {
+                    Transform t = new List<Transform>(obj.GetComponentsInChildren<Transform>()).Find(t => "br_pillar".Equals(t.name.ToLower()));
+                    if (t)
+                    {
+                        DestroyImmediate(t.gameObject);
+                        return;
+                    }
+                }
+
+                if (left != -1 && builder.tiles[left].roteableWall == 1 && builder.tiles[index].roteableWall == 0)
+                {
+                    Transform t = new List<Transform>(obj.GetComponentsInChildren<Transform>()).Find(t => "br_pillar".Equals(t.name.ToLower()));
+                    if (t)
+                    {
+                        DestroyImmediate(t.gameObject);
+                        return;
+                    }
+                }
+
+                // Bottom left
+                if (left != -1 && builder.tiles[left].roteableWall == 0 && builder.tiles[index].roteableWall == 3)
+                {
+                    Transform t = new List<Transform>(obj.GetComponentsInChildren<Transform>()).Find(t => "bl_pillar".Equals(t.name.ToLower()));
+                    if (t)
+                    {
+                        DestroyImmediate(t.gameObject);
+                        return;
+                    }
+                }
+
+                if (left != -1 && top != -1 && builder.tiles[top-1].roteableWall == 2 && builder.tiles[left].roteableWall == 1)
+                {
+                    Transform t = new List<Transform>(obj.GetComponentsInChildren<Transform>()).Find(t => "bl_pillar".Equals(t.name.ToLower()));
+                    if (t)
+                    {
+                        DestroyImmediate(t.gameObject);
+                        return;
+                    }
+                }
+
+                if (left != -1 && top != -1 && builder.tiles[top-1].roteableWall == 2 && builder.tiles[index].roteableWall == 3)
+                {
+                    Transform t = new List<Transform>(obj.GetComponentsInChildren<Transform>()).Find(t => "bl_pillar".Equals(t.name.ToLower()));
+                    if (t)
+                    {
+                        DestroyImmediate(t.gameObject);
+                        return;
+                    }
+                }
+            }
+
+
             public override string ToString()
             {
                 return string.Format(" {0}:{1} ", sectorIndex, asset.name);

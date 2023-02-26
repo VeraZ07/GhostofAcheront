@@ -307,9 +307,6 @@ namespace GOA.Level
                         }
                     }
                    
-                   
-                    
-                   
                 }
               
 
@@ -381,6 +378,15 @@ namespace GOA.Level
                 //gateObj.transform.position = position;
                 //gateObj.transform.GetChild(0).forward = gate.direction;
             }
+
+            //
+            // Check for pillars 
+            //
+            foreach(Tile tile in tiles)
+            {
+                tile.CheckForPillars();
+            }
+
 
             //
             // Create puzzles object

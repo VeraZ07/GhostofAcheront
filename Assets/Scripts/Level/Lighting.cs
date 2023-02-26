@@ -29,8 +29,9 @@ namespace GOA.Level
         
         Dictionary<int, GameObject> crackLightDictionary = new Dictionary<int, GameObject>();
 
-        
-        
+        List<int> availableTilesForLights = new List<int>();
+
+        int lightDistanceTileRange = 3;
 
         // Start is called before the first frame update
         //void Start()
@@ -174,83 +175,57 @@ namespace GOA.Level
 
         void CreateFloatingLights()
         {
-            foreach(GameObject light in floatingLightDictionary.Values)
-            {
-                DestroyImmediate(light);
-            }
-            floatingLightDictionary.Clear();
+           
 
             // How many lights
-            float minRatio = 0.08f;
-            float maxRatio = 0.12f;
+            float minRatio = 0.035f * 2;
+            float maxRatio = 0.05f * 2;
             float ratio = Random.Range(minRatio, maxRatio);
             int size = (int)Mathf.Sqrt(tiles.Length);
 
             int max = (int)(tiles.Length * ratio);
-
-            // Create an array of available tiles      
-            List<int> availables = new List<int>();
-            for (int i = 0; i < tiles.Length; i++)
-            {
-                if (!tiles[i].unreachable)
-                    availables.Add(i);
-            }
-
-            while (floatingLightDictionary.Keys.Count < max && availables.Count > 0)
+            Debug.Log("Max Floating Lights:" + max);
+            Debug.Log("Available Tiles:" + availableTilesForLights.Count);
+           
+            while (floatingLightDictionary.Keys.Count < max && availableTilesForLights.Count > 0)
             {
                 // Get the next tile
-                int id = availables[Random.Range(0, availables.Count)];
+                int id = availableTilesForLights[Random.Range(0, availableTilesForLights.Count)];
 
-                // Remove the current tile and the adjacent ones if they are connected
-                availables.Remove(id);
-                
-                int top = id - size >= 0 ? id - size : -1;
-                int right = id + 1 < tiles.Length && id + 1 % size != 0 ? id + 1 : -1;
-                int down = id + size < tiles.Length ? id + size : -1;
-                int left = id - 1 >= 0 && id - 1 % size != size - 1 ? id - 1 : -1;
-
+                // Remove current and adjacent tiles
                 Debug.Log("Light ID:" + id);
 
-                int count = 9;
-                for(int k=0; k<count; k++)
+                int count = lightDistanceTileRange * 2 + 1;
+                for (int k = 0; k < count; k++)
                 {
-                    int r = ( k - (count-1)/2 ) * size;
-                    for(int j=0; j<count; j++)
+                    int r = (k - (count - 1) / 2) * size;
+                    for (int j = 0; j < count; j++)
                     {
                         int c = j - (count - 1) / 2;
-                        availables.Remove(id + r + c);
+                        availableTilesForLights.Remove(id + r + c);
                         Debug.Log("Removing id:" + (id + r + c));
                     }
                 }
 
-                //if (top != -1)
-                //    availables.Remove(top);
-            
-                //if (top != -1 && right != -1)
-                //    availables.Remove(top+1);
 
-                //if (right != -1)
-                //    availables.Remove(right);
+                Debug.Log("Remaining Tiles:" + availableTilesForLights.Count);
 
-                //if (right != -1 && down != -1)
-                //    availables.Remove(down + 1);
+                bool spot = Random.Range(0, 5) == 0;
 
-                //if (down != -1)
-                //    availables.Remove(down);
-
-                //if (down != -1 && left != -1)
-                //    availables.Remove(down - 1);
-
-                //if (left != -1)
-                //    availables.Remove(left);
-
-                //if (top != -1 && left != -1)
-                //    availables.Remove(top - 1);
-
-                // Create the light
-                GameObject light = Instantiate(floatingLightPrefabList[Random.Range(0, floatingLightPrefabList.Count)], lightingRoot);
-                light.transform.position = tiles[id].GetPosition();
-                light.transform.rotation = Quaternion.identity;
+                GameObject light = null;
+                if (!spot)
+                {
+                    // Create the light
+                    light = Instantiate(floatingLightPrefabList[Random.Range(0, floatingLightPrefabList.Count)], lightingRoot);
+                    light.transform.position = tiles[id].GetPosition();
+                    light.transform.rotation = Quaternion.identity;
+                }
+                else
+                {
+                    light = Instantiate(crackLightPrefabList[Random.Range(0, crackLightPrefabList.Count)], lightingRoot);
+                    light.transform.position = tiles[id].GetPosition();
+                    light.transform.GetChild(0).localEulerAngles = Vector3.up * Random.Range(-180f, 180f);
+                }
                 floatingLightDictionary.Add(id, light);
             }
 
@@ -258,154 +233,78 @@ namespace GOA.Level
 
         void CreateCrackLights()
         {
+            // How many lights
+            
+            float minRatio = 0.2f;
+            float maxRatio = 0.3f;
+            float ratio = Random.Range(minRatio, maxRatio);
+            int size = (int)Mathf.Sqrt(tiles.Length);
+
+            //int max = (int)(tiles.Length * ratio);
+            int max = (int)(floatingLightDictionary.Keys.Count * ratio);
+
+            // Create an array of available tiles       
+            Debug.Log("AvailableTiles.Count:" + availableTilesForLights.Count);
+
+            while (crackLightDictionary.Keys.Count < max && availableTilesForLights.Count > 0)
+            {
+                // Get the next tile
+                int id = availableTilesForLights[Random.Range(0, availableTilesForLights.Count)];
+
+                // Remove the current tile and the adjacent ones if they are connected
+                //availableTilesForLights.Remove(id);
+                int count = lightDistanceTileRange * 2 + 1;
+                for (int k = 0; k < count; k++)
+                {
+                    int r = (k - (count - 1) / 2) * size;
+                    for (int j = 0; j < count; j++)
+                    {
+                        int c = j - (count - 1) / 2;
+                        availableTilesForLights.Remove(id + r + c);
+                        //Debug.Log("Removing id:" + (id + r + c));
+                    }
+                }
+                     
+                   
+
+                // Create the light
+                GameObject light = Instantiate(crackLightPrefabList[Random.Range(0, crackLightPrefabList.Count)], lightingRoot);
+                light.transform.position = tiles[id].GetPosition();
+                light.transform.GetChild(0).rotation = Quaternion.LookRotation(Vector3.up * Random.Range(-180f, 180f));
+                crackLightDictionary.Add(id, light);
+                                
+            }
+
+        }
+
+        void LightingReset()
+        {
+            availableTilesForLights.Clear();
+
+            foreach (GameObject light in floatingLightDictionary.Values)
+            {
+                DestroyImmediate(light);
+            }
+            floatingLightDictionary.Clear();
+
             foreach (GameObject light in crackLightDictionary.Values)
             {
                 DestroyImmediate(light);
             }
             crackLightDictionary.Clear();
 
-            // How many lights
-            float minRatio = 0.02f;
-            float maxRatio = 0.06f;
-            float ratio = Random.Range(minRatio, maxRatio);
-            int size = (int)Mathf.Sqrt(tiles.Length);
-
-            int max = (int)(tiles.Length * ratio);
-
-            // Create an array of available tiles       
-            List<int> availables = new List<int>();
+            availableTilesForLights.Clear();
             for (int i = 0; i < tiles.Length; i++)
             {
-                bool hasWall = false;
-                if (tiles[i].isBottomBorder || tiles[i].isBottomBoundary || tiles[i].isUpperBorder || tiles[i].isUpperBoundary ||
-                   tiles[i].isLeftBorder || tiles[i].isLeftBoundary || tiles[i].isRightBorder || tiles[i].isRightBoundary ||
-                   tiles[i].roteableWall == 0 || tiles[i].roteableWall == 3)
-                    hasWall = true;
-
-
-
-                if (!hasWall)
-                {
-                    int top = i - size >= 0 ? i - size : -1;
-                    int right = i + 1 < tiles.Length && i + 1 % size != 0 ? i + 1 : -1;
-                    int down = i + size < tiles.Length ? i + size : -1;
-                    int left = i - 1 >= 0 && i - 1 % size != size - 1 ? i - 1 : -1;
-
-                    if ((top != -1 && (tiles[top].roteableWall == 2 || tiles[top].roteableWall == 3)) ||
-                       (left != -1 && (tiles[left].roteableWall == 0 || tiles[left].roteableWall == 1)))
-                        hasWall = true;
-
-                }
-
-                
-                if (!tiles[i].unreachable && !floatingLightDictionary.ContainsKey(i))
-                    availables.Add(i);
+                if (!tiles[i].unreachable)
+                    availableTilesForLights.Add(i);
             }
-
-            while (crackLightDictionary.Keys.Count < max && availables.Count > 0)
-            {
-                // Get the next tile
-                int id = availables[Random.Range(0, availables.Count)];
-
-                // Remove the current tile and the adjacent ones if they are connected
-                availables.Remove(id);
-
-                // Check adjacent tiles
-                int top = id - size >= 0 ? id - size : -1;
-                int right = id + 1 < tiles.Length && id + 1 % size != 0 ? id + 1 : -1;
-                int down = id + size < tiles.Length ? id + size : -1;
-                int left = id - 1 >= 0 && id - 1 % size != size - 1 ? id - 1 : -1;
-
-                // Check a wall
-                bool found = false;
-                List<int> dirs = new List<int>(new int[] { 0, 1, 2, 3 });
-                Quaternion rot = Quaternion.identity;
-                while(dirs.Count > 0 && !found)
-                {
-                    int dir = dirs[Random.Range(0, dirs.Count)];
-                    dirs.Remove(dir);
-                                        
-                    switch (dir)
-                    {
-                        case 0: // Forward
-                            if (tiles[id].isUpperBorder || tiles[id].isUpperBoundary || 
-                                (top != -1 && tiles[top].roteableWall == 3))
-                            {
-                                found = true;
-                                rot = Quaternion.LookRotation(Vector3.forward, Vector3.up);
-                            }
-                                break;
-                        //case 1: // Right
-                        //    if (tiles[id].isRightBorder || tiles[id].isRightBoundary || tiles[id].roteableWall == 0 ||
-                        //        (top != -1 && tiles[top].roteableWall == 2))
-                        //    {
-                        //        found = true;
-                        //        rot = Quaternion.LookRotation(Vector3.right, Vector3.up);
-                        //    }
-                        //    break;
-                        //case 2: // Back
-                        //    if (tiles[id].isBottomBorder || tiles[id].isBottomBoundary || tiles[id].roteableWall == 3 ||
-                        //        (left != -1 && tiles[left].roteableWall == 1))
-                        //    {
-                        //        found = true;
-                        //        rot = Quaternion.LookRotation(Vector3.back, Vector3.up);
-                        //    }
-                        //    break;
-                        //case 3: // Left
-                        //    if (tiles[id].isLeftBorder || tiles[id].isLeftBoundary || 
-                        //        (left != -1 && tiles[left].roteableWall == 0))
-                        //    {
-                        //        found = true;
-                        //        rot = Quaternion.LookRotation(Vector3.left, Vector3.up);
-                        //    }
-                        //    break;
-                    }
-                }
-
-                if (found)
-                {
-                    if (top != -1)
-                        availables.Remove(top);
-
-                    if (top != -1 && right != -1)
-                        availables.Remove(top + 1);
-
-                    if (right != -1)
-                        availables.Remove(right);
-
-                    if (right != -1 && down != -1)
-                        availables.Remove(down + 1);
-
-                    if (down != -1)
-                        availables.Remove(down);
-
-                    if (down != -1 && left != -1)
-                        availables.Remove(down - 1);
-
-                    if (left != -1)
-                        availables.Remove(left);
-
-                    if (top != -1 && left != -1)
-                        availables.Remove(top - 1);
-
-                    // Create the light
-                    GameObject light = Instantiate(crackLightPrefabList[Random.Range(0, crackLightPrefabList.Count)], lightingRoot);
-                    light.transform.position = tiles[id].GetPosition();
-                    light.transform.GetChild(0).rotation = rot;
-                    crackLightDictionary.Add(id, light);
-                }
-                
-
-               
-
-                
-            }
-
         }
 
         void CreateLighting()
         {
-            
+            LightingReset();
+
             CreateRootTransform();
 
             CreateGlobalVolume();
