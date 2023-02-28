@@ -259,10 +259,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -412244386015372685, guid: 9db5436636557194f86a3f45784f551b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9db5436636557194f86a3f45784f551b,
         type: 3}
       propertyPath: m_Name
       value: 'T-Pose '
+      objectReference: {fileID: 0}
+    - target: {fileID: 2623438327196381387, guid: 9db5436636557194f86a3f45784f551b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3421877297705583032, guid: 9db5436636557194f86a3f45784f551b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9db5436636557194f86a3f45784f551b, type: 3}
@@ -1770,7 +1785,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a68c43fe1f2a47cfa234b5eeaa98012, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Intensity: 39.15669
+  m_Intensity: 78.59453
   m_EnableSpotReflector: 1
   m_LuxAtDistance: 1
   m_InnerSpotPercent: 0
@@ -1892,7 +1907,7 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 0.92049676, g: 1, b: 0.9198113, a: 1}
-  m_Intensity: 3.1159902
+  m_Intensity: 6.2543535
   m_Range: 4.42
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -1935,7 +1950,7 @@ Light:
   m_LightShadowCasterMode: 2
   m_AreaSize: {x: 0.5, y: 0.5}
   m_BounceIntensity: 1
-  m_ColorTemperature: 7910
+  m_ColorTemperature: 8730
   m_UseColorTemperature: 1
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
@@ -2373,6 +2388,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: T-Pose
+      objectReference: {fileID: 0}
+    - target: {fileID: 4715400957566610374, guid: a48af95f404552f4597db50027f92cf0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6221886776626628071, guid: a48af95f404552f4597db50027f92cf0,
         type: 3}
@@ -2976,7 +2996,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a68c43fe1f2a47cfa234b5eeaa98012, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Intensity: 34.074116
+  m_Intensity: 194.62706
   m_EnableSpotReflector: 1
   m_LuxAtDistance: 1
   m_InnerSpotPercent: 0
@@ -3098,7 +3118,7 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 0.8160377, g: 1, b: 0.8160377, a: 1}
-  m_Intensity: 2.7115319
+  m_Intensity: 15.487929
   m_Range: 12.170015
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
