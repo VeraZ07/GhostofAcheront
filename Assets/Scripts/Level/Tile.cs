@@ -96,8 +96,53 @@ namespace GOA.Level
                 int index = new List<Tile>(builder.tiles).FindIndex(t=>t == this);
                 int size = (int)Mathf.Sqrt(builder.tiles.Length);
 
-                
                 GameObject obj = sceneObject;
+
+                // Room tiles only
+                if (isRoomTile)
+                {
+                    
+                    if((isUpperBorder && isLeftBorder) || (!isUpperBorder && !isLeftBorder))
+                    {
+                        Transform t = new List<Transform>(obj.GetComponentsInChildren<Transform>()).Find(t => "ul_pillar".Equals(t.name.ToLower()));
+                        if (t)
+                        {
+                            DestroyImmediate(t.gameObject);
+                        }
+                    }
+                    if ((isUpperBorder && isRightBorder) || (!isUpperBorder && !isRightBorder))
+                    {
+                        Transform t = new List<Transform>(obj.GetComponentsInChildren<Transform>()).Find(t => "ur_pillar".Equals(t.name.ToLower()));
+                        if (t)
+                        {
+                            DestroyImmediate(t.gameObject);
+                        }
+                    }
+                  
+                    if ((isBottomBorder && isRightBorder) || (!isBottomBorder && !isRightBorder))
+                    {
+                        Transform t = new List<Transform>(obj.GetComponentsInChildren<Transform>()).Find(t => "br_pillar".Equals(t.name.ToLower()));
+                        if (t)
+                        {
+                            DestroyImmediate(t.gameObject);
+                        }
+                    }
+
+                   
+                    if ((isBottomBorder && isLeftBorder) || (!isBottomBorder && !isLeftBorder))
+                    {
+                        Transform t = new List<Transform>(obj.GetComponentsInChildren<Transform>()).Find(t => "bl_pillar".Equals(t.name.ToLower()));
+                        if (t)
+                        {
+                            DestroyImmediate(t.gameObject);
+                        }
+                    }
+
+                    return;
+                }
+
+                
+                
                 if (isUpperBorder && isLeftBorder)
                 {
                     Transform t = new List<Transform>(obj.GetComponentsInChildren<Transform>()).Find(t => "ul_pillar".Equals(t.name.ToLower()));
