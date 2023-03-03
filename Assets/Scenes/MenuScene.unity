@@ -4597,6 +4597,12 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6461529775903307320, guid: 3907457998014b34189365e0051ee966,
         type: 3}
+      propertyPath: inventoryPrefab
+      value: 
+      objectReference: {fileID: 363203083350922715, guid: 4589b1f7660b8014c82ce75a737e8fda,
+        type: 3}
+    - target: {fileID: 6461529775903307320, guid: 3907457998014b34189365e0051ee966,
+        type: 3}
       propertyPath: gameManagerPrefab
       value: 
       objectReference: {fileID: 2141382083286086598, guid: 2150b24a65e117943875221acfc7d438,

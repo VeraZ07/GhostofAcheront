@@ -26,7 +26,12 @@ namespace GOA
         NetworkObject playerPrefab;
 
         [SerializeField]
+        NetworkObject inventoryPrefab;
+
+        [SerializeField]
         NetworkObject gameManagerPrefab;
+
+
     
         public const int MaxPlayers = 3;
 
@@ -200,10 +205,19 @@ namespace GOA
                 DestroyImmediate(gm.gameObject);
 
             // Destroy all the puzzle controllers
+            int count = 0;
             PuzzleController[] pcl = FindObjectsOfType<PuzzleController>();
-            foreach(PuzzleController pc in pcl)
+            count = pcl.Length;
+            for(int i=0; i<count; i++)
             {
-                DestroyImmediate(pc.gameObject);
+                DestroyImmediate(pcl[0].gameObject);
+            }
+
+            PlayerInventory[] pil = FindObjectsOfType<PlayerInventory>();
+            count = pil.Length;
+            for (int i = 0; i < count; i++)
+            {
+                DestroyImmediate(pil[0].gameObject);
             }
         }
 
@@ -250,15 +264,17 @@ namespace GOA
                     foreach (var resNO in runner.GetResumeSnapshotNetworkObjects())
                     {
                         // The old player-0 becomes the new host, so the old player-1 becomes the new player-0 and so on.
-                        int resNOPlayerId = 0;
+                        int oldPlayerId = 0;
                         if (player.PlayerId < runner.SessionInfo.MaxPlayers)
-                            resNOPlayerId = player.PlayerId + 1;
+                            oldPlayerId = player.PlayerId + 1;
+                        else
+                            oldPlayerId = runner.SessionInfo.MaxPlayers - 1;
                             
                         // Player
                         if (resNO.TryGetBehaviour<Player>(out var ppOut))
                         {
                             Debug.Log("Found player to resume -> playerId:" + resNO.InputAuthority.PlayerId);
-                            if (resNO.InputAuthority.PlayerId == resNOPlayerId)
+                            if (resNO.InputAuthority.PlayerId == oldPlayerId)
                             {
                                 runner.Spawn(resNO, inputAuthority: player,
                                     onBeforeSpawned: (runner, newNO) =>
@@ -286,7 +302,7 @@ namespace GOA
                         {
 
                             Debug.Log("Found player to resume -> playerId:" + resNO.InputAuthority.PlayerId);
-                            if (resNO.InputAuthority.PlayerId == resNOPlayerId)
+                            if (resNO.InputAuthority.PlayerId == oldPlayerId)
                             {
                                 runner.Spawn(resNO, position: pOut.ReadPosition(), rotation: pOut.ReadRotation(), inputAuthority: player,
                                     onBeforeSpawned: (runner, newNO) =>
@@ -360,6 +376,35 @@ namespace GOA
                                     });
                             }
                         }
+
+                        // Inventory
+                        if (resNO.TryGetBehaviour<PlayerInventory>(out var piOut))
+                        {
+                            Debug.Log("Found Object: PlayerInventory");
+                            
+                            if ((player.PlayerId >= runner.SessionInfo.MaxPlayers && piOut.PlayerId == runner.SessionInfo.MaxPlayers-1) || player.PlayerId == piOut.PlayerId - 1)
+                            {
+                                
+                                runner.Spawn(resNO, inputAuthority: runner.LocalPlayer,
+                                    onBeforeSpawned: (runner, newNO) =>
+                                    {
+
+                                        // One key aspects of the Host Migration is to have a simple way of restoring the old NetworkObjects state
+                                        // If all state of the old NetworkObject is all what is necessary, just call the NetworkObject.CopyStateFrom
+                                        newNO.CopyStateFrom(resNO);
+
+                                        // and/or
+
+                                        // If only partial State is necessary, it is possible to copy it only from specific NetworkBehaviours
+                                        if (resNO.TryGetBehaviour<NetworkBehaviour>(out var myCustomNetworkBehaviour))
+                                        {
+                                            newNO.GetComponent<NetworkBehaviour>().CopyStateFrom(myCustomNetworkBehaviour);
+                                        }
+
+                                        newNO.GetComponent<PlayerInventory>().Init(player.PlayerId);
+                                    });
+                            }
+                        }
                     }
                 }
             }
@@ -423,6 +468,12 @@ namespace GOA
                         
                         // Spawn
                         NetworkObject character = runner.Spawn(asset.CharacterPrefab, sp.position, sp.rotation, player.PlayerRef);
+
+                        // Each character has an inventory attached to it. Server has authority on all inventories.
+                        runner.Spawn(inventoryPrefab, Vector3.zero, Quaternion.identity, runner.LocalPlayer, 
+                            (r, o) => {
+                                o.GetComponent<PlayerInventory>().Init(player.PlayerRef.PlayerId);
+                            });
                     }
                 }
 
@@ -435,6 +486,12 @@ namespace GOA
                 for(int i=0; i<characters.Length; i++)
                 {
                     Destroy(characters[i].gameObject);
+                }
+                // Destroy all inventories
+                PlayerInventory[] inventories = FindObjectsOfType<PlayerInventory>();
+                for(int i=0; i<inventories.Length; i++)
+                {
+                    Destroy(inventories[i].gameObject);
                 }
             }
         }
@@ -467,6 +524,12 @@ namespace GOA
                 for (int i = 0; i < players.Length; i++)
                 {
                     Destroy(players[i].gameObject);
+                }
+                // Destroy all inventories
+                PlayerInventory[] inventories = FindObjectsOfType<PlayerInventory>();
+                for (int i = 0; i < inventories.Length; i++)
+                {
+                    Destroy(inventories[i].gameObject);
                 }
                 // Destroy match manager
                 GameManager gm = FindObjectOfType<GameManager>();

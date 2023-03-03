@@ -140,8 +140,7 @@ namespace GOA.Level
 
                     return;
                 }
-
-                
+              
                 
                 if (isUpperBorder && isLeftBorder)
                 {
