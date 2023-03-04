@@ -18,7 +18,7 @@ namespace GOA.UI
         [SerializeField]
         GameObject optionsPanel;
 
-        GameObject currentActivePanel;
+        //GameObject currentActivePanel;
 
         // Start is called before the first frame update
         void Start()

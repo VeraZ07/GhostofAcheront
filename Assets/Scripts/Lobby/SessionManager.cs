@@ -213,7 +213,7 @@ namespace GOA
                 DestroyImmediate(pcl[0].gameObject);
             }
 
-            PlayerInventory[] pil = FindObjectsOfType<PlayerInventory>();
+            Inventory[] pil = FindObjectsOfType<Inventory>();
             count = pil.Length;
             for (int i = 0; i < count; i++)
             {
@@ -329,7 +329,10 @@ namespace GOA
                         if (resNO.TryGetBehaviour<GameManager>(out var gmOut))
                         {
                             Debug.Log("Found Object: GameManager");
-                            if (player.PlayerId >= runner.SessionInfo.MaxPlayers)
+                            //if (player.PlayerId >= runner.SessionInfo.MaxPlayers)
+                            // We only create the game manager when the local player ( which is the server in this case ) joins 
+                            // the match.
+                            if(player == runner.LocalPlayer) 
                             {
                                 runner.Spawn(resNO, inputAuthority: player,
                                     onBeforeSpawned: (runner, newNO) =>
@@ -356,7 +359,8 @@ namespace GOA
                         if (resNO.TryGetBehaviour<PuzzleController>(out var pzOut))
                         {
                             Debug.Log("Found Object: PuzzleController");
-                            if (player.PlayerId >= runner.SessionInfo.MaxPlayers)
+                            //if (player.PlayerId >= runner.SessionInfo.MaxPlayers)
+                            if (player == runner.LocalPlayer)
                             {
                                 runner.Spawn(resNO, inputAuthority: player,
                                     onBeforeSpawned: (runner, newNO) =>
@@ -378,11 +382,11 @@ namespace GOA
                         }
 
                         // Inventory
-                        if (resNO.TryGetBehaviour<PlayerInventory>(out var piOut))
+                        if (resNO.TryGetBehaviour<Inventory>(out var piOut))
                         {
                             Debug.Log("Found Object: PlayerInventory");
-                            
-                            if ((player.PlayerId >= runner.SessionInfo.MaxPlayers && piOut.PlayerId == runner.SessionInfo.MaxPlayers-1) || player.PlayerId == piOut.PlayerId - 1)
+                            //if ((player.PlayerId >= runner.SessionInfo.MaxPlayers && piOut.PlayerId == runner.SessionInfo.MaxPlayers-1) || player.PlayerId == piOut.PlayerId - 1)
+                            if ((player == runner.LocalPlayer && (piOut.PlayerId == runner.SessionInfo.MaxPlayers - 1 || piOut.PlayerId > runner.SessionInfo.MaxPlayers - 1)) || player.PlayerId == piOut.PlayerId - 1)
                             {
                                 
                                 runner.Spawn(resNO, inputAuthority: runner.LocalPlayer,
@@ -401,7 +405,7 @@ namespace GOA
                                             newNO.GetComponent<NetworkBehaviour>().CopyStateFrom(myCustomNetworkBehaviour);
                                         }
 
-                                        newNO.GetComponent<PlayerInventory>().Init(player.PlayerId);
+                                        newNO.GetComponent<Inventory>().Init(player.PlayerId);
                                     });
                             }
                         }
@@ -472,7 +476,7 @@ namespace GOA
                         // Each character has an inventory attached to it. Server has authority on all inventories.
                         runner.Spawn(inventoryPrefab, Vector3.zero, Quaternion.identity, runner.LocalPlayer, 
                             (r, o) => {
-                                o.GetComponent<PlayerInventory>().Init(player.PlayerRef.PlayerId);
+                                o.GetComponent<Inventory>().Init(player.PlayerRef.PlayerId);
                             });
                     }
                 }
@@ -488,7 +492,7 @@ namespace GOA
                     Destroy(characters[i].gameObject);
                 }
                 // Destroy all inventories
-                PlayerInventory[] inventories = FindObjectsOfType<PlayerInventory>();
+                Inventory[] inventories = FindObjectsOfType<Inventory>();
                 for(int i=0; i<inventories.Length; i++)
                 {
                     Destroy(inventories[i].gameObject);
@@ -526,7 +530,7 @@ namespace GOA
                     Destroy(players[i].gameObject);
                 }
                 // Destroy all inventories
-                PlayerInventory[] inventories = FindObjectsOfType<PlayerInventory>();
+                Inventory[] inventories = FindObjectsOfType<Inventory>();
                 for (int i = 0; i < inventories.Length; i++)
                 {
                     Destroy(inventories[i].gameObject);
