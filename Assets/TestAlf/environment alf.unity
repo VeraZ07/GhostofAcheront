@@ -1785,7 +1785,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a68c43fe1f2a47cfa234b5eeaa98012, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Intensity: 10.822757
+  m_Intensity: 58.87564
   m_EnableSpotReflector: 1
   m_LuxAtDistance: 1
   m_InnerSpotPercent: 0
@@ -1907,7 +1907,7 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 0.92049676, g: 1, b: 0.9198113, a: 1}
-  m_Intensity: 0.8612476
+  m_Intensity: 4.6851745
   m_Range: 4.42
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -1965,7 +1965,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1160850289}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.924, y: 1.52, z: 2.051}
+  m_LocalPosition: {x: -4.794, y: 1.267, z: 2.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2569,7 +2569,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 1ff126e363bdcb9459f902d4103d16cd,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.93
+      value: 0.268
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1ff126e363bdcb9459f902d4103d16cd,
         type: 3}
