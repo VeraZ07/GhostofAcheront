@@ -23,6 +23,12 @@ namespace GOA
         GameObject cam;
         float defaultSpeed;
 
+        int playerId;
+        public int PlayerId
+        {
+            get { return playerId; }
+        }
+
         private void Awake()
         {
             cc = GetComponent<NetworkCharacterControllerPrototypeCustom>();
@@ -34,7 +40,7 @@ namespace GOA
         void Start()
         {
             
-
+            
         }
 
         // Update is called once per frame
@@ -108,6 +114,12 @@ namespace GOA
             pitch += value * cc.lookSpeed * Runner.DeltaTime;
             pitch = Mathf.Clamp(pitch, -80, 80);
             cam.transform.localEulerAngles = Vector3.left * pitch;
+        }
+
+        
+        public void Init(int playerId)
+        {
+            this.playerId = playerId;
         }
     }
 

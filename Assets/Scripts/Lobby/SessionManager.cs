@@ -384,9 +384,10 @@ namespace GOA
                         // Inventory
                         if (resNO.TryGetBehaviour<Inventory>(out var piOut))
                         {
+                            
                             Debug.Log("Found Object: PlayerInventory");
                             //if ((player.PlayerId >= runner.SessionInfo.MaxPlayers && piOut.PlayerId == runner.SessionInfo.MaxPlayers-1) || player.PlayerId == piOut.PlayerId - 1)
-                            if ((player == runner.LocalPlayer && (piOut.PlayerId == runner.SessionInfo.MaxPlayers - 1 || piOut.PlayerId > runner.SessionInfo.MaxPlayers - 1)) || player.PlayerId == piOut.PlayerId - 1)
+                            if ((player == runner.LocalPlayer && piOut.PlayerId == 0) || player.PlayerId == piOut.PlayerId - 1)
                             {
                                 
                                 runner.Spawn(resNO, inputAuthority: runner.LocalPlayer,
@@ -408,6 +409,9 @@ namespace GOA
                                         newNO.GetComponent<Inventory>().Init(player.PlayerId);
                                     });
                             }
+
+                            // Manage the items of the previous host here
+                            // ...
                         }
                     }
                 }
@@ -427,6 +431,8 @@ namespace GOA
                 if (player)
                     runner.Despawn(player.GetComponent<NetworkObject>());
               
+                // Manage the items of the disconnected player here
+                // ...
             }
 
             OnPlayerLeftCallback?.Invoke(runner, playerRef);
@@ -471,7 +477,10 @@ namespace GOA
                         spIndex++;
                         
                         // Spawn
-                        NetworkObject character = runner.Spawn(asset.CharacterPrefab, sp.position, sp.rotation, player.PlayerRef);
+                        NetworkObject character = runner.Spawn(asset.CharacterPrefab, sp.position, sp.rotation, player.PlayerRef, 
+                            (r,o) => {
+                                o.GetComponent<PlayerController>().Init(player.PlayerRef.PlayerId);
+                            });
 
                         // Each character has an inventory attached to it. Server has authority on all inventories.
                         runner.Spawn(inventoryPrefab, Vector3.zero, Quaternion.identity, runner.LocalPlayer, 

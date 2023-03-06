@@ -1,4 +1,5 @@
 using Fusion;
+using GOA.Assets;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -58,6 +59,13 @@ public class Inventory : NetworkBehaviour
     {
         PlayerId = playerId;
     }
+
+    public void AddItem(ItemAsset item)
+    {
+        Items.Add(item.name);
+    }
+
+
 
     public static void OnItemsChanged(Changed<Inventory> changed)
     {
