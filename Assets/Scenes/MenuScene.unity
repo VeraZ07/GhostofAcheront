@@ -4597,6 +4597,12 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6461529775903307320, guid: 3907457998014b34189365e0051ee966,
         type: 3}
+      propertyPath: pickerPrefab
+      value: 
+      objectReference: {fileID: 7137436226504040912, guid: e464dcc807e255d46b02ce2447d79990,
+        type: 3}
+    - target: {fileID: 6461529775903307320, guid: 3907457998014b34189365e0051ee966,
+        type: 3}
       propertyPath: inventoryPrefab
       value: 
       objectReference: {fileID: 363203083350922715, guid: 4589b1f7660b8014c82ce75a737e8fda,

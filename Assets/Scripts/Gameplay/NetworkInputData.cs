@@ -10,6 +10,8 @@ namespace GOA
         public Vector2 move;
         public float yaw;
         public NetworkBool run;
+        public bool leftAction;
+        public bool rightAction;
     }
 
 }

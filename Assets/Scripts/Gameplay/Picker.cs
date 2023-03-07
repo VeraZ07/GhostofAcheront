@@ -18,19 +18,18 @@ namespace GOA
         [Networked (OnChanged = nameof(OnEmptyChanged))]
         public NetworkBool Empty { get; private set; } = false;
 
+        public NetworkString<_16> ItemAssetName { get; private set; }
+
         bool interactionEnabled = false;
         GameObject sceneObject;
 
         List<Inventory> inventories = null;
 
+
+
         private void Awake()
         {
-            if(itemAsset != null)
-            {
-                sceneObject = Instantiate(itemAsset.SceneObjectPrefab, root);
-                sceneObject.transform.localPosition = Vector3.zero;
-                sceneObject.transform.localRotation = Quaternion.identity;
-            }
+            
         }
 
         void Start()
@@ -38,6 +37,24 @@ namespace GOA
             
         }
 
+        public override void Spawned()
+        {
+            base.Spawned();
+
+            Debug.Log("Empty:" + Empty);
+
+            // Load item asset resource
+            itemAsset = new List<ItemAsset>(Resources.LoadAll<ItemAsset>(ItemAsset.ResourceFolder)).Find(i => i.name.ToLower().Equals(ItemAssetName.ToLower()));
+
+            if (!Empty)
+            {
+                sceneObject = Instantiate(itemAsset.SceneObjectPrefab, root);
+                sceneObject.transform.localPosition = Vector3.zero;
+                sceneObject.transform.localRotation = Quaternion.identity;
+            }
+        }
+
+        
 
         public void Interact(PlayerController playerController)
         {
@@ -54,6 +71,12 @@ namespace GOA
         public void SetInteractionEnabled(bool value)
         {
             interactionEnabled = value;
+        }
+
+        public void Init(string itemAssetName, bool empty)
+        {
+            Empty = empty;
+            ItemAssetName = itemAssetName;
         }
 
         IEnumerator PickUp(PlayerController playerController)

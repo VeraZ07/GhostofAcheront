@@ -31,14 +31,25 @@ namespace GOA
         [SerializeField]
         NetworkObject gameManagerPrefab;
 
-
+        [SerializeField]
+        NetworkObject pickerPrefab;
     
-        public const int MaxPlayers = 3;
+        public const int MaxPlayers = 2;
 
         public static SessionManager Instance { get; private set; }
 
 
         NetworkRunner runner;
+        public NetworkRunner Runner
+        {
+            get 
+            {
+                if (!runner)
+                    runner = GetComponent<NetworkRunner>();
+
+                return runner;
+            }
+        }
         
         
         NetworkSceneManagerDefault sceneManager;
@@ -258,11 +269,17 @@ namespace GOA
             {
                 if (runner.IsServer)
                 {
+
+                    
+
                     Debug.Log("ResumeSnapshot.Count:" + new List<NetworkObject>(runner.GetResumeSnapshotNetworkObjects()).Count);
 
                     //new List<NetworkObject>(runner.GetResumeSnapshotNetworkObjects()).FindAll(o=>o.GetBehaviour<)
                     foreach (var resNO in runner.GetResumeSnapshotNetworkObjects())
                     {
+                       
+
+
                         // The old player-0 becomes the new host, so the old player-1 becomes the new player-0 and so on.
                         int oldPlayerId = 0;
                         if (player.PlayerId < runner.SessionInfo.MaxPlayers)
@@ -301,7 +318,7 @@ namespace GOA
                         if (resNO.TryGetBehaviour<NetworkCharacterControllerPrototypeCustom>(out var pOut))
                         {
 
-                            Debug.Log("Found player to resume -> playerId:" + resNO.InputAuthority.PlayerId);
+                            Debug.Log("Found character controller to resume -> playerId:" + resNO.InputAuthority.PlayerId);
                             if (resNO.InputAuthority.PlayerId == oldPlayerId)
                             {
                                 runner.Spawn(resNO, position: pOut.ReadPosition(), rotation: pOut.ReadRotation(), inputAuthority: player,
@@ -319,6 +336,8 @@ namespace GOA
                                             {
                                                 newNO.GetComponent<NetworkBehaviour>().CopyStateFrom(myCustomNetworkBehaviour);
                                             }
+
+                                            newNO.GetComponent<PlayerController>().Init(player.PlayerId);
                                         });
 
                                 
@@ -328,7 +347,7 @@ namespace GOA
                         // Game manager
                         if (resNO.TryGetBehaviour<GameManager>(out var gmOut))
                         {
-                            Debug.Log("Found Object: GameManager");
+                            Debug.Log("Found game manager to resume");
                             //if (player.PlayerId >= runner.SessionInfo.MaxPlayers)
                             // We only create the game manager when the local player ( which is the server in this case ) joins 
                             // the match.
@@ -358,7 +377,7 @@ namespace GOA
                         // Puzzle controller
                         if (resNO.TryGetBehaviour<PuzzleController>(out var pzOut))
                         {
-                            Debug.Log("Found Object: PuzzleController");
+                            Debug.Log("Found PuzzleController to resume");
                             //if (player.PlayerId >= runner.SessionInfo.MaxPlayers)
                             if (player == runner.LocalPlayer)
                             {
@@ -385,7 +404,7 @@ namespace GOA
                         if (resNO.TryGetBehaviour<Inventory>(out var piOut))
                         {
                             
-                            Debug.Log("Found Object: PlayerInventory");
+                            Debug.Log("Found Inventory to resume");
                             //if ((player.PlayerId >= runner.SessionInfo.MaxPlayers && piOut.PlayerId == runner.SessionInfo.MaxPlayers-1) || player.PlayerId == piOut.PlayerId - 1)
                             if ((player == runner.LocalPlayer && piOut.PlayerId == 0) || player.PlayerId == piOut.PlayerId - 1)
                             {
@@ -486,6 +505,13 @@ namespace GOA
                         runner.Spawn(inventoryPrefab, Vector3.zero, Quaternion.identity, runner.LocalPlayer, 
                             (r, o) => {
                                 o.GetComponent<Inventory>().Init(player.PlayerRef.PlayerId);
+                            });
+
+
+                        //// Test
+                        runner.Spawn(pickerPrefab, Vector3.zero, Quaternion.identity, runner.LocalPlayer,
+                            (r, o) => {
+                                o.GetComponent<Picker>().Init(null, true);
                             });
                     }
                 }

@@ -12,6 +12,8 @@ namespace GOA
         Vector2 moveInput;
         Vector2 lookInput;
         bool run;
+        bool leftAction;
+        bool rightAction;
 
         PlayerController playerController;
 
@@ -47,6 +49,9 @@ namespace GOA
             playerController.SetCameraPitch(lookInput.y);
 
             run = Input.GetAxisRaw("Fire3") == 1f;
+
+            leftAction = Input.GetMouseButton(0);
+            rightAction = Input.GetMouseButton(1);
         }
 
         private void OnDestroy()
@@ -63,6 +68,8 @@ namespace GOA
             data.yaw = lookInput.x;
 
             data.run = run;
+            data.leftAction = leftAction;
+            data.rightAction = rightAction;
 
             return data;
         }

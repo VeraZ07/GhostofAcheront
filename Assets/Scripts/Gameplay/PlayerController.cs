@@ -7,6 +7,7 @@ namespace GOA
 {
     public class PlayerController : NetworkBehaviour
     {
+                
 
         [SerializeField]
         new Light light;
@@ -23,11 +24,12 @@ namespace GOA
         GameObject cam;
         float defaultSpeed;
 
-        int playerId;
-        public int PlayerId
-        {
-            get { return playerId; }
-        }
+        public bool LeftAction { get; private set; }
+        public bool RightAction { get; private set; }
+
+        [Networked]
+        [UnitySerializeField]
+        public int PlayerId { get; private set; }
 
         private void Awake()
         {
@@ -83,7 +85,7 @@ namespace GOA
 
             if (GetInput(out NetworkInputData data))
             {
-
+                
                 
                 // 
                 // Apply rotation
@@ -105,7 +107,13 @@ namespace GOA
                 //cc.Move(move * Runner.DeltaTime);
                 cc.Move(move);
 
+                //
+                // Actions
+                //
+                LeftAction = data.leftAction;
+                RightAction = data.rightAction;
 
+                
             }
         }
 
@@ -119,7 +127,7 @@ namespace GOA
         
         public void Init(int playerId)
         {
-            this.playerId = playerId;
+            PlayerId = playerId;
         }
     }
 
