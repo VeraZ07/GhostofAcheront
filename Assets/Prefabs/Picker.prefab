@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7137436226504040918}
   - component: {fileID: 7137436226504040919}
   - component: {fileID: 7137436226504040912}
+  - component: {fileID: 977657178}
   m_Layer: 0
   m_Name: Picker
   m_TagString: Untagged
@@ -51,6 +52,10 @@ MonoBehaviour:
   root: {fileID: 7137436226890100645}
   _Empty:
     _value: 0
+  _ItemAssetName:
+    _length: 0
+    _data:
+      Data: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 --- !u!114 &7137436226504040912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,7 +79,21 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 7137436226504040919}
+  - {fileID: 977657178}
   SimulationBehaviours: []
+--- !u!114 &977657178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7137436226504040913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 539362646, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
 --- !u!1 &7137436226890100646
 GameObject:
   m_ObjectHideFlags: 0

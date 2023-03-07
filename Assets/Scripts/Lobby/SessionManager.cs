@@ -31,8 +31,7 @@ namespace GOA
         [SerializeField]
         NetworkObject gameManagerPrefab;
 
-        [SerializeField]
-        NetworkObject pickerPrefab;
+  
     
         public const int MaxPlayers = 2;
 
@@ -508,11 +507,7 @@ namespace GOA
                             });
 
 
-                        //// Test
-                        runner.Spawn(pickerPrefab, Vector3.zero, Quaternion.identity, runner.LocalPlayer,
-                            (r, o) => {
-                                o.GetComponent<Picker>().Init(null, true);
-                            });
+                    
                     }
                 }
 

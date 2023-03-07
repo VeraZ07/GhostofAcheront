@@ -4,6 +4,7 @@ using UnityEngine;
 using GOA.Assets;
 using Fusion;
 using Unity.AI.Navigation;
+using GOA.Interfaces;
 
 namespace GOA.Level
 {
@@ -13,6 +14,12 @@ namespace GOA.Level
         
         // From 0 to N, 0 is the smallest one.
         public static int LevelSize = 3;
+
+        [SerializeField]
+        List<GameObject> interactionTriggerPrefabs = new List<GameObject>();
+
+        [SerializeField]
+        NetworkObject pickerPrefab;
 
 
         [SerializeField]
@@ -34,7 +41,8 @@ namespace GOA.Level
         [SerializeReference]
         List<Puzzle> puzzles = new List<Puzzle>();
 
-        NetworkRunner runner;
+        [SerializeField]
+        List<GameObject> triggers = new List<GameObject>();
 
         bool onClosedPathRemoveWall = false;
 
@@ -45,7 +53,9 @@ namespace GOA.Level
         {
             get { return geometryRoot; }
         }
-        
+
+              
+
         private void Awake()
         {
            
@@ -399,19 +409,36 @@ namespace GOA.Level
 
             }
 
+            // 
+            // Test interaction triggers
             //
-            // Server only
-            //
-            //
-            // Create puzzle controllers
-            //
-            NetworkRunner runner = FindObjectOfType<NetworkRunner>();
-            if (runner.IsServer)
+            Tile sTile = tiles[startingTileId];
+            Vector3 pos = sTile.sceneObject.transform.position;
+            GameObject it = Instantiate(interactionTriggerPrefabs[0], pos, Quaternion.identity);
+            triggers.Add(it);
+            it.transform.parent = geometryRoot;
+
+            if (SessionManager.Instance.Runner.IsServer)
             {
+               
+                NetworkObject no = SessionManager.Instance.Runner.Spawn(pickerPrefab, pos, Quaternion.identity, null,
+                (r, o) =>
+                {
+                    o.GetComponent<Picker>().Init("pic_1", false);
+                });
+                it.GetComponentInChildren<InteractionTrigger>().SetInteractable(no.GetComponent<IInteractable>());
+
+                //
+                // Server only
+                //
+                //
+                // Create puzzle controllers
+                //
+
                 Player localPlayer = new List<Player>(FindObjectsOfType<Player>()).Find(p => p.HasStateAuthority);
                 foreach (Puzzle puzzle in puzzles)
                 {
-                    runner.Spawn(puzzle.Asset.ControllerPrefab, Vector3.zero, Quaternion.identity, null,
+                    SessionManager.Instance.Runner.Spawn(puzzle.Asset.ControllerPrefab, Vector3.zero, Quaternion.identity, null,
                         (runner, obj) =>
                         {
                             obj.GetComponent<PuzzleController>().PuzzleIndex = puzzles.IndexOf(puzzle);
@@ -423,7 +450,7 @@ namespace GOA.Level
             //
             // Bake the navigation mesh
             //
-            FindObjectOfType<NavMeshSurface>().BuildNavMesh();
+            //FindObjectOfType<NavMeshSurface>().BuildNavMesh();
         }
 
         void ConnectSectors()
@@ -749,6 +776,7 @@ namespace GOA.Level
             if (g)
                 DestroyImmediate(g.gameObject);
 
+           
             int tileCount = 0;
             int sectorCount = 0;
 
@@ -789,6 +817,7 @@ namespace GOA.Level
             rooms.Clear();
             customObjects.Clear();
             puzzles.Clear();
+            triggers.Clear();
         }
 
         void BuildSectors()

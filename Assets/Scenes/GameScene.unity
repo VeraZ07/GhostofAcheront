@@ -579,12 +579,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 340bf145ea8b45a4cb71d4319d45b682, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interactionTriggerPrefabs:
+  - {fileID: 5879498284658394104, guid: 0463aa75a089d5a4e988392ff133da4b, type: 3}
+  pickerPrefab: {fileID: 7137436226504040912, guid: e464dcc807e255d46b02ce2447d79990,
+    type: 3}
   tiles: []
   sectors: []
   connections: []
   rooms: []
   customObjects: []
   puzzles: []
+  triggers: []
   globalVolumePrefab: {fileID: 705222808106588541, guid: ab15ed540b2e41047b614aca33527333,
     type: 3}
   localVolumetricFogPrefab: {fileID: 8742450213894873476, guid: 90fe8f485e8f2524287a729c08cbe53f,

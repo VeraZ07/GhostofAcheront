@@ -70,3 +70,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
+  _Name: 
+  _Ready:
+    _value: 0
+  _CharacterId: 0

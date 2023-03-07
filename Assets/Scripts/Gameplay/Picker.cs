@@ -18,6 +18,7 @@ namespace GOA
         [Networked (OnChanged = nameof(OnEmptyChanged))]
         public NetworkBool Empty { get; private set; } = false;
 
+        [Networked]
         public NetworkString<_16> ItemAssetName { get; private set; }
 
         bool interactionEnabled = false;
@@ -44,7 +45,12 @@ namespace GOA
             Debug.Log("Empty:" + Empty);
 
             // Load item asset resource
-            itemAsset = new List<ItemAsset>(Resources.LoadAll<ItemAsset>(ItemAsset.ResourceFolder)).Find(i => i.name.ToLower().Equals(ItemAssetName.ToLower()));
+            Debug.Log("ItemAssetName:" + ItemAssetName);
+            itemAsset = new List<ItemAsset>(Resources.LoadAll<ItemAsset>(ItemAsset.ResourceFolder)).Find(i => i.name.ToLower().Equals(ItemAssetName.ToString().ToLower())); 
+            Debug.Log("Found:" + Resources.LoadAll<ItemAsset>(ItemAsset.ResourceFolder)[0].name);
+            Debug.Log("ItemAsset:" + itemAsset);
+
+            SetInteractionEnabled(!Empty);
 
             if (!Empty)
             {
@@ -58,9 +64,9 @@ namespace GOA
 
         public void Interact(PlayerController playerController)
         {
-            if (!Empty)
-                return;
-            PickUp(playerController);
+            Debug.Log("Interact " + playerController.PlayerId);
+            if (interactionEnabled)
+                StartCoroutine(PickUp(playerController));
         }
 
         public bool IsInteractionEnabled()
@@ -81,7 +87,9 @@ namespace GOA
 
         IEnumerator PickUp(PlayerController playerController)
         {
+            Debug.Log("PickUp:" + playerController.PlayerId);
             SetInteractionEnabled(false);
+            
 
             // Add to the inventory
             if (inventories == null)
@@ -92,16 +100,19 @@ namespace GOA
             Inventory inventory = inventories.Find(i => i.PlayerId == playerController.PlayerId);
             inventory.AddItem(itemAsset);
 
+            yield return new WaitForSeconds(.5f);
+
             Empty = true;
 
-            yield return new WaitForSeconds(2);
+            
 
-            DestroyImmediate(sceneObject);
+            
         }
 
         public static void OnEmptyChanged(Changed<Picker> changed)
         {
-            //OnNameChangedCallback?.Invoke(changed.Behaviour);
+            if(changed.Behaviour.Empty)
+                DestroyImmediate(changed.Behaviour.sceneObject);
         }
     }
 
