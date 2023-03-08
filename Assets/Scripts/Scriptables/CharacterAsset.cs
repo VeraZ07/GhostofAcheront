@@ -17,6 +17,13 @@ namespace GOA.Assets
         }
 
         [SerializeField]
+        Sprite avatar;
+        public Sprite Avatar
+        {
+            get { return avatar; }
+        }
+
+        [SerializeField]
         NetworkObject characterPrefab;
         public NetworkObject CharacterPrefab
         {

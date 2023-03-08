@@ -412,21 +412,21 @@ namespace GOA.Level
             // 
             // Test interaction triggers
             //
-            Tile sTile = tiles[startingTileId];
-            Vector3 pos = sTile.sceneObject.transform.position;
-            GameObject it = Instantiate(interactionTriggerPrefabs[0], pos, Quaternion.identity);
-            triggers.Add(it);
-            it.transform.parent = geometryRoot;
+            
+            //GameObject it = Instantiate(interactionTriggerPrefabs[0], pos, Quaternion.identity);
+            //triggers.Add(it);
+            //it.transform.parent = geometryRoot;
 
             if (SessionManager.Instance.Runner.IsServer)
             {
-               
+                Tile sTile = tiles[startingTileId];
+                Vector3 pos = sTile.sceneObject.transform.position;
                 NetworkObject no = SessionManager.Instance.Runner.Spawn(pickerPrefab, pos, Quaternion.identity, null,
                 (r, o) =>
                 {
                     o.GetComponent<Picker>().Init("pic_1", false);
                 });
-                it.GetComponentInChildren<InteractionTrigger>().SetInteractable(no.GetComponent<IInteractable>());
+                //it.GetComponentInChildren<InteractionTrigger>().SetInteractable(no.GetComponent<IInteractable>());
 
                 //
                 // Server only

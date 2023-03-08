@@ -8,21 +8,30 @@ namespace GOA
 {
     public class InteractionTrigger : MonoBehaviour
     {
-        [SerializeField]
-        Transform root;
         
+        [SerializeField]
+        GameObject interactableObject;
+
         IInteractable interactable;
 
         PlayerController playerController;
 
         NetworkRunner runner;
 
-        
+        private void Awake()
+        {
+            if (interactableObject)
+                interactable = interactableObject.GetComponent<IInteractable>();
+            else
+                interactable = GetComponent<IInteractable>();
+
+        }
+
         // Start is called before the first frame update
         void Start()
         {
             interactable = GetComponentInChildren<IInteractable>();        
-            
+                
         }
 
         // Update is called once per frame
@@ -43,7 +52,7 @@ namespace GOA
 
             if (SessionManager.Instance.Runner.IsServer)
             {
-                Debug.Log("ISServer....");
+                
                 // Do some logic here
                 if (interactable.IsInteractionEnabled())
                     interactable.Interact(playerController);
@@ -74,19 +83,7 @@ namespace GOA
             }
         }
 
-        public void SetInteractable(IInteractable interactable)
-        {
-            this.interactable = interactable;
-            Transform t = (interactable as MonoBehaviour).gameObject.transform;
-            
-            if (root)
-                t.parent = root;
-            else
-                t.parent = transform;
 
-            t.localPosition = Vector3.zero;
-            t.localRotation = Quaternion.identity;
-        }
     }
 
 }

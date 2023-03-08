@@ -209,26 +209,13 @@ namespace GOA
 
             resumingFromHostMigration = true;
 
-            // Destroy the game manager
-            GameManager gm = FindObjectOfType<GameManager>();
-            if (gm)
-                DestroyImmediate(gm.gameObject);
-
-            // Destroy all the puzzle controllers
-            int count = 0;
-            PuzzleController[] pcl = FindObjectsOfType<PuzzleController>();
-            count = pcl.Length;
-            for(int i=0; i<count; i++)
-            {
-                DestroyImmediate(pcl[0].gameObject);
-            }
-
-            Inventory[] pil = FindObjectsOfType<Inventory>();
-            count = pil.Length;
+            // Destroy all networked objects
+            NetworkBehaviour[] nbs = FindObjectsOfType<NetworkBehaviour>();
+            int count = nbs.Length;
             for (int i = 0; i < count; i++)
-            {
-                DestroyImmediate(pil[0].gameObject);
-            }
+                DestroyImmediate(nbs[0].gameObject);
+
+           
         }
 
         public void OnInput(NetworkRunner runner, NetworkInput input)
@@ -277,8 +264,6 @@ namespace GOA
                     foreach (var resNO in runner.GetResumeSnapshotNetworkObjects())
                     {
                        
-
-
                         // The old player-0 becomes the new host, so the old player-1 becomes the new player-0 and so on.
                         int oldPlayerId = 0;
                         if (player.PlayerId < runner.SessionInfo.MaxPlayers)
@@ -430,6 +415,35 @@ namespace GOA
 
                             // Manage the items of the previous host here
                             // ...
+                            // ...
+                            // ...
+                            // ...
+
+
+                        }
+
+                        if (resNO.TryGetBehaviour<Picker>(out var pickOut))
+                        {
+                            Debug.Log("Found Picker to resume");
+                            if (player == runner.LocalPlayer)
+                            {
+                                runner.Spawn(resNO, inputAuthority: player,
+                                    onBeforeSpawned: (runner, newNO) =>
+                                    {
+
+                                        // One key aspects of the Host Migration is to have a simple way of restoring the old NetworkObjects state
+                                        // If all state of the old NetworkObject is all what is necessary, just call the NetworkObject.CopyStateFrom
+                                        newNO.CopyStateFrom(resNO);
+
+                                        // and/or
+
+                                        // If only partial State is necessary, it is possible to copy it only from specific NetworkBehaviours
+                                        if (resNO.TryGetBehaviour<NetworkBehaviour>(out var myCustomNetworkBehaviour))
+                                        {
+                                            newNO.GetComponent<NetworkBehaviour>().CopyStateFrom(myCustomNetworkBehaviour);
+                                        }
+                                    });
+                            }
                         }
                     }
                 }
@@ -553,22 +567,27 @@ namespace GOA
             else
             {
                 resumingFromHostMigration = false;
-                // Destroy all the player objects
-                Player[] players = FindObjectsOfType<Player>();
-                for (int i = 0; i < players.Length; i++)
-                {
-                    Destroy(players[i].gameObject);
-                }
-                // Destroy all inventories
-                Inventory[] inventories = FindObjectsOfType<Inventory>();
-                for (int i = 0; i < inventories.Length; i++)
-                {
-                    Destroy(inventories[i].gameObject);
-                }
-                // Destroy match manager
-                GameManager gm = FindObjectOfType<GameManager>();
-                if (gm)
-                    Destroy(gm.gameObject);
+
+                NetworkBehaviour[] nbs = FindObjectsOfType<NetworkBehaviour>();
+                for (int i = 0; i < nbs.Length; i++)
+                    Destroy(nbs[i].gameObject);
+
+                //// Destroy all the player objects
+                //Player[] players = FindObjectsOfType<Player>();
+                //for (int i = 0; i < players.Length; i++)
+                //{
+                //    Destroy(players[i].gameObject);
+                //}
+                //// Destroy all inventories
+                //Inventory[] inventories = FindObjectsOfType<Inventory>();
+                //for (int i = 0; i < inventories.Length; i++)
+                //{
+                //    Destroy(inventories[i].gameObject);
+                //}
+                //// Destroy match manager
+                //GameManager gm = FindObjectOfType<GameManager>();
+                //if (gm)
+                //    Destroy(gm.gameObject);
                 // Reset runner
                 DestroyImmediate(runner);
                 runner = null;

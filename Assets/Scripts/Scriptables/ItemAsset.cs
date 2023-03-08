@@ -10,6 +10,10 @@ namespace GOA.Assets
 
         [SerializeField]
         Sprite icon;
+        public Sprite Icon
+        {
+            get { return icon; }
+        }
 
         [SerializeField]
         string description;

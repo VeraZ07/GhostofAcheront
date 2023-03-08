@@ -27,30 +27,18 @@ namespace GOA
         List<Inventory> inventories = null;
 
 
-
-        private void Awake()
-        {
-            
-        }
-
-        void Start()
-        {
-            
-        }
-
         public override void Spawned()
         {
             base.Spawned();
 
-            Debug.Log("Empty:" + Empty);
-
+           
             // Load item asset resource
-            Debug.Log("ItemAssetName:" + ItemAssetName);
             itemAsset = new List<ItemAsset>(Resources.LoadAll<ItemAsset>(ItemAsset.ResourceFolder)).Find(i => i.name.ToLower().Equals(ItemAssetName.ToString().ToLower())); 
-            Debug.Log("Found:" + Resources.LoadAll<ItemAsset>(ItemAsset.ResourceFolder)[0].name);
-            Debug.Log("ItemAsset:" + itemAsset);
-
+            
             SetInteractionEnabled(!Empty);
+
+            if (!root)
+                root = transform;
 
             if (!Empty)
             {
@@ -87,7 +75,7 @@ namespace GOA
 
         IEnumerator PickUp(PlayerController playerController)
         {
-            Debug.Log("PickUp:" + playerController.PlayerId);
+            
             SetInteractionEnabled(false);
             
 
