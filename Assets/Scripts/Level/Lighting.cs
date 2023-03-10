@@ -193,7 +193,6 @@ namespace GOA.Level
                 int id = availableTilesForLights[Random.Range(0, availableTilesForLights.Count)];
 
                 // Remove current and adjacent tiles
-                Debug.Log("Light ID:" + id);
 
                 int count = lightDistanceTileRange * 2 + 1;
                 for (int k = 0; k < count; k++)
@@ -203,12 +202,10 @@ namespace GOA.Level
                     {
                         int c = j - (count - 1) / 2;
                         availableTilesForLights.Remove(id + r + c);
-                        Debug.Log("Removing id:" + (id + r + c));
+                        
                     }
                 }
 
-
-                Debug.Log("Remaining Tiles:" + availableTilesForLights.Count);
 
                 bool spot = Random.Range(0, 5) == 0;
 

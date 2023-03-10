@@ -426,6 +426,14 @@ namespace GOA.Level
                 {
                     o.GetComponent<Picker>().Init("Pic1TL", false);
                 });
+
+                
+                pos = sTile.sceneObject.transform.position + Vector3.forward*2f;
+                no = SessionManager.Instance.Runner.Spawn(pickerPrefab, pos, Quaternion.identity, null,
+                (r, o) =>
+                {
+                    o.GetComponent<Picker>().Init("Pic1TR", false);
+                });
                 //it.GetComponentInChildren<InteractionTrigger>().SetInteractable(no.GetComponent<IInteractable>());
 
                 //

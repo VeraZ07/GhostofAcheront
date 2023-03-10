@@ -55,19 +55,32 @@ namespace GOA.UI
             open = true;
             mainPanel.SetActive(open);
 
-            Player player = GetLocalPlayer();
+            // Load all characters
+            List<CharacterAsset> characters = new List<CharacterAsset>(Resources.LoadAll<CharacterAsset>(CharacterAsset.ResourceFolder));
 
-            CharacterAsset character = new List<CharacterAsset>(Resources.LoadAll<CharacterAsset>(CharacterAsset.ResourceFolder)).Find(c => c.CharacterId == player.CharacterId);
+            // Set the local player
+            Player localPlayer = GetLocalPlayer();
+
+            CharacterAsset character = characters.Find(c => c.CharacterId == localPlayer.CharacterId);
 
             SetAvatar(elements[0], character.Avatar);
 
-            Inventory inv = GetPlayerInventory(player);
+            Inventory inv = GetPlayerInventory(localPlayer);
             for(int i=0; i<inv.Items.Count; i++)
                 SetItem(elements[0], i, inv.Items[i].ToString());
 
-            
-            (mainPanel.transform as RectTransform).DOAnchorPos(Vector3.zero, .5f, true);
+            // Set the other players
+            List<Player> others = new List<Player>(FindObjectsOfType<Player>()).FindAll(p => p != localPlayer);
+            for(int i=0; i<others.Count; i++)
+            {
+                SetAvatar(elements[i + 1], characters.Find(c => c.CharacterId == others[i].CharacterId).Avatar);
+                inv = GetPlayerInventory(others[i]);
+                for (int j = 0; j < inv.Items.Count; j++)
+                    SetItem(elements[i+1], j, inv.Items[j].ToString());
+            }
 
+            (mainPanel.transform as RectTransform).DOAnchorPos(Vector3.zero, .5f, true);
+            
         }
 
         void Close()

@@ -52,6 +52,12 @@ namespace GOA
             {
                 Name = string.Format("Player_{0}", Object.InputAuthority.PlayerId);
                 RpcSetName(string.Format("Player_{0}", Object.InputAuthority.PlayerId));
+
+                /****************** Test ******************/
+                if (SessionManager.Instance.Runner.IsClient)
+                {
+                    RpcSetCharacterId((byte)1);
+                }
             }
 
             

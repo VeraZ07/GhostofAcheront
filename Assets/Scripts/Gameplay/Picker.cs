@@ -15,6 +15,9 @@ namespace GOA
         [SerializeField]
         Transform root;
 
+        [SerializeField]
+        GameObject vfx;
+
         [Networked (OnChanged = nameof(OnEmptyChanged))]
         public NetworkBool Empty { get; private set; } = false;
 
@@ -99,8 +102,12 @@ namespace GOA
 
         public static void OnEmptyChanged(Changed<Picker> changed)
         {
-            if(changed.Behaviour.Empty)
+            if (changed.Behaviour.Empty)
+            {
                 DestroyImmediate(changed.Behaviour.sceneObject);
+                DestroyImmediate(changed.Behaviour.vfx);
+            }
+                
         }
     }
 

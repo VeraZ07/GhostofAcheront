@@ -345,6 +345,7 @@ MonoBehaviour:
   _interpolationDataSource: 0
   itemAsset: {fileID: 0}
   root: {fileID: 3191109873403164318}
+  vfx: {fileID: 894273997739649599}
   _Empty:
     _value: 0
   _ItemAssetName:
@@ -461,6 +462,12 @@ PrefabInstance:
 --- !u!4 &894273997739649592 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7265709721793464176, guid: 1cf4e146096c2cd4699af971c7227f5a,
+    type: 3}
+  m_PrefabInstance: {fileID: 7547440378966306120}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &894273997739649599 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7265709721793464183, guid: 1cf4e146096c2cd4699af971c7227f5a,
     type: 3}
   m_PrefabInstance: {fileID: 7547440378966306120}
   m_PrefabAsset: {fileID: 0}

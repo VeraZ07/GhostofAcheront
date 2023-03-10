@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 57bf282b04a307e4d99ebafbaf6e43f5, type: 3}
-  m_Name: Pic1TL
+  m_Name: Pic1TR
   m_EditorClassIdentifier: 
-  icon: {fileID: 21300000, guid: 9e62064e128e99e4db3409598303f427, type: 3}
-  description: Part 1 of the puzzle
-  displayName: Part 1
-  sceneObjectPrefab: {fileID: 3304040447417156266, guid: 417a2c2f89baf334c83083659f89c53f,
+  icon: {fileID: 21300000, guid: c1d9903ad00b32746bafb452f913357a, type: 3}
+  description: Part 2 of the puzzle
+  displayName: Part 2
+  sceneObjectPrefab: {fileID: 3304040447417156266, guid: 9017a63e91fda78479e9d077669c1488,
     type: 3}
