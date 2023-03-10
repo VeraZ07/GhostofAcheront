@@ -424,7 +424,7 @@ namespace GOA.Level
                 NetworkObject no = SessionManager.Instance.Runner.Spawn(pickerPrefab, pos, Quaternion.identity, null,
                 (r, o) =>
                 {
-                    o.GetComponent<Picker>().Init("pic_1", false);
+                    o.GetComponent<Picker>().Init("Pic1TL", false);
                 });
                 //it.GetComponentInChildren<InteractionTrigger>().SetInteractable(no.GetComponent<IInteractable>());
 
