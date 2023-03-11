@@ -4,9 +4,20 @@ using UnityEngine;
 
 namespace GOA.Assets
 {
+    public enum ObjectAlignment { Both, MiddleOnly, SideOnly }
+
     public class CustomObjectAsset : ScriptableObject
     {
+        
+
         public const string ResourceFolder = "CustomObjects";
+
+        [SerializeField]
+        public ObjectAlignment alignment = ObjectAlignment.Both;
+        public ObjectAlignment Alignment
+        {
+            get { return alignment; }
+        }
 
         [SerializeField]
         GameObject prefab;
@@ -15,6 +26,8 @@ namespace GOA.Assets
         {
             get { return prefab; }
         }
+
+
     }
 
 }

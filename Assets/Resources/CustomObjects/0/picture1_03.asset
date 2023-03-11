@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42b49e6945c69c142b0c8a9ba6789206, type: 3}
-  m_Name: lever_default
+  m_Name: picture1_03
   m_EditorClassIdentifier: 
-  alignment: 2
-  prefab: {fileID: 5946766457648286713, guid: a94c1f6105e673641add20a94d712564, type: 3}
+  alignment: 1
+  prefab: {fileID: 3304040447417156266, guid: 3aa453771ceee204faa204e02a6f90fe, type: 3}

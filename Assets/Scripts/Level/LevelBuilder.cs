@@ -374,19 +374,7 @@ namespace GOA.Level
             foreach (CustomObject gate in gates)
             {
                 gate.CreateSceneObject();
-                //// Get the asset
-                //CustomObjectAsset gateAsset = gate.asset;
-                //// Instantiate the scene object
-                //GameObject gateObj = Instantiate(gateAsset.Prefab, geometryRoot);
-                
-                //// Set date
-                //gate.sceneObject = gateObj;
-
-                //// Position the object
-                //Tile tile = tiles[gate.tileId];
-                //Vector3 position = tile.GetPosition();
-                //gateObj.transform.position = position;
-                //gateObj.transform.GetChild(0).forward = gate.direction;
+               
             }
 
             //
@@ -1259,10 +1247,14 @@ namespace GOA.Level
         void CreatePuzzles()
         {
             
-            List<PuzzleAsset> puzzleCollection = new List<PuzzleAsset>(Resources.LoadAll<PuzzleAsset>(System.IO.Path.Combine(PuzzleAsset.ResourceFolder, theme.ToString())));
+            List<PuzzleAsset> puzzleCollection = new List<PuzzleAsset>(Resources.LoadAll<PuzzleAsset>(System.IO.Path.Combine(PuzzleAsset.ResourceFolder, theme.ToString()))).FindAll(p=>!p.name.ToLower().StartsWith("_"));
 
-            Resources.LoadAll <PuzzleAsset> ("");
-
+            Debug.Log("PuzzleCollection.Count:" + puzzleCollection.Count);
+            foreach(PuzzleAsset asset in puzzleCollection)
+            {
+                Debug.Log("PuzzleAsset:" + asset.name);
+            }
+           
             // Get all gates
             List<CustomObject> gates = customObjects.FindAll(g => g.GetType() == typeof(Gate));
             

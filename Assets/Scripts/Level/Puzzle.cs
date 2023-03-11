@@ -12,14 +12,16 @@ namespace GOA.Level
         {
             public static Puzzle CreatePuzzle(LevelBuilder builder, PuzzleAsset asset, int sectorIndex)
             {
-                Puzzle puzzle = null;
                 if(asset.GetType() == typeof(MultiStatePuzzleAsset))
                 {
-                    puzzle = new MultiStatePuzzle(builder, asset, sectorIndex);
-                    
+                    return new MultiStatePuzzle(builder, asset, sectorIndex);
                 }
-
-                return puzzle;
+                if (asset.GetType() == typeof(PicturePuzzleAsset))
+                {
+                    return new PicturePuzzle(builder, asset, sectorIndex);
+                }
+                //return puzzle;
+                throw new System.Exception(string.Format("PuzzleFactory - Puzzle '{0}' not found.", asset.name));
             }
         }
 
@@ -33,12 +35,8 @@ namespace GOA.Level
                 get { return asset; }
             }
 
-            //[SerializeField]
             int sectorId;
 
-            //public List<GameObject> sceneObjects = new List<GameObject>();
-
-            //public PuzzleController puzzleController;
 
             protected LevelBuilder builder;
 
@@ -56,7 +54,7 @@ namespace GOA.Level
 
         public class MultiStatePuzzle: Puzzle
         {
-        
+            
             List<int> elementIds = new List<int>();
             public ICollection<int> ElementsIds
             {
@@ -93,6 +91,47 @@ namespace GOA.Level
                 }
             }
         }
+
+
+        public class PicturePuzzle : Puzzle
+        {
+            int pictureId;
+
+            List<int> pieceIds;
+
+            public PicturePuzzle(LevelBuilder builder, PuzzleAsset asset, int sectorId) : base(builder, asset, sectorId)
+            {
+                // Create the picture device
+                CustomObject co = new CustomObject(builder, (asset as PicturePuzzleAsset).Picture);
+                // Add the new object to the object list
+                builder.customObjects.Add(co);
+                // Set the corresponding id
+                pictureId = builder.customObjects.Count - 1;
+                // Choose a free tile 
+                co.AttachRandomly(sectorId, false);
+
+                // Create all the pieces
+                pieceIds = new List<int>();
+                List<CustomObjectAsset> pList = new List<CustomObjectAsset>((asset as PicturePuzzleAsset).Pieces);
+                foreach(CustomObjectAsset coa in pList)
+                {
+                    // Create a new custom object
+                    co = new CustomObject(builder, coa);
+                    // Add the new object to the object list
+                    builder.customObjects.Add(co);
+                    // Set the corresponding id
+                    pieceIds.Add(builder.customObjects.Count - 1);
+                    // Choose a free tile 
+                    co.AttachRandomly(sectorId, true);
+                }
+            }
+
+            public override void CreateSceneObjects()
+            {
+                throw new System.NotImplementedException();
+            }
+        }
+
     }
 
 }
