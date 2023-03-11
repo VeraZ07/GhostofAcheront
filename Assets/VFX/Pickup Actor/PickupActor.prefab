@@ -94,10 +94,10 @@ VisualEffect:
       - m_Value: 0.9
         m_Name: CircleMeshSize
         m_Overridden: 1
-      - m_Value: 4
+      - m_Value: 2
         m_Name: CircleMeshRate
         m_Overridden: 1
-      - m_Value: 0.003
+      - m_Value: 0.002
         m_Name: CircleMeshUpSpeed
         m_Overridden: 1
     m_Vector2f:
@@ -109,10 +109,10 @@ VisualEffect:
         m_Overridden: 1
     m_Vector4f:
       m_Array:
-      - m_Value: {x: 1.481643, y: 0.75410783, z: 0.093087524, w: 0}
+      - m_Value: {x: 1.9781097, y: 1.0092739, z: 0.06531498, w: 0}
         m_Name: Color01
         m_Overridden: 1
-      - m_Value: {x: 7.5570474, y: 2.3264914, z: 0.39211097, w: 1}
+      - m_Value: {x: 8.947073, y: 2.0826385, z: 0, w: 1}
         m_Name: Color02
         m_Overridden: 1
     m_Uint:
@@ -254,7 +254,7 @@ VisualEffect:
       - m_Value: 0.03
         m_Name: ParticlesUpSpeed
         m_Overridden: 1
-      - m_Value: 1.8
+      - m_Value: 0.8
         m_Name: CircleMeshSize
         m_Overridden: 1
       - m_Value: 2
@@ -496,7 +496,7 @@ VisualEffect:
         m_Overridden: 1
     m_Vector4f:
       m_Array:
-      - m_Value: {x: 0.12613158, y: 0.44146055, z: 0.8603976, w: 0}
+      - m_Value: {x: 0, y: 0.5019608, z: 1.1529412, w: 0}
         m_Name: Color01
         m_Overridden: 1
     m_Uint:
