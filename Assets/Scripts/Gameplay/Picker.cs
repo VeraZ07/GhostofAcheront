@@ -4,11 +4,14 @@ using GOA.Interfaces;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace GOA
 {
     public class Picker : NetworkBehaviour, IInteractable
     {
+        public UnityAction OnItemPicked;
+
         [SerializeField]
         ItemAsset itemAsset;
 
@@ -17,6 +20,9 @@ namespace GOA
 
         [SerializeField]
         GameObject vfx;
+
+        [SerializeField]
+        new GameObject light;
 
         [Networked (OnChanged = nameof(OnEmptyChanged))]
         public NetworkBool Empty { get; private set; } = false;
@@ -51,7 +57,12 @@ namespace GOA
             }
         }
 
-        
+        public override void Despawned(NetworkRunner runner, bool hasState)
+        {
+            base.Despawned(runner, hasState);
+
+        }
+
 
         public void Interact(PlayerController playerController)
         {
@@ -91,12 +102,17 @@ namespace GOA
             Inventory inventory = inventories.Find(i => i.PlayerId == playerController.PlayerId);
             inventory.AddItem(itemAsset);
 
+            
+
             yield return new WaitForSeconds(.5f);
 
             Empty = true;
 
-            
-
+            if (Runner.IsServer)
+            {
+                yield return new WaitForSeconds(1.0f);
+                Runner.Despawn(GetComponent<NetworkObject>());
+            }
             
         }
 
@@ -106,8 +122,11 @@ namespace GOA
             {
                 DestroyImmediate(changed.Behaviour.sceneObject);
                 DestroyImmediate(changed.Behaviour.vfx);
+                DestroyImmediate(changed.Behaviour.light);
+
+                changed.Behaviour.OnItemPicked?.Invoke();
             }
-                
+
         }
     }
 
