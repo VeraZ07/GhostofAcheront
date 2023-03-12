@@ -37,6 +37,10 @@ namespace GOA.Level
 
         [SerializeReference]
         List<CustomObject> customObjects = new List<CustomObject>();
+        public IList<CustomObject> CustomObjects
+        {
+            get { return customObjects.AsReadOnly(); }
+        }
 
         [SerializeReference]
         List<Puzzle> puzzles = new List<Puzzle>();
@@ -1237,8 +1241,8 @@ namespace GOA.Level
                 // Create the new gate 
                 Gate co = new Gate(this, gateAssets[Random.Range(0, gateAssets.Count)]);
                 customObjects.Add(co);
-                co.direction = tiles[tileId].openDirection;
-                co.tileId = tileId;
+                co.Direction = tiles[tileId].openDirection;
+                co.TileId = tileId;
                 conn.gateIndex = customObjects.Count - 1;
 
             }
@@ -1288,8 +1292,7 @@ namespace GOA.Level
             return puzzles[puzzleId];
         }
 
-        
-
+       
 
     }
 

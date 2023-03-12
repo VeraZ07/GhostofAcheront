@@ -76,7 +76,7 @@ namespace GOA.Level
                     elementIds.Add(builder.customObjects.Count - 1);
 
                     // Attach to a random tile
-                    co.AttachRandomly(sectorId, false);
+                    co.AttachRandomly(sectorId);
 
 
                 }
@@ -96,8 +96,16 @@ namespace GOA.Level
         public class PicturePuzzle : Puzzle
         {
             int pictureId;
+            public int PictureId
+            {
+                get { return pictureId; }
+            }
 
             List<int> pieceIds;
+            public IList<int> PieceIds
+            {
+                get { return pieceIds.AsReadOnly(); }
+            }
 
             public PicturePuzzle(LevelBuilder builder, PuzzleAsset asset, int sectorId) : base(builder, asset, sectorId)
             {
@@ -108,7 +116,7 @@ namespace GOA.Level
                 // Set the corresponding id
                 pictureId = builder.customObjects.Count - 1;
                 // Choose a free tile 
-                co.AttachRandomly(sectorId, false);
+                co.AttachRandomly(sectorId);
 
                 // Create all the pieces
                 pieceIds = new List<int>();
@@ -122,14 +130,20 @@ namespace GOA.Level
                     // Set the corresponding id
                     pieceIds.Add(builder.customObjects.Count - 1);
                     // Choose a free tile 
-                    co.AttachRandomly(sectorId, true);
+                    co.AttachRandomly(sectorId);
                 }
             }
 
             public override void CreateSceneObjects()
             {
-                throw new System.NotImplementedException();
+                builder.customObjects[pictureId].CreateSceneObject();
+                foreach(int id in pieceIds)
+                {
+                    builder.customObjects[id].CreateSceneObject();
+                }
             }
+
+           
         }
 
     }

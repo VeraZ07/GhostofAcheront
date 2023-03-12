@@ -8,22 +8,32 @@ namespace GOA.Level
     public partial class LevelBuilder : MonoBehaviour
     {
         [System.Serializable]
-        class CustomObject
+        public class CustomObject
         {
+
+            GameObject sceneObject;
+            public GameObject SceneObject
+            {
+                get { return sceneObject; }
+            }
+
+            Vector3 direction;
+            public Vector3 Direction
+            {
+                get { return direction; }
+                set { direction = value; }
+            }
+
+            int tileId;
+            public int TileId
+            {
+                get { return tileId; }
+                set { tileId = value; }
+            }
 
             LevelBuilder builder;
 
-            public GameObject sceneObject;
-
-
-            public Vector3 direction;
-
-            public int tileId;
-
-            //protected string codePrefix;
-
-            //public string style = "000";
-            public CustomObjectAsset asset;
+            CustomObjectAsset asset;
 
             public CustomObject(LevelBuilder builder, CustomObjectAsset asset)
             {
@@ -38,10 +48,40 @@ namespace GOA.Level
                 sceneObject.transform.GetChild(0).transform.forward = direction;
             }
 
-            public void AttachRandomly(int sectorId, bool inTheMiddle, List<int> exclusionList = null)
+            public void AttachRandomly(int sector, ObjectAlignment forceAlignment = ObjectAlignment.Both, List<int> exclusionList = null)
+            {
+                if(forceAlignment == ObjectAlignment.MiddleOnly || forceAlignment == ObjectAlignment.SideOnly)
+                {
+                    if(forceAlignment == ObjectAlignment.MiddleOnly)
+                        AttachRandomly(sector, true, exclusionList);
+                    else
+                        AttachRandomly(sector, false, exclusionList);
+                }
+                else
+                {
+                    switch (asset.Alignment)
+                    {
+                        case ObjectAlignment.Both:
+                            AttachRandomly(sector, Random.Range(0, 2) == 0 ? true : false, exclusionList);
+                            break;
+                        case ObjectAlignment.MiddleOnly:
+                            AttachRandomly(sector, true, exclusionList);
+                            break;
+                        case ObjectAlignment.SideOnly:
+                            AttachRandomly(sector, false, exclusionList);
+                            break;
+                    }
+                }
+
+                
+            }
+
+       
+
+            void AttachRandomly(int sectorId, bool inTheMiddle, List<int> exclusionList = null)
             {
                 if ((asset.Alignment == ObjectAlignment.SideOnly && inTheMiddle) || (asset.Alignment == ObjectAlignment.MiddleOnly && !inTheMiddle))
-                    throw new System.Exception(string.Format("CustomObject.AttachRandomly() - {0} alignement failed ({1})", asset.name, inTheMiddle);
+                    throw new System.Exception(string.Format("CustomObject.AttachRandomly() - {0} alignement failed ({1})", asset.name, inTheMiddle));
 
                 List<int> tileIds = new List<int>(builder.sectors[sectorId].tileIds);
                 int count = tileIds.Count;
@@ -114,55 +154,8 @@ namespace GOA.Level
                         found = true;
                         direction = dirs[Random.Range(0, dirs.Count)]; 
 
-                        //int dirCount = dirs.Count;
-                        //for (int j = 0; j < dirCount && !found; j++)
-                        //{
-                        //    Vector3 dir = dirs[Random.Range(0, dirs.Count)];
-                        //    dirs.Remove(dir);
-                        //    if (tile.openDirection == dir)
-                        //        continue;
-                        //    if (((tile.isUpperBorder || tile.isUpperBoundary) && dir == Vector3.forward) ||
-                        //       ((tile.isRightBorder || tile.isRightBoundary) && dir == Vector3.right) ||
-                        //       ((tile.isBottomBorder || tile.isBottomBoundary) && dir == Vector3.back) ||
-                        //       ((tile.isLeftBorder || tile.isLeftBoundary) && dir == Vector3.left))
-                        //    {
-                        //        found = true;
-                        //        direction = dir;
-                        //        continue;
-                        //    }
-                        //    if ((tile.roteableWall == 0 && dir == Vector3.right) ||
-                        //       (tile.roteableWall == 3 && dir == Vector3.back))
-                        //    {
-                        //        found = true;
-                        //        direction = dir;
-                        //        continue;
-                        //    }
-
-                        //    int tmpId = id - size;
-                        //    if (tmpId >= 0)//  builder.sectors[sectorId].tileIds.Contains(tmpId))
-                        //    {
-                        //        Tile tmpTile = builder.tiles[tmpId];
-                        //        if ((tmpTile.roteableWall == 3 && dir == Vector3.forward) ||
-                        //           (tmpTile.roteableWall == 2 && dir == Vector3.right))
-                        //        {
-                        //            found = true;
-                        //            direction = dir;
-                        //            continue;
-                        //        }
-                        //    }
-                        //    tmpId = id - 1;
-                        //    if (tmpId % size < size - 1)// && builder.sectors[sectorId].tileIds.Contains(tmpId))
-                        //    {
-                        //        Tile tmpTile = builder.tiles[tmpId];
-                        //        if ((tmpTile.roteableWall == 0 && dir == Vector3.left) ||
-                        //            (tmpTile.roteableWall == 1 && dir == Vector3.back))
-                        //        {
-                        //            found = true;
-                        //            direction = dir;
-                        //            continue;
-                        //        }
-                        //    }
-                        //}
+                      
+                  
                     }
 
                     
