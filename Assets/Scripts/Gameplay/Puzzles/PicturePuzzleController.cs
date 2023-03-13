@@ -12,10 +12,7 @@ namespace GOA
         [UnitySerializeField]
         [Networked]
         [Capacity(10)]
-        NetworkLinkedList<int> Pieces { get; } = default;
-
-        GameObject pictureObject;
-        List<GameObject> piecesObjects;
+        public NetworkLinkedList<int> Pieces { get; } = default;
 
         // Start is called before the first frame update
         void Start()
@@ -37,18 +34,8 @@ namespace GOA
             // Get the puzzle
             PicturePuzzle puzzle = builder.GetPuzzle(PuzzleIndex) as PicturePuzzle;
 
-            // Get the picture object
-            pictureObject = builder.CustomObjects[puzzle.PictureId].SceneObject;
-
-            // Get all the pieces
-            piecesObjects = new List<GameObject>();
-            foreach(int pieceId in puzzle.PieceIds)
-            {
-                piecesObjects.Add(builder.CustomObjects[pieceId].SceneObject);
-            }
-
-            // Set network states
-            for(int i=0; i<piecesObjects.Count; i++)
+            // Set network states to synch
+            for(int i=0; i<puzzle.PieceIds.Count; i++)
             {
                 Pieces.Add(-1); // Empty
             }

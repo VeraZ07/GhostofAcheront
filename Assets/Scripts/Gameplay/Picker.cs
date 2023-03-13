@@ -109,8 +109,7 @@ namespace GOA
 
             Inventory inventory = inventories.Find(i => i.PlayerId == playerController.PlayerId);
             inventory.AddItem(itemAsset);
-
-            
+     
 
             yield return new WaitForSeconds(.5f);
 

@@ -140,21 +140,14 @@ namespace GOA.Level
                 }
             }
 
+            /// <summary>
+            /// This method creates all the scene objects
+            /// </summary>
             public override void CreateSceneObjects()
             {
                 builder.customObjects[pictureId].CreateSceneObject();
                 foreach(int id in pieceIds)
                 {
-                    //// Create pickers
-                    //Tile sTile = tiles[startingTileId];
-                    //Vector3 pos = sTile.sceneObject.transform.position;
-                    //NetworkObject no = SessionManager.Instance.Runner.Spawn(pickerPrefab, pos, Quaternion.identity, null,
-                    //(r, o) =>
-                    //{
-                    //    o.GetComponent<Picker>().Init("Pic1TL", false);
-                    //});
-
-
                     builder.customObjects[id].CreateSceneObject();
                 }
             }
@@ -177,6 +170,14 @@ namespace GOA.Level
                     {
                         o.GetComponent<Picker>().Init(id, (Asset as PicturePuzzleAsset).Items[i].name, false);
                     });
+                }
+
+                // Init all the picture interactors
+                GameObject pictureObject = builder.CustomObjects[pictureId].SceneObject;
+                int puzzleId = builder.puzzles.IndexOf(this);
+                foreach(PieceInteractor interactor in pictureObject.GetComponentsInChildren<PieceInteractor>())
+                {
+                    interactor.Init(puzzleId);
                 }
             }
 
