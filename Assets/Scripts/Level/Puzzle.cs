@@ -1,3 +1,4 @@
+using Fusion;
 using GOA.Assets;
 using System.Collections;
 using System.Collections.Generic;
@@ -49,7 +50,7 @@ namespace GOA.Level
 
             public abstract void CreateSceneObjects();
 
-            
+            public abstract void SpawnInteractables();
         }
 
         public class MultiStatePuzzle: Puzzle
@@ -89,6 +90,11 @@ namespace GOA.Level
                 {
                     builder.customObjects[elementIds[i]].CreateSceneObject();
                 }
+            }
+
+            public override void SpawnInteractables()
+            {
+                throw new System.NotImplementedException();
             }
         }
 
@@ -139,11 +145,41 @@ namespace GOA.Level
                 builder.customObjects[pictureId].CreateSceneObject();
                 foreach(int id in pieceIds)
                 {
+                    //// Create pickers
+                    //Tile sTile = tiles[startingTileId];
+                    //Vector3 pos = sTile.sceneObject.transform.position;
+                    //NetworkObject no = SessionManager.Instance.Runner.Spawn(pickerPrefab, pos, Quaternion.identity, null,
+                    //(r, o) =>
+                    //{
+                    //    o.GetComponent<Picker>().Init("Pic1TL", false);
+                    //});
+
+
                     builder.customObjects[id].CreateSceneObject();
                 }
             }
 
-           
+            public override void SpawnInteractables()
+            {
+                if (!SessionManager.Instance.Runner.IsServer)
+                    return;
+
+                // Spawn pickers
+                for(int i=0; i<pieceIds.Count; i++)
+                //foreach (int id in pieceIds)
+                {
+                    int id = pieceIds[i];
+                    CustomObject co = builder.CustomObjects[id];
+                    Tile tile = builder.tiles[co.TileId];
+                    Vector3 pos = tile.GetPosition();
+                    NetworkObject no = SessionManager.Instance.Runner.Spawn((Asset as PicturePuzzleAsset).PickerPrefab, pos, Quaternion.identity, null,
+                    (r, o) =>
+                    {
+                        o.GetComponent<Picker>().Init(id, (Asset as PicturePuzzleAsset).Items[i].name, false);
+                    });
+                }
+            }
+
         }
 
     }

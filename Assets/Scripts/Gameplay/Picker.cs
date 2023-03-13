@@ -1,6 +1,7 @@
 using Fusion;
 using GOA.Assets;
 using GOA.Interfaces;
+using GOA.Level;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -30,6 +31,9 @@ namespace GOA
         [Networked]
         public NetworkString<_16> ItemAssetName { get; private set; }
 
+        [Networked]
+        public int CustomObjectId { get; private set; }
+
         bool interactionEnabled = false;
         GameObject sceneObject;
 
@@ -40,18 +44,20 @@ namespace GOA
         {
             base.Spawned();
 
-           
-            // Load item asset resource
-            itemAsset = new List<ItemAsset>(Resources.LoadAll<ItemAsset>(ItemAsset.ResourceFolder)).Find(i => i.name.ToLower().Equals(ItemAssetName.ToString().ToLower())); 
-            
             SetInteractionEnabled(!Empty);
+
+            // Load the item asset
+            itemAsset = new List<ItemAsset>(Resources.LoadAll<ItemAsset>(ItemAsset.ResourceFolder)).Find(i => i.name.ToLower().Equals(ItemAssetName.ToString().ToLower()));
 
             if (!root)
                 root = transform;
 
             if (!Empty)
             {
-                sceneObject = Instantiate(itemAsset.SceneObjectPrefab, root);
+                LevelBuilder builder = FindObjectOfType<LevelBuilder>();
+                sceneObject = builder.CustomObjects[CustomObjectId].SceneObject;
+
+                sceneObject.transform.parent = root;
                 sceneObject.transform.localPosition = Vector3.zero;
                 sceneObject.transform.localRotation = Quaternion.identity;
             }
@@ -81,9 +87,11 @@ namespace GOA
             interactionEnabled = value;
         }
 
-        public void Init(string itemAssetName, bool empty)
+ 
+        public void Init(int customObjectId, string itemAssetName, bool empty)
         {
             Empty = empty;
+            CustomObjectId = customObjectId;
             ItemAssetName = itemAssetName;
         }
 

@@ -15,11 +15,11 @@ namespace GOA.Level
         // From 0 to N, 0 is the smallest one.
         public static int LevelSize = 3;
 
-        [SerializeField]
-        List<GameObject> interactionTriggerPrefabs = new List<GameObject>();
+        //[SerializeField]
+        //List<GameObject> interactionTriggerPrefabs = new List<GameObject>();
 
-        [SerializeField]
-        NetworkObject pickerPrefab;
+        //[SerializeField]
+        //NetworkObject commonPickerPrefab;
 
 
         [SerializeField]
@@ -162,6 +162,11 @@ namespace GOA.Level
             //
             CreateLighting();
 
+
+            //
+            // Spawn interactables ( server only )
+            //
+            ServerSpawnInteractables();
 
             Debug.LogFormat("LevelBuilder - Level built in {0} seconds.", (System.DateTime.Now-startTime).TotalSeconds);
 
@@ -398,7 +403,6 @@ namespace GOA.Level
             {
                 // First create scene objects
                 puzzle.CreateSceneObjects();
-
             }
 
             // 
@@ -411,21 +415,21 @@ namespace GOA.Level
 
             if (SessionManager.Instance.Runner.IsServer)
             {
-                Tile sTile = tiles[startingTileId];
-                Vector3 pos = sTile.sceneObject.transform.position;
-                NetworkObject no = SessionManager.Instance.Runner.Spawn(pickerPrefab, pos, Quaternion.identity, null,
-                (r, o) =>
-                {
-                    o.GetComponent<Picker>().Init("Pic1TL", false);
-                });
+                //Tile sTile = tiles[startingTileId];
+                //Vector3 pos = sTile.sceneObject.transform.position;
+                //NetworkObject no = SessionManager.Instance.Runner.Spawn(pickerPrefab, pos, Quaternion.identity, null,
+                //(r, o) =>
+                //{
+                //    o.GetComponent<Picker>().Init("Pic1TL", false);
+                //});
 
                 
-                pos = sTile.sceneObject.transform.position + Vector3.forward*2f;
-                no = SessionManager.Instance.Runner.Spawn(pickerPrefab, pos, Quaternion.identity, null,
-                (r, o) =>
-                {
-                    o.GetComponent<Picker>().Init("Pic1TR", false);
-                });
+                //pos = sTile.sceneObject.transform.position + Vector3.forward*2f;
+                //no = SessionManager.Instance.Runner.Spawn(pickerPrefab, pos, Quaternion.identity, null,
+                //(r, o) =>
+                //{
+                //    o.GetComponent<Picker>().Init("Pic1TR", false);
+                //});
                 //it.GetComponentInChildren<InteractionTrigger>().SetInteractable(no.GetComponent<IInteractable>());
 
                 //
@@ -451,6 +455,18 @@ namespace GOA.Level
             // Bake the navigation mesh
             //
             //FindObjectOfType<NavMeshSurface>().BuildNavMesh();
+        }
+
+        void ServerSpawnInteractables()
+        {
+            if (!SessionManager.Instance.Runner.IsServer)
+                return;
+
+
+            foreach(Puzzle puzzle in puzzles)
+            {
+                puzzle.SpawnInteractables();
+            }
         }
 
         void ConnectSectors()

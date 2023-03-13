@@ -21,12 +21,12 @@ namespace GOA.Assets
         [SerializeField]
         string displayName;
 
-        [SerializeField]
-        GameObject sceneObjectPrefab;
-        public GameObject SceneObjectPrefab
-        {
-            get { return sceneObjectPrefab; }
-        }
+        //[SerializeField]
+        //GameObject sceneObjectPrefab;
+        //public GameObject SceneObjectPrefab
+        //{
+        //    get { return sceneObjectPrefab; }
+        //}
     }
 
 }
