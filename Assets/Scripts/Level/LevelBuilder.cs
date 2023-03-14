@@ -1,3 +1,4 @@
+#define TEST_PUZZLE
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,11 +16,6 @@ namespace GOA.Level
         // From 0 to N, 0 is the smallest one.
         public static int LevelSize = 3;
 
-        //[SerializeField]
-        //List<GameObject> interactionTriggerPrefabs = new List<GameObject>();
-
-        //[SerializeField]
-        //NetworkObject commonPickerPrefab;
 
 
         [SerializeField]
@@ -140,12 +136,18 @@ namespace GOA.Level
             CheckForUnreachableTiles();
 
 
-            
 
+#if !TEST_PUZZLE
             //
             // Create puzzles
             //
             CreatePuzzles();
+#else
+            //
+            // Test puzzle
+            //
+            TestPuzzle("PicturePuzzleAsset", 0);
+#endif
 
             // 
             // Set the monster spawn tile
@@ -162,14 +164,11 @@ namespace GOA.Level
             //
             CreateLighting();
 
-
-            //
-            // Spawn interactables ( server only )
-            //
-            ServerSpawnInteractables();
-
             Debug.LogFormat("LevelBuilder - Level built in {0} seconds.", (System.DateTime.Now-startTime).TotalSeconds);
 
+#if TEST_PUZZLE
+            TestPuzzle(null, 1);
+#endif
         }
 
         void BuildGeometry()
@@ -405,36 +404,9 @@ namespace GOA.Level
                 puzzle.CreateSceneObjects();
             }
 
-            // 
-            // Test interaction triggers
-            //
-            
-            //GameObject it = Instantiate(interactionTriggerPrefabs[0], pos, Quaternion.identity);
-            //triggers.Add(it);
-            //it.transform.parent = geometryRoot;
-
+           
             if (SessionManager.Instance.Runner.IsServer)
             {
-                //Tile sTile = tiles[startingTileId];
-                //Vector3 pos = sTile.sceneObject.transform.position;
-                //NetworkObject no = SessionManager.Instance.Runner.Spawn(pickerPrefab, pos, Quaternion.identity, null,
-                //(r, o) =>
-                //{
-                //    o.GetComponent<Picker>().Init("Pic1TL", false);
-                //});
-
-                
-                //pos = sTile.sceneObject.transform.position + Vector3.forward*2f;
-                //no = SessionManager.Instance.Runner.Spawn(pickerPrefab, pos, Quaternion.identity, null,
-                //(r, o) =>
-                //{
-                //    o.GetComponent<Picker>().Init("Pic1TR", false);
-                //});
-                //it.GetComponentInChildren<InteractionTrigger>().SetInteractable(no.GetComponent<IInteractable>());
-
-                //
-                // Server only
-                //
                 //
                 // Create puzzle controllers
                 //
@@ -457,17 +429,7 @@ namespace GOA.Level
             //FindObjectOfType<NavMeshSurface>().BuildNavMesh();
         }
 
-        void ServerSpawnInteractables()
-        {
-            if (!SessionManager.Instance.Runner.IsServer)
-                return;
-
-
-            foreach(Puzzle puzzle in puzzles)
-            {
-                puzzle.SpawnInteractables();
-            }
-        }
+       
 
         void ConnectSectors()
         {
@@ -1308,8 +1270,62 @@ namespace GOA.Level
             return puzzles[puzzleId];
         }
 
-       
 
+
+#if TEST_PUZZLE
+        void TestPuzzle(string puzzleAssetName, int step)
+        {
+            if(step == 0)
+            {
+                List<PuzzleAsset> puzzleCollection = new List<PuzzleAsset>(Resources.LoadAll<PuzzleAsset>(System.IO.Path.Combine(PuzzleAsset.ResourceFolder, theme.ToString()))).FindAll(p => !p.name.ToLower().StartsWith("_"));
+
+                Debug.Log("PuzzleCollection.Count:" + puzzleCollection.Count);
+                foreach (PuzzleAsset asset in puzzleCollection)
+                {
+                    Debug.Log("PuzzleAsset:" + asset.name);
+                }
+
+                // Get all gates
+                List<CustomObject> gates = customObjects.FindAll(g => g.GetType() == typeof(Gate));
+
+                // In the target sector of the current connection we have the puzzle to open the next connection in the list
+                for (int i = 0; i < connections.Count - 1; i++)
+                {
+                    // The connection source tile must be in the sector this puzzle belongs to
+                    int trgId = connections[i].targetTileId;
+                    int sectorId = tiles[trgId].sectorIndex;
+                    int gateId = connections[i + 1].gateIndex; // The gate of the next connection in the list
+
+                    // Get a random puzzle
+                    PuzzleAsset asset = puzzleCollection.Find(p => p.name.ToLower().Equals(puzzleAssetName.ToLower()));
+                    // Build the puzzle
+                    Puzzle puzzle = PuzzleFactory.CreatePuzzle(this, asset, sectorId);
+                    puzzles.Add(puzzle);
+                    (customObjects[gateId] as Gate).puzzleIndex = puzzles.Count - 1;
+                }
+            }
+            else
+            {
+                Puzzle puzzle = puzzles[0];
+                GameObject sp = GameObject.FindGameObjectWithTag("PlayerSpawnPoint");
+                
+                if(puzzle.GetType() == typeof(PicturePuzzle))
+                {
+                    float rOff = -4f;
+                    CustomObject obj = customObjects[(puzzle as PicturePuzzle).PictureId];
+                    obj.SceneObject.transform.position = sp.transform.position + sp.transform.forward * 3f + sp.transform.right * rOff;
+                    rOff += 2f;
+                    foreach (int id in (puzzle as PicturePuzzle).PieceIds)
+                    {
+                        obj = customObjects[id];
+                        Picker picker = obj.SceneObject.GetComponentInParent<Picker>();
+                        picker.transform.position = sp.transform.position + sp.transform.forward * 3f + sp.transform.right * rOff;
+                        rOff += 2f;
+                    }
+                }
+            }
+        }
+#endif
     }
 
 
