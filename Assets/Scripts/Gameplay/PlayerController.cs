@@ -7,10 +7,13 @@ namespace GOA
 {
     public class PlayerController : NetworkBehaviour
     {
-                
+        public static PlayerController Local { get; private set; }        
 
         [SerializeField]
         new Light light;
+
+        [SerializeField]
+        GameObject dustParticle;
 
         NetworkCharacterControllerPrototypeCustom cc;
 
@@ -65,13 +68,24 @@ namespace GOA
             // Disable camera for non local player
             if (!HasInputAuthority)
             {
-                //cam.SetActive(false) ;
+                // Create a fake cam to replay the original
+                GameObject fakeCam = new GameObject("FakeCam");
+                fakeCam.transform.parent = cam.transform.parent;
+                fakeCam.transform.localPosition = cam.transform.localPosition;
+                fakeCam.transform.localRotation = cam.transform.localRotation;
                 DestroyImmediate(cam.gameObject);
-
+                cam = fakeCam;
+                
                 // Destory light
-                DestroyImmediate(light);
+                DestroyImmediate(light.gameObject);
+
+                // Destroy dust
+                DestroyImmediate(dustParticle);
             }
-            
+            else
+            {
+                Local = this;
+            }
 
             // Destroy level camera if any
             Camera levelCam = new List<Camera>(GameObject.FindObjectsOfType<Camera>()).Find(c => c.transform.parent == null);
@@ -85,8 +99,6 @@ namespace GOA
 
             if (GetInput(out NetworkInputData data))
             {
-                
-                
                 // 
                 // Apply rotation
                 //
@@ -113,7 +125,11 @@ namespace GOA
                 LeftAction = data.leftAction;
                 RightAction = data.rightAction;
 
-                
+                // Set the camera pitch for the other players
+                if(!HasInputAuthority)
+                {
+                    SetCameraPitch(data.pitch);
+                }
             }
         }
 

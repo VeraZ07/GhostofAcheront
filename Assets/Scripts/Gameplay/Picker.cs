@@ -57,9 +57,7 @@ namespace GOA
                 LevelBuilder builder = FindObjectOfType<LevelBuilder>();
                 sceneObject = builder.CustomObjects[CustomObjectId].SceneObject;
 
-                sceneObject.transform.parent = root;
-                sceneObject.transform.localPosition = Vector3.zero;
-                sceneObject.transform.localRotation = Quaternion.identity;
+               
             }
         }
 

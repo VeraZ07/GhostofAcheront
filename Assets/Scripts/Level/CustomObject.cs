@@ -45,7 +45,8 @@ namespace GOA.Level
             {
                 sceneObject = Instantiate(asset.Prefab, builder.GeometryRoot);
                 sceneObject.transform.position = builder.tiles[tileId].GetPosition();
-                sceneObject.transform.GetChild(0).transform.forward = direction;
+                if(direction != Vector3.zero)
+                    sceneObject.transform.GetChild(0).transform.forward = direction;
             }
 
             public void AttachRandomly(int sector, ObjectAlignment forceAlignment = ObjectAlignment.Both, List<int> exclusionList = null)

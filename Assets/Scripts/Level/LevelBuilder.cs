@@ -405,21 +405,18 @@ namespace GOA.Level
             }
 
            
+            // Create all the objects that must be spawned
             if (SessionManager.Instance.Runner.IsServer)
             {
+       
                 //
                 // Create puzzle controllers
                 //
-
                 Player localPlayer = new List<Player>(FindObjectsOfType<Player>()).Find(p => p.HasStateAuthority);
                 foreach (Puzzle puzzle in puzzles)
                 {
-                    SessionManager.Instance.Runner.Spawn(puzzle.Asset.ControllerPrefab, Vector3.zero, Quaternion.identity, null,
-                        (runner, obj) =>
-                        {
-                            obj.GetComponent<PuzzleController>().PuzzleIndex = puzzles.IndexOf(puzzle);
-                            obj.GetComponent<PuzzleController>().Initialize();
-                        });
+                    puzzle.SpawnNetworkedObjects();
+
                 }
             }
             
@@ -1308,20 +1305,38 @@ namespace GOA.Level
             {
                 Puzzle puzzle = puzzles[0];
                 GameObject sp = GameObject.FindGameObjectWithTag("PlayerSpawnPoint");
-                
+
+                Debug.Log("SpawnPoint exists:" + sp);
+
                 if(puzzle.GetType() == typeof(PicturePuzzle))
                 {
-                    float rOff = -4f;
+                    Debug.LogFormat("Testing puzzle - id:{0}", puzzles.IndexOf(puzzle));
+
+                    float rOff = 0f;
                     CustomObject obj = customObjects[(puzzle as PicturePuzzle).PictureId];
-                    obj.SceneObject.transform.position = sp.transform.position + sp.transform.forward * 3f + sp.transform.right * rOff;
-                    rOff += 2f;
+                    Debug.LogFormat("Testing puzzle - picture object:{0}", obj);
+                    obj.SceneObject.transform.position = sp.transform.position + sp.transform.forward * 7f + sp.transform.right * rOff;
+                    obj.SceneObject.transform.forward = -sp.transform.forward;
+                    rOff += -4f;
                     foreach (int id in (puzzle as PicturePuzzle).PieceIds)
                     {
                         obj = customObjects[id];
-                        Picker picker = obj.SceneObject.GetComponentInParent<Picker>();
-                        picker.transform.position = sp.transform.position + sp.transform.forward * 3f + sp.transform.right * rOff;
-                        rOff += 2f;
+                        Debug.LogFormat("Testing puzzle - piece id:{0}, piece obj:{1}", id, obj);
+                        Picker picker = new List<Picker>(FindObjectsOfType<Picker>()).Find(p=>p.CustomObjectId == id);
+                        Debug.LogFormat("Testing puzzle - picker:{0}", picker);
+                        picker.transform.position = sp.transform.position + sp.transform.forward * 7f + sp.transform.right * rOff;
+                        obj.SceneObject.transform.position = picker.transform.position;
+                        rOff += 4f;
                     }
+                }
+
+                // Remove all the walls
+                foreach(Tile tile in tiles)
+                {
+                    Transform wall = new List<Transform>(tile.sceneObject.GetComponentsInChildren<Transform>()).Find(t => t.name.ToLower().Equals("pv"));
+                    if (wall)
+                        Destroy(wall.gameObject);
+
                 }
             }
         }

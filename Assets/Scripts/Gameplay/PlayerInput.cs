@@ -66,6 +66,7 @@ namespace GOA
             data.move = moveInput;
 
             data.yaw = lookInput.x;
+            data.pitch = lookInput.y;
 
             data.run = run;
             data.leftAction = leftAction;

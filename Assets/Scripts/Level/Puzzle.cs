@@ -48,9 +48,24 @@ namespace GOA.Level
                 this.builder = builder;
             }
 
+            /// <summary>
+            /// Creates all the objects in the scene
+            /// </summary>
             public abstract void CreateSceneObjects();
 
-           
+            /// <summary>
+            /// Spawns networked objects ( normally pickers and controllers ) and then attaches the corresponding objects.
+            /// </summary>
+            public virtual void SpawnNetworkedObjects()
+            {
+                // Spawn the puzzle controller
+                SessionManager.Instance.Runner.Spawn(Asset.ControllerPrefab, Vector3.zero, Quaternion.identity, null,
+                       (runner, obj) =>
+                       {
+                            //obj.GetComponent<PuzzleController>().PuzzleIndex = puzzles.IndexOf(puzzle);
+                            obj.GetComponent<PuzzleController>().Initialize(builder.puzzles.IndexOf(this));
+                       });
+            }
         }
 
         public class MultiStatePuzzle: Puzzle
@@ -92,7 +107,7 @@ namespace GOA.Level
                 }
             }
 
-
+          
         }
 
 
@@ -148,37 +163,36 @@ namespace GOA.Level
                     builder.customObjects[id].CreateSceneObject();
                 }
 
-                // Init all the picture interactors
-                GameObject pictureObject = builder.CustomObjects[pictureId].SceneObject;
-                int puzzleId = builder.puzzles.IndexOf(this);
-                foreach (PieceInteractor interactor in pictureObject.GetComponentsInChildren<PieceInteractor>())
-                {
-                    interactor.Init(puzzleId);
-                }
-
-                if (SessionManager.Instance.Runner.IsServer)
-                {
-                    // Spawn pickers
-                    for (int i = 0; i < pieceIds.Count; i++)
-                    //foreach (int id in pieceIds)
-                    {
-                        int id = pieceIds[i];
-                        CustomObject co = builder.CustomObjects[id];
-                        Tile tile = builder.tiles[co.TileId];
-                        Vector3 pos = tile.GetPosition();
-                        NetworkObject no = SessionManager.Instance.Runner.Spawn((Asset as PicturePuzzleAsset).PickerPrefab, pos, Quaternion.identity, null,
-                        (r, o) =>
-                        {
-                            o.GetComponent<Picker>().Init(id, (Asset as PicturePuzzleAsset).Items[i].name, false);
-                        });
-                    }
-                }
-                    
-
-            
+                //// Init all the picture interactors
+                //GameObject pictureObject = builder.CustomObjects[pictureId].SceneObject;
+                //int puzzleId = builder.puzzles.IndexOf(this);
+                //foreach (PieceInteractor interactor in pictureObject.GetComponentsInChildren<PieceInteractor>())
+                //{
+                //    interactor.Init(puzzleId);
+                //}
+   
             }
 
-           
+            public override void SpawnNetworkedObjects()
+            {
+                base.SpawnNetworkedObjects();
+
+                // Spawn pickers
+                
+                for (int i = 0; i < pieceIds.Count; i++)
+                //foreach (int id in pieceIds)
+                {
+                    int id = pieceIds[i];
+                    CustomObject co = builder.CustomObjects[id];
+                    Tile tile = builder.tiles[co.TileId];
+                    Vector3 pos = tile.GetPosition();
+                    NetworkObject no = SessionManager.Instance.Runner.Spawn((Asset as PicturePuzzleAsset).PickerPrefab, pos, Quaternion.identity, null,
+                    (r, o) =>
+                    {
+                        o.GetComponent<Picker>().Init(id, (Asset as PicturePuzzleAsset).Items[i].name, false);
+                    });
+                }
+            }
 
         }
 

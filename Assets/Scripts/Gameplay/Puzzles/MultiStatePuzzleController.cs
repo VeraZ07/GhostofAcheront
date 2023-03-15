@@ -68,8 +68,10 @@ namespace GOA
             //OnSolvedChangedCallback?.Invoke(changed.Behaviour);
         }
 
-        public override void Initialize()
+        public override void Initialize(int puzzleIndex)
         {
+            Initialize(puzzleIndex);
+
             // Attach the puzzle previously created by the builder
             LevelBuilder builder = FindObjectOfType<LevelBuilder>();
 
