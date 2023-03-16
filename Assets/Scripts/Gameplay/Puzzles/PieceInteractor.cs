@@ -9,7 +9,7 @@ namespace GOA
     public class PieceInteractor : MonoBehaviour, IInteractable
     {
         [SerializeField]
-        GameObject pieceObject;
+        GameObject placeHolder;
         
         int pieceId = -1;
 
@@ -29,8 +29,8 @@ namespace GOA
 
         private void Awake()
         {
-            pivotLocalPositionDefault = pieceObject.transform.parent.localPosition;
-            pivotLocalRotationDefault = pieceObject.transform.parent.localRotation;
+            pivotLocalPositionDefault = placeHolder.transform.parent.localPosition;
+            pivotLocalRotationDefault = placeHolder.transform.parent.localRotation;
         }
 
         // Start is called before the first frame update
@@ -41,6 +41,9 @@ namespace GOA
         // Update is called once per frame
         void Update()
         {
+            if (!SessionManager.Instance.Runner)
+                return;
+
             if (!PlayerController.Local)
                 return;
 
@@ -69,7 +72,11 @@ namespace GOA
             //}
         }
 
-        
+        void GetPlaceHolderPositionAndRotationDefault(out Vector3 defaultPosition, out Quaternion defaultRotation)
+        {
+            defaultPosition = pivotLocalPositionDefault;
+            defaultRotation = pivotLocalRotationDefault;
+        }
 
         public void Interact(PlayerController playerController)
         {
@@ -111,35 +118,41 @@ namespace GOA
             // Set visibility
             if (puzzleController.Pieces[pieceId] < 0)
                 Hide();
+            else
+                Show();
         }
 
-        public void ResetPivot()
+        public void ResetPlaceHolderPositionAndRotation()
         {
-            pieceObject.transform.parent.localPosition = pivotLocalPositionDefault;
-            pieceObject.transform.parent.localRotation = pivotLocalRotationDefault;
+            placeHolder.transform.parent.localPosition = pivotLocalPositionDefault;
+            placeHolder.transform.parent.localRotation = pivotLocalRotationDefault;
         }
 
-        public void SetPivotPositionAndRotation(Vector3 localPositon, Quaternion localRotation)
+        public void SetPlaceHolderPositionAndRotation(Vector3 localPositon, Quaternion localRotation)
         {
-            pieceObject.transform.parent.localPosition = localPositon;
-            pieceObject.transform.parent.localRotation = localRotation;
-        }
-
-        public void GetPivotPositionAndRotationDefault(out Vector3 defaultPosition, out Quaternion defaultRotation)
-        {
-            defaultPosition = pivotLocalPositionDefault;
-            defaultRotation = pivotLocalRotationDefault;
+            placeHolder.transform.parent.localPosition = localPositon;
+            placeHolder.transform.parent.localRotation = localRotation;
         }
 
         public void Hide()
         {
-            pieceObject.SetActive(false);
+            // We can implement fx here
+            placeHolder.SetActive(false);
         }
 
         public void Show()
         {
-            pieceObject.SetActive(true);
+            PieceInteractor target = puzzleController.GetInteractor(puzzleController.Pieces[pieceId]);
+
+            Vector3 targetPos;
+            Quaternion targetRot;
+            GetPlaceHolderPositionAndRotationDefault(out targetPos, out targetRot);
+            target.SetPlaceHolderPositionAndRotation(targetPos, targetRot);
+            // We can implement fx here
+            target.placeHolder.SetActive(true);
         }
+
+        
     }
 }
 

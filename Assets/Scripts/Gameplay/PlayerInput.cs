@@ -23,8 +23,7 @@ namespace GOA
             {
                 Instance = this;
                 playerController = GetComponent<PlayerController>();
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
+                //CursorManager.Instance.HideCursor();
             }
             else
             {
@@ -56,8 +55,8 @@ namespace GOA
 
         private void OnDestroy()
         {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            //Cursor.lockState = CursorLockMode.None;
+            //Cursor.visible = true;
         }
 
         public NetworkInputData GetInput()
