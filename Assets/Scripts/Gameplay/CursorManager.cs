@@ -105,23 +105,33 @@ namespace GOA
 
         public void StartGameCursorEffect()
         {
-            gameCursorImage.sprite = effectSprite;
-            gameCursorImage.transform.localScale = Vector3.one * noEffectSize;
-            gameCursorImage.color = new Color(1f, 1f, 1f, effectAlpha);
-            //gameCursorImage.transform.localScale = Vector3.one * 2f;
             if (gameCursorTweener == null)
                 gameCursorTweener = gameCursorImage.transform.DOShakeScale(1, .5f).SetLoops(-1);
-            else
+            else if (!gameCursorTweener.IsPlaying())
+            {
+                gameCursorImage.sprite = effectSprite;
+                gameCursorImage.transform.localScale = Vector3.one * noEffectSize;
+                gameCursorImage.color = new Color(1f, 1f, 1f, effectAlpha);
                 gameCursorTweener.Restart();
+            }
+                
+
+            
+            //gameCursorImage.transform.localScale = Vector3.one * 2f;
+            
 
         }
 
         public void StopGameCursorEffect()
         {
-            gameCursorImage.sprite = noEffectSprite;
-            gameCursorImage.transform.localScale = Vector3.one * effectSize;
-            gameCursorImage.color = new Color(1f, 1f, 1f, noEffectAlpha);
-            gameCursorTweener?.Rewind();
+            if (gameCursorTweener.IsPlaying())
+            {
+                gameCursorImage.sprite = noEffectSprite;
+                gameCursorImage.transform.localScale = Vector3.one * effectSize;
+                gameCursorImage.color = new Color(1f, 1f, 1f, noEffectAlpha);
+                gameCursorTweener?.Rewind();
+            }
+            
         }
     }
 

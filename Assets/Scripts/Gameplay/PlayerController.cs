@@ -1,4 +1,5 @@
 using Fusion;
+using GOA.Interfaces;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +8,9 @@ namespace GOA
 {
     public class PlayerController : NetworkBehaviour
     {
-        public static PlayerController Local { get; private set; }        
+        public static PlayerController Local { get; private set; }
+
+        public const float InteractionMinimumDistance = 1.5f;
 
         [SerializeField]
         new Light light;
@@ -34,6 +37,8 @@ namespace GOA
         [UnitySerializeField]
         public int PlayerId { get; private set; }
 
+       
+
         private void Awake()
         {
             cc = GetComponent<NetworkCharacterControllerPrototypeCustom>();
@@ -51,6 +56,90 @@ namespace GOA
         // Update is called once per frame
         void Update()
         {
+        }
+
+        /// <summary>
+        /// Simply checks if there is any object we can interact with ( we might look at it ).
+        /// Both client and server.
+        /// </summary>
+        /// <returns></returns>
+        void CheckForInteraction(NetworkInputData data)
+        {
+            
+
+            // Check if we are closed to any interactable
+            IInteractable interactable = null;
+            if (Physics.OverlapSphere(cam.transform.position, InteractionMinimumDistance, LayerMask.GetMask(Layers.Interactable)) != null)
+            {
+                Debug.LogFormat("Closed to some interactable");
+
+                // Check if we are looking at any interactor
+                RaycastHit info;
+                if (Physics.Raycast(cam.transform.position, cam.transform.forward, out info, InteractionMinimumDistance))
+                {
+                    Debug.LogFormat("Looking at {0}", info.collider.gameObject);
+                    interactable = info.collider.GetComponent<IInteractable>();
+                }
+            }
+
+            if (interactable != null && interactable.IsInteractionEnabled())
+            {
+                // Set the cursor 
+                CursorManager.Instance.StartGameCursorEffect();
+
+                // Check for player input
+                if (Runner.IsServer)
+                {
+                    if (interactable != null)
+                    {
+                        if (data.leftAction)
+                        {
+                            interactable.Interact(this);
+                        }
+                    }   
+                }
+            }
+            else
+            {
+                // Reset the cursor
+                CursorManager.Instance.StopGameCursorEffect();
+            }
+   
+        }
+
+        void UpdateCharacter(NetworkInputData data)
+        {
+            // 
+            // Apply rotation
+            //
+            cc.Rotate(data.yaw);
+
+            //
+            // Apply movement
+            //
+            Vector3 move = transform.forward * data.move.y + transform.right * data.move.x;
+            move.Normalize();
+
+            if (data.run)
+                cc.maxSpeed = defaultSpeed * runMultiplier;
+            else
+                cc.maxSpeed = defaultSpeed;
+
+
+            //cc.Move(move * Runner.DeltaTime);
+            cc.Move(move);
+
+            //
+            // Actions
+            //
+            LeftAction = data.leftAction;
+            RightAction = data.rightAction;
+
+            // Set the camera pitch for the other players
+            if (!HasInputAuthority)
+            {
+                SetCameraPitch(data.pitch);
+            }
         }
 
         public override void Spawned()
@@ -99,38 +188,15 @@ namespace GOA
 
             if (GetInput(out NetworkInputData data))
             {
-                // 
-                // Apply rotation
-                //
-                cc.Rotate(data.yaw); 
+                UpdateCharacter(data);
 
-                //
-                // Apply movement
-                //
-                Vector3 move = transform.forward * data.move.y + transform.right * data.move.x;
-                move.Normalize();
+                CheckForInteraction(data);
 
-                if (data.run)
-                    cc.maxSpeed = defaultSpeed * runMultiplier;
-                else
-                    cc.maxSpeed = defaultSpeed;
-
-
-                //cc.Move(move * Runner.DeltaTime);
-                cc.Move(move);
-
-                //
-                // Actions
-                //
-                LeftAction = data.leftAction;
-                RightAction = data.rightAction;
-
-                // Set the camera pitch for the other players
-                if(!HasInputAuthority)
-                {
-                    SetCameraPitch(data.pitch);
-                }
             }
+
+            
+
+
         }
 
         public void SetCameraPitch(float value)

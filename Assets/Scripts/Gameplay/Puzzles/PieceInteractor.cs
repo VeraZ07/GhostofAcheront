@@ -41,35 +41,11 @@ namespace GOA
         // Update is called once per frame
         void Update()
         {
-            if (!SessionManager.Instance.Runner)
+            if (!SessionManager.Instance.Runner || !PlayerController.Local || !puzzleController || busy)
                 return;
 
-            if (!PlayerController.Local)
-                return;
+            
 
-            if (!puzzleController)
-                return;
-
-            if (SessionManager.Instance.Runner.IsServer)
-            {
-                // Check distance
-            }
-            else
-            {
-                // Only local for visual clue
-
-            }
-
-            // Check for pieces visibility
-            //int pieceValue = puzzleController.Pieces[pieceId];
-            //if(pieceValue < 0)
-            //{
-            //    pieceObject.SetActive(false);
-            //}
-            //else
-            //{
-            //    pieceObject.SetActive(true);
-            //}
         }
 
         void GetPlaceHolderPositionAndRotationDefault(out Vector3 defaultPosition, out Quaternion defaultRotation)
@@ -80,6 +56,8 @@ namespace GOA
 
         public void Interact(PlayerController playerController)
         {
+            Debug.LogFormat("Interaction request from player {0}", playerController);
+
             busy = true;
 
             if (IsEmpty)
