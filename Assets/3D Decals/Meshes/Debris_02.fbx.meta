@@ -14,6 +14,11 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: Material.002
     second: {fileID: 2100000, guid: cacb06cf3789c1b47bffc2f72f00fce0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Skeleton03_Skeleton_Body
+    second: {fileID: 2100000, guid: 7495f300331fa5d428b7389b2723205a, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
