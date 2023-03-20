@@ -104,10 +104,10 @@ Material:
     - _ZWrite: 0
     m_Colors:
     - _Alpha: {r: 0.9, g: 0.9, b: 0, a: 0}
-    - _BaseColor: {r: 0.2924528, g: 0.08966714, b: 0.105125986, a: 0.99215686}
+    - _BaseColor: {r: 0.3490566, g: 0, b: 0.026850443, a: 0.99215686}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Foam_Color: {r: 0.7693173, g: 1.0552584, b: 1.3003505, a: 0}
+    - _Foam_Color: {r: 0.27450982, g: 0.1254902, b: 0.1254902, a: 1}
     - _Foam_Offset: {r: 0.68, g: 0.68, b: 0, a: 0}
     - _Fresnel_Power: {r: 0.4, g: 1.33, b: 0, a: 0}
     - _Gloss: {r: 0.7, g: 0.7, b: 0, a: 0}
@@ -115,7 +115,7 @@ Material:
     - _Metallic: {r: 0.1, g: 0.1, b: 0, a: 0}
     - _Normal_Speed: {r: 0.5, g: 0, b: 0, a: 0}
     - _Normal_Strenght: {r: 0.5, g: 0.5, b: 0, a: 0}
-    - _Ripples_Color: {r: 0.21698111, g: 0.12588999, b: 0.12588999, a: 0}
+    - _Ripples_Color: {r: 0.0754717, g: 0.0754717, b: 0.0754717, a: 0}
     - _Ripples_Dissolve: {r: 2.79, g: 3.58, b: 0, a: 0}
     - _Ripples_Scale: {r: 5.01, g: 5, b: 0, a: 0}
     - _Ripples_Speed: {r: 0.75, g: 0.75, b: 0, a: 0}
@@ -123,7 +123,7 @@ Material:
     - _Speed: {r: 0.5, g: 0.5, b: 0, a: 0}
     - _Strenght: {r: 5, g: 5, b: 0, a: 0}
     - _Top_Color: {r: 0.14150941, g: 0.011302949, b: 0.0020024881, a: 0}
-    - _Transparency: {r: 2, g: 1, b: 0, a: 0}
+    - _Transparency: {r: 5, g: 5, b: 0, a: 0}
     - _Vector2: {r: 5, g: 5, b: 0, a: 0}
     - _Vortex_Color: {r: 0.0506853, g: 0.1603774, b: 0.1146672, a: 0}
     - _Vortex_Speed: {r: 0.5, g: 0.5, b: 0, a: 0}
