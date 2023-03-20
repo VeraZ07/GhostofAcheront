@@ -55,7 +55,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseColorMap:
-        m_Texture: {fileID: 2800000, guid: 87ec28e5c4927c241a27b9d396cf90fd, type: 3}
+        m_Texture: {fileID: 2800000, guid: 5f76dad26e855d84eaae2017c9a9fd5d, type: 3}
         m_Scale: {x: 2, y: 2}
         m_Offset: {x: 0, y: 0}
     - _BentNormalMap:
@@ -79,7 +79,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _HeightMap:
-        m_Texture: {fileID: 2800000, guid: a978afc6c5d95d548bbb8aaf4050b3ff, type: 3}
+        m_Texture: {fileID: 2800000, guid: cac7b2d319e1bb7479a2ba972a131b39, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _IridescenceMaskMap:
@@ -91,15 +91,15 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 87ec28e5c4927c241a27b9d396cf90fd, type: 3}
+        m_Texture: {fileID: 2800000, guid: 5f76dad26e855d84eaae2017c9a9fd5d, type: 3}
         m_Scale: {x: 2, y: 2}
         m_Offset: {x: 0, y: 0}
     - _MaskMap:
-        m_Texture: {fileID: 2800000, guid: 3148220d58285ff4aba356de935f6361, type: 3}
+        m_Texture: {fileID: 2800000, guid: d8a6e8d3db90e004dbf7e90140fbf033, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
-        m_Texture: {fileID: 2800000, guid: fb9dec0dc0caf2e4e9083ca567532706, type: 3}
+        m_Texture: {fileID: 2800000, guid: 2dec0a23cbc402a4fbdc5f6b435ce7b8, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMapOS:
@@ -144,7 +144,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AORemapMax: 0.99999994
+    - _AORemapMax: 1
     - _AORemapMin: 0
     - _ATDistance: 1
     - _AddPrecomputedVelocity: 0
@@ -204,11 +204,11 @@ Material:
     - _MetallicRemapMax: 1
     - _MetallicRemapMin: 0
     - _NormalMapSpace: 0
-    - _NormalScale: 2
+    - _NormalScale: 1.51
     - _OpaqueCullMode: 2
     - _PPDLodThreshold: 16
     - _PPDMaxSamples: 15
-    - _PPDMinSamples: 1
+    - _PPDMinSamples: 5
     - _PPDPrimitiveLength: 1
     - _PPDPrimitiveWidth: 1
     - _RayTracing: 0
@@ -216,7 +216,7 @@ Material:
     - _ReceivesSSRTransparent: 0
     - _RefractionModel: 0
     - _Smoothness: 0.5
-    - _SmoothnessRemapMax: 0.56875503
+    - _SmoothnessRemapMax: 1
     - _SmoothnessRemapMin: 0
     - _SpecularAAScreenSpaceVariance: 0.1
     - _SpecularAAThreshold: 0.2
