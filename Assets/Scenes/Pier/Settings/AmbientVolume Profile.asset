@@ -51,7 +51,7 @@ MonoBehaviour:
     m_Value: {r: 0.022097833, g: 0.028301895, b: 0.008944466, a: 1}
   bottom:
     m_OverrideState: 1
-    m_Value: {r: 0.047058824, g: 0.027757537, b: 0.011764706, a: 1}
+    m_Value: {r: 0.047058824, g: 0.022559451, b: 0.011764706, a: 1}
   gradientDiffusion:
     m_OverrideState: 1
     m_Value: 1
@@ -107,7 +107,7 @@ MonoBehaviour:
     m_Value: 0
   intensity:
     m_OverrideState: 1
-    m_Value: 0.88
+    m_Value: 1.77
   directLightingStrength:
     m_OverrideState: 1
     m_Value: 0.157
@@ -300,7 +300,7 @@ MonoBehaviour:
     m_Value: 0
   limitMin:
     m_OverrideState: 1
-    m_Value: -1
+    m_Value: -1.3992014
   limitMax:
     m_OverrideState: 0
     m_Value: 14
