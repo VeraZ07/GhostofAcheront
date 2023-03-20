@@ -12,6 +12,8 @@ namespace GOA
         public static UnityAction<Player> OnReadyChangedCallback;
         public static UnityAction<Player> OnNameChangedCallback;
 
+        public static Player Local { get; private set; }
+
         [UnitySerializeField]
         [Networked(OnChanged = nameof(OnNameChanged))] public string Name { get; private set; }
 
@@ -52,12 +54,15 @@ namespace GOA
             {
                 Name = string.Format("Player_{0}", Object.InputAuthority.PlayerId);
                 RpcSetName(string.Format("Player_{0}", Object.InputAuthority.PlayerId));
+                Local = this;
 
                 /****************** Test ******************/
                 if (SessionManager.Instance.Runner.IsClient)
                 {
                     RpcSetCharacterId((byte)1);
                 }
+
+
             }
 
             
