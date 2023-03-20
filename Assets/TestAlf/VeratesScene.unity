@@ -6387,6 +6387,75 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 933a517916839a04e9ac7701158cb5ba, type: 3}
+--- !u!1001 &8559290268565472187
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4931411536071432327, guid: e349b5edcaaa9f443860af88441e53f8,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 27
+      objectReference: {fileID: 0}
+    - target: {fileID: 4931411536071432327, guid: e349b5edcaaa9f443860af88441e53f8,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2.31
+      objectReference: {fileID: 0}
+    - target: {fileID: 4931411536071432327, guid: e349b5edcaaa9f443860af88441e53f8,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.028
+      objectReference: {fileID: 0}
+    - target: {fileID: 4931411536071432327, guid: e349b5edcaaa9f443860af88441e53f8,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2.063
+      objectReference: {fileID: 0}
+    - target: {fileID: 4931411536071432327, guid: e349b5edcaaa9f443860af88441e53f8,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 4931411536071432327, guid: e349b5edcaaa9f443860af88441e53f8,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 4931411536071432327, guid: e349b5edcaaa9f443860af88441e53f8,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4931411536071432327, guid: e349b5edcaaa9f443860af88441e53f8,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4931411536071432327, guid: e349b5edcaaa9f443860af88441e53f8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4931411536071432327, guid: e349b5edcaaa9f443860af88441e53f8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4931411536071432327, guid: e349b5edcaaa9f443860af88441e53f8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6032385709576237516, guid: e349b5edcaaa9f443860af88441e53f8,
+        type: 3}
+      propertyPath: m_Name
+      value: Water Puddle_Decal
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e349b5edcaaa9f443860af88441e53f8, type: 3}
 --- !u!1001 &8639496399159278919
 PrefabInstance:
   m_ObjectHideFlags: 0
