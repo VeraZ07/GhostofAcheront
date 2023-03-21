@@ -37,6 +37,11 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: blinn1_Pbr2
     second: {fileID: 2100000, guid: 55e44e891e8ce154fb695455c959851b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: monster
+    second: {fileID: 2100000, guid: 55e44e891e8ce154fb695455c959851b, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
