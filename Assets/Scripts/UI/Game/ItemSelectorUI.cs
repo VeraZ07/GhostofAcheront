@@ -8,6 +8,8 @@ namespace GOA.UI
 {
     public class ItemSelectorUI : MonoBehaviour
     {
+        public static ItemSelectorUI Instance { get; private set; }
+
         [SerializeField]
         GameObject panel;
 
@@ -32,7 +34,21 @@ namespace GOA.UI
 
         private Inventory inventory;
 
-       
+        private void Awake()
+        {
+            if (!Instance)
+            {
+                Instance = this;
+
+                // Init buttons
+                buttonQuit.onClick.AddListener(HandleOnClose);
+                buttonUse.onClick.AddListener(HandleOnUse);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        }
 
         // Start is called before the first frame update
         void Start()
@@ -55,11 +71,22 @@ namespace GOA.UI
 #endif
         }
 
+        void HandleOnClose()
+        {
+            Close();
+        }
 
-        void Open()
+        void HandleOnUse()
+        {
+
+        }
+
+        public void Open()
         {
        
             open = true;
+
+            CursorManager.Instance.ShowMenuCursor();
 
             panel.SetActive(true);
 
@@ -71,13 +98,13 @@ namespace GOA.UI
 
             // Cast all the names to string
             List<string> names = new List<string>();
-            //foreach(var itemName in inventory.Items)
-            //{
-            //    names.Add(itemName.ToString().ToLower());
-            //}
-            names.Add("pic1_0");
-            names.Add("pic1_1");
-            names.Add("pic1_3");
+            foreach (var itemName in inventory.Items)
+            {
+                names.Add(itemName.ToString().ToLower());
+            }
+            //names.Add("pic1_0");
+            //names.Add("pic1_1");
+            //names.Add("pic1_3");
 
             // Load the items
             List<ItemAsset> assets = new List<ItemAsset>(Resources.LoadAll<ItemAsset>(ItemAsset.ResourceFolder));
@@ -108,10 +135,12 @@ namespace GOA.UI
             
         }
 
-        void Close()
+        public void Close()
         {
             
             open = false;
+
+           
 
             // Unregister toggles
             foreach (Toggle toggle in toggles)
@@ -122,6 +151,10 @@ namespace GOA.UI
             items.Clear();
 
             panel.SetActive(false);
+
+            CursorManager.Instance.ShowGameCursor();
+
+            PlayerController.Local.RpcCloseItemSelector();
         }
 
     }

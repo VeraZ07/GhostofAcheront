@@ -1,5 +1,6 @@
 using GOA.Interfaces;
 using GOA.Level;
+using GOA.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,6 +23,7 @@ namespace GOA
         Vector3 pivotLocalPositionDefault;
         Quaternion pivotLocalRotationDefault;
 
+       
         public bool IsEmpty
         {
             get { return puzzleController.Pieces[pieceId] < 0; }
@@ -54,6 +56,10 @@ namespace GOA
             defaultRotation = pivotLocalRotationDefault;
         }
 
+        /// <summary>
+        /// Only the server call this method
+        /// </summary>
+        /// <param name="playerController"></param>
         public void Interact(PlayerController playerController)
         {
             Debug.LogFormat("Interaction request from player {0}", playerController);
@@ -62,7 +68,9 @@ namespace GOA
 
             if (IsEmpty)
             {
-                // Open the inventory and select an object to be inserted
+                // Open the item selector
+                
+                playerController.RpcOpenItemSelector();
             }
             else
             {
@@ -72,12 +80,12 @@ namespace GOA
 
         public bool IsInteractionEnabled()
         {
-            return !busy;
+            return !busy && !puzzleController.Solved;
         }
 
         public void SetInteractionEnabled(bool value)
         {
-            throw new System.NotImplementedException();
+            busy = !value;
         }
 
         public void Init(int puzzleId)

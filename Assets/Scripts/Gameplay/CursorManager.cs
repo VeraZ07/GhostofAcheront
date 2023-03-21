@@ -68,17 +68,22 @@ namespace GOA
         {
             if(scene.buildIndex > 0) // Game scene
             {
-                HideMenuCursor();
+                //HideMenuCursor();
                 ShowGameCursor();
             }
             else // Main scene
             {
                 ShowMenuCursor();
-                HideGameCursor();
+                //HideGameCursor();
             }
         }
 
-        public void HideMenuCursor()
+        void HideGameCursor()
+        {
+            gameCursorImage.enabled = false;
+        }
+
+        void HideMenuCursor()
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
@@ -86,22 +91,21 @@ namespace GOA
 
         public void ShowMenuCursor()
         {
+            HideGameCursor();
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
 
         public void ShowGameCursor()
         {
+            HideMenuCursor();
             gameCursorImage.enabled = true;
             gameCursorImage.transform.localScale = Vector3.one * noEffectSize;
             gameCursorImage.sprite = noEffectSprite;
             gameCursorImage.color = new Color(1f, 1f, 1f, noEffectAlpha);
         }
 
-        public void HideGameCursor()
-        {
-            gameCursorImage.enabled = false;
-        }
+      
 
         public void StartGameCursorEffect()
         {
@@ -124,7 +128,7 @@ namespace GOA
 
         public void StopGameCursorEffect()
         {
-            if (gameCursorTweener.IsPlaying())
+            if (gameCursorTweener != null && gameCursorTweener.IsPlaying())
             {
                 gameCursorImage.sprite = noEffectSprite;
                 gameCursorImage.transform.localScale = Vector3.one * effectSize;

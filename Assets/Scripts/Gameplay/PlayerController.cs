@@ -1,5 +1,6 @@
 using Fusion;
 using GOA.Interfaces;
+using GOA.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,7 +38,9 @@ namespace GOA
         [UnitySerializeField]
         public int PlayerId { get; private set; }
 
-       
+        public bool InputDisabled { get; set; }
+
+        IInteractable lockedInteractable;
 
         private void Awake()
         {
@@ -71,7 +74,7 @@ namespace GOA
             IInteractable interactable = null;
             if (Physics.OverlapSphere(cam.transform.position, InteractionMinimumDistance, LayerMask.GetMask(Layers.Interactable)) != null)
             {
-                Debug.LogFormat("Closed to some interactable");
+                //Debug.LogFormat("Closed to some interactable");
 
                 // Check if we are looking at any interactor
                 RaycastHit info;
@@ -85,16 +88,20 @@ namespace GOA
             if (interactable != null && interactable.IsInteractionEnabled())
             {
                 // Set the cursor 
-                CursorManager.Instance.StartGameCursorEffect();
+                if(HasInputAuthority)
+                    CursorManager.Instance.StartGameCursorEffect();
 
-                // Check for player input
+                // Only the server can start an interaction
                 if (Runner.IsServer)
                 {
+                    
                     if (interactable != null)
                     {
                         if (data.leftAction)
                         {
+                            lockedInteractable = interactable;
                             interactable.Interact(this);
+                            
                         }
                     }   
                 }
@@ -102,7 +109,8 @@ namespace GOA
             else
             {
                 // Reset the cursor
-                CursorManager.Instance.StopGameCursorEffect();
+                if (HasInputAuthority)
+                    CursorManager.Instance.StopGameCursorEffect();
             }
    
         }
@@ -182,11 +190,36 @@ namespace GOA
                 DestroyImmediate(levelCam.gameObject);
         }
 
+        #region rpc
+        /// <summary>
+        /// Sent by the server to the client when interaction starts.
+        /// </summary>
+        [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
+        public void RpcOpenItemSelector()
+        {
+            ItemSelectorUI.Instance.Open();
+        }
+
+        /// <summary>
+        /// Sent by the client to the server when interaction stops.
+        /// </summary>
+        [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+        public void RpcCloseItemSelector()
+        {
+            lockedInteractable.SetInteractionEnabled(true);
+            lockedInteractable = null;
+
+            
+            
+        }
+
+        #endregion
+
         public override void FixedUpdateNetwork()
         {
             base.FixedUpdateNetwork();
 
-            if (GetInput(out NetworkInputData data))
+            if (!InputDisabled && GetInput(out NetworkInputData data))
             {
                 UpdateCharacter(data);
 
