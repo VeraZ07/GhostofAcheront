@@ -54,8 +54,8 @@ namespace GOA
             {
                 
                 // Do some logic here
-                if (interactable.IsInteractionEnabled())
-                    interactable.Interact(playerController);
+                if (interactable.IsInteractionEnabled() && !interactable.IsBusy())
+                    interactable.StartInteraction(playerController);
             }
             
         }

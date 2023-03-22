@@ -39,6 +39,7 @@ namespace GOA
 
         List<Inventory> inventories = null;
 
+        bool busy = false;
 
         public override void Spawned()
         {
@@ -68,11 +69,12 @@ namespace GOA
         }
 
 
-        public void Interact(PlayerController playerController)
+        public void StartInteraction(PlayerController playerController)
         {
             Debug.Log("Interact " + playerController.PlayerId);
-            if (interactionEnabled)
+            if (interactionEnabled && !busy)
                 StartCoroutine(PickUp(playerController));
+                
         }
 
         public bool IsInteractionEnabled()
@@ -85,7 +87,17 @@ namespace GOA
             interactionEnabled = value;
         }
 
+        public bool IsBusy()
+        {
+            return busy;
+        }
  
+        public void StopInteraction(PlayerController playerController)
+        {
+            SetInteractionEnabled(false);
+            busy = false;
+        }
+
         public void Init(int customObjectId, string itemAssetName, bool empty)
         {
             Empty = empty;
@@ -95,10 +107,8 @@ namespace GOA
 
         IEnumerator PickUp(PlayerController playerController)
         {
-            
-            SetInteractionEnabled(false);
-            
-
+            busy = true;
+           
             // Add to the inventory
             if (inventories == null)
             {
@@ -108,7 +118,6 @@ namespace GOA
             Inventory inventory = inventories.Find(i => i.PlayerId == playerController.PlayerId);
             inventory.AddItem(itemAsset);
      
-
             yield return new WaitForSeconds(.5f);
 
             Empty = true;
@@ -118,7 +127,8 @@ namespace GOA
                 yield return new WaitForSeconds(1.0f);
                 Runner.Despawn(GetComponent<NetworkObject>());
             }
-            
+
+            StopInteraction(playerController);
         }
 
         public static void OnEmptyChanged(Changed<Picker> changed)
