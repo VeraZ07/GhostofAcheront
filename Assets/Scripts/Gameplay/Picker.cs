@@ -68,6 +68,7 @@ namespace GOA
 
         }
 
+        #region interface implementation
 
         public void StartInteraction(PlayerController playerController)
         {
@@ -98,6 +99,12 @@ namespace GOA
             busy = false;
         }
 
+        public bool TryUseItem(string itemName)
+        {
+            throw new System.NotImplementedException();
+        }
+        #endregion
+
         public void Init(int customObjectId, string itemAssetName, bool empty)
         {
             Empty = empty;
@@ -116,7 +123,7 @@ namespace GOA
             }
 
             Inventory inventory = inventories.Find(i => i.PlayerId == playerController.PlayerId);
-            inventory.AddItem(itemAsset);
+            inventory.AddItem(itemAsset.name);
      
             yield return new WaitForSeconds(.5f);
 
@@ -143,6 +150,8 @@ namespace GOA
             }
 
         }
+
+  
     }
 
 }

@@ -57,6 +57,7 @@ namespace GOA
             defaultRotation = pivotLocalRotationDefault;
         }
 
+        #region interface implementation
         /// <summary>
         /// Server only
         /// </summary>
@@ -70,8 +71,10 @@ namespace GOA
 
             if (IsEmpty)
             {
-                // Open the item selector
+                // Stop player update
+                playerController.InputDisabled = true;
                 
+                // Called on the client
                 playerController.RpcOpenItemSelector();
             }
             else
@@ -88,9 +91,10 @@ namespace GOA
             if (owner != playerController)
                 return;
 
+
             owner = null;
             busy = false;
-
+            playerController.InputDisabled = false;
         }
 
         public bool IsInteractionEnabled()
@@ -107,6 +111,14 @@ namespace GOA
         {
             return busy;
         }
+
+        public bool TryUseItem(string itemName)
+        {
+            //throw new System.NotImplementedException();
+            return puzzleController.TryInsertPiece(pieceId, itemName);
+            
+        }
+        #endregion
 
         public void Init(int puzzleId)
         {
@@ -157,7 +169,7 @@ namespace GOA
             target.placeHolder.SetActive(true);
         }
 
-        
+    
     }
 }
 

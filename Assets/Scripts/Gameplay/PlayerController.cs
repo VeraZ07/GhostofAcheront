@@ -1,4 +1,5 @@
 using Fusion;
+using GOA.Assets;
 using GOA.Interfaces;
 using GOA.UI;
 using System.Collections;
@@ -38,7 +39,7 @@ namespace GOA
         [UnitySerializeField]
         public int PlayerId { get; private set; }
 
-        //public bool InputDisabled { get; set; }
+        public bool InputDisabled { get; set; }
 
         IInteractable lockedInteractable;
 
@@ -210,13 +211,31 @@ namespace GOA
             lockedInteractable = null;
         }
 
+        /// <summary>
+        /// Sent by the client to the server to use an item.
+        /// </summary>
+        [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+        public void RpcUseItemByName(string itemName)
+        {
+            Debug.LogFormat("Using item {0}", itemName);
+
+            if (lockedInteractable.TryUseItem(itemName))
+            {
+                Inventory inventory = new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.PlayerId == PlayerId);
+                inventory.RemoveItem(itemName);
+            }
+            
+            //Inventory inventory = new List<Inventory>(GameObject.FindObjectsOfType<Inventory>()).Find(i => i.PlayerId == Runner.LocalPlayer.PlayerId);
+            //ItemAsset asset = 
+        }
+
         #endregion
 
         public override void FixedUpdateNetwork()
         {
             base.FixedUpdateNetwork();
 
-            if (GetInput(out NetworkInputData data))
+            if (!InputDisabled && GetInput(out NetworkInputData data))
             {
                 UpdateCharacter(data);
 

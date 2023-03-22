@@ -33,6 +33,7 @@ namespace GOA.UI
         bool open = false;
 
         private Inventory inventory;
+        int selectedItemId = -1;
 
         private void Awake()
         {
@@ -69,6 +70,8 @@ namespace GOA.UI
                     Open();
             }
 #endif
+            
+
         }
 
         void HandleOnClose()
@@ -78,7 +81,20 @@ namespace GOA.UI
 
         void HandleOnUse()
         {
+            PlayerController.Local.RpcUseItemByName(items[selectedItemId].name);
+            Close();
+        }
 
+        void HandleOnValueChanged(bool isOn)
+        {
+            for(int i=0; i<toggles.Count; i++)
+            {
+                if(toggles[i].isOn)
+                {
+                    selectedItemId = i;
+                    return;
+                }
+            }
         }
 
         public void Open()
@@ -87,8 +103,11 @@ namespace GOA.UI
             open = true;
 
             CursorManager.Instance.ShowMenuCursor();
+            PlayerController.Local.InputDisabled = true;
 
             panel.SetActive(true);
+
+            selectedItemId = -1;
 
             // Get the local player inventory
             if (!inventory)
@@ -114,7 +133,7 @@ namespace GOA.UI
                     items.Add(asset);
             }
 
-            // Reset all toggles
+            // Reset toggles
             foreach(Toggle toggle in toggles)
             {
                 toggle.targetGraphic.GetComponent<Image>().sprite = null;
@@ -122,14 +141,19 @@ namespace GOA.UI
                 toggle.interactable = false;
             }
 
-            // Show the icons
+            // Init toggles
             for(int i=0; i<items.Count; i++)
             {
                 toggles[i].targetGraphic.GetComponent<Image>().sprite = items[i].Icon;
                 if (i == 0)
+                {
                     toggles[i].isOn = true;
+                    selectedItemId = 0;
+                }
+                    
                 toggles[i].group.RegisterToggle(toggles[i]);
                 toggles[i].interactable = true;
+                toggles[i].onValueChanged.AddListener(HandleOnValueChanged);
             }
 
             
@@ -140,13 +164,15 @@ namespace GOA.UI
             
             open = false;
 
-           
-
+            
             // Unregister toggles
             foreach (Toggle toggle in toggles)
             {
+                toggle.onValueChanged.RemoveAllListeners();
                 toggle.group.UnregisterToggle(toggle);
             }
+
+            selectedItemId = -1;
 
             items.Clear();
 
@@ -155,6 +181,8 @@ namespace GOA.UI
             CursorManager.Instance.ShowGameCursor();
 
             PlayerController.Local.RpcCloseItemSelector();
+
+            PlayerController.Local.InputDisabled = false;
         }
 
     }

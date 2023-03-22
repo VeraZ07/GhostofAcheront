@@ -14,7 +14,9 @@ namespace GOA.Interfaces
 
         bool IsBusy();
 
-        void SetInteractionEnabled(bool value); 
+        void SetInteractionEnabled(bool value);
+
+        bool TryUseItem(string itemName);
     }
 
 }

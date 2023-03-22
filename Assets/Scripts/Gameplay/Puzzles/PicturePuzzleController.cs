@@ -1,4 +1,5 @@
 using Fusion;
+using GOA.Assets;
 using GOA.Interfaces;
 using GOA.Level;
 using System.Collections;
@@ -11,7 +12,8 @@ namespace GOA
 {
     public class PicturePuzzleController : PuzzleController
     {
-
+        [SerializeField]
+        bool avoidWrongPieces = false;
         
         [UnitySerializeField]
         [Networked(OnChanged = nameof(OnPiecesChanged))]
@@ -79,6 +81,7 @@ namespace GOA
             return interactors[id];
         }
 
+
         public static void OnPiecesChanged(Changed<PicturePuzzleController> changed)
         {
             for(int i=0; i<changed.Behaviour.Pieces.Count; i++)
@@ -109,6 +112,30 @@ namespace GOA
             }
 
         }
+
+        public bool TryInsertPiece(int pieceId, string assetName)
+        {
+            LevelBuilder builder = FindObjectOfType<LevelBuilder>();
+            Puzzle puzzle = builder.GetPuzzle(PuzzleIndex);
+            if((puzzle.Asset as PicturePuzzleAsset).Items[pieceId].name.ToLower().Equals(assetName.ToLower()) || !avoidWrongPieces)
+            {
+                int paramId = pieceId;
+                if (!avoidWrongPieces)
+                {
+                    paramId = new List<ItemAsset>((puzzle.Asset as PicturePuzzleAsset).Items).FindIndex(i => i.name.ToLower().Equals(assetName.ToLower()));
+                }
+               
+                var pieces = Pieces;
+                pieces[pieceId] = paramId;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            
+        }
+        
     }
 
 }

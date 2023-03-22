@@ -17,6 +17,7 @@ namespace GOA
 
         PlayerController playerController;
 
+        
         private void Awake()
         {
             if (!Instance)
@@ -45,7 +46,8 @@ namespace GOA
                 
             lookInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
 
-            playerController.SetCameraPitch(lookInput.y);
+            if(!playerController.InputDisabled)
+                playerController.SetCameraPitch(lookInput.y);
 
             run = Input.GetAxisRaw("Fire3") == 1f;
 

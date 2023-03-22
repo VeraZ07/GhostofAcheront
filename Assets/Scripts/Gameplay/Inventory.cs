@@ -60,12 +60,15 @@ public class Inventory : NetworkBehaviour
         PlayerId = playerId;
     }
 
-    public void AddItem(ItemAsset item)
+    public void AddItem(string itemName)
     {
-        Items.Add(item.name);
+        Items.Add(itemName);
     }
 
-
+    public void RemoveItem(string itemName)
+    {
+        Items.Remove(itemName);
+    }
 
     public static void OnItemsChanged(Changed<Inventory> changed)
     {
