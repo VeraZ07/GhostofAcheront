@@ -6,9 +6,13 @@ namespace GOA.Interfaces
 {
     public interface IInteractable
     {
-        void Interact(PlayerController playerController);
+        void StartInteraction(PlayerController playerController);
+
+        void StopInteraction(PlayerController playerController);
 
         bool IsInteractionEnabled();
+
+        bool IsBusy();
 
         void SetInteractionEnabled(bool value); 
     }

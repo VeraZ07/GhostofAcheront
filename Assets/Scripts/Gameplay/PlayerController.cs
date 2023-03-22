@@ -38,7 +38,7 @@ namespace GOA
         [UnitySerializeField]
         public int PlayerId { get; private set; }
 
-        public bool InputDisabled { get; set; }
+        //public bool InputDisabled { get; set; }
 
         IInteractable lockedInteractable;
 
@@ -100,7 +100,7 @@ namespace GOA
                         if (data.leftAction)
                         {
                             lockedInteractable = interactable;
-                            interactable.Interact(this);
+                            interactable.StartInteraction(this);
                             
                         }
                     }   
@@ -206,11 +206,8 @@ namespace GOA
         [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
         public void RpcCloseItemSelector()
         {
-            lockedInteractable.SetInteractionEnabled(true);
+            lockedInteractable.StopInteraction(this);
             lockedInteractable = null;
-
-            
-            
         }
 
         #endregion
@@ -219,7 +216,7 @@ namespace GOA
         {
             base.FixedUpdateNetwork();
 
-            if (!InputDisabled && GetInput(out NetworkInputData data))
+            if (GetInput(out NetworkInputData data))
             {
                 UpdateCharacter(data);
 

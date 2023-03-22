@@ -23,6 +23,7 @@ namespace GOA
         Vector3 pivotLocalPositionDefault;
         Quaternion pivotLocalRotationDefault;
 
+        PlayerController owner = null;
        
         public bool IsEmpty
         {
@@ -57,14 +58,15 @@ namespace GOA
         }
 
         /// <summary>
-        /// Only the server call this method
+        /// Server only
         /// </summary>
         /// <param name="playerController"></param>
-        public void Interact(PlayerController playerController)
+        public void StartInteraction(PlayerController playerController)
         {
             Debug.LogFormat("Interaction request from player {0}", playerController);
 
             busy = true;
+            owner = playerController;
 
             if (IsEmpty)
             {
@@ -78,14 +80,32 @@ namespace GOA
             }
         }
 
+        /// <summary>
+        /// Server only
+        /// </summary>
+        public void StopInteraction(PlayerController playerController)
+        {
+            if (owner != playerController)
+                return;
+
+            owner = null;
+            busy = false;
+
+        }
+
         public bool IsInteractionEnabled()
         {
-            return !busy && !puzzleController.Solved;
+            return !puzzleController.Solved;
         }
 
         public void SetInteractionEnabled(bool value)
         {
-            busy = !value;
+            throw new System.NotImplementedException();
+        }
+
+        public bool IsBusy()
+        {
+            return busy;
         }
 
         public void Init(int puzzleId)
@@ -98,7 +118,6 @@ namespace GOA
             {
                 if(transform.parent.GetChild(i) == transform)
                     pieceId = i;
-                
             }
 
             // Set visibility
