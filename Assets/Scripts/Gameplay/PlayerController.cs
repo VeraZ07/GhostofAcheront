@@ -42,6 +42,7 @@ namespace GOA
         public bool InputDisabled { get; set; }
 
         IInteractable lockedInteractable;
+        bool leftInputDown = false;
 
         private void Awake()
         {
@@ -98,10 +99,25 @@ namespace GOA
                     
                     if (interactable != null)
                     {
-                        if (data.leftAction && interactable.IsInteractionEnabled() && !interactable.IsBusy())
+                        if (/*data.leftAction && */interactable.IsInteractionEnabled() && !interactable.IsBusy())
                         {
-                            lockedInteractable = interactable;
-                            interactable.StartInteraction(this);
+                            if (data.leftAction)
+                            {
+                                if (!leftInputDown)
+                                {
+                                    leftInputDown = true;
+                                }
+                            }
+                            else
+                            {
+                                if (leftInputDown)
+                                {
+                                    leftInputDown = false;
+                                    lockedInteractable = interactable;
+                                    interactable.StartInteraction(this);
+                                }
+                            }
+                            
                             
                         }
                     }   

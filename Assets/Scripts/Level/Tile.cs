@@ -574,16 +574,7 @@ namespace GOA.Level
                     }
                 }
 
-                if (top != -1 && builder.tiles[top].roteableWall == 2 && builder.tiles[index].isBottomBorder)
-                {
-                    Transform t = new List<Transform>(obj.GetComponentsInChildren<Transform>()).Find(t => "bl_pillar".Equals(t.name.ToLower()));
-                    if (t)
-                    {
-                        DestroyImmediate(t.gameObject);
-
-                    }
-                }
-
+          
                 if (bottom != -1 && builder.tiles[bottom].isUpperBorder && builder.tiles[index].isLeftBorder)
                 {
                     Transform t = new List<Transform>(obj.GetComponentsInChildren<Transform>()).Find(t => "bl_pillar".Equals(t.name.ToLower()));

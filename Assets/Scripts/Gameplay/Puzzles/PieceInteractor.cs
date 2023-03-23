@@ -85,6 +85,7 @@ namespace GOA
 
                 //// Called on the client
                 //playerController.RpcOpenItemSelector();
+                StopInteraction(playerController);
             }
         }
 

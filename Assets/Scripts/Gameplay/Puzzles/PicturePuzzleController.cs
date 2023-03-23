@@ -103,18 +103,22 @@ namespace GOA
 
         public static void OnPiecesChanged(Changed<PicturePuzzleController> changed)
         {
+            bool solved = true;
+
             for(int i=0; i<changed.Behaviour.Pieces.Count; i++)
             {
                 changed.LoadOld();
                 int oldValue = changed.Behaviour.Pieces[i];
                 changed.LoadNew();
                 int newValue = changed.Behaviour.Pieces[i];
-              
+
+                if (newValue != i)
+                    solved = false;
+
                 if (oldValue != newValue)
                 {
                     if(newValue < 0)// It's empty
                     {
-         
                         changed.Behaviour.placeHolders[oldValue].SetActive(false);
                     }
                     else // It's full
@@ -128,7 +132,13 @@ namespace GOA
                         
                     }
                 }
+
+                
             }
+
+            if (solved)
+                changed.Behaviour.Solved = true;
+                
 
         }
 
@@ -159,11 +169,11 @@ namespace GOA
         {
             // Get the interactor id
             int id = interactors.IndexOf(interactor);
-
+            
             // Get the item asset
             LevelBuilder builder = FindObjectOfType<LevelBuilder>();
             Puzzle puzzle = builder.GetPuzzle(PuzzleIndex);
-            ItemAsset itemAsset = (puzzle.Asset as PicturePuzzleAsset).Items[id];
+            ItemAsset itemAsset = (puzzle.Asset as PicturePuzzleAsset).Items[Pieces[id]];
 
             // Add the item to the inventory
             Inventory inventory = new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.PlayerId == playerController.PlayerId);
