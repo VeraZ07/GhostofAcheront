@@ -6249,6 +6249,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cockroaches_particles
       objectReference: {fileID: 0}
+    - target: {fileID: 1994295255961690060, guid: a82fe682508eb5a4e8149b39991e57c8,
+        type: 3}
+      propertyPath: UVModule.cycles
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 1994295255961690060, guid: a82fe682508eb5a4e8149b39991e57c8,
+        type: 3}
+      propertyPath: InitialModule.startSpeed.scalar
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 5081413868285473235, guid: a82fe682508eb5a4e8149b39991e57c8,
         type: 3}
       propertyPath: m_RootOrder
