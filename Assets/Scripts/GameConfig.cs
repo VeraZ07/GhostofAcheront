@@ -6,7 +6,7 @@ namespace GOA
 {
     public class GameConfig
     {
-        //public const float InteractionMinimumDistance = 1.5f;
+        public const float InteractionCooldown = .5f;
     }
 
 
@@ -19,4 +19,6 @@ namespace GOA
     {
 
     }
+
+
 }

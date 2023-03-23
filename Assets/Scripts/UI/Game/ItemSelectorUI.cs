@@ -99,7 +99,9 @@ namespace GOA.UI
 
         public void Open()
         {
-       
+
+            Debug.Log("Opening item selector UI");
+
             open = true;
 
             CursorManager.Instance.ShowMenuCursor();

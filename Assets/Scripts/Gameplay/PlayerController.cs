@@ -98,7 +98,7 @@ namespace GOA
                     
                     if (interactable != null)
                     {
-                        if (data.leftAction)
+                        if (data.leftAction && interactable.IsInteractionEnabled() && !interactable.IsBusy())
                         {
                             lockedInteractable = interactable;
                             interactable.StartInteraction(this);

@@ -23,6 +23,9 @@ namespace GOA
         //[SerializeField]
         List<PieceInteractor> interactors = new List<PieceInteractor>();
 
+        List<GameObject> placeHolders = new List<GameObject>();
+
+        List<GameObject> pivots = new List<GameObject>();
       
         GameObject pictureObject;
         
@@ -55,7 +58,23 @@ namespace GOA
                 interactor.Init(PuzzleIndex);
             }
 
-            
+            // Fill the placeholder list
+            root = new List<Transform>(pictureObject.GetComponentsInChildren<Transform>()).Find(t => t.gameObject.name.ToLower().Equals("placeholders"));
+            for (int i = 0; i < root.childCount; i++)
+            {
+                GameObject placeHolder = root.GetChild(i).gameObject;
+                placeHolders.Add(placeHolder);
+                placeHolder.SetActive(false);
+            }
+
+            // Fill the pivot list
+            root = new List<Transform>(pictureObject.GetComponentsInChildren<Transform>()).Find(t => t.gameObject.name.ToLower().Equals("pivots"));
+            for (int i = 0; i < root.childCount; i++)
+            {
+                GameObject pivot = root.GetChild(i).gameObject;
+                pivots.Add(pivot);
+                
+            }
         }
 
         public override void Initialize(int puzzleIndex)
@@ -95,18 +114,18 @@ namespace GOA
                 {
                     if(newValue < 0)// It's empty
                     {
-                        
-                        //changed.Behaviour.interactors[oldValue].ResetPivot();
-                        changed.Behaviour.interactors[oldValue].Hide();
+         
+                        changed.Behaviour.placeHolders[oldValue].SetActive(false);
                     }
                     else // It's full
                     {
-                        changed.Behaviour.interactors[i].Show();
-                        //Vector3 targetPos;
-                        //Quaternion targetRot;
-                        //changed.Behaviour.interactors[i].GetPivotPositionAndRotationDefault(out targetPos, out targetRot);
-                        //changed.Behaviour.interactors[newValue].SetPivotPositionAndRotation(targetPos, targetRot);
-                        //changed.Behaviour.interactors[newValue].Show();
+                        GameObject placeHolder = changed.Behaviour.placeHolders[changed.Behaviour.Pieces[i]];
+                        GameObject pivot = changed.Behaviour.pivots[i];
+                        placeHolder.transform.localPosition = pivot.transform.localPosition;
+                        placeHolder.transform.localRotation = pivot.transform.localRotation;
+                        placeHolder.SetActive(true);
+       
+                        
                     }
                 }
             }
@@ -134,6 +153,27 @@ namespace GOA
                 return false;
             }
             
+        }
+
+        public void RemovePiece(PieceInteractor interactor, PlayerController playerController)
+        {
+            // Get the interactor id
+            int id = interactors.IndexOf(interactor);
+
+            // Get the item asset
+            LevelBuilder builder = FindObjectOfType<LevelBuilder>();
+            Puzzle puzzle = builder.GetPuzzle(PuzzleIndex);
+            ItemAsset itemAsset = (puzzle.Asset as PicturePuzzleAsset).Items[id];
+
+            // Add the item to the inventory
+            Inventory inventory = new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.PlayerId == playerController.PlayerId);
+            inventory.AddItem(itemAsset.name);
+
+            // Remove from the object
+            placeHolders[Pieces[id]].SetActive(false);
+            var pieces = Pieces;
+            pieces[id] = -1;
+
         }
         
     }

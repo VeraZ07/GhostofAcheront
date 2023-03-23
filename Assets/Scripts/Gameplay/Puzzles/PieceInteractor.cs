@@ -20,8 +20,7 @@ namespace GOA
 
         List<PlayerController> playerControllers = new List<PlayerController>();
 
-        Vector3 pivotLocalPositionDefault;
-        Quaternion pivotLocalRotationDefault;
+ 
 
         PlayerController owner = null;
        
@@ -32,8 +31,7 @@ namespace GOA
 
         private void Awake()
         {
-            pivotLocalPositionDefault = placeHolder.transform.parent.localPosition;
-            pivotLocalRotationDefault = placeHolder.transform.parent.localRotation;
+  
         }
 
         // Start is called before the first frame update
@@ -51,11 +49,11 @@ namespace GOA
 
         }
 
-        void GetPlaceHolderPositionAndRotationDefault(out Vector3 defaultPosition, out Quaternion defaultRotation)
-        {
-            defaultPosition = pivotLocalPositionDefault;
-            defaultRotation = pivotLocalRotationDefault;
-        }
+        //IEnumerator ResetBusy()
+        //{
+        //    yield return new WaitForSeconds(GameConfig.InteractionCooldown);
+        //    busy = false;
+        //}
 
         #region interface implementation
         /// <summary>
@@ -79,7 +77,14 @@ namespace GOA
             }
             else
             {
-                // Remove the current inserted object 
+                // Remove the current inserted object
+                puzzleController.RemovePiece(this, playerController);
+
+                //// Stop player update
+                //playerController.InputDisabled = true;
+
+                //// Called on the client
+                //playerController.RpcOpenItemSelector();
             }
         }
 
@@ -95,6 +100,8 @@ namespace GOA
             owner = null;
             busy = false;
             playerController.InputDisabled = false;
+
+            //StartCoroutine(ResetBusy());
         }
 
         public bool IsInteractionEnabled()
@@ -132,42 +139,8 @@ namespace GOA
                     pieceId = i;
             }
 
-            // Set visibility
-            if (puzzleController.Pieces[pieceId] < 0)
-                Hide();
-            else
-                Show();
         }
 
-        public void ResetPlaceHolderPositionAndRotation()
-        {
-            placeHolder.transform.parent.localPosition = pivotLocalPositionDefault;
-            placeHolder.transform.parent.localRotation = pivotLocalRotationDefault;
-        }
-
-        public void SetPlaceHolderPositionAndRotation(Vector3 localPositon, Quaternion localRotation)
-        {
-            placeHolder.transform.parent.localPosition = localPositon;
-            placeHolder.transform.parent.localRotation = localRotation;
-        }
-
-        public void Hide()
-        {
-            // We can implement fx here
-            placeHolder.SetActive(false);
-        }
-
-        public void Show()
-        {
-            PieceInteractor target = puzzleController.GetInteractor(puzzleController.Pieces[pieceId]);
-
-            Vector3 targetPos;
-            Quaternion targetRot;
-            GetPlaceHolderPositionAndRotationDefault(out targetPos, out targetRot);
-            target.SetPlaceHolderPositionAndRotation(targetPos, targetRot);
-            // We can implement fx here
-            target.placeHolder.SetActive(true);
-        }
 
     
     }
