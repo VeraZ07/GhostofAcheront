@@ -1,29 +1,12 @@
 fileFormatVersion: 2
-guid: 9f3bf368252252e47bd56fb9d5086163
+guid: 7e055c44768e7e64483b6c8f1d862cd6
 ModelImporter:
   serializedVersion: 21300
-  internalIDToNameTable: []
-  externalObjects:
+  internalIDToNameTable:
   - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: GIrl02_HairMat
-    second: {fileID: 2100000, guid: bb3f0eaaa3bb0534fb803b2cb1bdd157, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Girl02_BaseBodyMat
-    second: {fileID: 2100000, guid: eaef76ccaba007e4ab82f77a0ce6300d, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Girl02_ShoeMat
-    second: {fileID: 2100000, guid: 2002f56edc479a949a4eec99242b5ae9, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Splatter
-    second: {fileID: 2100000, guid: 977cf5c3a268f80429faa0b543d9b522, type: 2}
+      74: 1827226128182048838
+    second: Take 001
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0
