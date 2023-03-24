@@ -1,29 +1,12 @@
 fileFormatVersion: 2
-guid: 01e1f0c7e3ae64c42b5df5cc54d7a29a
+guid: 0514f83e74fe96c4a8212d9f961e6e7f
 ModelImporter:
   serializedVersion: 21300
-  internalIDToNameTable: []
-  externalObjects:
+  internalIDToNameTable:
   - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Blood
-    second: {fileID: 2100000, guid: 977cf5c3a268f80429faa0b543d9b522, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Girl01_Body
-    second: {fileID: 2100000, guid: 64f53c4dd741a574fbc287df9c6a788f, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Girl01_Hair
-    second: {fileID: 2100000, guid: bf42fb87c295b4b4a8275cb4a4cec31e, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Girl01_Shoes
-    second: {fileID: 2100000, guid: 366349b9edb2ea140a7f15ac95a9c785, type: 2}
+      74: -203655887218126122
+    second: mixamo.com
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0
