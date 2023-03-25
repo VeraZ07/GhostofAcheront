@@ -1,12 +1,32 @@
 fileFormatVersion: 2
-guid: 7e055c44768e7e64483b6c8f1d862cd6
+guid: d7983154bf8560b48a5401d92b5a6dd7
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable:
   - first:
       74: 1827226128182048838
     second: Take 001
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Hair
+    second: {fileID: 2100000, guid: bb3f0eaaa3bb0534fb803b2cb1bdd157, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: body
+    second: {fileID: 2100000, guid: eaef76ccaba007e4ab82f77a0ce6300d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: osso
+    second: {fileID: 2100000, guid: 977cf5c3a268f80429faa0b543d9b522, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: shoes
+    second: {fileID: 2100000, guid: 2002f56edc479a949a4eec99242b5ae9, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
