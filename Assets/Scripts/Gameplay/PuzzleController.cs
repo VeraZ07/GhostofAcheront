@@ -1,14 +1,17 @@
 using Fusion;
+using GOA.Level;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using static GOA.Level.LevelBuilder;
 
 namespace GOA
 {
     public abstract class PuzzleController : NetworkBehaviour
     {
         public static UnityAction<PuzzleController> OnSolvedChangedCallback;
+        public static UnityAction<PuzzleController> OnPuzzleControllerSpawned;
 
         [Networked(OnChanged = nameof(OnSolvedChanged))] public NetworkBool Solved { get; protected set; } = false;
 
@@ -31,6 +34,13 @@ namespace GOA
         public override void Spawned()
         {
             base.Spawned();
+
+            OnPuzzleControllerSpawned?.Invoke(this);
+
+            // Set the gate handler
+            //LevelBuilder builder = FindObjectOfType<LevelBuilder>();
+            //Gate gate = new List<CustomObject>(builder.CustomObjects).Find(c => c.GetType() == typeof(Gate) && (c as Gate).PuzzleIndex == puzzleIndex) as Gate;
+            //gate.Set
         }
 
         public static void OnSolvedChanged(Changed<PuzzleController> changed)

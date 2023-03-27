@@ -174,9 +174,14 @@ namespace GOA.Level
         }
 
         [System.Serializable]
-        class Gate : CustomObject
+        public class Gate : CustomObject
         {
-            public int puzzleIndex;
+            int puzzleIndex;
+            public int PuzzleIndex
+            {
+                get { return puzzleIndex; }
+                set { puzzleIndex = value; }
+            }
 
             public Gate(LevelBuilder builder, CustomObjectAsset asset) : base(builder, asset)
             {

@@ -1,4 +1,4 @@
-#define TEST_PUZZLE
+//#define TEST_PUZZLE
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -58,7 +58,7 @@ namespace GOA.Level
 
         private void Awake()
         {
-           
+            PuzzleController.OnPuzzleControllerSpawned += HandleOnPuzzleControllerSpawned;
         }
 
         private void Start()
@@ -95,6 +95,14 @@ namespace GOA.Level
                 LevelSize = 3;
                 Create();
             }
+        }
+
+        void HandleOnPuzzleControllerSpawned(PuzzleController puzzleController)
+        {
+            // Look for a gate connected to this puzzle controller
+            Gate gate = customObjects.Find(c => c.GetType() == typeof(Gate) && (c as Gate).PuzzleIndex == puzzleController.PuzzleIndex) as Gate;
+            GateController gateController = gate.SceneObject.GetComponent<GateController>();
+            gateController.Init(puzzleController);
         }
 
         void Create()
@@ -1250,7 +1258,7 @@ namespace GOA.Level
                 // Build the puzzle
                 Puzzle puzzle = PuzzleFactory.CreatePuzzle(this, asset, sectorId);
                 puzzles.Add(puzzle);
-                (customObjects[gateId] as Gate).puzzleIndex = puzzles.Count - 1;
+                (customObjects[gateId] as Gate).PuzzleIndex = puzzles.Count - 1;
             }
             
         }
@@ -1298,7 +1306,7 @@ namespace GOA.Level
                     // Build the puzzle
                     Puzzle puzzle = PuzzleFactory.CreatePuzzle(this, asset, sectorId);
                     puzzles.Add(puzzle);
-                    (customObjects[gateId] as Gate).puzzleIndex = puzzles.Count - 1;
+                    (customObjects[gateId] as Gate).PuzzleIndex = puzzles.Count - 1;
                 }
             }
             else

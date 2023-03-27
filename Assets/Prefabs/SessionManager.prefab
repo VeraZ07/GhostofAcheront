@@ -46,5 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 8447317348352451908, guid: a49c98fb2e8a12c4898069b99af47a8f,
     type: 3}
-  matchManagerPrefab: {fileID: 2141382083286086598, guid: 2150b24a65e117943875221acfc7d438,
+  inventoryPrefab: {fileID: 363203083350922715, guid: 4589b1f7660b8014c82ce75a737e8fda,
+    type: 3}
+  gameManagerPrefab: {fileID: 2141382083286086598, guid: 2150b24a65e117943875221acfc7d438,
     type: 3}

@@ -31,7 +31,7 @@ namespace GOA
         [SerializeField]
         NetworkObject gameManagerPrefab;
 
-  
+    
     
         public const int MaxPlayers = 2;
 

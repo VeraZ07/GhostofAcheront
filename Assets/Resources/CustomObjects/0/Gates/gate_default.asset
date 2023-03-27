@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42b49e6945c69c142b0c8a9ba6789206, type: 3}
   m_Name: gate_default
   m_EditorClassIdentifier: 
-  prefab: {fileID: 5946766457648286713, guid: 9fffb733d1dc4db408445fa89f402205, type: 3}
+  alignment: 0
+  prefab: {fileID: 5946766457648286713, guid: 97e30606374d7e64f8f627e87fa7ba0b, type: 3}

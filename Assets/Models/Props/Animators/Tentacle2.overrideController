@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Tentacle2
+  m_Controller: {fileID: 9100000, guid: edc1f07029e4bff459d6b029f7735128, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: -607871381801911599, guid: 2275de45b8b4c3d4ea60f3347658d6c4,
+      type: 3}
+    m_OverrideClip: {fileID: 1827226128182048838, guid: fb41c580f2e6ae549a1308b7c6b33289,
+      type: 3}
