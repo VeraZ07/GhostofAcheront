@@ -571,7 +571,7 @@ MonoBehaviour:
   active: 1
   quality:
     m_OverrideState: 1
-    m_Value: 3
+    m_Value: 2
   focusMode:
     m_OverrideState: 1
     m_Value: 2
@@ -586,13 +586,13 @@ MonoBehaviour:
     m_Value: 0
   nearFocusEnd:
     m_OverrideState: 1
-    m_Value: 3.81
+    m_Value: 3
   farFocusStart:
     m_OverrideState: 1
-    m_Value: 14.47999
+    m_Value: 4.98
   farFocusEnd:
     m_OverrideState: 1
-    m_Value: 14.48
+    m_Value: 15
   m_NearSampleCount:
     m_OverrideState: 1
     m_Value: 8
