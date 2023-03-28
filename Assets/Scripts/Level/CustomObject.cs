@@ -129,8 +129,8 @@ namespace GOA.Level
                         // Check upper direction
                         bool topClosedByOther = (id - size >= 0) && (builder.tiles[id - size].roteableWall == 3);
                         bool rightClosedByOther = (id - size >= 0) && (builder.tiles[id - size].roteableWall == 2);
-                        bool bottomClosedByOther = ((id - 1) % size < size - 1) && (builder.tiles[id - 1].roteableWall == 1);
-                        bool leftClosedByOther = ((id - 1) % size < size - 1) && (builder.tiles[id - 1].roteableWall == 0);
+                        bool bottomClosedByOther = (id-1 >= 0) && ((id - 1) % size < size - 1) && (builder.tiles[id - 1].roteableWall == 1);
+                        bool leftClosedByOther = (id - 1 >= 0) && ((id - 1) % size < size - 1) && (builder.tiles[id - 1].roteableWall == 0);
                         if ((!builder.customObjects.Exists(c => c.tileId == id && c.direction == Vector3.forward)) &&
                            (tile.isUpperBorder || tile.isUpperBoundary || topClosedByOther) && tile.openDirection != Vector3.forward)
                         {

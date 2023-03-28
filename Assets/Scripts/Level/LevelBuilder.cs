@@ -660,11 +660,11 @@ namespace GOA.Level
                 // Try to create the max number of rooms
                 while(maxTiles > 0)
                 {
-                    int maxWidth = Mathf.Min(6, maxTilesWidth);
-                    int maxHeight = Mathf.Min(6, maxTilesHeight);
+                    int maxWidth = Mathf.Min(3, maxTilesWidth);
+                    int maxHeight = Mathf.Min(3, maxTilesHeight);
 
-                    int minWidth = Mathf.Min(3, maxTilesWidth);
-                    int minHeight = Mathf.Min(3, maxTilesHeight);
+                    int minWidth = Mathf.Min(2, maxTilesWidth);
+                    int minHeight = Mathf.Min(2, maxTilesHeight);
 
                     // We only create commons rooms for now
                     int w = Random.Range(minWidth, maxWidth + 1);
