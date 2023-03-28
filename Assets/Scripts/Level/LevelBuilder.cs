@@ -143,8 +143,6 @@ namespace GOA.Level
 
             CheckForUnreachableTiles();
 
-
-
 #if !TEST_PUZZLE
             //
             // Create puzzles
@@ -156,6 +154,8 @@ namespace GOA.Level
             //
             TestPuzzle("PicturePuzzleAsset", 0);
 #endif
+
+            CreateCosmeticObjects();
 
             // 
             // Set the monster spawn tile
@@ -177,6 +177,25 @@ namespace GOA.Level
 #if TEST_PUZZLE
             TestPuzzle(null, 1);
 #endif
+        }
+
+        void CreateCosmeticObjects()
+        {
+            List<CustomObjectAsset> assets = new List<CustomObjectAsset>(Resources.LoadAll<CustomObjectAsset>(CustomObjectAsset.ResourceFolder));
+
+            for(int i=0; i<sectors.Length; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    CustomObjectAsset coa = assets[Random.Range(0, assets.Count)];
+                    CustomObject co = new CustomObject(this, coa);
+                    customObjects.Add(co);
+
+                    co.AttachRandomly(i);
+                }
+            }
+
+            
         }
 
         void BuildGeometry()

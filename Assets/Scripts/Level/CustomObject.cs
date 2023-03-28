@@ -10,13 +10,14 @@ namespace GOA.Level
         [System.Serializable]
         public class CustomObject
         {
-
+            [SerializeField]
             GameObject sceneObject;
             public GameObject SceneObject
             {
                 get { return sceneObject; }
             }
 
+            [SerializeField]
             Vector3 direction;
             public Vector3 Direction
             {
@@ -24,6 +25,7 @@ namespace GOA.Level
                 set { direction = value; }
             }
 
+            [SerializeField]
             int tileId;
             public int TileId
             {
@@ -33,6 +35,7 @@ namespace GOA.Level
 
             LevelBuilder builder;
 
+            [SerializeField]
             CustomObjectAsset asset;
 
             public CustomObject(LevelBuilder builder, CustomObjectAsset asset)
@@ -176,6 +179,7 @@ namespace GOA.Level
         [System.Serializable]
         public class Gate : CustomObject
         {
+            [SerializeField]
             int puzzleIndex;
             public int PuzzleIndex
             {
