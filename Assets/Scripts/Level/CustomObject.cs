@@ -50,6 +50,7 @@ namespace GOA.Level
                 sceneObject.transform.position = builder.tiles[tileId].GetPosition();
                 if(direction != Vector3.zero)
                     sceneObject.transform.GetChild(0).transform.forward = direction;
+
             }
 
             public void AttachRandomly(int sector, ObjectAlignment forceAlignment = ObjectAlignment.Both, List<int> exclusionList = null)

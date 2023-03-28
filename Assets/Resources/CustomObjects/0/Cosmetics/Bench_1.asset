@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42b49e6945c69c142b0c8a9ba6789206, type: 3}
-  m_Name: customBench_1
+  m_Name: Bench_1
   m_EditorClassIdentifier: 
   alignment: 2
   prefab: {fileID: 7910590237423598695, guid: 861952e217aff9748abdc7b0f8de57a2, type: 3}

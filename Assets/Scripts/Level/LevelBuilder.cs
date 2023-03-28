@@ -181,20 +181,29 @@ namespace GOA.Level
 
         void CreateCosmeticObjects()
         {
-            List<CustomObjectAsset> assets = new List<CustomObjectAsset>(Resources.LoadAll<CustomObjectAsset>(CustomObjectAsset.ResourceFolder));
-
+            
+            List<CustomObjectAsset> assets = new List<CustomObjectAsset>(Resources.LoadAll<CustomObjectAsset>(System.IO.Path.Combine(CustomObjectAsset.ResourceFolder, theme.ToString(), "Cosmetics") ));
+           
             for(int i=0; i<sectors.Length; i++)
             {
-                for (int j = 0; j < 10; j++)
+                
+                float min = sectors[i].tileIds.Count * .3f;
+                float max = sectors[i].tileIds.Count * .6f;
+                float count = Random.Range(min, max);
+
+                for (int j = 0; j < count; j++)
                 {
                     CustomObjectAsset coa = assets[Random.Range(0, assets.Count)];
                     CustomObject co = new CustomObject(this, coa);
                     customObjects.Add(co);
 
                     co.AttachRandomly(i);
+                    
                 }
             }
 
+            
+            
             
         }
 
@@ -409,8 +418,8 @@ namespace GOA.Level
             foreach (CustomObject gate in gates)
             {
                 gate.CreateSceneObject();
-               
             }
+
 
             //
             // Check for pillars 
@@ -435,7 +444,6 @@ namespace GOA.Level
             // Create all the objects that must be spawned
             if (SessionManager.Instance.Runner.IsServer)
             {
-       
                 //
                 // Create puzzle controllers
                 //
@@ -447,6 +455,13 @@ namespace GOA.Level
                 }
             }
             
+            // Create cosmetics
+            foreach(CustomObject co in customObjects)
+            {
+                if (!co.SceneObject)
+                    co.CreateSceneObject();
+            }
+
             //
             // Bake the navigation mesh
             //

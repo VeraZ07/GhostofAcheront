@@ -182,9 +182,13 @@ namespace GOA.UI
 
             CursorManager.Instance.ShowGameCursor();
 
-            PlayerController.Local.RpcCloseItemSelector();
+            if (PlayerController.Local)
+            {
+                PlayerController.Local.RpcCloseItemSelector();
 
-            PlayerController.Local.InputDisabled = false;
+                PlayerController.Local.InputDisabled = false;
+            }
+            
         }
 
     }
