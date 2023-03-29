@@ -182,8 +182,15 @@ namespace GOA.Level
         void CreateCosmeticObjects()
         {
             
-            List<CustomObjectAsset> assets = new List<CustomObjectAsset>(Resources.LoadAll<CustomObjectAsset>(System.IO.Path.Combine(CustomObjectAsset.ResourceFolder, theme.ToString(), "Cosmetics") ));
-           
+            List<CustomObjectAsset> assets = new List<CustomObjectAsset>(Resources.LoadAll<CustomObjectAsset>(System.IO.Path.Combine(CustomObjectAsset.ResourceFolder, theme.ToString(), "Cosmetics") )).FindAll(a=>!a.name.StartsWith("_"));
+
+            List<int> weights = new List<int>();
+            for(int i=0; i<assets.Count; i++)
+            {
+                for (int j = 0; j < assets[i].Weight; j++)
+                    weights.Add(i);
+            }
+
             for(int i=0; i<sectors.Length; i++)
             {
                 
@@ -191,14 +198,25 @@ namespace GOA.Level
                 float max = sectors[i].tileIds.Count * .6f;
                 float count = Random.Range(min, max);
 
+                List<int> middleTiles = new List<int>();
+                List<int> sideTiles = new List<int>();
+
                 for (int j = 0; j < count; j++)
                 {
-                    CustomObjectAsset coa = assets[Random.Range(0, assets.Count)];
+                    CustomObjectAsset coa = assets[weights[Random.Range(0, weights.Count)]];
                     CustomObject co = new CustomObject(this, coa);
-                    customObjects.Add(co);
 
-                    co.AttachRandomly(i);
+                    ObjectAlignment alignment = coa.Alignment;
+                    if(alignment == ObjectAlignment.Both)
+                        alignment = Random.Range(0, 2) == 0 ? ObjectAlignment.MiddleOnly : ObjectAlignment.SideOnly;
                     
+                    customObjects.Add(co);
+                    co.AttachRandomly(i, alignment, alignment == ObjectAlignment.MiddleOnly ? middleTiles : sideTiles );
+
+                    if (alignment == ObjectAlignment.MiddleOnly)
+                        middleTiles.Add(co.TileId);
+                    else
+                        sideTiles.Add(co.TileId);
                 }
             }
 
@@ -663,13 +681,21 @@ namespace GOA.Level
                     int maxWidth = Mathf.Min(3, maxTilesWidth);
                     int maxHeight = Mathf.Min(3, maxTilesHeight);
 
-                    int minWidth = Mathf.Min(2, maxTilesWidth);
-                    int minHeight = Mathf.Min(2, maxTilesHeight);
+                    int minWidth = Mathf.Min(1, maxTilesWidth);
+                    int minHeight = Mathf.Min(1, maxTilesHeight);
 
                     // We only create commons rooms for now
                     int w = Random.Range(minWidth, maxWidth + 1);
                     int h = Random.Range(minHeight, maxHeight + 1);
                    
+                    if(w == 3 && h == 3)
+                    {
+                        if (Random.Range(0, 2) == 0)
+                            w = 2;
+                        else
+                            h = 2;
+                    }
+
                     if (w * h > maxTiles)
                     {
                         if(w < h)
