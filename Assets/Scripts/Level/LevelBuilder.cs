@@ -211,7 +211,7 @@ namespace GOA.Level
                         alignment = Random.Range(0, 2) == 0 ? ObjectAlignment.MiddleOnly : ObjectAlignment.SideOnly;
                     
                     customObjects.Add(co);
-                    co.AttachRandomly(i, alignment, alignment == ObjectAlignment.MiddleOnly ? middleTiles : sideTiles );
+                    co.AttachRandomly(i, alignment, alignment == ObjectAlignment.MiddleOnly ? sideTiles : middleTiles );
 
                     if (alignment == ObjectAlignment.MiddleOnly)
                         middleTiles.Add(co.TileId);
