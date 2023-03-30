@@ -2375,6 +2375,8 @@ PlayableDirector:
     value: {fileID: 0}
   - key: {fileID: 798722718061631307, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
     value: {fileID: 0}
+  - key: {fileID: 0}
+    value: {fileID: 2035969390}
   m_ExposedReferences:
     m_References: []
 --- !u!114 &504306939
@@ -4862,7 +4864,7 @@ Light:
   m_BounceIntensity: 4
   m_ColorTemperature: 4522
   m_UseColorTemperature: 1
-  m_BoundingSphereOverride: {x: 0.1768816, y: NaN, z: 0, w: NaN}
+  m_BoundingSphereOverride: {x: 1.02e-43, y: 0, z: 0, w: -3.3402078e+13}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -6096,7 +6098,7 @@ Light:
   m_BounceIntensity: 6
   m_ColorTemperature: 3933
   m_UseColorTemperature: 1
-  m_BoundingSphereOverride: {x: 0.17883472, y: NaN, z: 0, w: NaN}
+  m_BoundingSphereOverride: {x: 2.8899317e+29, y: 1.849874e+20, z: 10.024519, w: 2.7371721e+20}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0.025
@@ -6298,7 +6300,7 @@ Light:
   m_BounceIntensity: 6
   m_ColorTemperature: 3933
   m_UseColorTemperature: 1
-  m_BoundingSphereOverride: {x: 1.02e-43, y: 1e-45, z: 4e-45, w: 2.143e-42}
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -6476,6 +6478,10 @@ PlayableDirector:
     value: {fileID: 504306936}
   - key: {fileID: 798722718061631307, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
     value: {fileID: 504306937}
+  - key: {fileID: 0}
+    value: {fileID: 2035969390}
+  - key: {fileID: -2092524588762861716, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
+    value: {fileID: 2035969390}
   m_ExposedReferences:
     m_References: []
 --- !u!4 &1641236143
@@ -8115,6 +8121,10 @@ PlayableDirector:
   - key: {fileID: 5923768086562535529, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
     value: {fileID: 0}
   - key: {fileID: -4662535520063290126, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 7189400911129279402, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 798722718061631307, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
     value: {fileID: 0}
   m_ExposedReferences:
     m_References: []
