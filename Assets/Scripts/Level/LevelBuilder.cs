@@ -155,7 +155,7 @@ namespace GOA.Level
             TestPuzzle("PicturePuzzleAsset", 0);
 #endif
 
-            CreateCosmeticObjects();
+            CreateUniqueObjects();
 
             // 
             // Set the monster spawn tile
@@ -179,31 +179,24 @@ namespace GOA.Level
 #endif
         }
 
-        void CreateCosmeticObjects()
+        void CreateUniqueObjects()
         {
             
-            List<CustomObjectAsset> assets = new List<CustomObjectAsset>(Resources.LoadAll<CustomObjectAsset>(System.IO.Path.Combine(CustomObjectAsset.ResourceFolder, theme.ToString(), "Cosmetics") )).FindAll(a=>!a.name.StartsWith("_"));
-
-            List<int> weights = new List<int>();
-            for(int i=0; i<assets.Count; i++)
-            {
-                for (int j = 0; j < assets[i].Weight; j++)
-                    weights.Add(i);
-            }
-
+            
             for(int i=0; i<sectors.Length; i++)
             {
-                
-                float min = sectors[i].tileIds.Count * .3f;
-                float max = sectors[i].tileIds.Count * .6f;
+                List<CustomObjectAsset> assets = new List<CustomObjectAsset>(Resources.LoadAll<CustomObjectAsset>(System.IO.Path.Combine(CustomObjectAsset.ResourceFolder, theme.ToString(), "Uniques"))).FindAll(a => !a.name.StartsWith("_"));
+                float min = sectors[i].tileIds.Count * .08f;
+                float max = sectors[i].tileIds.Count * .12f;
                 float count = Random.Range(min, max);
 
-                List<int> middleTiles = new List<int>();
+                List<int> exclusionList = new List<int>();
                 List<int> sideTiles = new List<int>();
 
-                for (int j = 0; j < count; j++)
+                for (int j = 0; j < count && assets.Count > 0; j++)
                 {
-                    CustomObjectAsset coa = assets[weights[Random.Range(0, weights.Count)]];
+                    CustomObjectAsset coa = assets[Random.Range(0, assets.Count)];
+                    assets.Remove(coa);
                     CustomObject co = new CustomObject(this, coa);
 
                     ObjectAlignment alignment = coa.Alignment;
@@ -211,18 +204,12 @@ namespace GOA.Level
                         alignment = Random.Range(0, 2) == 0 ? ObjectAlignment.MiddleOnly : ObjectAlignment.SideOnly;
                     
                     customObjects.Add(co);
-                    co.AttachRandomly(i, alignment, alignment == ObjectAlignment.MiddleOnly ? sideTiles : middleTiles );
+                    co.AttachRandomly(i, alignment, exclusionList );
 
-                    if (alignment == ObjectAlignment.MiddleOnly)
-                        middleTiles.Add(co.TileId);
-                    else
-                        sideTiles.Add(co.TileId);
+                    exclusionList.AddRange(GetTileIndexGroup(co.TileId, 3));
+
                 }
             }
-
-            
-            
-            
         }
 
         void BuildGeometry()
@@ -1035,18 +1022,7 @@ namespace GOA.Level
 
         }
 
-        //bool IsInitialSector(int index)
-        //{
-        //    return index == tiles[connections.Find(c => c.IsInitialConnection()).targetTileId].sectorIndex;
-        //}
-
-        //bool IsFinalSector(int index)
-        //{
-        //    return index == tiles[connections.Find(c => c.IsFinalConnection()).sourceTileId].sectorIndex;
-        //}
-
-
-        
+          
         List<int> GetTilesForRoom(int sectorIndex, int width, int height, List<int> notAllowedTileIds)
         {
             int[] tmp = new int[sectors[sectorIndex].tileIds.Count];
@@ -1335,6 +1311,31 @@ namespace GOA.Level
             return puzzles[puzzleId];
         }
 
+        public List<int> GetTileIndexGroup(int center, int offset)
+        {
+            List<int> indices = new List<int>();
+
+            int size = (int)Mathf.Sqrt(tiles.Length);
+
+            int count = offset * 2 + 1;
+            for (int k = 0; k < count; k++)
+            {
+                int r = (k - (count - 1) / 2) * size;
+                if (center + r > tiles.Length - 1 || center + r < 0)
+                    continue;
+                for (int j = 0; j < count; j++)
+                {
+                    int c = j - (count - 1) / 2;
+                    if ((c < 0 && center % size < (center + c) % size) || (c > 0 && center % size > (center + c) % size))
+                        continue;
+                    indices.Add(center + r + c);
+
+                }
+            }
+
+
+            return indices;
+        }
 
 
 #if TEST_PUZZLE

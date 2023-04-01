@@ -195,16 +195,23 @@ namespace GOA.Level
                 // Remove current and adjacent tiles
 
                 int count = lightDistanceTileRange * 2 + 1;
-                for (int k = 0; k < count; k++)
+                List<int> exclusionList = GetTileIndexGroup(id, lightDistanceTileRange);
+                foreach(int exId in exclusionList)
                 {
-                    int r = (k - (count - 1) / 2) * size;
-                    for (int j = 0; j < count; j++)
-                    {
-                        int c = j - (count - 1) / 2;
-                        availableTilesForLights.Remove(id + r + c);
-                        
-                    }
+                    availableTilesForLights.Remove(exId);
                 }
+
+                //int count = lightDistanceTileRange * 2 + 1;
+                //for (int k = 0; k < count; k++)
+                //{
+                //    int r = (k - (count - 1) / 2) * size;
+                //    for (int j = 0; j < count; j++)
+                //    {
+                //        int c = j - (count - 1) / 2;
+                //        availableTilesForLights.Remove(id + r + c);
+
+                //    }
+                //}
 
 
                 bool spot = Random.Range(0, 5) == 0;

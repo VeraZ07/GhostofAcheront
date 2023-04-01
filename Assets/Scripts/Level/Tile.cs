@@ -65,6 +65,8 @@ namespace GOA.Level
                 this.builder = builder;
             }
 
+           
+
             public bool IsBoundary()
             {
                 return isBottomBoundary || isUpperBoundary || isRightBoundary || isLeftBoundary;

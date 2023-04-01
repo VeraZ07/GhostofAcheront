@@ -27,12 +27,7 @@ namespace GOA.Assets
             get { return prefab; }
         }
 
-        [SerializeField]
-        int weight = 100;
-        public int Weight
-        {
-            get { return weight; }
-        }
+
     }
 
 }
