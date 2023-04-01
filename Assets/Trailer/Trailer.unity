@@ -24,7 +24,7 @@ RenderSettings:
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 4
+  m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: 0.5
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.1415894, g: 0.06431401, b: 0.01741612, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1867,7 +1867,6 @@ GameObject:
   - component: {fileID: 367430243}
   - component: {fileID: 367430242}
   - component: {fileID: 367430241}
-  - component: {fileID: 367430240}
   - component: {fileID: 367430239}
   m_Layer: 0
   m_Name: Action _02
@@ -1896,65 +1895,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!320 &367430240
-PlayableDirector:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 367430238}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_PlayableAsset: {fileID: 11400000, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
-  m_InitialState: 1
-  m_WrapMode: 2
-  m_DirectorUpdateMode: 1
-  m_InitialTime: 0
-  m_SceneBindings:
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 367430238}
-  - key: {fileID: -4894204807102961318, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: 5923768086562535529, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: -4662535520063290126, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: 7189400911129279402, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: 798722718061631307, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 2035969390}
-  - key: {fileID: -2092524588762861716, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: -916025643592781302, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: -5056974097704403888, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  m_ExposedReferences:
-    m_References: []
 --- !u!114 &367430241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2624,7 +2564,6 @@ GameObject:
   - component: {fileID: 504306941}
   - component: {fileID: 504306940}
   - component: {fileID: 504306939}
-  - component: {fileID: 504306938}
   - component: {fileID: 504306937}
   m_Layer: 0
   m_Name: Action
@@ -2653,61 +2592,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!320 &504306938
-PlayableDirector:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 504306936}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_PlayableAsset: {fileID: 11400000, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
-  m_InitialState: 1
-  m_WrapMode: 2
-  m_DirectorUpdateMode: 1
-  m_InitialTime: 0
-  m_SceneBindings:
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 504306936}
-  - key: {fileID: -4894204807102961318, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: 5923768086562535529, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: -4662535520063290126, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
-    value: {fileID: 2083554342}
-  - key: {fileID: 7189400911129279402, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: 798722718061631307, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
-    value: {fileID: 504306937}
-  - key: {fileID: 0}
-    value: {fileID: 2035969390}
-  - key: {fileID: -2092524588762861716, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: -916025643592781302, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: -5056974097704403888, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
-    value: {fileID: 367430239}
-  m_ExposedReferences:
-    m_References: []
 --- !u!114 &504306939
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5292,7 +5176,7 @@ Light:
   m_BounceIntensity: 4
   m_ColorTemperature: 4522
   m_UseColorTemperature: 1
-  m_BoundingSphereOverride: {x: 2.8469e-39, y: NaN, z: 3e-45, w: 5.916e-42}
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 2.6946841e-28}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -6526,7 +6410,7 @@ Light:
   m_BounceIntensity: 6
   m_ColorTemperature: 3933
   m_UseColorTemperature: 1
-  m_BoundingSphereOverride: {x: 2.8469e-39, y: 2.0426638, z: 4e-45, w: 1.7483e-41}
+  m_BoundingSphereOverride: {x: 9.1835e-41, y: 1.8e-43, z: 0, w: 9.1835e-41}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0.025
@@ -6728,7 +6612,8 @@ Light:
   m_BounceIntensity: 6
   m_ColorTemperature: 3933
   m_UseColorTemperature: 1
-  m_BoundingSphereOverride: {x: 0, y: 1e-45, z: 3e-45, w: 5.249e-42}
+  m_BoundingSphereOverride: {x: 7.1479372e+22, y: 4.5435827e+30, z: 2.8898248e+29,
+    w: 1.8060262e+28}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -6859,7 +6744,7 @@ GameObject:
   - component: {fileID: 1641236143}
   - component: {fileID: 1641236142}
   m_Layer: 0
-  m_Name: Camera_Alf
+  m_Name: Timeline
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8493,7 +8378,6 @@ GameObject:
   - component: {fileID: 2083554346}
   - component: {fileID: 2083554345}
   - component: {fileID: 2083554344}
-  - component: {fileID: 2083554343}
   - component: {fileID: 2083554342}
   m_Layer: 0
   m_Name: Notebook
@@ -8522,59 +8406,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!320 &2083554343
-PlayableDirector:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2083554341}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_PlayableAsset: {fileID: 11400000, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
-  m_InitialState: 1
-  m_WrapMode: 2
-  m_DirectorUpdateMode: 1
-  m_InitialTime: 0
-  m_SceneBindings:
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 0}
-    value: {fileID: 2083554341}
-  - key: {fileID: -4894204807102961318, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
-    value: {fileID: 2083554341}
-  - key: {fileID: 5923768086562535529, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: -4662535520063290126, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
-    value: {fileID: 2083554342}
-  - key: {fileID: 7189400911129279402, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
-    value: {fileID: 504306936}
-  - key: {fileID: 798722718061631307, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
-    value: {fileID: 504306937}
-  - key: {fileID: -2092524588762861716, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: -916025643592781302, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: -5056974097704403888, guid: 754771f0513cbe940a230f49dd38ab9e, type: 2}
-    value: {fileID: 0}
-  m_ExposedReferences:
-    m_References: []
 --- !u!114 &2083554344
 MonoBehaviour:
   m_ObjectHideFlags: 0
