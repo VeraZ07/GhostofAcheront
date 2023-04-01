@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42b49e6945c69c142b0c8a9ba6789206, type: 3}
+  m_Name: DebrisSide_1
+  m_EditorClassIdentifier: 
+  alignment: 2
+  weight: 4
+  prefab: {fileID: 6546311622628650921, guid: 1cd0e017cefba834fb384d4a005c93dc, type: 3}

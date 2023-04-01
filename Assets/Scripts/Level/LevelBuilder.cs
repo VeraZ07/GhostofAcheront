@@ -44,6 +44,12 @@ namespace GOA.Level
         [SerializeField]
         List<GameObject> triggers = new List<GameObject>();
 
+        //[SerializeReference]
+        //List<CustomObject> decals3D = new List<CustomObject>();
+
+        //[SerializeReference]
+        //List<CustomObject> decals2D = new List<CustomObject>();
+
         bool onClosedPathRemoveWall = false;
 
         int theme = 0;
@@ -157,6 +163,8 @@ namespace GOA.Level
 
             CreateUniqueObjects();
 
+            CreateDecals();
+
             // 
             // Set the monster spawn tile
             //
@@ -179,6 +187,59 @@ namespace GOA.Level
 #endif
         }
 
+        void CreateDecals() 
+        {
+            //// Fill the exclusion list
+            //List<int> exclusionList = new List<int>();
+            //foreach(CustomObject o in customObjects)
+            //{
+            //    exclusionList.Add(o.TileId);
+            //}
+            // Fill the weighted id list
+            List<CustomObjectAsset> assets = new List<CustomObjectAsset>(Resources.LoadAll<CustomObjectAsset>(System.IO.Path.Combine(CustomObjectAsset.ResourceFolder, theme.ToString(), "Decals"))).FindAll(a => !a.name.StartsWith("_"));
+            List<int> wIds = new List<int>();
+            for(int i=0; i<assets.Count; i++)
+                for(int j=0; j<assets[i].Weight; j++)
+                    wIds.Add(i);
+                
+            // Loop through each sector
+            for (int i = 0; i < sectors.Length; i++)
+            {
+                float min = sectors[i].tileIds.Count * .6f;
+                float max = sectors[i].tileIds.Count * .8f;
+                float count = Random.Range(min, max);
+                //count = sectors[i].tileIds.Count * .1f; // TO REMOVE
+                //int exclusionOffset = Mathf.FloorToInt(Mathf.Sqrt(sectors[i].tileIds.Count / count) - 1);
+
+                
+
+                for (int j = 0; j < count && assets.Count > 0; j++)
+                {
+                    CustomObjectAsset coa = assets[wIds[Random.Range(0, wIds.Count)]];
+                    //assets.Remove(coa);
+                    CustomObject co = new CustomObject(this, coa);
+
+                    ObjectAlignment alignment = coa.Alignment;
+                    if (alignment == ObjectAlignment.Both)
+                        alignment = Random.Range(0, 2) == 0 ? ObjectAlignment.MiddleOnly : ObjectAlignment.SideOnly;
+
+
+                    co.AttachRandomly(i, alignment);
+
+                    if (co.TileId >= 0)
+                    {
+                        customObjects.Add(co);
+                        //exclusionList.AddRange(GetTileIndexGroup(co.TileId, exclusionOffset));
+                    }
+                    else
+                    {
+                        Debug.LogWarningFormat("No room found for the custom object - object:{0}, tileId:{1}", co, co.TileId);
+                    }
+
+                }
+            }
+        }
+
         void CreateUniqueObjects()
         {
             
@@ -189,7 +250,7 @@ namespace GOA.Level
                 float min = sectors[i].tileIds.Count * .08f;
                 float max = sectors[i].tileIds.Count * .12f;
                 float count = Random.Range(min, max);
-                count = sectors[i].tileIds.Count * .1f; // TO REMOVE
+                //count = sectors[i].tileIds.Count * .1f; // TO REMOVE
                 int exclusionOffset = Mathf.FloorToInt(Mathf.Sqrt(sectors[i].tileIds.Count / count) - 1);
 
                 List<int> exclusionList = new List<int>();

@@ -13,10 +13,17 @@ namespace GOA.Assets
         public const string ResourceFolder = "CustomObjects";
 
         [SerializeField]
-        public ObjectAlignment alignment = ObjectAlignment.Both;
+        ObjectAlignment alignment = ObjectAlignment.Both;
         public ObjectAlignment Alignment
         {
             get { return alignment; }
+        }
+
+        [SerializeReference]
+        int weight = 1;
+        public int Weight
+        {
+            get { return weight; }
         }
 
         [SerializeField]
@@ -31,14 +38,6 @@ namespace GOA.Assets
     }
 
 
-    public class DecalAsset: CustomObjectAsset
-    {
-        int layerId = 0;
-        public int LayerId
-        {
-            get { return layerId; }
-        }
 
-    }
-
+    
 }
