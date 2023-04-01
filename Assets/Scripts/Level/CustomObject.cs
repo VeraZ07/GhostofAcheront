@@ -89,6 +89,14 @@ namespace GOA.Level
                     throw new System.Exception(string.Format("CustomObject.AttachRandomly() - {0} alignement failed ({1})", asset.name, inTheMiddle));
 
                 List<int> tileIds = new List<int>(builder.sectors[sectorId].tileIds);
+
+                // Remove excluded tiles
+                if (exclusionList == null)
+                    exclusionList = new List<int>();
+
+                foreach (int excludedId in exclusionList)
+                    tileIds.Remove(excludedId);
+
                 int count = tileIds.Count;
 
                 int size = (int)Mathf.Sqrt(builder.tiles.Length);
@@ -103,8 +111,8 @@ namespace GOA.Level
                     id = tileIds[Random.Range(0, tileIds.Count)];
                     tileIds.Remove(id);
 
-                    if (exclusionList != null && exclusionList.Contains(id))
-                        continue;
+                    //if (exclusionList != null && exclusionList.Contains(id))
+                    //    continue;
 
                     Tile tile = builder.tiles[id];
                     if (tile.unreachable)

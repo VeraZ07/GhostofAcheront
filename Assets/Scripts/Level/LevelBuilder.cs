@@ -189,10 +189,11 @@ namespace GOA.Level
                 float min = sectors[i].tileIds.Count * .08f;
                 float max = sectors[i].tileIds.Count * .12f;
                 float count = Random.Range(min, max);
+                count = sectors[i].tileIds.Count * .1f; // TO REMOVE
+                int exclusionOffset = Mathf.FloorToInt(Mathf.Sqrt(sectors[i].tileIds.Count / count) - 1);
 
                 List<int> exclusionList = new List<int>();
-                List<int> sideTiles = new List<int>();
-
+              
                 for (int j = 0; j < count && assets.Count > 0; j++)
                 {
                     CustomObjectAsset coa = assets[Random.Range(0, assets.Count)];
@@ -203,10 +204,18 @@ namespace GOA.Level
                     if(alignment == ObjectAlignment.Both)
                         alignment = Random.Range(0, 2) == 0 ? ObjectAlignment.MiddleOnly : ObjectAlignment.SideOnly;
                     
-                    customObjects.Add(co);
+                    
                     co.AttachRandomly(i, alignment, exclusionList );
 
-                    exclusionList.AddRange(GetTileIndexGroup(co.TileId, 3));
+                    if(co.TileId >= 0)
+                    {
+                        customObjects.Add(co);
+                        exclusionList.AddRange(GetTileIndexGroup(co.TileId, exclusionOffset));
+                    }
+                    else
+                    {
+                        Debug.LogWarningFormat("No room found for the custom object - object:{0}, tileId:{1}", co, co.TileId);
+                    }                    
 
                 }
             }

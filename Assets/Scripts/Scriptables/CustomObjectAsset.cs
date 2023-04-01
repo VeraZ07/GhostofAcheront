@@ -30,4 +30,15 @@ namespace GOA.Assets
 
     }
 
+
+    public class DecalAsset: CustomObjectAsset
+    {
+        int layerId = 0;
+        public int LayerId
+        {
+            get { return layerId; }
+        }
+
+    }
+
 }
