@@ -1,0 +1,200 @@
+fileFormatVersion: 2
+guid: 54667bd6137a7b840b28ef9eed5aa505
+ModelImporter:
+  serializedVersion: 21300
+  internalIDToNameTable:
+  - first:
+      74: -6790100166014729158
+    second: Gold Coins_Decal|Coin_.001Action
+  - first:
+      74: 5904307600131173715
+    second: Gold Coins_Decal|Coin_.002Action
+  - first:
+      74: -9084004311012968203
+    second: Gold Coins_Decal|Coin_.003Action
+  - first:
+      74: 3311145095729067615
+    second: Gold Coins_Decal|Coin_.004Action
+  - first:
+      74: 2651313217837192259
+    second: Gold Coins_Decal|Coin_.005Action
+  - first:
+      74: -1136825674107348948
+    second: Gold Coins_Decal|Coin_.006Action
+  - first:
+      74: 7620157859534851889
+    second: Gold Coins_Decal|Coin_.007Action
+  - first:
+      74: -4269350599254671988
+    second: Gold Coins_Decal|Coin_.008Action
+  - first:
+      74: -1721387332552522929
+    second: Gold Coins_Decal|Coin_.009Action
+  - first:
+      74: 5483589603469174040
+    second: Gold Coins_Decal|Coin_.010Action
+  - first:
+      74: -5133509637854105482
+    second: Gold Coins_Decal|Coin_.011Action
+  - first:
+      74: -9204656806657500647
+    second: Gold Coins_Decal|Coin_.012Action
+  - first:
+      74: -9186996585893426687
+    second: Gold Coins_Decal|Coin_.013Action
+  - first:
+      74: 4859914423462165986
+    second: Gold Coins_Decal|Coin_.014Action
+  - first:
+      74: 6175457863411200008
+    second: Gold Coins_Decal|Coin_.015Action
+  - first:
+      74: -2628298104974202084
+    second: Gold Coins_Decal|Coin_.016Action
+  - first:
+      74: 5429044408832794856
+    second: Gold Coins_Decal|Coin_.017Action
+  - first:
+      74: -217790272485043236
+    second: Gold Coins_Decal|Coin_.018Action
+  - first:
+      74: -6819052516683062138
+    second: Gold Coins_Decal|Coin_.019Action
+  - first:
+      74: -3161351246332071732
+    second: Gold Coins_Decal|Coin_.020Action
+  - first:
+      74: -4603483566072164089
+    second: Gold Coins_Decal|Coin_.021Action
+  - first:
+      74: 5440089359276978906
+    second: Gold Coins_Decal|Coin_.022Action
+  - first:
+      74: 2076489214393360022
+    second: Gold Coins_Decal|Coin_.023Action
+  - first:
+      74: 3710997646193520650
+    second: Gold Coins_Decal|Coin_.024Action
+  - first:
+      74: 3459156475155644190
+    second: Gold Coins_Decal|Coin_.025Action
+  - first:
+      74: -8852030676993812393
+    second: Gold Coins_Decal|Coin_.026Action
+  - first:
+      74: 6168836915983119882
+    second: Gold Coins_Decal|Coin_.027Action
+  - first:
+      74: 743646408472206471
+    second: Gold Coins_Decal|Coin_Action
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Coid Decal_Mat
+    second: {fileID: 2100000, guid: 05513be13ce60ca43aa54fd6edaf495c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Coin_Mat
+    second: {fileID: 2100000, guid: 6fef8aef5b1be7547a860b3b97f83541, type: 2}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 1
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
