@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6040056879142927025}
   - component: {fileID: 7552325380232887710}
   - component: {fileID: 1971062599691230549}
+  - component: {fileID: 4593690829867191418}
   m_Layer: 0
   m_Name: VFX_Point_Light
   m_TagString: Untagged
@@ -90,7 +91,7 @@ Light:
   m_BounceIntensity: 0
   m_ColorTemperature: 18345
   m_UseColorTemperature: 1
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 7.13e-43, y: -3.59e-43, z: 0, w: 6.24476e-10}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -217,3 +218,19 @@ MonoBehaviour:
   m_PointlightHDType: 0
   m_SpotLightShape: 0
   m_AreaLightShape: 0
+--- !u!114 &4593690829867191418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4952131365919966842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a3d2a38050d635448d1c12b78451664, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  light: {fileID: 0}
+  minIntensity: 50
+  maxIntensity: 60
+  smoothing: 26
