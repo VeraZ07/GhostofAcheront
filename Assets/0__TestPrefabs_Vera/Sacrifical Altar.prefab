@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5344947931278140993}
+  - component: {fileID: 2839634005411663271}
   m_Layer: 0
   m_Name: Sacrifical Altar
   m_TagString: Untagged
@@ -32,6 +33,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2839634005411663271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5344947931278141022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49c4b036cd01aa84eac7f0b5ecb6f0db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  particles:
+  - {fileID: 8508911479098255602}
+  - {fileID: 7240122120831874148}
+  - {fileID: 3440120566912626114}
+  distance: 16
 --- !u!1 &5344947932427134511
 GameObject:
   m_ObjectHideFlags: 0
@@ -90,6 +108,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Offset.z
       value: -0.17830658
+      objectReference: {fileID: 0}
+    - target: {fileID: 1064856243842129311, guid: 4e881246321fbd14197859c37e350db7,
+        type: 3}
+      propertyPath: m_DrawDistance
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 7722070058148698098, guid: 4e881246321fbd14197859c37e350db7,
         type: 3}
@@ -676,6 +699,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5344947932427134510}
     m_Modifications:
+    - target: {fileID: 2662311838321929363, guid: c72f9e81cafa2b04281a41ea31936b1e,
+        type: 3}
+      propertyPath: m_FadeDistance
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 2662311838321929363, guid: c72f9e81cafa2b04281a41ea31936b1e,
+        type: 3}
+      propertyPath: m_VolumetricFadeDistance
+      value: 16
+      objectReference: {fileID: 0}
     - target: {fileID: 8462196800682431977, guid: c72f9e81cafa2b04281a41ea31936b1e,
         type: 3}
       propertyPath: m_RootOrder
@@ -741,6 +774,24 @@ PrefabInstance:
 --- !u!4 &1244151182164868655 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8462196800682431977, guid: c72f9e81cafa2b04281a41ea31936b1e,
+    type: 3}
+  m_PrefabInstance: {fileID: 7218108909549923270}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &3440120566912626114 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 5446572283753235972, guid: c72f9e81cafa2b04281a41ea31936b1e,
+    type: 3}
+  m_PrefabInstance: {fileID: 7218108909549923270}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &7240122120831874148 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 23023201607983010, guid: c72f9e81cafa2b04281a41ea31936b1e,
+    type: 3}
+  m_PrefabInstance: {fileID: 7218108909549923270}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &8508911479098255602 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 1314600459585651508, guid: c72f9e81cafa2b04281a41ea31936b1e,
     type: 3}
   m_PrefabInstance: {fileID: 7218108909549923270}
   m_PrefabAsset: {fileID: 0}

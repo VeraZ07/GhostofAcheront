@@ -67,6 +67,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Water Puddle_Decal
       objectReference: {fileID: 0}
+    - target: {fileID: 8765682349632014862, guid: e349b5edcaaa9f443860af88441e53f8,
+        type: 3}
+      propertyPath: m_DrawDistance
+      value: 16
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e349b5edcaaa9f443860af88441e53f8, type: 3}
 --- !u!1001 &5364036862545953163
@@ -194,7 +199,7 @@ PrefabInstance:
     - target: {fileID: 4910320691902118487, guid: 0290c088b1c6b7c448d57fb6454244a8,
         type: 3}
       propertyPath: m_Name
-      value: Pedestal and Urn_V2
+      value: Pedestal and Urn_V2 Variant
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0290c088b1c6b7c448d57fb6454244a8, type: 3}

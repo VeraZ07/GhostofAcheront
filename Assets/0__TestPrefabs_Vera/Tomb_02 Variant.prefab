@@ -65,8 +65,18 @@ PrefabInstance:
     - target: {fileID: 3151896314255936021, guid: 4b80a31d6c83bc64db9c881c4dd12c12,
         type: 3}
       propertyPath: m_Name
-      value: Tomb_02
+      value: Tomb_02 Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 7931087446081968786, guid: 4b80a31d6c83bc64db9c881c4dd12c12,
+        type: 3}
+      propertyPath: particles.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7931087446081968786, guid: 4b80a31d6c83bc64db9c881c4dd12c12,
+        type: 3}
+      propertyPath: particles.Array.data[1]
+      value: 
+      objectReference: {fileID: 3392612597523905333}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4b80a31d6c83bc64db9c881c4dd12c12, type: 3}
 --- !u!4 &9112967667593120975 stripped
@@ -144,3 +154,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 846aa7285a97a4b4c990d89b2f0c09bf, type: 3}
+--- !u!198 &3392612597523905333 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 5209268451441771281, guid: 846aa7285a97a4b4c990d89b2f0c09bf,
+    type: 3}
+  m_PrefabInstance: {fileID: 7448937429445867556}
+  m_PrefabAsset: {fileID: 0}

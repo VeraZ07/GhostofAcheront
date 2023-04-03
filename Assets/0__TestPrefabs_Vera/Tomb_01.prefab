@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3151896314255936010}
+  - component: {fileID: 7931087446081968786}
   m_Layer: 0
   m_Name: Tomb_01
   m_TagString: Untagged
@@ -32,6 +33,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7931087446081968786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3151896314255936021}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49c4b036cd01aa84eac7f0b5ecb6f0db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  particles:
+  - {fileID: 1762864821947346002}
+  distance: 16
 --- !u!1 &3151896315288046180
 GameObject:
   m_ObjectHideFlags: 0
@@ -159,6 +175,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a82fe682508eb5a4e8149b39991e57c8, type: 3}
+--- !u!198 &1762864821947346002 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 1994295255961690060, guid: a82fe682508eb5a4e8149b39991e57c8,
+    type: 3}
+  m_PrefabInstance: {fileID: 278058584701662110}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4998734120046936653 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5081413868285473235, guid: a82fe682508eb5a4e8149b39991e57c8,

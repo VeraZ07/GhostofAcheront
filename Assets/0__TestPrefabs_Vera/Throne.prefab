@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1866650383415508039}
+  - component: {fileID: 71937856115955056}
   m_Layer: 0
   m_Name: Throne
   m_TagString: Untagged
@@ -32,6 +33,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &71937856115955056
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1866650383415508056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49c4b036cd01aa84eac7f0b5ecb6f0db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  particles:
+  - {fileID: 5275734834111673955}
+  distance: 16
 --- !u!1 &1866650384414424105
 GameObject:
   m_ObjectHideFlags: 0
@@ -143,6 +159,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 846aa7285a97a4b4c990d89b2f0c09bf, type: 3}
+--- !u!198 &5275734834111673955 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 5209268451441771281, guid: 846aa7285a97a4b4c990d89b2f0c09bf,
+    type: 3}
+  m_PrefabInstance: {fileID: 107003302037124466}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6199016619777708179 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6303757629040666081, guid: 846aa7285a97a4b4c990d89b2f0c09bf,

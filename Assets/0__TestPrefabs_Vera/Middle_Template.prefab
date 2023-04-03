@@ -142,9 +142,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49c4b036cd01aa84eac7f0b5ecb6f0db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  particles:
-  - {fileID: 6369940188025904393}
-  distance: 16
+  particles: []
+  distance: 24
 --- !u!1 &731622864673364438
 GameObject:
   m_ObjectHideFlags: 0

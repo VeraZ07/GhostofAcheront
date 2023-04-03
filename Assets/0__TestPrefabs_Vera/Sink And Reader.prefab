@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6120260875678466665}
+  - component: {fileID: 5005962795134876554}
   m_Layer: 0
   m_Name: Sink And Reader
   m_TagString: Untagged
@@ -32,6 +33,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5005962795134876554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6120260875678466678}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49c4b036cd01aa84eac7f0b5ecb6f0db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  particles: []
+  distance: 16
 --- !u!1 &6120260876793840135
 GameObject:
   m_ObjectHideFlags: 0
@@ -362,6 +377,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Water Puddle_Decal
       objectReference: {fileID: 0}
+    - target: {fileID: 8765682349632014862, guid: e349b5edcaaa9f443860af88441e53f8,
+        type: 3}
+      propertyPath: m_DrawDistance
+      value: 16
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e349b5edcaaa9f443860af88441e53f8, type: 3}
 --- !u!4 &1708776082600240309 stripped
@@ -527,6 +547,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6120260876793840134}
     m_Modifications:
+    - target: {fileID: 1064856243842129311, guid: 672e540774de6c94e99a74a8c8cfc59d,
+        type: 3}
+      propertyPath: m_DrawDistance
+      value: 16
+      objectReference: {fileID: 0}
     - target: {fileID: 7722070058148698098, guid: 672e540774de6c94e99a74a8c8cfc59d,
         type: 3}
       propertyPath: m_RootOrder
