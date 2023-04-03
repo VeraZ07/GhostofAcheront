@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42b49e6945c69c142b0c8a9ba6789206, type: 3}
   m_Name: Statue_1
   m_EditorClassIdentifier: 
-  alignment: 2
+  alignment: 1
+  weight: 1
   prefab: {fileID: 6970520196362661058, guid: 646fe8f619070e8428421fb694a60545, type: 3}

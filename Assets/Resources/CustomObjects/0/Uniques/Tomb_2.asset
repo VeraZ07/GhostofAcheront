@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42b49e6945c69c142b0c8a9ba6789206, type: 3}
-  m_Name: Pedestal_1
+  m_Name: Tomb_2
   m_EditorClassIdentifier: 
-  alignment: 1
+  alignment: 2
   weight: 1
-  prefab: {fileID: 4910320691902118487, guid: 0290c088b1c6b7c448d57fb6454244a8, type: 3}
+  prefab: {fileID: 9112967668609043647, guid: 8e2ab86774b861945bf6e833d911d10f, type: 3}
