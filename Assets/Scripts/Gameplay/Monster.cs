@@ -17,6 +17,9 @@ namespace GOA
         [SerializeField]
         Transform target;
 
+        [SerializeField]
+        Animator animator;
+
         bool hidden = false;
 
         NavMeshAgent agent;
@@ -32,17 +35,23 @@ namespace GOA
         List<PlayerController> playerControllers;
         float wanderingRange = 10f;
 
+        
+        string paramSpeed = "Speed";
+        string paramAttack = "Attack";
+        string paramAttackType = "AttackType";
+
+
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
-            
+            //animator = GetComponent<Animator>();
         }
 
         // Start is called before the first frame update
         void Start()
         {
             //Hide();
-            NavMesh.pathfindingIterationsPerFrame = 500;
+            NavMesh.pathfindingIterationsPerFrame = 250;
         }
 
         public override void Spawned()
@@ -61,6 +70,8 @@ namespace GOA
 
             if (Runner.IsServer)
             {
+
+                // Logic
                 destination = target.position;
 
                 if ((System.DateTime.Now - lastPathTime).TotalSeconds > pathTime)
@@ -76,6 +87,10 @@ namespace GOA
                     }
 
                 }
+
+
+                // Animation
+                Debug.Log("Monster Speed:" + agent.velocity.magnitude);
             }
 
           
@@ -85,7 +100,15 @@ namespace GOA
 
         private void Update()
         {
-            agent.SetDestination(target.position);
+            if (!Runner)
+            {
+                agent.SetDestination(target.position);
+                // Animation
+                Debug.Log("Monster CurrentSpeed:" + agent.velocity.magnitude);
+                Debug.Log("Monster MaxSpeed:" + agent.speed);
+                if(animator)
+                    animator.SetFloat(paramSpeed, agent.velocity.magnitude / agent.speed);
+            }
             
         }
 
