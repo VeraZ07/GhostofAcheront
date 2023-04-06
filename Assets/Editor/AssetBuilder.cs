@@ -157,6 +157,27 @@ namespace GOA.Editor
 
             Selection.activeObject = asset;
         }
+
+        [MenuItem("Assets/Create/GOA/MonsterAsset")]
+        public static void CreateMonsterAsset()
+        {
+            MonsterAsset asset = ScriptableObject.CreateInstance<MonsterAsset>();
+
+            string name = "Monster.asset";
+
+            string folder = System.IO.Path.Combine(ResourceFolder, MonsterAsset.ResourceFolder);
+
+            if (!System.IO.Directory.Exists(folder))
+                System.IO.Directory.CreateDirectory(folder);
+
+            AssetDatabase.CreateAsset(asset, System.IO.Path.Combine(folder, name));
+
+            AssetDatabase.SaveAssets();
+
+            EditorUtility.FocusProjectWindow();
+
+            Selection.activeObject = asset;
+        }
     }
 
 }

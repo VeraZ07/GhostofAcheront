@@ -60,6 +60,8 @@ namespace GOA.Level
             get { return geometryRoot; }
         }
 
+
+        int monsterStartingTileId = 0;
               
 
         private void Awake()
@@ -180,11 +182,30 @@ namespace GOA.Level
             //
             CreateLighting();
 
+            //
+            // Bake the navigation mesh
+            //
+            BakeNavigationMesh();
+
+            // 
+            // Spawn monster ( server only )
+            //
+            SpawnMonster();
+
             Debug.LogFormat("LevelBuilder - Level built in {0} seconds.", (System.DateTime.Now-startTime).TotalSeconds);
 
 #if TEST_PUZZLE
             TestPuzzle(null, 1);
 #endif
+        }
+
+        void SpawnMonster()
+        {
+            List<MonsterAsset> assets = new List<MonsterAsset>(Resources.LoadAll<MonsterAsset>(System.IO.Path.Combine(MonsterAsset.ResourceFolder, theme.ToString()))).FindAll(a => !a.name.StartsWith("_"));
+            MonsterAsset ma = assets[Random.Range(0, assets.Count)];
+            Vector3 position = tiles[monsterStartingTileId].GetPosition();
+
+            SessionManager.Instance.Runner.Spawn(ma.Prefab, position, Quaternion.identity);
         }
 
         void CreateDecals() 
@@ -537,13 +558,14 @@ namespace GOA.Level
                     co.CreateSceneObject();
             }
 
-            //
-            // Bake the navigation mesh
-            //
-            //FindObjectOfType<NavMeshSurface>().BuildNavMesh();
+            
+            
         }
 
-       
+        void BakeNavigationMesh()
+        {
+            FindObjectOfType<NavMeshSurface>().BuildNavMesh();
+        }
 
         void ConnectSectors()
         {
@@ -1145,6 +1167,8 @@ namespace GOA.Level
 
         void ChooseTheMonsterSpawnTile()
         {
+
+
             // Get the starting tile
             Connection startConnection = connections.Find(c => c.IsInitialConnection());
             int tileId = startConnection.targetTileId;
