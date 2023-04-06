@@ -59,6 +59,9 @@ namespace GOA
             base.Spawned();
 
             playerControllers = new List<PlayerController>(FindObjectsOfType<PlayerController>());
+
+            if(Runner.IsServer)
+                GetComponent<NavMeshAgent>().enabled = true;
         }
 
         // Update is called once per frame
@@ -66,7 +69,7 @@ namespace GOA
         {
             base.FixedUpdateNetwork();
 
-            
+            return;
 
             if (Runner.IsServer)
             {
@@ -100,15 +103,15 @@ namespace GOA
 
         private void Update()
         {
-            if (!Runner)
-            {
-                agent.SetDestination(target.position);
-                // Animation
-                Debug.Log("Monster CurrentSpeed:" + agent.velocity.magnitude);
-                Debug.Log("Monster MaxSpeed:" + agent.speed);
-                if(animator)
-                    animator.SetFloat(paramSpeed, agent.velocity.magnitude / agent.speed);
-            }
+            //if (!Runner)
+            //{
+            //    agent.SetDestination(target.position);
+            //    // Animation
+            //    Debug.Log("Monster CurrentSpeed:" + agent.velocity.magnitude);
+            //    Debug.Log("Monster MaxSpeed:" + agent.speed);
+            //    if(animator)
+            //        animator.SetFloat(paramSpeed, agent.velocity.magnitude / agent.speed);
+            //}
             
         }
 

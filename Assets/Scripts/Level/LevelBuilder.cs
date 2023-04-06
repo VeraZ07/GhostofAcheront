@@ -6,6 +6,7 @@ using GOA.Assets;
 using Fusion;
 using Unity.AI.Navigation;
 using GOA.Interfaces;
+using UnityEngine.AI;
 
 namespace GOA.Level
 {
@@ -134,10 +135,14 @@ namespace GOA.Level
             //
             ChooseEnteringAndExitingTiles();
 
+            
+
             // 
             // Connect sectors
             //
             ConnectSectors();
+
+            
 
             //
             // Add gates to connections
@@ -148,6 +153,8 @@ namespace GOA.Level
             // Create rooms
             //
             CreateRooms();
+
+            
 
             CheckForUnreachableTiles();
 
@@ -167,11 +174,14 @@ namespace GOA.Level
 
             CreateDecals();
 
+            
+
             // 
             // Set the monster spawn tile
             //
-            ChooseTheMonsterSpawnTile();
+            ChooseMonsterSpawnTile();
 
+            
             // 
             // Load geometry
             //
@@ -186,6 +196,8 @@ namespace GOA.Level
             // Bake the navigation mesh
             //
             BakeNavigationMesh();
+
+            
 
             // 
             // Spawn monster ( server only )
@@ -203,9 +215,13 @@ namespace GOA.Level
         {
             List<MonsterAsset> assets = new List<MonsterAsset>(Resources.LoadAll<MonsterAsset>(System.IO.Path.Combine(MonsterAsset.ResourceFolder, theme.ToString()))).FindAll(a => !a.name.StartsWith("_"));
             MonsterAsset ma = assets[Random.Range(0, assets.Count)];
-            Vector3 position = tiles[monsterStartingTileId].GetPosition();
+            Vector3 position = tiles[monsterStartingTileId].GetPosition() + 2f * ( Vector3.right + Vector3.back );
 
-            SessionManager.Instance.Runner.Spawn(ma.Prefab, position, Quaternion.identity);
+            SessionManager.Instance.Runner.Spawn(ma.Prefab, position, Quaternion.identity, null, 
+                (r,o) => 
+                {
+                    o.GetComponent<NavMeshAgent>().enabled = false;
+                });
         }
 
         void CreateDecals() 
@@ -999,8 +1015,11 @@ namespace GOA.Level
                     break;
             }
 
+            
+
+
             // Set width and height for each sector
-            for(int i=0; i<sectors.Length; i++)
+            for (int i=0; i<sectors.Length; i++)
             {
                 int size = (int)Mathf.Sqrt(tiles.Length);
                 int minX = 0, maxX = 0, minZ = 0, maxZ = 0;
@@ -1165,15 +1184,60 @@ namespace GOA.Level
             return ret;
         }
 
-        void ChooseTheMonsterSpawnTile()
+        void ChooseMonsterSpawnTile()
         {
-
-
+            
             // Get the starting tile
             Connection startConnection = connections.Find(c => c.IsInitialConnection());
             int tileId = startConnection.targetTileId;
-            Vector3 direction = tiles[tileId].openDirection * -1f;
+            // Get the initial sector
             Sector sector = sectors[tiles[tileId].sectorIndex];
+
+            Vector3 direction = tiles[tileId].openDirection * -1f;
+            int sIndex = sector.tileIds.IndexOf(tileId);
+            int check = 0;
+
+            Debug.Log("MONSTER - starting tile id:" + tileId);
+            Debug.Log("MONSTER - direction:" + direction);
+            Debug.Log("MONSTER - sector.width:" + sector.width);
+            Debug.Log("MONSTER - sector.height:" + sector.height);
+            int id = -1;
+            if (direction.z != 0)
+            {
+                check = sIndex - (int)Mathf.Sign(direction.z) * sector.width * (sector.height - 1);
+                //start = sector.tileIds[start];
+                
+                for (int i=0; i<sector.height && id<0; i++)
+                {
+                    Debug.Log("MONSTER - checking index:" + check);
+
+                    Tile tile = tiles[sector.tileIds[check]];
+                    if (!tile.unreachable)
+                        id = sector.tileIds[check];
+
+                    check -= (int)Mathf.Sign(direction.z) * sector.width;
+                    
+                    
+                }
+            }
+            else
+            {
+                check = sIndex + (int)Mathf.Sign(direction.x) * (sector.width - 1);
+               
+                for (int i = 0; i < sector.width && id<0; i++)
+                {
+                    Debug.Log("MONSTER - checking index:" + check);
+                    Tile tile = tiles[sector.tileIds[check]];
+                    if (!tile.unreachable)
+                        id = sector.tileIds[check];
+
+                    check -= (int)Mathf.Sign(direction.x);
+                   
+                }
+            }
+
+            monsterStartingTileId = id;
+            Debug.Log("MONSTER - startingTileId:" + id);
 
             List<int> candidates = new List<int>();
             // Get all the tiles at a minimum X from the start
