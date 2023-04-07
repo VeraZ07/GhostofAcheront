@@ -13,6 +13,7 @@ namespace GOA
     public class Layers
     {
         public const string Interactable = "Interactable";
+        public const string Wall = "Wall";
     }
 
     public class Tags
