@@ -15,6 +15,24 @@ ModelImporter:
   - first:
       74: 8559885781562926644
     second: primaparte2
+  - first:
+      74: 3709054281606389572
+    second: sitting
+  - first:
+      74: 7012555537610346437
+    second: sitting1
+  - first:
+      74: 8204122329019020619
+    second: sitting2
+  - first:
+      74: 6077359321299947911
+    second: sitting3
+  - first:
+      74: 6570699890218500889
+    second: sitting4
+  - first:
+      74: -3204209114120675570
+    second: sitting5
   externalObjects:
   - first:
       type: UnityEngine:Material
