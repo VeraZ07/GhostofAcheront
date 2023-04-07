@@ -1,4 +1,5 @@
 using Fusion;
+using GOA.Level;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -40,6 +41,8 @@ namespace GOA
         string paramAttack = "Attack";
         string paramAttackType = "AttackType";
 
+        List<PlayerController> players = new List<PlayerController>();
+        LevelBuilder builder;
 
         private void Awake()
         {
@@ -60,8 +63,14 @@ namespace GOA
 
             playerControllers = new List<PlayerController>(FindObjectsOfType<PlayerController>());
 
-            if(Runner.IsServer)
+            if (Runner.IsServer)
+            {
                 GetComponent<NavMeshAgent>().enabled = true;
+                
+                // Get the level builder
+                builder = FindObjectOfType<LevelBuilder>();
+            }
+                
         }
 
         // Update is called once per frame
@@ -69,13 +78,14 @@ namespace GOA
         {
             base.FixedUpdateNetwork();
 
-            return;
+           
 
             if (Runner.IsServer)
             {
 
                 // Logic
-                destination = target.position;
+                //if(target != null)
+                //    destination = target.position;
 
                 if ((System.DateTime.Now - lastPathTime).TotalSeconds > pathTime)
                 {
@@ -112,7 +122,8 @@ namespace GOA
             //    if(animator)
             //        animator.SetFloat(paramSpeed, agent.velocity.magnitude / agent.speed);
             //}
-            
+            if (animator)
+                    animator.SetFloat(paramSpeed, agent.velocity.magnitude / agent.speed);
         }
 
         /// <summary>
@@ -121,8 +132,16 @@ namespace GOA
         /// <returns></returns>
         public bool GetDestination(out Vector3 destination)
         {
-            destination = Vector3.zero;
+            // Load all the player controllers into a list
+            if(playerControllers.Count == 0)
+                playerControllers = new List<PlayerController>(FindObjectsOfType<PlayerController>());
 
+            // Get a new target 
+            target = playerControllers[Random.Range(0, playerControllers.Count)].transform;
+
+            destination = target.position;
+
+            return true;
             Vector3 origin = transform.position;
 
             if((System.DateTime.Now - lastPlayerTime).TotalSeconds > playerTime)

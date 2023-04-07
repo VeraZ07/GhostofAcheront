@@ -1190,60 +1190,27 @@ namespace GOA.Level
             // Get the starting tile
             Connection startConnection = connections.Find(c => c.IsInitialConnection());
             int tileId = startConnection.targetTileId;
+            
+            
             // Get the initial sector
             Sector sector = sectors[tiles[tileId].sectorIndex];
 
-            Vector3 direction = tiles[tileId].openDirection * -1f;
-            int sIndex = sector.tileIds.IndexOf(tileId);
-            int check = 0;
-
-            Debug.Log("MONSTER - starting tile id:" + tileId);
-            Debug.Log("MONSTER - direction:" + direction);
-            Debug.Log("MONSTER - sector.width:" + sector.width);
-            Debug.Log("MONSTER - sector.height:" + sector.height);
-            int id = -1;
-            if (direction.z != 0)
+            int size = sector.width < sector.height ? sector.width : sector.height;
+            size -= 2;
+            List<int> notAvailables = GetTileIndexGroup(tileId, size);
+            List<int> availables = new List<int>();
+            foreach(int tid in sector.tileIds)
             {
-                check = sIndex - (int)Mathf.Sign(direction.z) * sector.width * (sector.height - 1);
-                //start = sector.tileIds[start];
+                if (notAvailables.Contains(tid))
+                    continue;
+                if (customObjects.Exists(o => o.TileId == tid && o.Direction == Vector3.zero))
+                    continue;
                 
-                for (int i=0; i<sector.height && id<0; i++)
-                {
-                    Debug.Log("MONSTER - checking index:" + check);
-
-                    Tile tile = tiles[sector.tileIds[check]];
-                    if (!tile.unreachable)
-                        id = sector.tileIds[check];
-
-                    check -= (int)Mathf.Sign(direction.z) * sector.width;
-                    
-                    
-                }
-            }
-            else
-            {
-                check = sIndex + (int)Mathf.Sign(direction.x) * (sector.width - 1);
-               
-                for (int i = 0; i < sector.width && id<0; i++)
-                {
-                    Debug.Log("MONSTER - checking index:" + check);
-                    Tile tile = tiles[sector.tileIds[check]];
-                    if (!tile.unreachable)
-                        id = sector.tileIds[check];
-
-                    check -= (int)Mathf.Sign(direction.x);
-                   
-                }
+                availables.Add(tid);
             }
 
-            monsterStartingTileId = id;
-            Debug.Log("MONSTER - startingTileId:" + id);
-
-            List<int> candidates = new List<int>();
-            // Get all the tiles at a minimum X from the start
-
-
-            // Get all the tiles at a minimum Z from the start
+            monsterStartingTileId = availables[Random.Range(0, availables.Count)];
+      
         }
 
         
@@ -1495,6 +1462,10 @@ namespace GOA.Level
             return indices;
         }
 
+        public Puzzle GetNextPuzzleToSolve()
+        {
+            return puzzles[0];
+        }
 
 #if TEST_PUZZLE
         void TestPuzzle(string puzzleAssetName, int step)
