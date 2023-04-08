@@ -40,6 +40,10 @@ namespace GOA
         [SerializeField]
         PlayerController prey = null;
         Vector3 preyLastPosition;
+                
+        float huntingTime = .5f;
+        System.DateTime lastHuntingDT;
+        NavMeshPath huntingPath;
 
         private void Awake()
         {
@@ -143,8 +147,10 @@ namespace GOA
                 case (int)MonsterState.PlayerSpotted:
                     break;
                 case (int)MonsterState.Hunting:
+                    EnterHuntingState();
                     break;
                 case (int)MonsterState.PlayerLost:
+                    EnterPlayerLostState();
                     break;
             }
         }
@@ -158,6 +164,16 @@ namespace GOA
         {
             if (!agent.hasPath && !agent.pathPending)
                 agent.SetDestination(GetDestination());
+        }
+
+        void EnterHuntingState()
+        {
+            
+        }
+
+        void EnterPlayerLostState()
+        {
+            huntingPath = null;
         }
 
         void LoopIdleState()
@@ -184,21 +200,35 @@ namespace GOA
 
         }
 
+       
         void LoopHuntingState()
         {
-
+            
             if (CheckForPlayer())
             {
-                //Vector3 dir = Vector3.ProjectOnPlane(prey.transform.position - transform.position, Vector3.up);
-                //agent.Move(-dir.normalized * Runner.DeltaTime * 20f);
-                agent.destination = prey.transform.position + Vector3.up;
-                //if (!agent.SetDestination(prey.transform.position)) // Follow the player
-                //{
-                //    Debug.Log("Destination error");
-                //}
+                if ((System.DateTime.Now - lastHuntingDT).TotalSeconds > huntingTime)
+                {
+                    if (huntingPath == null)
+                        huntingPath = new NavMeshPath();
+                    
+                    lastHuntingDT = System.DateTime.Now;
+                   
+                    agent.CalculatePath(prey.transform.position, huntingPath);
+                    
+                }
+
+                if (huntingPath != null && (huntingPath.status == NavMeshPathStatus.PathComplete || huntingPath.status == NavMeshPathStatus.PathPartial))
+                {
+                    agent.SetPath(huntingPath);
+                    huntingPath = null;
+                }
+                    
+                    
+               
             }
             else
             {
+                huntingPath = null;
                 SetState((int)MonsterState.PlayerLost);
             }
         }
@@ -216,6 +246,9 @@ namespace GOA
         bool CheckForPlayer()
         {
             //Debug.Log("MONSTER - Checking for player...");
+#if UNITY_EDITOR
+            //return false;
+#endif
 
             if (players.Count == 0)
                 players = new List<PlayerController>(FindObjectsOfType<PlayerController>());
@@ -238,7 +271,13 @@ namespace GOA
 
             if(candidates.Count > 0)
             {
-                prey = candidates[Random.Range(0, candidates.Count)];
+                PlayerController tmp = candidates[Random.Range(0, candidates.Count)];
+                if(prey != tmp)
+                {
+                    prey = tmp;
+                    huntingPath = null;
+                }
+                    
                 return true;
             }
             else
@@ -247,6 +286,7 @@ namespace GOA
                 {
                     preyLastPosition = prey.transform.position;
                     prey = null;
+                    huntingPath = null;
                 }
                 return false;
             }

@@ -180,7 +180,7 @@ Transform:
   m_Father: {fileID: 8579214412420406780}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1846579168431213809
+--- !u!1 &1584531586517604339
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -188,25 +188,25 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2549642991280906048}
-  - component: {fileID: 2596354657900468154}
-  - component: {fileID: 1580959065441295045}
-  - component: {fileID: 2897353742377393691}
-  - component: {fileID: 1768921702762500008}
-  m_Layer: 0
-  m_Name: Floor (1)
+  - component: {fileID: 1639817542754394795}
+  - component: {fileID: 778932517938739034}
+  - component: {fileID: 1949681874659492261}
+  - component: {fileID: 4373041913043733848}
+  - component: {fileID: 4032996154078851248}
+  m_Layer: 8
+  m_Name: Floor (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 8
   m_IsActive: 1
---- !u!4 &2549642991280906048
+--- !u!4 &1639817542754394795
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1846579168431213809}
+  m_GameObject: {fileID: 1584531586517604339}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 2, y: 0, z: -2}
   m_LocalScale: {x: 0.4, y: 1, z: 0.4}
@@ -215,21 +215,21 @@ Transform:
   m_Father: {fileID: 8579214412420406780}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &2596354657900468154
+--- !u!33 &778932517938739034
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1846579168431213809}
+  m_GameObject: {fileID: 1584531586517604339}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &1580959065441295045
+--- !u!23 &1949681874659492261
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1846579168431213809}
+  m_GameObject: {fileID: 1584531586517604339}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -265,13 +265,13 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &2897353742377393691
+--- !u!64 &4373041913043733848
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1846579168431213809}
+  m_GameObject: {fileID: 1584531586517604339}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
@@ -279,13 +279,13 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1768921702762500008
+--- !u!114 &4032996154078851248
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1846579168431213809}
+  m_GameObject: {fileID: 1584531586517604339}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
@@ -297,7 +297,7 @@ MonoBehaviour:
   m_Center: {x: 0, y: 2, z: 0}
   m_LayerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 384
   m_UseGeometry: 0
   m_DefaultArea: 0
   m_IgnoreNavMeshAgent: 1
@@ -321,7 +321,7 @@ GameObject:
   - component: {fileID: 8597267818714182851}
   - component: {fileID: 5028339928633107899}
   - component: {fileID: 594761538766838861}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1089,7 +1089,7 @@ Transform:
   - {fileID: 971069774253531916}
   - {fileID: 4121683343232507080}
   - {fileID: 7424438484172289826}
-  - {fileID: 2549642991280906048}
+  - {fileID: 1639817542754394795}
   - {fileID: 1873682035385176063}
   - {fileID: 911090058015763085}
   - {fileID: 2878134143044666915}
