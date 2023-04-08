@@ -20,6 +20,9 @@ namespace GOA
         [SerializeField]
         GameObject dustParticle;
 
+        
+        Animator animator;
+
         NetworkCharacterControllerPrototypeCustom cc;
 
         bool running = false;
@@ -44,11 +47,13 @@ namespace GOA
         IInteractable lockedInteractable;
         bool leftInputDown = false;
 
+        string animParamSpeed = "Speed";
+
         private void Awake()
         {
             cc = GetComponent<NetworkCharacterControllerPrototypeCustom>();
             defaultSpeed = cc.maxSpeed;
-                
+            animator = GetComponentInChildren<Animator>();
         }
 
         // Start is called before the first frame update
@@ -61,6 +66,7 @@ namespace GOA
         // Update is called once per frame
         void Update()
         {
+            animator.SetFloat(animParamSpeed, cc.Velocity.magnitude / (defaultSpeed * runMultiplier));
         }
 
         /// <summary>
@@ -199,6 +205,9 @@ namespace GOA
             else
             {
                 Local = this;
+                Renderer[] rends = GetComponentsInChildren<Renderer>();
+                foreach(Renderer rend in rends)
+                    rend.gameObject.layer = 9;
             }
 
             // Destroy level camera if any
@@ -259,7 +268,7 @@ namespace GOA
 
             }
 
-            
+                      
 
 
         }

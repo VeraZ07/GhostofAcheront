@@ -803,8 +803,8 @@ MonoBehaviour:
   TargetInterpolationDelay: 0.03
   gravity: -20
   jumpImpulse: 8
-  acceleration: 20
-  braking: 80
+  acceleration: 10
+  braking: 10
   maxSpeed: 2
   rotationSpeed: 15
   lookSpeed: 180

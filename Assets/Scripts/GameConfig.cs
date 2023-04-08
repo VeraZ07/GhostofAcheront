@@ -14,6 +14,7 @@ namespace GOA
     {
         public const string Interactable = "Interactable";
         public const string Wall = "Wall";
+        public const string LocalCharacter = "LocalCharacter";
     }
 
     public class Tags
