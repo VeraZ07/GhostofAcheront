@@ -9,7 +9,7 @@ namespace GOA
 {
     public enum MonsterState { Idle, Moving, PlayerSpotted, Hunting, PlayerLost, Killing }
 
-    public class Monster : NetworkBehaviour
+    public class MonsterController : NetworkBehaviour
     {
         [SerializeField]
         GameObject meshRoot;
@@ -109,7 +109,7 @@ namespace GOA
 
 
                 // Animation
-                Debug.Log("Monster Speed:" + agent.velocity.magnitude);
+                //Debug.Log("Monster Speed:" + agent.velocity.magnitude);
             }
 
           
@@ -189,8 +189,13 @@ namespace GOA
 
             if (CheckForPlayer())
             {
-                //if (!agent.pathPending)
-                agent.SetDestination(prey.transform.position); // Follow the player
+                //Vector3 dir = Vector3.ProjectOnPlane(prey.transform.position - transform.position, Vector3.up);
+                //agent.Move(-dir.normalized * Runner.DeltaTime * 20f);
+                agent.destination = prey.transform.position + Vector3.up;
+                //if (!agent.SetDestination(prey.transform.position)) // Follow the player
+                //{
+                //    Debug.Log("Destination error");
+                //}
             }
             else
             {
@@ -210,16 +215,23 @@ namespace GOA
 
         bool CheckForPlayer()
         {
+            //Debug.Log("MONSTER - Checking for player...");
+
+            if (players.Count == 0)
+                players = new List<PlayerController>(FindObjectsOfType<PlayerController>());
+
             List<PlayerController> candidates = new List<PlayerController>();
             foreach(PlayerController player in players)
             {
                 if (Vector3.Distance(transform.position, player.transform.position) > sightRange)
                     continue; // Too far
 
-                Vector3 dir = Vector3.ProjectOnPlane(player.transform.position - transform.position, Vector3.up).normalized;
+                Vector3 dir = Vector3.ProjectOnPlane(player.transform.position - transform.position, Vector3.up);
                 LayerMask mask = LayerMask.GetMask(new string[] { Layers.Wall });
-                if (Physics.Raycast(transform.position + Vector3.up, dir, sightRange, mask))
+                if (Physics.Raycast(transform.position + Vector3.up, dir.normalized, dir.magnitude, mask))
                     continue; // A wall is stopping the sight
+
+                //Debug.Log("MONSTER - Adding new prey candidate:" + player);
 
                 candidates.Add(player);
             }
@@ -249,6 +261,8 @@ namespace GOA
             // Load all the player controllers into a list
             if(players.Count == 0)
                 players = new List<PlayerController>(FindObjectsOfType<PlayerController>());
+
+            // 
 
             // Get a new target 
             Transform target = players[Random.Range(0, players.Count)].transform;

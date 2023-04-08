@@ -1190,8 +1190,12 @@ namespace GOA.Level
             // Get the starting tile
             Connection startConnection = connections.Find(c => c.IsInitialConnection());
             int tileId = startConnection.targetTileId;
-            
-            
+
+#if UNITY_EDITOR
+            monsterStartingTileId = tileId;
+            return;
+#endif
+
             // Get the initial sector
             Sector sector = sectors[tiles[tileId].sectorIndex];
 

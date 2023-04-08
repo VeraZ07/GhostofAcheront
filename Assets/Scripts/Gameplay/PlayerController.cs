@@ -82,7 +82,7 @@ namespace GOA
                 RaycastHit info;
                 if (Physics.Raycast(cam.transform.position, cam.transform.forward, out info, InteractionMinimumDistance))
                 {
-                    Debug.LogFormat("Looking at {0}", info.collider.gameObject);
+                    //Debug.LogFormat("Looking at {0}", info.collider.gameObject);
                     interactable = info.collider.GetComponent<IInteractable>();
                 }
             }
