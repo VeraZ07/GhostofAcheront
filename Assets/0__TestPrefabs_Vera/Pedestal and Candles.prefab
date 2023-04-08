@@ -472,6 +472,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   light: {fileID: 0}
-  minIntensity: 7
-  maxIntensity: 10
+  minIntensity: 0.7
+  maxIntensity: 1
   smoothing: 22
