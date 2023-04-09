@@ -195,14 +195,14 @@ namespace GOA.Level
             //
             // Bake the navigation mesh
             //
-            BakeNavigationMesh();
+            //BakeNavigationMesh();
 
             
 
             // 
             // Spawn monster ( server only )
             //
-            SpawnMonster();
+            //SpawnMonster();
 
             Debug.LogFormat("LevelBuilder - Level built in {0} seconds.", (System.DateTime.Now-startTime).TotalSeconds);
 
@@ -1192,8 +1192,8 @@ namespace GOA.Level
             int tileId = startConnection.targetTileId;
 
 #if UNITY_EDITOR
-            monsterStartingTileId = tileId;
-            return;
+            //monsterStartingTileId = tileId;
+            //return;
 #endif
 
             // Get the initial sector
