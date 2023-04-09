@@ -315,11 +315,175 @@ ModelImporter:
   - first:
       74: -1968216473362817282
     second: Gold Coins_Decal|Gold Coin_01Action
+  - first:
+      74: -5204384789284191373
+    second: Gold Coins_Decal|Plane.002Action
+  - first:
+      74: 4023277105324451910
+    second: Gold Coins_Decal|Plane.003Action
+  - first:
+      74: 4581794902356423412
+    second: Gold Coins_Decal|Plane.004Action
+  - first:
+      74: -1435268848788217947
+    second: Gold Coins_Decal|Plane.005Action
+  - first:
+      74: -7325293306981556077
+    second: Gold Coins_Decal|Plane.006Action
+  - first:
+      74: 8448901353278856336
+    second: Gold Coins_Decal|Plane.007Action
+  - first:
+      74: 4954019159329330538
+    second: Gold Coins_Decal|Plane.008Action
+  - first:
+      74: -8641940749783131525
+    second: Gold Coins_Decal|Plane.009Action
+  - first:
+      74: -5469240466039748034
+    second: Gold Coins_Decal|Plane.010Action
+  - first:
+      74: 2109407208015866305
+    second: Gold Coins_Decal|Plane.011Action
+  - first:
+      74: 8984641215276013031
+    second: Gold Coins_Decal|Plane.012Action
+  - first:
+      74: 1634339265029907121
+    second: Gold Coins_Decal|Plane.013Action
+  - first:
+      74: 5748913176309772038
+    second: Gold Coins_Decal|Plane.014Action
+  - first:
+      74: 3980118084271306383
+    second: Gold Coins_Decal|Plane.015Action
+  - first:
+      74: 6647388847074468708
+    second: Gold Coins_Decal|Plane.016Action
+  - first:
+      74: 3592907200438437843
+    second: Gold Coins_Decal|Plane.017Action
+  - first:
+      74: -3325164156793044816
+    second: Gold Coins_Decal|Plane.018Action
+  - first:
+      74: 6789595437342839228
+    second: Gold Coins_Decal|Plane.019Action
+  - first:
+      74: 5161275738630797910
+    second: Gold Coins_Decal|Plane.020Action
+  - first:
+      74: -197568551441516619
+    second: Gold Coins_Decal|Plane.021Action
+  - first:
+      74: 1408922155542702634
+    second: Gold Coins_Decal|Plane.022Action
+  - first:
+      74: -7174429501220973055
+    second: Gold Coins_Decal|Plane.023Action
+  - first:
+      74: -6755656738455803067
+    second: Gold Coins_Decal|Plane.024Action
+  - first:
+      74: 1633243984679824297
+    second: Gold Coins_Decal|Plane.025Action
+  - first:
+      74: -7735695791926821818
+    second: Gold Coins_Decal|Plane.026Action
+  - first:
+      74: 8979738418484471819
+    second: Gold Coins_Decal|Plane.027Action
+  - first:
+      74: -4263383568106828512
+    second: Gold Coins_Decal|Plane.028Action
+  - first:
+      74: -7117112561883702910
+    second: Gold Coins_Decal|Plane.029Action
+  - first:
+      74: -7018441161490797790
+    second: Gold Coins_Decal|Plane.030Action
+  - first:
+      74: 447624062984815327
+    second: Gold Coins_Decal|Plane.031Action
+  - first:
+      74: 278177866653371850
+    second: Gold Coins_Decal|Plane.032Action
+  - first:
+      74: -6706068721157107071
+    second: Gold Coins_Decal|Plane.033Action
+  - first:
+      74: 1221167459432156662
+    second: Gold Coins_Decal|Plane.034Action
+  - first:
+      74: -7678861145919327438
+    second: Gold Coins_Decal|Plane.035Action
+  - first:
+      74: -73788428954295475
+    second: Gold Coins_Decal|Plane.036Action
+  - first:
+      74: -1804641684752799896
+    second: Gold Coins_Decal|Plane.037Action
+  - first:
+      74: 7520641966434142809
+    second: Gold Coins_Decal|Plane.038Action
+  - first:
+      74: 4190981393244902033
+    second: Gold Coins_Decal|Plane.039Action
+  - first:
+      74: -5448642219444672335
+    second: Gold Coins_Decal|Plane.040Action
+  - first:
+      74: 526238994001826406
+    second: Gold Coins_Decal|Plane.041Action
+  - first:
+      74: -5270874266551568622
+    second: Gold Coins_Decal|Plane.042Action
+  - first:
+      74: -6046464297033898845
+    second: Gold Coins_Decal|Plane.043Action
+  - first:
+      74: 1417953254845245143
+    second: Gold Coins_Decal|Plane.044Action
+  - first:
+      74: 3260828638415182463
+    second: Gold Coins_Decal|Plane.045Action
+  - first:
+      74: -1470860257738020770
+    second: Gold Coins_Decal|Plane.046Action
+  - first:
+      74: -9178947424218187460
+    second: Gold Coins_Decal|Plane.047Action
+  - first:
+      74: -2809255337404035261
+    second: Gold Coins_Decal|Plane.048Action
+  - first:
+      74: 2251581878151177209
+    second: Gold Coins_Decal|Plane.049Action
+  - first:
+      74: -4430520884452158155
+    second: Gold Coins_Decal|Plane.050Action
+  - first:
+      74: -3305419927308753267
+    second: Gold Coins_Decal|Plane.051Action
+  - first:
+      74: 4035107394200865882
+    second: Gold Coins_Decal|Plane.052Action
+  - first:
+      74: -4563414564239046464
+    second: Gold Coins_Decal|Plane.053Action
+  - first:
+      74: -1076070011964328256
+    second: Gold Coins_Decal|PlaneAction
   externalObjects:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Coid Decal_Mat
+    second: {fileID: 2100000, guid: 05513be13ce60ca43aa54fd6edaf495c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Coin Decal_Mat
     second: {fileID: 2100000, guid: 05513be13ce60ca43aa54fd6edaf495c, type: 2}
   - first:
       type: UnityEngine:Material
