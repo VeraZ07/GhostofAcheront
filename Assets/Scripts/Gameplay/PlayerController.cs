@@ -48,6 +48,9 @@ namespace GOA
         bool leftInputDown = false;
 
         string animParamSpeed = "Speed";
+        string animParamAngle = "Angle";
+        float animSpeed = 0f;
+        float animAngle = 0f;
 
         private void Awake()
         {
@@ -66,7 +69,15 @@ namespace GOA
         // Update is called once per frame
         void Update()
         {
-            animator.SetFloat(animParamSpeed, cc.Velocity.magnitude / (defaultSpeed * runMultiplier));
+            float speed = cc.Velocity.magnitude * (Vector3.Angle(cc.Velocity, transform.forward) < 93f ? 1f : -1f);
+            float angle = Vector3.SignedAngle(cc.Velocity.normalized, Mathf.Sign(speed) * transform.forward, Vector3.up);
+
+            animSpeed = Mathf.MoveTowards(animSpeed, speed, Time.deltaTime * 10f);
+            animAngle = Mathf.MoveTowardsAngle(animAngle, angle, Time.deltaTime * 360f);
+            //if ( Mathf.Abs(speed) < 0.1f)
+            //    speed = Mathf.Abs(speed);
+            animator.SetFloat(animParamSpeed, animSpeed / (defaultSpeed * runMultiplier));
+            animator.SetFloat(animParamAngle, -animAngle / 180f);
         }
 
         /// <summary>
@@ -148,14 +159,20 @@ namespace GOA
             //
             // Apply movement
             //
-            Vector3 move = transform.forward * data.move.y + transform.right * data.move.x;
-            move.Normalize();
-
+            Vector3 move;
+            
             if (data.run)
+            {
+                move = transform.forward;
                 cc.maxSpeed = defaultSpeed * runMultiplier;
+            }
             else
+            {
+                move = transform.forward * data.move.y + transform.right * data.move.x;
                 cc.maxSpeed = defaultSpeed;
+            }
 
+            move.Normalize();
 
             //cc.Move(move * Runner.DeltaTime);
             cc.Move(move);
