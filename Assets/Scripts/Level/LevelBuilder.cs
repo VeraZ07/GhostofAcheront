@@ -195,14 +195,14 @@ namespace GOA.Level
             //
             // Bake the navigation mesh
             //
-            //BakeNavigationMesh();
+            BakeNavigationMesh();
 
             
 
             // 
             // Spawn monster ( server only )
             //
-            //SpawnMonster();
+            SpawnMonster();
 
             Debug.LogFormat("LevelBuilder - Level built in {0} seconds.", (System.DateTime.Now-startTime).TotalSeconds);
 
@@ -220,7 +220,7 @@ namespace GOA.Level
             SessionManager.Instance.Runner.Spawn(ma.Prefab, position, Quaternion.identity, null, 
                 (r,o) => 
                 {
-                    o.GetComponent<NavMeshAgent>().enabled = false;
+                    o.GetComponent<MonsterController>().Init();
                 });
         }
 

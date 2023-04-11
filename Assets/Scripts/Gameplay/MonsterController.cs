@@ -127,7 +127,11 @@ namespace GOA
             {
                 animator.SetFloat(paramSpeed, agent.velocity.magnitude / agent.speed);
             }
-                
+        }
+
+        public void Init()
+        {
+            GetComponent<NavMeshAgent>().enabled = false;
         }
 
         void SetState(int state)

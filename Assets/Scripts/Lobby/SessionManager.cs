@@ -442,7 +442,42 @@ namespace GOA
                                         {
                                             newNO.GetComponent<NetworkBehaviour>().CopyStateFrom(myCustomNetworkBehaviour);
                                         }
+
+
                                     });
+                            }
+                        }
+
+                        // Monster
+                        // Game manager
+                        if (resNO.TryGetBehaviour<MonsterController>(out var mcOut))
+                        {
+                            Debug.Log("Found monster controller to resume");
+                            //if (player.PlayerId >= runner.SessionInfo.MaxPlayers)
+                            // We only create the game manager when the local player ( which is the server in this case ) joins 
+                            // the match.
+                            if (player == runner.LocalPlayer)
+                            {
+                                runner.Spawn(resNO, inputAuthority: null,
+                                    onBeforeSpawned: (runner, newNO) =>
+                                    {
+
+                                        // One key aspects of the Host Migration is to have a simple way of restoring the old NetworkObjects state
+                                        // If all state of the old NetworkObject is all what is necessary, just call the NetworkObject.CopyStateFrom
+                                        newNO.CopyStateFrom(resNO);
+
+                                        // and/or
+
+                                        // If only partial State is necessary, it is possible to copy it only from specific NetworkBehaviours
+                                        if (resNO.TryGetBehaviour<NetworkBehaviour>(out var myCustomNetworkBehaviour))
+                                        {
+                                            newNO.GetComponent<NetworkBehaviour>().CopyStateFrom(myCustomNetworkBehaviour);
+                                        }
+
+                                        newNO.GetComponent<MonsterController>().Init();
+                                    });
+
+
                             }
                         }
                     }
