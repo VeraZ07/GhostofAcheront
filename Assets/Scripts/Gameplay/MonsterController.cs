@@ -28,6 +28,7 @@ namespace GOA
         string paramAttack = "Attack";
         string paramAttackType = "AttackType";
 
+
         List<PlayerController> players = new List<PlayerController>();
         LevelBuilder builder;
 
@@ -44,6 +45,10 @@ namespace GOA
         float huntingTime = .5f;
         System.DateTime lastHuntingDT;
         NavMeshPath huntingPath;
+        float killingTime = 2;
+        System.DateTime startKillingDT;
+        float attackDistance = 1.5f;
+        Vector3[] killingPlayerPositions = new Vector3[] { new Vector3(0f, 0f, 1f) };
 
         private void Awake()
         {
@@ -82,8 +87,6 @@ namespace GOA
         {
             base.FixedUpdateNetwork();
 
-           
-
             if (Runner.IsServer)
             {
 
@@ -105,28 +108,25 @@ namespace GOA
                         LoopPlayerLostState();
                         break;
                     case (int)MonsterState.Killing:
-
+                        LoopKillingState();
                         break;
                 }
 
-               
 
-
-                // Animation
-                //Debug.Log("Monster Speed:" + agent.velocity.magnitude);
+                
+                if (animator)
+                {
+                    animator.SetFloat(paramSpeed, agent.velocity.magnitude / agent.speed);
+                }
+                
             }
-
-          
-           
             
         }
 
         private void Update()
         {
-            if (animator)
-            {
-                animator.SetFloat(paramSpeed, agent.velocity.magnitude / agent.speed);
-            }
+            
+            
         }
 
         public void Init()
@@ -156,6 +156,9 @@ namespace GOA
                 case (int)MonsterState.PlayerLost:
                     EnterPlayerLostState();
                     break;
+                case (int)MonsterState.Killing:
+                    EnterKillingState();
+                    break;
             }
         }
 
@@ -175,11 +178,34 @@ namespace GOA
             
         }
 
+
+        void EnterKillingState()
+        {
+            // Stop moving
+            agent.isStopped = true;
+            // Run a random animation
+            animator.SetFloat(paramAttackType, 0);
+            animator.SetTrigger(paramAttack);
+
+            killingTime = 2f;
+            startKillingDT = System.DateTime.Now;
+        }
+
         void EnterPlayerLostState()
         {
             huntingPath = null;
         }
 
+        void LoopKillingState()
+        {
+            if((System.DateTime.Now-startKillingDT).TotalSeconds > killingTime)
+            {
+                agent.isStopped = false;
+                SetState((int)MonsterState.Idle);
+            }
+        }
+
+        
         void LoopIdleState()
         {
             timer -= Time.fixedDeltaTime;
@@ -207,9 +233,17 @@ namespace GOA
        
         void LoopHuntingState()
         {
-            
+
+            float preyDistance = Vector3.Distance(prey.transform.position, transform.position);
+            if(preyDistance < attackDistance)
+            {
+                SetState((int)MonsterState.Killing);
+                return;
+            }
+
             if (CheckForPlayer())
             {
+
                 if ((System.DateTime.Now - lastHuntingDT).TotalSeconds > huntingTime)
                 {
                     if (huntingPath == null)

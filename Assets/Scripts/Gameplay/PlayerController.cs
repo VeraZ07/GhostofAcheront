@@ -8,8 +8,12 @@ using UnityEngine;
 
 namespace GOA
 {
+    public enum PlayerState { Paused, Alive, Dying, Dead }
+
     public class PlayerController : NetworkBehaviour
     {
+        
+
         public static PlayerController Local { get; private set; }
 
         public const float InteractionMinimumDistance = 1.5f;
@@ -52,11 +56,17 @@ namespace GOA
         float animSpeed = 0f;
         float animAngle = 0f;
 
+        [Networked(OnChanged = nameof(OnStateChanged))]
+        public int State { get; private set; } = -1;
+
+        int deadType = 0;
+
         private void Awake()
         {
             cc = GetComponent<NetworkCharacterControllerPrototypeCustom>();
             defaultSpeed = cc.maxSpeed;
             animator = GetComponentInChildren<Animator>();
+
         }
 
         // Start is called before the first frame update
@@ -190,6 +200,8 @@ namespace GOA
             }
         }
 
+        //void Set
+
         public override void Spawned()
         {
             base.Spawned();
@@ -225,6 +237,13 @@ namespace GOA
                 Renderer[] rends = GetComponentsInChildren<Renderer>();
                 foreach(Renderer rend in rends)
                     rend.gameObject.layer = 9;
+
+                
+            }
+
+            if (Runner.IsServer)
+            {
+                State = (int)PlayerState.Alive;
             }
 
             // Destroy level camera if any
@@ -271,12 +290,8 @@ namespace GOA
             //ItemAsset asset = 
         }
 
-        #endregion
-
-        public override void FixedUpdateNetwork()
+        void LoopAliveState()
         {
-            base.FixedUpdateNetwork();
-
             if (!InputDisabled && GetInput(out NetworkInputData data))
             {
                 UpdateCharacter(data);
@@ -284,11 +299,54 @@ namespace GOA
                 CheckForInteraction(data);
 
             }
+        }
 
-                      
-
+        void LoopDyingState()
+        {
 
         }
+
+        void EnterAliveState()
+        {
+
+        }
+
+        void EnterDyingState()
+        {
+            if (Runner.IsServer)
+            {
+                // Send rpc Die(type)
+            }
+        }
+
+      
+
+        #endregion
+
+        public override void FixedUpdateNetwork()
+        {
+            base.FixedUpdateNetwork();
+
+            switch (State)
+            {
+                case (int)PlayerState.Alive:
+                    LoopAliveState();
+                    break;
+                case (int)PlayerState.Dying:
+                    LoopDyingState();
+                    break;
+            }
+
+            //if (!InputDisabled && GetInput(out NetworkInputData data))
+            //{
+            //    UpdateCharacter(data);
+
+            //    CheckForInteraction(data);
+
+            //}
+        }
+
+        
 
         public void SetCameraPitch(float value)
         {
@@ -301,6 +359,32 @@ namespace GOA
         public void Init(int playerId)
         {
             PlayerId = playerId;
+        }
+
+        public void Die(int deadType)
+        {
+            if (Runner.IsServer)
+            {
+                State = (int)PlayerState.Dying;
+                this.deadType = deadType;
+            }
+                
+                
+        }
+
+        public static void OnStateChanged(Changed<PlayerController> changed)
+        {
+            Debug.Log("OnStateChanged:" + changed.Behaviour.State);
+
+            switch (changed.Behaviour.State)
+            {
+                case (int)PlayerState.Alive:
+                    changed.Behaviour.EnterAliveState();
+                    break;
+                case (int)PlayerState.Dying:
+                    changed.Behaviour.EnterDyingState();
+                    break;
+            }
         }
     }
 

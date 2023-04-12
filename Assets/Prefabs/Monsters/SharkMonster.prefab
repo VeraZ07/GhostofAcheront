@@ -264,6 +264,7 @@ GameObject:
   - component: {fileID: 4506203251438521523}
   - component: {fileID: 6511887328113569427}
   - component: {fileID: 2410193084856851999}
+  - component: {fileID: 4475389152104920689}
   m_Layer: 0
   m_Name: SharkMonster
   m_TagString: Untagged
@@ -333,6 +334,7 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 6511887328113569427}
   - {fileID: 2410193084856851999}
+  - {fileID: 4475389152104920689}
   SimulationBehaviours: []
 --- !u!114 &6511887328113569427
 MonoBehaviour:
@@ -380,6 +382,36 @@ MonoBehaviour:
   animator: {fileID: 5866666021483566321}
   _State: -1
   prey: {fileID: 0}
+--- !u!114 &4475389152104920689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3743653319665957501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 506319458, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+  Animator: {fileID: 5866666021483566321}
+  TotalWords: 3
+  SyncSettings: 79
+  FloatAccuracy:
+    _value: 0
+    _inverse: 0
+    _hash: -814817977
+  TimeAccuracy:
+    _value: 0
+    _inverse: 0
+    _hash: 1061325578
+  WeightAccuracy:
+    _value: 0
+    _inverse: 0
+    _hash: -814817977
+  StateHashes: 00000000442b920ac664de8f9c96b8077e7f94a626c7b19ec42e9d3fb0f7b6e9521e9a48
+  TriggerHashes: 000000000d286c40
 --- !u!1 &5188498993014477991
 GameObject:
   m_ObjectHideFlags: 0
