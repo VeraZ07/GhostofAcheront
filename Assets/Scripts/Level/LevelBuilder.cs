@@ -1192,8 +1192,8 @@ namespace GOA.Level
             int tileId = startConnection.targetTileId;
 
 #if UNITY_EDITOR
-            //monsterStartingTileId = tileId;
-            //return;
+            monsterStartingTileId = tileId;
+            return;
 #endif
 
             // Get the initial sector

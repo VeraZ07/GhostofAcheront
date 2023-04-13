@@ -303,6 +303,11 @@ namespace GOA
 
         void LoopDyingState()
         {
+            
+        }
+
+        void LoopDeadState()
+        {
 
         }
 
@@ -316,10 +321,19 @@ namespace GOA
             if (Runner.IsServer)
             {
                 // Send rpc Die(type)
+                cc.enabled = false;
+                cc.Velocity = Vector3.zero;
+                ResetAnimator();
             }
         }
 
-      
+        void EnterDeadState()
+        {
+            if (Runner.IsServer)
+            {
+                // Send rpc Die(type)
+            }
+        }
 
         #endregion
 
@@ -335,18 +349,17 @@ namespace GOA
                 case (int)PlayerState.Dying:
                     LoopDyingState();
                     break;
+
             }
 
-            //if (!InputDisabled && GetInput(out NetworkInputData data))
-            //{
-            //    UpdateCharacter(data);
 
-            //    CheckForInteraction(data);
-
-            //}
         }
 
-        
+        void ResetAnimator()
+        {
+            animator.SetFloat(animParamSpeed, 0);
+            animator.SetFloat(animParamAngle, 0);
+        }
 
         public void SetCameraPitch(float value)
         {
@@ -361,15 +374,26 @@ namespace GOA
             PlayerId = playerId;
         }
 
-        public void Die(int deadType)
+        public void SetDyingState()
         {
             if (Runner.IsServer)
             {
                 State = (int)PlayerState.Dying;
-                this.deadType = deadType;
+                //this.deadType = deadType;
+
+
             }
-                
-                
+        }
+
+        public void SetDeadState()
+        {
+            if (Runner.IsServer)
+            {
+                State = (int)PlayerState.Dead;
+                //this.deadType = deadType;
+
+
+            }
         }
 
         public static void OnStateChanged(Changed<PlayerController> changed)
@@ -383,6 +407,9 @@ namespace GOA
                     break;
                 case (int)PlayerState.Dying:
                     changed.Behaviour.EnterDyingState();
+                    break;
+                case (int)PlayerState.Dead:
+                    changed.Behaviour.EnterDeadState();
                     break;
             }
         }

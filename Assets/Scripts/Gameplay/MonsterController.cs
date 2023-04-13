@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Fusion;
 using GOA.Level;
 using System.Collections;
@@ -20,6 +21,10 @@ namespace GOA
         
         [SerializeField]
         Animator animator;
+
+       
+        
+
         
         NavMeshAgent agent;
 
@@ -45,10 +50,11 @@ namespace GOA
         float huntingTime = .5f;
         System.DateTime lastHuntingDT;
         NavMeshPath huntingPath;
-        float killingTime = 2;
-        System.DateTime startKillingDT;
         float attackDistance = 1.5f;
-        Vector3[] killingPlayerPositions = new Vector3[] { new Vector3(0f, 0f, 1f) };
+
+        [SerializeField]
+        Transform[] biteTargets;
+
 
         private void Awake()
         {
@@ -184,11 +190,13 @@ namespace GOA
             // Stop moving
             agent.isStopped = true;
             // Run a random animation
-            animator.SetFloat(paramAttackType, 0);
+            int deadType = 0;
+            animator.SetFloat(paramAttackType, deadType);
             animator.SetTrigger(paramAttack);
 
-            killingTime = 2f;
-            startKillingDT = System.DateTime.Now;
+          
+            StartCoroutine(Kill(prey, deadType));
+
         }
 
         void EnterPlayerLostState()
@@ -198,11 +206,7 @@ namespace GOA
 
         void LoopKillingState()
         {
-            if((System.DateTime.Now-startKillingDT).TotalSeconds > killingTime)
-            {
-                agent.isStopped = false;
-                SetState((int)MonsterState.Idle);
-            }
+           
         }
 
         
@@ -281,6 +285,44 @@ namespace GOA
             SetState((int)MonsterState.Moving);
         }
 
+
+        System.DateTime _startAnimTime;
+        void StartAnim()
+        {
+            _startAnimTime = System.DateTime.Now;
+        }
+        void StopAnim()
+        {
+            Debug.Log("Time:" +(System.DateTime.Now - _startAnimTime).TotalSeconds);
+        }
+
+        IEnumerator Kill(PlayerController player, int deadType)
+        {
+            switch (deadType)
+            {
+                case 0:
+                    Debug.Log("Start killing...");
+                    agent.velocity = Vector3.zero;
+                    player.SetDyingState();
+
+                    yield return new WaitForSeconds(.1f);
+                    //Sequence dead = DOTween.Sequence();
+                    player.transform.DORotateQuaternion(biteTargets[0].rotation, 0.5f);
+                    yield return player.transform.DOMove(biteTargets[0].position, 0.5f).WaitForCompletion();
+                                      
+                    
+
+                    yield return new WaitForSeconds(4f);
+                    
+
+                    player.SetDeadState();
+                    agent.isStopped = false;
+                    SetState((int)MonsterState.Idle);
+                    break;
+
+            }
+        }
+
         bool CheckForPlayer()
         {
             //Debug.Log("MONSTER - Checking for player...");
@@ -294,6 +336,9 @@ namespace GOA
             List<PlayerController> candidates = new List<PlayerController>();
             foreach(PlayerController player in players)
             {
+                if (player.State != (int)PlayerState.Alive)
+                    continue;
+
                 if (Vector3.Distance(transform.position, player.transform.position) > sightRange)
                     continue; // Too far
 

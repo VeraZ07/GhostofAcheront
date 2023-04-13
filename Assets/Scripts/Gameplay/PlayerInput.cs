@@ -46,8 +46,10 @@ namespace GOA
                 
             lookInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
 
-            if(!playerController.InputDisabled)
-                playerController.SetCameraPitch(lookInput.y);
+            if (!playerController.InputDisabled)
+                if(playerController.State == (int)PlayerState.Alive)
+                    playerController.SetCameraPitch(lookInput.y);
+                
 
             run = Input.GetAxisRaw("Fire3") == 1f;
 

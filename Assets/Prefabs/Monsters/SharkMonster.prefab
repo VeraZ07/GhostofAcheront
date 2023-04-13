@@ -265,6 +265,7 @@ GameObject:
   - component: {fileID: 6511887328113569427}
   - component: {fileID: 2410193084856851999}
   - component: {fileID: 4475389152104920689}
+  - component: {fileID: 4422084046540371764}
   m_Layer: 0
   m_Name: SharkMonster
   m_TagString: Untagged
@@ -285,6 +286,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6583836308214961897}
+  - {fileID: 8710266255205388137}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -379,9 +381,12 @@ MonoBehaviour:
   _interpolationDataSource: 0
   meshRoot: {fileID: 5188498993014477991}
   sightRange: 8
-  animator: {fileID: 5866666021483566321}
+  animator: {fileID: 4422084046540371764}
   _State: -1
   prey: {fileID: 0}
+  biteTargets:
+  - {fileID: 8710266255205388137}
+  - {fileID: 7065116428584271080}
 --- !u!114 &4475389152104920689
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -395,7 +400,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
-  Animator: {fileID: 5866666021483566321}
+  Animator: {fileID: 4422084046540371764}
   TotalWords: 3
   SyncSettings: 79
   FloatAccuracy:
@@ -412,6 +417,57 @@ MonoBehaviour:
     _hash: -814817977
   StateHashes: 00000000442b920ac664de8f9c96b8077e7f94a626c7b19ec42e9d3fb0f7b6e9521e9a48
   TriggerHashes: 000000000d286c40
+--- !u!95 &4422084046540371764
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3743653319665957501}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: fc8d251d5846c884ab59ff7a13b1f1ea, type: 3}
+  m_Controller: {fileID: 9100000, guid: 052a0f001b9fb454f934da2ffc9d8003, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!1 &3786492102313324045
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7065116428584271080}
+  m_Layer: 0
+  m_Name: BiteTarget_1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7065116428584271080
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3786492102313324045}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: -0.218, z: -0.097}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8700783698267740390}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5188498993014477991
 GameObject:
   m_ObjectHideFlags: 0
@@ -529,6 +585,37 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &7064059276544413590
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8710266255205388137}
+  m_Layer: 0
+  m_Name: BiteTarget_0
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8710266255205388137
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7064059276544413590}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
+  m_LocalPosition: {x: -0.168, y: 0, z: 0.383}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2083174377846344134}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &7252583615630001265
 GameObject:
   m_ObjectHideFlags: 0
@@ -682,6 +769,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: fc8d251d5846c884ab59ff7a13b1f1ea,
         type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: fc8d251d5846c884ab59ff7a13b1f1ea,
+        type: 3}
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 052a0f001b9fb454f934da2ffc9d8003, type: 2}
@@ -695,7 +787,8 @@ PrefabInstance:
       propertyPath: m_ApplyRootMotion
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5866666021909216657, guid: fc8d251d5846c884ab59ff7a13b1f1ea, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: fc8d251d5846c884ab59ff7a13b1f1ea, type: 3}
 --- !u!4 &543450653303508619 stripped
 Transform:
@@ -703,9 +796,9 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 430008672}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &5866666021483566321 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: fc8d251d5846c884ab59ff7a13b1f1ea,
+--- !u!4 &8700783698267740390 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8700783698680967558, guid: fc8d251d5846c884ab59ff7a13b1f1ea,
     type: 3}
   m_PrefabInstance: {fileID: 430008672}
   m_PrefabAsset: {fileID: 0}
