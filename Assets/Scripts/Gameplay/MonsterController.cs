@@ -301,18 +301,31 @@ namespace GOA
             switch (deadType)
             {
                 case 0:
+                    float animationLength = 2.48f;
+                    float total = 0f;
+                    System.DateTime start;
                     Debug.Log("Start killing...");
                     agent.velocity = Vector3.zero;
                     player.SetDyingState();
 
+                    // Just wait a little bit
+                    start = System.DateTime.Now;
                     yield return new WaitForSeconds(.1f);
-                    //Sequence dead = DOTween.Sequence();
+                    
+                    // Adjust the player position and rotation
                     player.transform.DORotateQuaternion(biteTargets[0].rotation, 0.5f);
                     yield return player.transform.DOMove(biteTargets[0].position, 0.5f).WaitForCompletion();
-                                      
-                    
 
-                    yield return new WaitForSeconds(4f);
+                    total = (float)(System.DateTime.Now - start).TotalSeconds;
+
+                    // Wait for the monster to open its mouth
+                    start = System.DateTime.Now;
+                    yield return new WaitForSeconds(1.36f - total);
+                    // Bite the player
+
+
+
+                    yield return new WaitForSeconds(animationLength/* - 0.6f*/);
                     
 
                     player.SetDeadState();
