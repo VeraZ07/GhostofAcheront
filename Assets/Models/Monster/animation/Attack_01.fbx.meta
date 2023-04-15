@@ -80,8 +80,8 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 1
-        functionName: OnExit
+      - time: 0.35019454
+        functionName: OnPivot
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
@@ -101,8 +101,8 @@ ModelImporter:
         floatParameter: 0
         intParameter: -1
         messageOptions: 0
-      - time: 0
-        functionName: OnPivot
+      - time: 1
+        functionName: OnExit
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

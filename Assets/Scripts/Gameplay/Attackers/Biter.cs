@@ -116,8 +116,10 @@ namespace GOA
             switch (id)
             {
                 case 0:
-                    victim.transform.DORotateQuaternion(bitePivots[0].rotation, 0.25f);
-                    victim.transform.DOMove(bitePivots[0].position, 0.25f);
+                    Vector3 dir = victim.transform.position - bitePivots[0].position;
+                    //victim.transform.DORotateQuaternion(bitePivots[0].rotation, 0.2f);
+                    //victim.transform.DOMove(bitePivots[0].position, 0.2f);
+                    transform.DOMove(transform.position + dir, 0.2f);
                     break;
                 case 1:
                     Joint joint = bitePivots[1].GetComponent<ConfigurableJoint>();
@@ -126,8 +128,6 @@ namespace GOA
                     
                     
                     Vector3 endV = targetNode.transform.localPosition;
-                    Debug.Log("EndV.Mag:" + endV.magnitude);
-                    //joint.anchor += targetNode.transform.localPosition;
                     joint.connectedBody = targetNode.transform.parent.GetComponent<Rigidbody>();
                     if(endV.magnitude > 0)
                         DOTween.To(() => joint.anchor, x => joint.anchor = x, endV, 0.2f);

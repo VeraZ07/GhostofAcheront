@@ -60,7 +60,7 @@ namespace GOA
         float huntingTime = .5f;
         System.DateTime lastHuntingDT;
         NavMeshPath huntingPath;
-        float attackDistance = 1.5f;
+        float attackRange = .8f;
 
         [SerializeField]
         List<AttackerData> attackers;
@@ -244,7 +244,7 @@ namespace GOA
         {
 
             float preyDistance = Vector3.Distance(prey.transform.position, transform.position);
-            if(preyDistance < attackDistance)
+            if(preyDistance < attackRange)
             {
                 SetState((int)MonsterState.Killing);
                 return;
