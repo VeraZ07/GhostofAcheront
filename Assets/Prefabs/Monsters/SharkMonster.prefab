@@ -266,6 +266,7 @@ GameObject:
   - component: {fileID: 2410193084856851999}
   - component: {fileID: 4475389152104920689}
   - component: {fileID: 4422084046540371764}
+  - component: {fileID: 3222279416841208496}
   m_Layer: 0
   m_Name: SharkMonster
   m_TagString: Untagged
@@ -384,9 +385,6 @@ MonoBehaviour:
   animator: {fileID: 4422084046540371764}
   _State: -1
   prey: {fileID: 0}
-  biteTargets:
-  - {fileID: 8710266255205388137}
-  - {fileID: 7065116428584271080}
 --- !u!114 &4475389152104920689
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -437,6 +435,21 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &3222279416841208496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3743653319665957501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e99c277c94ae64c45ab82a307e4cf2c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bitePivots:
+  - {fileID: 8710266255205388137}
+  - {fileID: 7065116428584271080}
 --- !u!1 &3786492102313324045
 GameObject:
   m_ObjectHideFlags: 0
@@ -447,7 +460,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7065116428584271080}
   m_Layer: 0
-  m_Name: BiteTarget_1
+  m_Name: BitePivot_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -595,7 +608,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8710266255205388137}
   m_Layer: 0
-  m_Name: BiteTarget_0
+  m_Name: BitePivot_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

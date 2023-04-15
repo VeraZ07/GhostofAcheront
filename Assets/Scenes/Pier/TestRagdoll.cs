@@ -48,14 +48,17 @@ public class TestRagdoll : MonoBehaviour
         FixedJoint joint = bitePivot.GetComponent<FixedJoint>();
         
         Vector3 dir = joint.transform.position - targetNode.transform.position;
-        //yield return targetNode.transform.root.DOMove(targetNode.transform.root.position + dir, 0.2f).WaitForCompletion();
-        
-        targetNode.transform.root.position += dir;
-        yield return new WaitForEndOfFrame();
+        Debug.Log("Joint.Pos:" + joint.transform.position);
+        Debug.Log("Target.Pos:" + targetNode.transform.position);
+        Debug.Log("Dir:" + dir);
+        yield return targetNode.transform.root.DOMove(targetNode.transform.root.position + dir, 0.5f, false).WaitForCompletion();
 
-        joint.connectedBody = targetNode.GetComponent<Rigidbody>();
+        joint.connectedBody = targetNode.transform.parent.GetComponent<Rigidbody>();
+        yield return new WaitForSeconds(.1f);
+
+        
         targetNode.transform.root.GetComponent<Animator>().enabled = false;
-        //joint.anchor = Vector3.up;
+        ////joint.anchor = Vector3.up;
 
         yield return new WaitForSeconds(5f);
         head.SetActive(false);

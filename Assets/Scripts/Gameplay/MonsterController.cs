@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Fusion;
+using GOA.Interfaces;
 using GOA.Level;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,8 +23,7 @@ namespace GOA
         [SerializeField]
         Animator animator;
 
-       
-        
+        IDeathMaker deathMaker;        
 
         
         NavMeshAgent agent;
@@ -52,14 +52,14 @@ namespace GOA
         NavMeshPath huntingPath;
         float attackDistance = 1.5f;
 
-        [SerializeField]
-        Transform[] biteTargets;
+
 
 
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
             //animator = GetComponent<Animator>();
+            deathMaker = GetComponent<IDeathMaker>();
         }
 
         // Start is called before the first frame update
@@ -188,16 +188,18 @@ namespace GOA
         void EnterKillingState()
         {
             // Stop moving
-            agent.isStopped = true;
+            //agent.isStopped = true;
             // Run a random animation
-            int deadType = 0;
-            animator.SetFloat(paramAttackType, deadType);
+            int attackType = 0;
+            animator.SetFloat(paramAttackType, attackType);
             animator.SetTrigger(paramAttack);
 
-          
-            StartCoroutine(Kill(prey, deadType));
 
+            //StartCoroutine(Kill(prey, deadType));
+            deathMaker.Kill(prey, attackType);
         }
+
+
 
         void EnterPlayerLostState()
         {
@@ -296,45 +298,6 @@ namespace GOA
             Debug.Log("Time:" +(System.DateTime.Now - _startAnimTime).TotalSeconds);
         }
 
-        IEnumerator Kill(PlayerController player, int deadType)
-        {
-            switch (deadType)
-            {
-                case 0:
-                    float animationLength = 2.48f;
-                    float total = 0f;
-                    System.DateTime start;
-                    Debug.Log("Start killing...");
-                    agent.velocity = Vector3.zero;
-                    player.SetDyingState();
-
-                    // Just wait a little bit
-                    start = System.DateTime.Now;
-                    yield return new WaitForSeconds(.1f);
-                    
-                    // Adjust the player position and rotation
-                    player.transform.DORotateQuaternion(biteTargets[0].rotation, 0.5f);
-                    yield return player.transform.DOMove(biteTargets[0].position, 0.5f).WaitForCompletion();
-
-                    total = (float)(System.DateTime.Now - start).TotalSeconds;
-
-                    // Wait for the monster to open its mouth
-                    start = System.DateTime.Now;
-                    yield return new WaitForSeconds(1.36f - total);
-                    // Bite the player
-
-
-
-                    yield return new WaitForSeconds(animationLength/* - 0.6f*/);
-                    
-
-                    player.SetDeadState();
-                    agent.isStopped = false;
-                    SetState((int)MonsterState.Idle);
-                    break;
-
-            }
-        }
 
         bool CheckForPlayer()
         {
@@ -408,8 +371,10 @@ namespace GOA
             
         }
 
-
- 
+        public void KillCompleted()
+        {
+            SetState((int)MonsterState.Idle);
+        }
 
     }
 
