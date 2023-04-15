@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Fusion;
 using GOA.Assets;
 using GOA.Interfaces;
@@ -5,6 +6,7 @@ using GOA.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.VFX;
 
 namespace GOA
 {
@@ -24,7 +26,23 @@ namespace GOA
         [SerializeField]
         GameObject dustParticle;
 
-        
+        [SerializeField]
+        GameObject headPivot;
+        public GameObject HeadPivot
+        {
+            get { return headPivot; }
+        }
+
+        [SerializeField]
+        GameObject headMesh;
+        //public GameObject HeadMesh
+        //{
+        //    get { return headMesh; }
+        //}
+
+        [SerializeField]
+        VisualEffect headBloodVfx;
+
         Animator animator;
 
         NetworkCharacterControllerPrototypeCustom cc;
@@ -66,7 +84,7 @@ namespace GOA
             cc = GetComponent<NetworkCharacterControllerPrototypeCustom>();
             defaultSpeed = cc.maxSpeed;
             animator = GetComponentInChildren<Animator>();
-
+            headBloodVfx.Stop();
         }
 
         // Start is called before the first frame update
@@ -337,6 +355,12 @@ namespace GOA
 
         #endregion
 
+        IEnumerator StopHeadBloodVfx(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            headBloodVfx.Stop();
+        }
+
         public override void FixedUpdateNetwork()
         {
             base.FixedUpdateNetwork();
@@ -395,6 +419,15 @@ namespace GOA
 
             }
         }
+
+        public void ExplodeHead()
+        {
+            headMesh.SetActive(false);
+            headBloodVfx.Play();
+            StartCoroutine(StopHeadBloodVfx(4f));
+        }
+
+
 
         public static void OnStateChanged(Changed<PlayerController> changed)
         {

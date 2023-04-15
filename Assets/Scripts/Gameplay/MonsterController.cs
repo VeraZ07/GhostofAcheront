@@ -13,6 +13,17 @@ namespace GOA
 
     public class MonsterController : NetworkBehaviour
     {
+        #region fields
+        [System.Serializable]
+        private class AttackerData
+        {
+            [SerializeField]
+            public int attackId;
+
+            [SerializeField]
+            public int weight = 1;
+        }
+
         [SerializeField]
         GameObject meshRoot;
 
@@ -23,15 +34,14 @@ namespace GOA
         [SerializeField]
         Animator animator;
 
-        IDeathMaker deathMaker;        
+        IAttacker deathMaker;        
 
         
         NavMeshAgent agent;
 
   
         string paramSpeed = "Speed";
-        string paramAttack = "Attack";
-        string paramAttackType = "AttackType";
+        
 
 
         List<PlayerController> players = new List<PlayerController>();
@@ -52,14 +62,17 @@ namespace GOA
         NavMeshPath huntingPath;
         float attackDistance = 1.5f;
 
+        [SerializeField]
+        List<AttackerData> attackers;
+        #endregion
 
-
+        #region native
 
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
             //animator = GetComponent<Animator>();
-            deathMaker = GetComponent<IDeathMaker>();
+            deathMaker = GetComponent<IAttacker>();
         }
 
         // Start is called before the first frame update
@@ -69,7 +82,9 @@ namespace GOA
             NavMesh.pathfindingIterationsPerFrame = 250;
         }
 
-       
+        #endregion
+
+        #region fusion overrides
 
         public override void Spawned()
         {
@@ -128,18 +143,10 @@ namespace GOA
             }
             
         }
+        #endregion
 
-        private void Update()
-        {
-            
-            
-        }
 
-        public void Init()
-        {
-            GetComponent<NavMeshAgent>().enabled = false;
-        }
-
+        #region state management
         void SetState(int state)
         {
             if (State == state)
@@ -187,16 +194,12 @@ namespace GOA
 
         void EnterKillingState()
         {
-            // Stop moving
-            //agent.isStopped = true;
-            // Run a random animation
-            int attackType = 0;
-            animator.SetFloat(paramAttackType, attackType);
-            animator.SetTrigger(paramAttack);
-
-
-            //StartCoroutine(Kill(prey, deadType));
-            deathMaker.Kill(prey, attackType);
+            // Get an attacker data from the list
+            AttackerData data = attackers[Random.Range(0, attackers.Count)];
+            // Get the corresponding attacker component
+            IAttacker attacker = new List<IAttacker>(GetComponents<IAttacker>()).Find(a => a.GetAttackId() == data.attackId);
+            // Call the attacker
+            attacker.Kill(prey);
         }
 
 
@@ -288,17 +291,9 @@ namespace GOA
         }
 
 
-        System.DateTime _startAnimTime;
-        void StartAnim()
-        {
-            _startAnimTime = System.DateTime.Now;
-        }
-        void StopAnim()
-        {
-            Debug.Log("Time:" +(System.DateTime.Now - _startAnimTime).TotalSeconds);
-        }
+        #endregion
 
-
+        #region private methods
         bool CheckForPlayer()
         {
             //Debug.Log("MONSTER - Checking for player...");
@@ -350,7 +345,9 @@ namespace GOA
                 return false;
             }
         }
+        #endregion
 
+        #region public methods
         /// <summary>
         /// Returns a reacheable point in the navmesh
         /// </summary>
@@ -371,11 +368,17 @@ namespace GOA
             
         }
 
-        public void KillCompleted()
+        public void SetIdleState()
         {
             SetState((int)MonsterState.Idle);
         }
 
+        public void Init()
+        {
+            GetComponent<NavMeshAgent>().enabled = false;
+        }
+
+        #endregion
     }
 
 }

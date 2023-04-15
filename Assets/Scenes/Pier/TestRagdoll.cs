@@ -45,25 +45,29 @@ public class TestRagdoll : MonoBehaviour
     {
         Debug.Log("Ragdolling...");
         // Disable target animator
-        FixedJoint joint = bitePivot.GetComponent<FixedJoint>();
+        Joint joint = bitePivot.GetComponent<ConfigurableJoint>();
         
         Vector3 dir = joint.transform.position - targetNode.transform.position;
         Debug.Log("Joint.Pos:" + joint.transform.position);
         Debug.Log("Target.Pos:" + targetNode.transform.position);
         Debug.Log("Dir:" + dir);
-        yield return targetNode.transform.root.DOMove(targetNode.transform.root.position + dir, 0.5f, false).WaitForCompletion();
 
+
+        targetNode.transform.root.GetComponent<Animator>().enabled = false;
+        /*yield return */
+        //targetNode.transform.root.DOMove(targetNode.transform.root.position + dir, 0.1f, false).WaitForCompletion();
         joint.connectedBody = targetNode.transform.parent.GetComponent<Rigidbody>();
+
+        //yield return new WaitForSeconds(.1f);
+        targetNode.transform.root.GetComponent<Animator>().enabled = false;
         yield return new WaitForSeconds(.1f);
 
-        
-        targetNode.transform.root.GetComponent<Animator>().enabled = false;
         ////joint.anchor = Vector3.up;
 
-        yield return new WaitForSeconds(5f);
-        head.SetActive(false);
-        fakeHead.SetActive(true);
-        fakeHead.transform.parent = null;
-        joint.connectedBody = null;
+        //yield return new WaitForSeconds(5f);
+        //head.SetActive(false);
+        //fakeHead.SetActive(true);
+        //fakeHead.transform.parent = null;
+        //joint.connectedBody = null;
     }
 }
