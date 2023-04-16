@@ -102,42 +102,41 @@ namespace GOA
         #endregion
 
         #region animation events
-        public void OnExit()
-        {
-            victim.SetDeadState();
-            agent.isStopped = false;
+      
 
-
-            monster.SetIdleState();
-        }
-
-        public void OnPivot(int id)
+        public void OnBite(int id)
         {
             switch (id)
             {
-                case 0:
+                case 0: // Adjust monster position
                     Vector3 dir = victim.transform.position - bitePivots[0].position;
-                    //victim.transform.DORotateQuaternion(bitePivots[0].rotation, 0.2f);
-                    //victim.transform.DOMove(bitePivots[0].position, 0.2f);
                     transform.DOMove(transform.position + dir, 0.2f);
                     break;
-                case 1:
+
+                case 4: // Blind the player and move the camera outside
+                    victim.SwitchToGhostMode();
+                    break;
+
+                case 1: // Bite the player
                     Joint joint = bitePivots[1].GetComponent<ConfigurableJoint>();
                     GameObject targetNode = victim.HeadPivot;
-                    // Just move the player to the right position
-                    
-                    
                     Vector3 endV = targetNode.transform.localPosition;
                     joint.connectedBody = targetNode.transform.parent.GetComponent<Rigidbody>();
                     if(endV.magnitude > 0)
                         DOTween.To(() => joint.anchor, x => joint.anchor = x, endV, 0.2f);
                     targetNode.transform.root.GetComponent<Animator>().enabled = false;
                     victim.ExplodeHead();
-
                     break;
-                default:
-                    // Release
+                case 2:
+                    // Release the player
                     bitePivots[1].GetComponent<ConfigurableJoint>().connectedBody = null;
+                    break;
+                case 3: // Exit
+                    victim.SetDeadState();
+                    agent.isStopped = false;
+
+
+                    monster.SetIdleState();
                     break;
             }
 

@@ -353,7 +353,21 @@ namespace GOA
             }
         }
 
+
+
         #endregion
+
+        IEnumerator DoSwitchToGhostMode()
+        {
+            yield return EyesEffect.Instance.CloseEyes();
+            Camera.main.transform.parent = null;
+            Camera.main.transform.position = transform.position + Vector3.up * 3f + Vector3.right * 2f - Vector3.forward * 2f;
+            Camera.main.transform.LookAt(transform);
+            Renderer[] rends = GetComponentsInChildren<Renderer>();
+            foreach (Renderer rend in rends)
+                rend.gameObject.layer = 0;
+            yield return EyesEffect.Instance.OpenEyes();
+        }
 
         IEnumerator StopHeadBloodVfx(float delay)
         {
@@ -423,11 +437,18 @@ namespace GOA
         public void ExplodeHead()
         {
             headMesh.SetActive(false);
+            //headBloodVfx.SendEvent("OnPlay");
             headBloodVfx.Play();
             StartCoroutine(StopHeadBloodVfx(4f));
         }
 
-
+        public void SwitchToGhostMode()
+        {
+            if(Local == this)
+            {
+                StartCoroutine(DoSwitchToGhostMode());
+            }
+        }
 
         public static void OnStateChanged(Changed<PlayerController> changed)
         {
