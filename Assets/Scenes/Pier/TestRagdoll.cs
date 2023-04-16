@@ -28,7 +28,7 @@ public class TestRagdoll : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            StartCoroutine(Bite(bitePivot, targetNode));
+            Bite(bitePivot, targetNode);
         }
 
         if (Input.GetKeyDown(KeyCode.S))
@@ -41,7 +41,7 @@ public class TestRagdoll : MonoBehaviour
         }
     }
 
-    IEnumerator Bite(GameObject bitePivot, GameObject targetNode)
+    void Bite(GameObject bitePivot, GameObject targetNode)
     {
         Debug.Log("Ragdolling...");
         // Disable target animator
@@ -53,14 +53,14 @@ public class TestRagdoll : MonoBehaviour
         Debug.Log("Dir:" + dir);
 
 
-        targetNode.transform.root.GetComponent<Animator>().enabled = false;
+        //targetNode.transform.root.GetComponent<Animator>().enabled = false;
         /*yield return */
         //targetNode.transform.root.DOMove(targetNode.transform.root.position + dir, 0.1f, false).WaitForCompletion();
         joint.connectedBody = targetNode.transform.parent.GetComponent<Rigidbody>();
 
         //yield return new WaitForSeconds(.1f);
         targetNode.transform.root.GetComponent<Animator>().enabled = false;
-        yield return new WaitForSeconds(.1f);
+        //yield return new WaitForSeconds(.1f);
 
         ////joint.anchor = Vector3.up;
 

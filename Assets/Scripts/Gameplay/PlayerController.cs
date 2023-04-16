@@ -14,8 +14,7 @@ namespace GOA
 
     public class PlayerController : NetworkBehaviour
     {
-        
-
+        #region fields
         public static PlayerController Local { get; private set; }
 
         public const float InteractionMinimumDistance = 1.5f;
@@ -25,6 +24,9 @@ namespace GOA
 
         [SerializeField]
         GameObject dustParticle;
+
+        [SerializeField]
+        GameObject characterObject;
 
         [SerializeField]
         GameObject headPivot;
@@ -78,13 +80,18 @@ namespace GOA
         public int State { get; private set; } = -1;
 
         int deadType = 0;
+        Transform characterRoot;
 
+        #endregion
+
+        #region native methods
         private void Awake()
         {
             cc = GetComponent<NetworkCharacterControllerPrototypeCustom>();
             defaultSpeed = cc.maxSpeed;
             animator = GetComponentInChildren<Animator>();
             headBloodVfx.Stop();
+            characterRoot = characterObject.transform.parent;
         }
 
         // Start is called before the first frame update
@@ -107,7 +114,79 @@ namespace GOA
             animator.SetFloat(animParamSpeed, animSpeed / (defaultSpeed * runMultiplier));
             animator.SetFloat(animParamAngle, -animAngle / 180f);
         }
+        #endregion
 
+
+        #region fusion 
+        public override void Spawned()
+        {
+            base.Spawned();
+
+
+            if (HasInputAuthority)
+            {
+                gameObject.AddComponent<PlayerInput>();
+            }
+
+            cam = GetComponentInChildren<Camera>().gameObject;
+
+            // Disable camera for non local player
+            if (!HasInputAuthority)
+            {
+                // Create a fake cam to replay the original
+                GameObject fakeCam = new GameObject("FakeCam");
+                fakeCam.transform.parent = cam.transform.parent;
+                fakeCam.transform.localPosition = cam.transform.localPosition;
+                fakeCam.transform.localRotation = cam.transform.localRotation;
+                DestroyImmediate(cam.gameObject);
+                cam = fakeCam;
+
+                // Destory light
+                DestroyImmediate(light.gameObject);
+
+                // Destroy dust
+                DestroyImmediate(dustParticle);
+            }
+            else
+            {
+                Local = this;
+                SetRenderingLayer(LayerMask.NameToLayer(Layers.LocalCharacter));
+             
+            }
+
+            if (Runner.IsServer)
+            {
+                State = (int)PlayerState.Alive;
+            }
+
+            // Destroy level camera if any
+            Camera levelCam = new List<Camera>(GameObject.FindObjectsOfType<Camera>()).Find(c => c.transform.parent == null);
+            if (levelCam)
+                DestroyImmediate(levelCam.gameObject);
+        }
+
+        public override void FixedUpdateNetwork()
+        {
+            base.FixedUpdateNetwork();
+
+            switch (State)
+            {
+                case (int)PlayerState.Alive:
+                    LoopAliveState();
+                    break;
+                case (int)PlayerState.Dying:
+                    LoopDyingState();
+                    break;
+
+            }
+
+
+        }
+
+
+        #endregion
+
+        #region private methods
         /// <summary>
         /// Simply checks if there is any object we can interact with ( we might look at it ).
         /// Both client and server.
@@ -218,57 +297,73 @@ namespace GOA
             }
         }
 
-        //void Set
-
-        public override void Spawned()
+        void ResetAnimator()
         {
-            base.Spawned();
-
-            
-            if (HasInputAuthority)
-            {
-                gameObject.AddComponent<PlayerInput>();
-            }
-
-            cam = GetComponentInChildren<Camera>().gameObject;
-
-            // Disable camera for non local player
-            if (!HasInputAuthority)
-            {
-                // Create a fake cam to replay the original
-                GameObject fakeCam = new GameObject("FakeCam");
-                fakeCam.transform.parent = cam.transform.parent;
-                fakeCam.transform.localPosition = cam.transform.localPosition;
-                fakeCam.transform.localRotation = cam.transform.localRotation;
-                DestroyImmediate(cam.gameObject);
-                cam = fakeCam;
-                
-                // Destory light
-                DestroyImmediate(light.gameObject);
-
-                // Destroy dust
-                DestroyImmediate(dustParticle);
-            }
-            else
-            {
-                Local = this;
-                Renderer[] rends = GetComponentsInChildren<Renderer>();
-                foreach(Renderer rend in rends)
-                    rend.gameObject.layer = 9;
-
-                
-            }
-
-            if (Runner.IsServer)
-            {
-                State = (int)PlayerState.Alive;
-            }
-
-            // Destroy level camera if any
-            Camera levelCam = new List<Camera>(GameObject.FindObjectsOfType<Camera>()).Find(c => c.transform.parent == null);
-            if (levelCam)
-                DestroyImmediate(levelCam.gameObject);
+            animator.SetFloat(animParamSpeed, 0);
+            animator.SetFloat(animParamAngle, 0);
         }
+
+        IEnumerator DoSwitchToGhostMode()
+        {
+            yield return EyesEffect.Instance.CloseEyes();
+            characterObject.transform.parent = null;
+            //Camera.main.transform.parent = null;
+            // Check a safe position for the player to move
+            transform.position += Vector3.up * 3f + Vector3.right * 3f - Vector3.forward * 3f;
+            Camera.main.transform.LookAt(transform);
+            SetRenderingLayer(LayerMask.NameToLayer(Layers.Default)); 
+            yield return EyesEffect.Instance.OpenEyes();
+        }
+
+        IEnumerator DoLookAtYouDying()
+        {
+            MonsterController monster = FindObjectOfType<MonsterController>();
+            yield return EyesEffect.Instance.CloseEyes();
+            //characterObject.transform.parent = null;
+            Camera.main.transform.parent = null;
+            // Check a safe position for the camera to move
+            List<int> coords = new List<int>(new int[] { 0, 1, 2, 3});
+            bool found = false;
+            int coord = coords[0]; // We always try moving the camera forward
+            coords.Remove(coord);
+            Vector3 dir = Vector3.zero;
+            float dist = Level.LevelBuilder.TileSize * .4f;
+            while (!found && coords.Count>0)
+            {
+                Vector3 tmpDir = Quaternion.AngleAxis(90f * coord, Vector3.up) * monster.transform.forward;
+                
+                Vector3 origin = transform.position + Vector3.up * 3f;
+                LayerMask mask = LayerMask.GetMask(new string[] { Layers.Wall });
+                if (!Physics.Raycast(origin, tmpDir.normalized, dist, mask))
+                {
+                    dir = tmpDir;
+                    found = true;
+                }
+                else
+                {
+                    coord = coords[Random.Range(0, coords.Count)];
+                }
+                    
+            }
+            Camera.main.transform.position = transform.position + Vector3.up * 3.5f + dir.normalized * dist;
+            Camera.main.transform.LookAt(HeadPivot.transform);
+            SetRenderingLayer(LayerMask.NameToLayer(Layers.Default));
+            yield return EyesEffect.Instance.OpenEyes();
+        }
+
+        IEnumerator StopHeadBloodVfx(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            headBloodVfx.Stop();
+        }
+
+        void SetRenderingLayer(int layer)
+        {
+            Renderer[] rends = GetComponentsInChildren<Renderer>();
+            foreach (Renderer rend in rends)
+                rend.gameObject.layer = layer;
+        }
+        #endregion
 
         #region rpc
         /// <summary>
@@ -307,6 +402,9 @@ namespace GOA
             //Inventory inventory = new List<Inventory>(GameObject.FindObjectsOfType<Inventory>()).Find(i => i.PlayerId == Runner.LocalPlayer.PlayerId);
             //ItemAsset asset = 
         }
+        #endregion
+
+        #region state management
 
         void LoopAliveState()
         {
@@ -353,51 +451,26 @@ namespace GOA
             }
         }
 
-
-
-        #endregion
-
-        IEnumerator DoSwitchToGhostMode()
+        public static void OnStateChanged(Changed<PlayerController> changed)
         {
-            yield return EyesEffect.Instance.CloseEyes();
-            Camera.main.transform.parent = null;
-            Camera.main.transform.position = transform.position + Vector3.up * 3f + Vector3.right * 2f - Vector3.forward * 2f;
-            Camera.main.transform.LookAt(transform);
-            Renderer[] rends = GetComponentsInChildren<Renderer>();
-            foreach (Renderer rend in rends)
-                rend.gameObject.layer = 0;
-            yield return EyesEffect.Instance.OpenEyes();
-        }
+            Debug.Log("OnStateChanged:" + changed.Behaviour.State);
 
-        IEnumerator StopHeadBloodVfx(float delay)
-        {
-            yield return new WaitForSeconds(delay);
-            headBloodVfx.Stop();
-        }
-
-        public override void FixedUpdateNetwork()
-        {
-            base.FixedUpdateNetwork();
-
-            switch (State)
+            switch (changed.Behaviour.State)
             {
                 case (int)PlayerState.Alive:
-                    LoopAliveState();
+                    changed.Behaviour.EnterAliveState();
                     break;
                 case (int)PlayerState.Dying:
-                    LoopDyingState();
+                    changed.Behaviour.EnterDyingState();
                     break;
-
+                case (int)PlayerState.Dead:
+                    changed.Behaviour.EnterDeadState();
+                    break;
             }
-
-
         }
+        #endregion
 
-        void ResetAnimator()
-        {
-            animator.SetFloat(animParamSpeed, 0);
-            animator.SetFloat(animParamAngle, 0);
-        }
+        #region public methods     
 
         public void SetCameraPitch(float value)
         {
@@ -442,31 +515,16 @@ namespace GOA
             StartCoroutine(StopHeadBloodVfx(4f));
         }
 
-        public void SwitchToGhostMode()
+        public void LookAtYouDying()
         {
             if(Local == this)
             {
-                StartCoroutine(DoSwitchToGhostMode());
+                StartCoroutine(DoLookAtYouDying());
             }
         }
 
-        public static void OnStateChanged(Changed<PlayerController> changed)
-        {
-            Debug.Log("OnStateChanged:" + changed.Behaviour.State);
-
-            switch (changed.Behaviour.State)
-            {
-                case (int)PlayerState.Alive:
-                    changed.Behaviour.EnterAliveState();
-                    break;
-                case (int)PlayerState.Dying:
-                    changed.Behaviour.EnterDyingState();
-                    break;
-                case (int)PlayerState.Dead:
-                    changed.Behaviour.EnterDeadState();
-                    break;
-            }
-        }
+        
+        #endregion
     }
 
 }

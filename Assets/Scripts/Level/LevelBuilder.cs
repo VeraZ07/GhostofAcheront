@@ -16,7 +16,7 @@ namespace GOA.Level
         
         // From 0 to N, 0 is the smallest one.
         public static int LevelSize = 3;
-
+        public static float TileSize = Tile.Size;
 
 
         [SerializeField]
@@ -104,6 +104,11 @@ namespace GOA.Level
                 LevelSize = 3;
                 Create();
             }
+        }
+
+        private void OnDestroy()
+        {
+            PuzzleController.OnPuzzleControllerSpawned -= HandleOnPuzzleControllerSpawned;
         }
 
         void HandleOnPuzzleControllerSpawned(PuzzleController puzzleController)

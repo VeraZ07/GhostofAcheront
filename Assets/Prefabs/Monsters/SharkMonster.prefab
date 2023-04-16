@@ -151,7 +151,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
   Animator: {fileID: 4422084046540371764}
-  TotalWords: 3
+  TotalWords: 4
   SyncSettings: 79
   FloatAccuracy:
     _value: 0
@@ -202,6 +202,8 @@ MonoBehaviour:
   bitePivots:
   - {fileID: 8710266255205388137}
   - {fileID: 2224379871934155418}
+  alignmentSpeed: 0
+  playerAlignment: 0
 --- !u!1 &4290147382493059844
 GameObject:
   m_ObjectHideFlags: 0

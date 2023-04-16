@@ -806,6 +806,7 @@ MonoBehaviour:
   _interpolationDataSource: 0
   light: {fileID: 4483808968645272673}
   dustParticle: {fileID: 6445270502224490385}
+  characterObject: {fileID: 4296850704775083873}
   headPivot: {fileID: 4437239387702461575}
   headMesh: {fileID: 7005496745296367575}
   headBloodVfx: {fileID: 3452396977172471768}
@@ -1939,6 +1940,12 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.39189708, y: 0.2599945, z: 0.23620033}
   m_Center: {x: -0.000000014901161, y: 0.07683253, z: -0.019416496}
+--- !u!1 &4296850704775083873 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a48af95f404552f4597db50027f92cf0,
+    type: 3}
+  m_PrefabInstance: {fileID: 3990210309335566896}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &5353603790865606199 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -203856693384778745, guid: a48af95f404552f4597db50027f92cf0,
