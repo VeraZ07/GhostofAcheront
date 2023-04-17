@@ -13,7 +13,8 @@ namespace GOA.Level
         [System.Serializable]
         class Tile
         {
-            public const float Size = 4;
+            public const float Size = 4f;
+            public const float Height = 4f;
 
             LevelBuilder builder;
 

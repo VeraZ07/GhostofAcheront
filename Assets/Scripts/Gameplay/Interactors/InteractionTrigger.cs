@@ -40,6 +40,9 @@ namespace GOA
             if (!playerController)
                 return;
 
+            if (playerController.State != (int)PlayerState.Alive)
+                return;
+
             if (playerController.HasInputAuthority)
             {
                 // Manage the UI ( you may want to show some icon to let the player know about the interaction )

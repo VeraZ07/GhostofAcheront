@@ -17,6 +17,7 @@ namespace GOA.Level
         // From 0 to N, 0 is the smallest one.
         public static int LevelSize = 3;
         public static float TileSize = Tile.Size;
+        public static float TileHeight = Tile.Height;
 
 
         [SerializeField]

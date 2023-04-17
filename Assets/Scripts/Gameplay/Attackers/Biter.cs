@@ -124,6 +124,7 @@ namespace GOA
                     bitePivots[1].GetComponent<ConfigurableJoint>().connectedBody = null;
                     break;
                 case 3: // Exit
+                    
                     victim.SetDeadState();
                     agent.isStopped = false;
                     monster.SetIdleState();

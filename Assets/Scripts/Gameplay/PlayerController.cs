@@ -10,7 +10,7 @@ using UnityEngine.VFX;
 
 namespace GOA
 {
-    public enum PlayerState { Paused, Alive, Dying, Dead }
+    public enum PlayerState { Paused, Alive, Dying, Dead, RisingAgain }
 
     public class PlayerController : NetworkBehaviour
     {
@@ -58,6 +58,9 @@ namespace GOA
         float pitch = 0;
         GameObject cam;
         float defaultSpeed;
+        Transform camParent;
+        Vector3 cameraLocalPositionDefault;
+        Quaternion cameraLocalRotationDefault;
 
         public bool LeftAction { get; private set; }
         public bool RightAction { get; private set; }
@@ -81,7 +84,7 @@ namespace GOA
 
         int deadType = 0;
         Transform characterRoot;
-
+        float ghostTime = 0f;
         #endregion
 
         #region native methods
@@ -104,15 +107,26 @@ namespace GOA
         // Update is called once per frame
         void Update()
         {
-            float speed = cc.Velocity.magnitude * (Vector3.Angle(cc.Velocity, transform.forward) < 93f ? 1f : -1f);
-            float angle = Vector3.SignedAngle(cc.Velocity.normalized, Mathf.Sign(speed) * transform.forward, Vector3.up);
+            switch (State)
+            {
+                case (int)PlayerState.Alive:
+                    float speed = cc.Velocity.magnitude * (Vector3.Angle(cc.Velocity, transform.forward) < 93f ? 1f : -1f);
+                    float angle = Vector3.SignedAngle(cc.Velocity.normalized, Mathf.Sign(speed) * transform.forward, Vector3.up);
 
-            animSpeed = Mathf.MoveTowards(animSpeed, speed, Time.deltaTime * 10f);
-            animAngle = Mathf.MoveTowardsAngle(animAngle, angle, Time.deltaTime * 360f);
-            //if ( Mathf.Abs(speed) < 0.1f)
-            //    speed = Mathf.Abs(speed);
-            animator.SetFloat(animParamSpeed, animSpeed / (defaultSpeed * runMultiplier));
-            animator.SetFloat(animParamAngle, -animAngle / 180f);
+                    animSpeed = Mathf.MoveTowards(animSpeed, speed, Time.deltaTime * 10f);
+                    animAngle = Mathf.MoveTowardsAngle(animAngle, angle, Time.deltaTime * 360f);
+                    //if ( Mathf.Abs(speed) < 0.1f)
+                    //    speed = Mathf.Abs(speed);
+                    animator.SetFloat(animParamSpeed, animSpeed / (defaultSpeed * runMultiplier));
+                    animator.SetFloat(animParamAngle, -animAngle / 180f);
+                    break;
+            }
+            
+
+#if UNITY_EDITOR
+            //if (Input.GetKeyDown(KeyCode.P))
+            //    RiseAgain();
+#endif
         }
         #endregion
 
@@ -129,6 +143,9 @@ namespace GOA
             }
 
             cam = GetComponentInChildren<Camera>().gameObject;
+            camParent = cam.transform.parent;
+            cameraLocalPositionDefault = cam.transform.localPosition;
+            cameraLocalRotationDefault = cam.transform.localRotation;
 
             // Disable camera for non local player
             if (!HasInputAuthority)
@@ -177,7 +194,12 @@ namespace GOA
                 case (int)PlayerState.Dying:
                     LoopDyingState();
                     break;
-
+                case (int)PlayerState.Dead:
+                    LoopDeadState();
+                    break;
+                case (int)PlayerState.RisingAgain:
+                    LoopRisingAgainState();
+                    break;
             }
 
 
@@ -297,6 +319,39 @@ namespace GOA
             }
         }
 
+        void UpdateGhost(NetworkInputData data)
+        {
+            // 
+            // Apply rotation
+            //
+            cc.Rotate(data.yaw);
+
+            //
+            // Apply movement
+            //
+            Vector3 move;
+
+            move = transform.forward * data.move.y + transform.right * data.move.x;
+            cc.maxSpeed = defaultSpeed;
+
+            move.Normalize();
+
+            
+            cc.Move(move);
+
+            //
+            // Actions
+            //
+            //LeftAction = data.leftAction;
+            //RightAction = data.rightAction;
+
+            // Set the camera pitch for the other players
+            if (!HasInputAuthority)
+            {
+                SetCameraPitch(data.pitch);
+            }
+        }
+
         void ResetAnimator()
         {
             animator.SetFloat(animParamSpeed, 0);
@@ -345,7 +400,7 @@ namespace GOA
                 }
                     
             }
-            Camera.main.transform.position = transform.position + Vector3.up * 3.5f + dir.normalized * dist;
+            Camera.main.transform.position = transform.position + Vector3.up * Level.LevelBuilder.TileHeight * .8f + dir.normalized * dist;
             Camera.main.transform.LookAt(HeadPivot.transform);
             SetRenderingLayer(LayerMask.NameToLayer(Layers.Default));
             yield return EyesEffect.Instance.OpenEyes();
@@ -424,7 +479,17 @@ namespace GOA
 
         void LoopDeadState()
         {
+            if (ghostTime > 0)
+            {
+                ghostTime -= Runner.DeltaTime;
+                return;
+            }
 
+            if (!InputDisabled && GetInput(out NetworkInputData data))
+            {
+                UpdateCharacter(data);
+
+            }
         }
 
         void EnterAliveState()
@@ -434,21 +499,51 @@ namespace GOA
 
         void EnterDyingState()
         {
-            if (Runner.IsServer)
-            {
-                // Send rpc Die(type)
+            //if (Runner.IsServer)
+            //{
+                
                 cc.enabled = false;
                 cc.Velocity = Vector3.zero;
                 ResetAnimator();
-            }
+            //}
         }
 
         void EnterDeadState()
         {
-            if (Runner.IsServer)
-            {
-                // Send rpc Die(type)
-            }
+            // Both on client and server
+            // Move the character out of the controller
+            characterObject.transform.parent = null;
+            // Move the controller back to the camera
+            Vector3 pos = cam.transform.position;
+            
+            pos.y = 0.1f;
+            transform.position = pos;
+            cam.transform.parent = camParent;
+            cc.enabled = true;
+            cc.Velocity = Vector3.zero;
+
+            ghostTime = 2f;
+        }
+
+        void EnterRisingAgainState()
+        {
+            // Both on client and server
+            characterObject.transform.parent = characterRoot;
+            characterObject.transform.localPosition = Vector3.zero;
+            characterObject.transform.localRotation = Quaternion.identity;
+            animator.enabled = true;
+            pitch = 0f;
+            cam.transform.localPosition = cameraLocalPositionDefault;
+            cam.transform.localRotation = cameraLocalRotationDefault;
+            ResetAnimator();
+            headMesh.SetActive(true);
+            SetRenderingLayer(LayerMask.NameToLayer(Layers.LocalCharacter));
+            State = (int)PlayerState.Alive;
+        }
+
+        void LoopRisingAgainState()
+        {
+
         }
 
         public static void OnStateChanged(Changed<PlayerController> changed)
@@ -465,6 +560,9 @@ namespace GOA
                     break;
                 case (int)PlayerState.Dead:
                     changed.Behaviour.EnterDeadState();
+                    break;
+                case (int)PlayerState.RisingAgain:
+                    changed.Behaviour.EnterRisingAgainState();
                     break;
             }
         }
@@ -523,7 +621,14 @@ namespace GOA
             }
         }
 
-        
+        public void RiseAgain()
+        {
+            if (Runner.IsServer)
+            {
+                State = (int)PlayerState.RisingAgain;
+            }
+        }
+
         #endregion
     }
 

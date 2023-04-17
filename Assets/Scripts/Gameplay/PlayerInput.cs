@@ -47,7 +47,7 @@ namespace GOA
             lookInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
 
             if (!playerController.InputDisabled)
-                if(playerController.State == (int)PlayerState.Alive)
+                if(playerController.State == (int)PlayerState.Alive || playerController.State == (int)PlayerState.Dead)
                     playerController.SetCameraPitch(lookInput.y);
                 
 
