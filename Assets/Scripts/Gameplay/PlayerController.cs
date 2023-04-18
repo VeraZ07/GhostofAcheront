@@ -100,7 +100,13 @@ namespace GOA
         // Start is called before the first frame update
         void Start()
         {
-            
+            // Disable collisions between controller and internal ragdoll
+            Collider coll = GetComponent<Collider>();
+            Collider[] rc = GetComponentsInChildren<Collider>();
+            foreach(Collider c in rc)
+            {
+                Physics.IgnoreCollision(coll, c, true);
+            }
             
         }
 

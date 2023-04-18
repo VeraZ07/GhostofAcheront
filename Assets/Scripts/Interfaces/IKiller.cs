@@ -6,14 +6,14 @@ using UnityEngine.Events;
 
 namespace GOA.Interfaces
 {
-    public interface IAttacker
+    public interface IKiller
     {
         public const string ParamAttackTrigger = "Attack";
         public const string ParamAttackId = "AttackId";
 
-        void Kill(PlayerController victim);
+        void Kill(PlayerController victim, int attackId);
 
-        int GetAttackId();
+        
         
     }
 

@@ -34,7 +34,7 @@ namespace GOA
         [SerializeField]
         Animator animator;
 
-        IAttacker deathMaker;        
+        IKiller deathMaker;        
 
         
         NavMeshAgent agent;
@@ -72,7 +72,7 @@ namespace GOA
         {
             agent = GetComponent<NavMeshAgent>();
             //animator = GetComponent<Animator>();
-            deathMaker = GetComponent<IAttacker>();
+            deathMaker = GetComponent<IKiller>();
         }
 
         // Start is called before the first frame update
@@ -197,9 +197,9 @@ namespace GOA
             // Get an attacker data from the list
             AttackerData data = attackers[Random.Range(0, attackers.Count)];
             // Get the corresponding attacker component
-            IAttacker attacker = new List<IAttacker>(GetComponents<IAttacker>()).Find(a => a.GetAttackId() == data.attackId);
+            IKiller attacker = GetComponent<IKiller>();
             // Call the attacker
-            attacker.Kill(prey);
+            attacker.Kill(prey, data.attackId);
         }
 
 

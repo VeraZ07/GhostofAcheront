@@ -691,7 +691,7 @@ GameObject:
   - component: {fileID: 5232603779821705812}
   - component: {fileID: -9021240148844075936}
   - component: {fileID: -6228978730575802151}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Character_1
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -772,7 +772,12 @@ MonoBehaviour:
   _interpolationDataSource: 0
   light: {fileID: 4483808968645272673}
   dustParticle: {fileID: 1931854306254654234}
+  characterObject: {fileID: 0}
+  headPivot: {fileID: 0}
+  headMesh: {fileID: 0}
+  headBloodVfx: {fileID: 0}
   _PlayerId: 0
+  _State: -1
 --- !u!114 &-6228978730575802151
 MonoBehaviour:
   m_ObjectHideFlags: 0

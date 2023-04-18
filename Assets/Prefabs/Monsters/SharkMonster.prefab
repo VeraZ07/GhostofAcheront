@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 4475389152104920689}
   - component: {fileID: 4422084046540371764}
   - component: {fileID: 3222279416841208496}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: SharkMonster
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -202,8 +202,6 @@ MonoBehaviour:
   bitePivots:
   - {fileID: 8710266255205388137}
   - {fileID: 2224379871934155418}
-  alignmentSpeed: 0
-  playerAlignment: 0
 --- !u!1 &4290147382493059844
 GameObject:
   m_ObjectHideFlags: 0
@@ -214,7 +212,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2224379871934155418}
   - component: {fileID: 2740424865632916506}
-  - component: {fileID: 596610346650369443}
+  - component: {fileID: 2921570627601988622}
   m_Layer: 0
   m_Name: BitePivot_1
   m_TagString: Untagged
@@ -230,7 +228,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4290147382493059844}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.006, y: -0.133, z: 0.191}
+  m_LocalPosition: {x: -0.006, y: -0.119, z: 0.198}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -253,7 +251,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!153 &596610346650369443
+--- !u!153 &2921570627601988622
 ConfigurableJoint:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -271,7 +269,7 @@ ConfigurableJoint:
   m_XMotion: 0
   m_YMotion: 0
   m_ZMotion: 0
-  m_AngularXMotion: 0
+  m_AngularXMotion: 2
   m_AngularYMotion: 0
   m_AngularZMotion: 0
   m_LinearLimitSpring:
@@ -283,7 +281,7 @@ ConfigurableJoint:
     contactDistance: 0
   m_AngularXLimitSpring:
     spring: 0
-    damper: 0
+    damper: 1000
   m_LowAngularXLimit:
     limit: 0
     bounciness: 0
@@ -294,7 +292,7 @@ ConfigurableJoint:
     contactDistance: 0
   m_AngularYZLimitSpring:
     spring: 0
-    damper: 0
+    damper: 1000
   m_AngularYLimit:
     limit: 0
     bounciness: 0
@@ -347,7 +345,7 @@ ConfigurableJoint:
   m_BreakTorque: Infinity
   m_EnableCollision: 0
   m_EnablePreprocessing: 1
-  m_MassScale: 0.00001
+  m_MassScale: 1
   m_ConnectedMassScale: 1
 --- !u!1 &5188498993014477991
 GameObject:

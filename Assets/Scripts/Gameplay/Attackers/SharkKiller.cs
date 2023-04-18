@@ -8,18 +8,13 @@ using UnityEngine.Events;
 
 namespace GOA
 {
-    public class Biter : MonoBehaviour, IAttacker
+    public class SharkKiller : MonoBehaviour, IKiller
     {
         #region fields
         [SerializeField]
         Transform[] bitePivots;
 
-        [SerializeField]
-        float alignmentSpeed = 0.05f; 
-
-        [SerializeField]
-        bool playerAlignment = false; // True if you want to align the player, otherwise the monster will be aligned
-
+       
         PlayerController victim;
         MonsterController monster;
         NavMeshAgent agent;
@@ -38,49 +33,21 @@ namespace GOA
         #endregion
 
         #region interface implementation
-        public int GetAttackId()
-        {
-            return 0;
-        }
-
-        public void Kill(PlayerController victim)
+        
+        public void Kill(PlayerController victim, int attackId)
         {
             this.victim = victim;
             agent.velocity = Vector3.zero;
             agent.isStopped = true;
             victim.SetDyingState();
 
-            animator.SetFloat(IAttacker.ParamAttackId, GetAttackId());
-            animator.SetTrigger(IAttacker.ParamAttackTrigger);
+            animator.SetFloat(IKiller.ParamAttackId, attackId);
+            animator.SetTrigger(IKiller.ParamAttackTrigger);
 
             //StartCoroutine(Bite(victim));
         }
         #endregion
 
-        #region private methods
-
-        IEnumerator Bite(PlayerController victim)
-        {
-            this.victim = victim;
-
-            animator.SetFloat(IAttacker.ParamAttackId, GetAttackId());
-            animator.SetTrigger(IAttacker.ParamAttackTrigger);
-
-            //float animationLength = 2.48f;
-            float animationBiteTime = 1.36f;
-            float total = 0f;
-            System.DateTime start;
-            Debug.Log("Start killing...");
-
-            agent.velocity = Vector3.zero;
-            agent.isStopped = true;
-            victim.SetDyingState();
-
-            // Just wait a little bit
-            start = System.DateTime.Now;
-            yield return new WaitForSeconds(.1f);
-        }
-        #endregion
 
         #region animation events
       
@@ -90,17 +57,10 @@ namespace GOA
             switch (id)
             {
                 case 0: // Adjust monster position
-                    if(alignmentSpeed > 0)
-                    {
-                        Vector3 dir = victim.transform.position - bitePivots[0].position;
-                        dir.y = 0;
-                      
-                        if(!playerAlignment)
-                            transform.DOMove(transform.position + dir, alignmentSpeed, true);
-                        else
-                            victim.transform.DOMove(transform.position - dir, alignmentSpeed, true);
-                    }
                     
+                    
+                    transform.DORotateQuaternion(Quaternion.LookRotation((victim.transform.position - transform.position).normalized, Vector3.up), 0.2f); 
+
                     break;
 
                 case 4: // Blind the player and move the camera outside
@@ -108,6 +68,7 @@ namespace GOA
                     break;
 
                 case 1: // Bite the player
+                    animator.speed = 0;
                     Joint joint = bitePivots[1].GetComponent<ConfigurableJoint>();
                     GameObject targetNode = victim.HeadPivot;
                     //Vector3 endV = targetNode.transform.localPosition;
