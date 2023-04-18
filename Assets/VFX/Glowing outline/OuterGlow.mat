@@ -31,7 +31,7 @@ Material:
   - _DOUBLESIDED_ON
   m_InvalidKeywords: []
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 1
   m_CustomRenderQueue: 2225
   stringTagMap:
@@ -130,7 +130,7 @@ Material:
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _Flashing: {r: 4.69, g: 0, b: 0, a: 0}
     - _Metallic: {r: 1.52, g: 0, b: 0, a: 0}
-    - _Power: {r: 8.02, g: 0, b: 0, a: 0}
+    - _Power: {r: 8.2, g: 0, b: 0, a: 0}
     - _Roughness: {r: 0.71, g: 0, b: 0, a: 0}
     - _Speed: {r: 2, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
