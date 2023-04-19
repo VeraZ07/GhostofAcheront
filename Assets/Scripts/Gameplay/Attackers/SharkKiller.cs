@@ -68,21 +68,12 @@ namespace GOA
                     break;
 
                 case 1: // Bite the player
-                    animator.speed = 0;
-                    Joint joint = bitePivots[1].GetComponent<ConfigurableJoint>();
-                    GameObject targetNode = victim.HeadPivot;
-                    //Vector3 endV = targetNode.transform.localPosition;
-                    joint.connectedBody = targetNode.transform.parent.GetComponent<Rigidbody>();
-                    //if(endV.magnitude > 0)
-                    //    DOTween.To(() => joint.anchor, x => joint.anchor = x, endV, 0.2f);
-                    victim.GetComponent<Animator>().enabled = false;
-                    
-                    victim.ExplodeHead();
+                    StartCoroutine(DoBite());
                     break;
                 case 2:
                     // Release the player
                     
-                    bitePivots[1].GetComponent<ConfigurableJoint>().connectedBody = null;
+                    bitePivots[1].GetComponent<FixedJoint>().connectedBody = null;
                     break;
                 case 3: // Exit
                     
@@ -93,6 +84,23 @@ namespace GOA
             }
 
             
+        }
+
+        IEnumerator DoBite()
+        {
+            Joint joint = bitePivots[1].GetComponent<FixedJoint>();
+            Vector3 oldPos = bitePivots[1].localPosition;
+
+            // Wait for the animation to run in order to obtain the right values for the pivots
+            yield return new WaitForEndOfFrame();
+            Vector3 dir = bitePivots[1].transform.position - victim.HeadPivot.transform.position;
+            victim.transform.position += dir;
+            
+            victim.GetComponent<Animator>().enabled = false;
+            joint.connectedBody = victim.HeadPivot.transform.parent.GetComponent<Rigidbody>();
+            
+
+            victim.ExplodeHead();
         }
         #endregion
     }
