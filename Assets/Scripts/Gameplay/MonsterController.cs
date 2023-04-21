@@ -237,7 +237,7 @@ namespace GOA
         {
             if (CheckForPlayer())
                 SetState((int)MonsterState.PlayerSpotted);
-            else if ((!agent.hasPath && !agent.pathPending) || Vector3.Distance(transform.position, agent.destination) < 4f)
+            else if ((!agent.hasPath && !agent.pathPending) || Vector3.Distance(transform.position, agent.destination) < Tile.Size * .5f)
                 SetState((int)MonsterState.Idle);
 
         }
@@ -361,31 +361,34 @@ namespace GOA
             if(players.Count == 0)
                 players = new List<PlayerController>(FindObjectsOfType<PlayerController>());
 
+            bool trackPlayer = Random.Range(0, 4) == 0;
+
+            if (trackPlayer)
+            {
+                Transform target = players[Random.Range(0, players.Count)].transform;
+                return target.position;
+            }
+            else
+            {
+                Puzzle nextPuzzle = builder.GetNextPuzzleToSolve();
+                Debug.Log("NextPuzzleToSolve:" + nextPuzzle);
+                int puzzleId = builder.GetPuzzleId(nextPuzzle);
+                Debug.Log("NextPuzzleToSolve.Id:" + puzzleId);
+                int gateIndex = new List<CustomObject>(builder.CustomObjects).FindIndex(g => g.GetType() == typeof(Gate) && (g as Gate).PuzzleIndex == puzzleId);
+                Debug.Log("Gate.Id:" + gateIndex);
+                Connection conn = new List<Connection>(builder.Connections).Find(c => c.gateIndex == gateIndex);
+                Debug.Log("Conn:" + conn);
+                Tile tile = builder.GetTile(conn.SourceTileId);
+                Debug.Log("Tile:" + tile);
+                Sector sector = builder.GetSector(tile.sectorIndex);
+                Debug.Log("Sector:" + sector);
+
+                int targetTileId = sector.TileIds[Random.Range(0, sector.TileIds.Count)];
+                Vector3 pos = builder.GetTile(targetTileId).GetPosition();
+                pos += Vector3.right * Tile.Size * .5f + Vector3.back * Tile.Size * .5f;
+                return pos;
+            }
             
-
-            Puzzle nextPuzzle = builder.GetNextPuzzleToSolve();
-            Debug.Log("NextPuzzleToSolve:" + nextPuzzle);
-            int puzzleId = builder.GetPuzzleId(nextPuzzle);
-            Debug.Log("NextPuzzleToSolve.Id:" + puzzleId);
-            int gateIndex = new List<CustomObject>(builder.CustomObjects).FindIndex(g => g.GetType() == typeof(Gate) && (g as Gate).PuzzleIndex == puzzleId);
-            Debug.Log("Gate.Id:" + gateIndex);
-            Connection conn = new List<Connection>(builder.Connections).Find(c => c.gateIndex == gateIndex);
-            Debug.Log("Conn:" + conn);
-            Tile tile = builder.GetTile(conn.SourceTileId);
-            Debug.Log("Tile:" + tile);
-            Sector sector = builder.GetSector(tile.sectorIndex);
-            Debug.Log("Sector:" + sector);
-
-            int targetTileId = sector.TileIds[Random.Range(0, sector.TileIds.Count)];
-            Vector3 pos = builder.GetTile(targetTileId).GetPosition();
-            pos += Vector3.right * Tile.Size + Vector3.back * Tile.Size;
-            return pos;
-
-            // Get a new target 
-            //Transform target = players[Random.Range(0, players.Count)].transform;
-
-            
-            //return target.position;
             
         }
 
