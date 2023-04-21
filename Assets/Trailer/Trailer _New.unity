@@ -24,7 +24,7 @@ RenderSettings:
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 0
+  m_AmbientMode: 4
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: 0.5
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.1415894, g: 0.06431401, b: 0.01741612, a: 1}
+  m_IndirectSpecularColor: {r: 0.013993785, g: 0.08619881, b: 0.1322639, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3410,9 +3410,9 @@ PlayableDirector:
   - key: {fileID: 5231233543049763745, guid: b215852094464114fa7c9a276bcbc297, type: 2}
     value: {fileID: 1877882544}
   - key: {fileID: 2509998500549102791, guid: b215852094464114fa7c9a276bcbc297, type: 2}
-    value: {fileID: 0}
+    value: {fileID: 705311568}
   - key: {fileID: -3398416717839705136, guid: b215852094464114fa7c9a276bcbc297, type: 2}
-    value: {fileID: 0}
+    value: {fileID: 230454296}
   - key: {fileID: -3037628739817184010, guid: b215852094464114fa7c9a276bcbc297, type: 2}
     value: {fileID: 1763606535}
   - key: {fileID: 6373242367548526696, guid: b215852094464114fa7c9a276bcbc297, type: 2}
