@@ -22,13 +22,19 @@ namespace GOA.Level
 
         [SerializeField]
         Tile[] tiles;
+        
 
 
         [SerializeField]
         Sector[] sectors;
-
+       
         [SerializeField]
         List<Connection> connections = new List<Connection>();
+        public IList<Connection> Connections
+        {
+            get { return connections.AsReadOnly(); }
+        }
+        
                 
         [SerializeField]
         List<Room> rooms = new List<Room>();
@@ -248,8 +254,8 @@ namespace GOA.Level
             // Loop through each sector
             for (int i = 0; i < sectors.Length; i++)
             {
-                float min = sectors[i].tileIds.Count * .6f;
-                float max = sectors[i].tileIds.Count * .8f;
+                float min = sectors[i].TileIds.Count * .6f;
+                float max = sectors[i].TileIds.Count * .8f;
                 float count = Random.Range(min, max);
                 //count = sectors[i].tileIds.Count * .1f; // TO REMOVE
                 //int exclusionOffset = Mathf.FloorToInt(Mathf.Sqrt(sectors[i].tileIds.Count / count) - 1);
@@ -290,11 +296,11 @@ namespace GOA.Level
             for(int i=0; i<sectors.Length; i++)
             {
                 List<CustomObjectAsset> assets = new List<CustomObjectAsset>(Resources.LoadAll<CustomObjectAsset>(System.IO.Path.Combine(CustomObjectAsset.ResourceFolder, theme.ToString(), "Uniques"))).FindAll(a => !a.name.StartsWith("_"));
-                float min = sectors[i].tileIds.Count * .08f;
-                float max = sectors[i].tileIds.Count * .12f;
+                float min = sectors[i].TileIds.Count * .08f;
+                float max = sectors[i].TileIds.Count * .12f;
                 float count = Random.Range(min, max);
                 //count = sectors[i].tileIds.Count * .1f; // TO REMOVE
-                int exclusionOffset = Mathf.FloorToInt(Mathf.Sqrt(sectors[i].tileIds.Count / count) - 1);
+                int exclusionOffset = Mathf.FloorToInt(Mathf.Sqrt(sectors[i].TileIds.Count / count) - 1);
 
                 List<int> exclusionList = new List<int>();
               
@@ -487,8 +493,8 @@ namespace GOA.Level
 
 
             // Add starting and final rooms
-            int startingTileId = connections.Find(c => c.IsInitialConnection()).targetTileId;
-            int finalTileId = connections.Find(c => c.IsFinalConnection()).sourceTileId;
+            int startingTileId = connections.Find(c => c.IsInitialConnection()).TargetTileId;
+            int finalTileId = connections.Find(c => c.IsFinalConnection()).SourceTileId;
 
 
             TileAsset tmpAsset = Resources.Load<TileAsset>(System.IO.Path.Combine(TileAsset.ResourceFolder, theme.ToString(), "startingRoom"));
@@ -600,9 +606,9 @@ namespace GOA.Level
                 List<int> trg = new List<int>();
                 Sector s = sectors[0];
                 int size = (int)Mathf.Sqrt(tiles.Length);
-                for(int i=0; i<s.tileIds.Count; i++)
+                for(int i=0; i<s.TileIds.Count; i++)
                 {
-                    int tileId = s.tileIds[i];
+                    int tileId = s.TileIds[i];
                     
                     if (tileId % size == 0 || tileId % size == size - 1 || tileId / size == 0 || tileId / size == size - 1)
                         continue; // Tiles at the edge of the level
@@ -699,7 +705,7 @@ namespace GOA.Level
                         if (!SectorsBorderOneOnother(src, id))
                             continue;
 
-                        if (connections.Exists(c => c.sourceTileId == src && c.targetTileId == id))
+                        if (connections.Exists(c => c.SourceTileId == src && c.TargetTileId == id))
                             continue;
 
                         tmp.Add(id);
@@ -970,7 +976,7 @@ namespace GOA.Level
             {
                 case 1:
                     for (int i = 0; i < tiles.Length; i++)
-                        sectors[0].tileIds.Add(i);
+                        sectors[0].TileIds.Add(i);
                     break;
                 case 2:
                     int cols = (int)Mathf.Sqrt(tiles.Length);
@@ -983,7 +989,7 @@ namespace GOA.Level
                         if((vertical && i % cols < cols/2) || (!vertical && i / cols < cols / 2))
                             id = 0;
 
-                        sectors[id].tileIds.Add(i);
+                        sectors[id].TileIds.Add(i);
                         tiles[i].sectorIndex = id;
                     }
                    
@@ -1008,7 +1014,7 @@ namespace GOA.Level
 
                                 }
                                 
-                                sectors[id].tileIds.Add(i);
+                                sectors[id].TileIds.Add(i);
                                 tiles[i].sectorIndex = id;
                             }
                             break;
@@ -1031,9 +1037,9 @@ namespace GOA.Level
                 int minX = 0, maxX = 0, minZ = 0, maxZ = 0;
                 Sector sector = sectors[i];
                 // Get boundaries
-                for(int j=0; j<sector.tileIds.Count; j++)
+                for(int j=0; j<sector.TileIds.Count; j++)
                 {
-                    int index = sector.tileIds[j];
+                    int index = sector.TileIds[j];
                     int w = index % size;
                     int h = index / size;
                     if (j == 0)
@@ -1073,9 +1079,9 @@ namespace GOA.Level
 
             Sector s1 = sectors[sector1Id];
             Sector s2 = sectors[sector2Id];
-            for (int i = 0; i < s1.tileIds.Count; i++)
+            for (int i = 0; i < s1.TileIds.Count; i++)
             {
-                int tileId = s1.tileIds[i];
+                int tileId = s1.TileIds[i];
                 if (tileId % size > 0 && tiles[tileId - 1].sectorIndex == sector2Id)
                 {
                     list1.Add(tileId);
@@ -1114,9 +1120,9 @@ namespace GOA.Level
 
             Sector s1 = sectors[sector1Id];
             Sector s2 = sectors[sector2Id];
-            for (int i = 0; i < s1.tileIds.Count; i++)
+            for (int i = 0; i < s1.TileIds.Count; i++)
             {
-                int tileId = s1.tileIds[i];
+                int tileId = s1.TileIds[i];
                 if (tileId % size > 0 && tiles[tileId - 1].sectorIndex == sector2Id)
                 {
                     return true;
@@ -1142,8 +1148,8 @@ namespace GOA.Level
           
         List<int> GetTilesForRoom(int sectorIndex, int width, int height, List<int> notAllowedTileIds)
         {
-            int[] tmp = new int[sectors[sectorIndex].tileIds.Count];
-            sectors[sectorIndex].tileIds.CopyTo(tmp);
+            int[] tmp = new int[sectors[sectorIndex].TileIds.Count];
+            new List<int>(sectors[sectorIndex].TileIds).CopyTo(tmp);
             List<int> tileIds = new List<int>(tmp);
             tileIds.RemoveAll(id => notAllowedTileIds.Contains(id));
 
@@ -1163,7 +1169,7 @@ namespace GOA.Level
                 for(int i=0; i<width * height; i++)
                 {
                     int id = origin + i % width + i / width * size;
-                    if (!sectors[sectorIndex].tileIds.Contains(id))
+                    if (!sectors[sectorIndex].TileIds.Contains(id))
                         break;
                         
                     if (notAllowedTileIds.Contains(id))
@@ -1195,11 +1201,11 @@ namespace GOA.Level
             
             // Get the starting tile
             Connection startConnection = connections.Find(c => c.IsInitialConnection());
-            int tileId = startConnection.targetTileId;
+            int tileId = startConnection.TargetTileId;
 
 #if UNITY_EDITOR
-            monsterStartingTileId = tileId;
-            return;
+            //monsterStartingTileId = tileId;
+            //return;
 #endif
 
             // Get the initial sector
@@ -1209,7 +1215,7 @@ namespace GOA.Level
             size -= 2;
             List<int> notAvailables = GetTileIndexGroup(tileId, size);
             List<int> availables = new List<int>();
-            foreach(int tid in sector.tileIds)
+            foreach(int tid in sector.TileIds)
             {
                 if (notAvailables.Contains(tid))
                     continue;
@@ -1390,7 +1396,7 @@ namespace GOA.Level
                 if (conn.IsInitialConnection())
                     continue;
 
-                int tileId = conn.sourceTileId;
+                int tileId = conn.SourceTileId;
 
                 // Create the new gate 
                 Gate co = new Gate(this, gateAssets[Random.Range(0, gateAssets.Count)]);
@@ -1420,7 +1426,7 @@ namespace GOA.Level
             for(int i=0; i<connections.Count-1; i++)
             {
                 // The connection source tile must be in the sector this puzzle belongs to
-                int trgId = connections[i].targetTileId;
+                int trgId = connections[i].TargetTileId;
                 int sectorId = tiles[trgId].sectorIndex;
                 int gateId = connections[i+1].gateIndex; // The gate of the next connection in the list
 
@@ -1474,8 +1480,37 @@ namespace GOA.Level
 
         public Puzzle GetNextPuzzleToSolve()
         {
-            return puzzles[0];
+            List<PuzzleController> puzzleControllers = new List<PuzzleController>(FindObjectsOfType<PuzzleController>());
+
+            for(int i=0; i<puzzles.Count; i++)
+            {
+                Puzzle puzzle = puzzles[i];
+                PuzzleController pc = puzzleControllers.Find(p => p.PuzzleIndex == i && !p.Solved);
+                if (pc)
+                    return puzzle;
+            }
+            return null;
         }
+
+        public int GetPuzzleId(Puzzle puzzle)
+        {
+            return puzzles.IndexOf(puzzle);
+        }
+
+        public Tile GetTile(int tileId)
+        {
+            return tiles[tileId];
+        }
+
+        public Sector GetSector(int id)
+        {
+            return sectors[id];
+        }
+
+        //public Sector GetSectorByPuzzle()
+        //{
+        //    return sectors[0];
+        //}
 
 #if TEST_PUZZLE
         void TestPuzzle(string puzzleAssetName, int step)

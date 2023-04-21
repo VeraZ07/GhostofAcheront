@@ -88,7 +88,7 @@ namespace GOA.Level
                 if ((asset.Alignment == ObjectAlignment.SideOnly && inTheMiddle) || (asset.Alignment == ObjectAlignment.MiddleOnly && !inTheMiddle))
                     throw new System.Exception(string.Format("CustomObject.AttachRandomly() - {0} alignement failed ({1})", asset.name, inTheMiddle));
 
-                List<int> tileIds = new List<int>(builder.sectors[sectorId].tileIds);
+                List<int> tileIds = new List<int>(builder.sectors[sectorId].TileIds);
 
                 // Remove excluded tiles
                 if (exclusionList == null)

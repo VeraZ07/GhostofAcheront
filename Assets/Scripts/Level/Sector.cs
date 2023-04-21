@@ -8,16 +8,25 @@ namespace GOA.Level
     public partial class LevelBuilder : MonoBehaviour
     {
         [System.Serializable]
-        class Connection
+        public class Connection
         {
 
 
             [SerializeField]
-            public int sourceTileId = -1;
-            [SerializeField]
-            public int targetTileId = -1;
+            int sourceTileId = -1;
+            public int SourceTileId
+            {
+                get { return sourceTileId; }
+            }
 
-            public int gateIndex;
+            [SerializeField]
+            int targetTileId = -1;
+            public int TargetTileId
+            {
+                get { return targetTileId; }
+            }
+
+            public int gateIndex = -1;
 
             LevelBuilder builder;
 
@@ -76,12 +85,17 @@ namespace GOA.Level
         }
 
         [System.Serializable]
-        class Sector
+        public class Sector
         {
             LevelBuilder builder;
 
             [SerializeField]
-            public List<int> tileIds = new List<int>();
+            List<int> tileIds = new List<int>();
+
+            public List<int> TileIds
+            {
+                get { return tileIds; }
+            }
 
 
             public int width = 0;
@@ -169,16 +183,18 @@ namespace GOA.Level
 
             public bool IsInitialSector()
             {
-                return builder.tiles[builder.connections.Find(c => c.IsInitialConnection()).targetTileId].sectorIndex == new List<Sector>(builder.sectors).IndexOf(this);
+                return builder.tiles[builder.connections.Find(c => c.IsInitialConnection()).TargetTileId].sectorIndex == new List<Sector>(builder.sectors).IndexOf(this);
 
                 //return index == tiles[connections.Find(c => c.IsInitialConnection()).targetTileId].sectorIndex;
             }
 
             public bool IsFinalSector()
             {
-                return builder.tiles[builder.connections.Find(c => c.IsFinalConnection()).sourceTileId].sectorIndex == new List<Sector>(builder.sectors).IndexOf(this);
+                return builder.tiles[builder.connections.Find(c => c.IsFinalConnection()).SourceTileId].sectorIndex == new List<Sector>(builder.sectors).IndexOf(this);
                 //return index == tiles[connections.Find(c => c.IsFinalConnection()).sourceTileId].sectorIndex;
             }
+
+
         }
     }
 

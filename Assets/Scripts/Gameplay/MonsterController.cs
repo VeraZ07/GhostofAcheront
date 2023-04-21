@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using static GOA.Level.LevelBuilder;
 
 namespace GOA
 {
@@ -177,6 +178,8 @@ namespace GOA
 
         void EnterIdleState()
         {
+            if(agent.hasPath)
+                agent.ResetPath();
             timer = Random.Range(idleTimeMin, idleTimeMax);
         }
 
@@ -234,7 +237,7 @@ namespace GOA
         {
             if (CheckForPlayer())
                 SetState((int)MonsterState.PlayerSpotted);
-            else if (!agent.hasPath && !agent.pathPending)
+            else if ((!agent.hasPath && !agent.pathPending) || Vector3.Distance(transform.position, agent.destination) < 4f)
                 SetState((int)MonsterState.Idle);
 
         }
@@ -358,13 +361,31 @@ namespace GOA
             if(players.Count == 0)
                 players = new List<PlayerController>(FindObjectsOfType<PlayerController>());
 
-            // 
+            
+
+            Puzzle nextPuzzle = builder.GetNextPuzzleToSolve();
+            Debug.Log("NextPuzzleToSolve:" + nextPuzzle);
+            int puzzleId = builder.GetPuzzleId(nextPuzzle);
+            Debug.Log("NextPuzzleToSolve.Id:" + puzzleId);
+            int gateIndex = new List<CustomObject>(builder.CustomObjects).FindIndex(g => g.GetType() == typeof(Gate) && (g as Gate).PuzzleIndex == puzzleId);
+            Debug.Log("Gate.Id:" + gateIndex);
+            Connection conn = new List<Connection>(builder.Connections).Find(c => c.gateIndex == gateIndex);
+            Debug.Log("Conn:" + conn);
+            Tile tile = builder.GetTile(conn.SourceTileId);
+            Debug.Log("Tile:" + tile);
+            Sector sector = builder.GetSector(tile.sectorIndex);
+            Debug.Log("Sector:" + sector);
+
+            int targetTileId = sector.TileIds[Random.Range(0, sector.TileIds.Count)];
+            Vector3 pos = builder.GetTile(targetTileId).GetPosition();
+            pos += Vector3.right * Tile.Size + Vector3.back * Tile.Size;
+            return pos;
 
             // Get a new target 
-            Transform target = players[Random.Range(0, players.Count)].transform;
+            //Transform target = players[Random.Range(0, players.Count)].transform;
 
             
-            return target.position;
+            //return target.position;
             
         }
 

@@ -11,7 +11,7 @@ namespace GOA.Level
 
 
         [System.Serializable]
-        class Tile
+        public class Tile
         {
             public const float Size = 4f;
             public const float Height = 4f;

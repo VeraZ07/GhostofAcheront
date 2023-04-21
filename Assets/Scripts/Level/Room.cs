@@ -81,11 +81,11 @@ namespace GOA.Level
                     //    tile.type = (int)TileType.Center;
 
                     // Check adjacent tiles
-                    if (i % width == 0 && builder.sectors[sectorId].tileIds.Contains(id - 1))
+                    if (i % width == 0 && builder.sectors[sectorId].TileIds.Contains(id - 1))
                         builder.tiles[id - 1].roteableWall = -1;
-                    if (i / width == 0 && builder.sectors[sectorId].tileIds.Contains(id - size))
+                    if (i / width == 0 && builder.sectors[sectorId].TileIds.Contains(id - size))
                         builder.tiles[id - size].roteableWall = -1;
-                    if (i / width == 0 && i % width == 0 && builder.sectors[sectorId].tileIds.Contains(id - size - 1))
+                    if (i / width == 0 && i % width == 0 && builder.sectors[sectorId].TileIds.Contains(id - size - 1))
                         builder.tiles[id - size - 1].roteableWall = -1;
                 }
 
@@ -106,28 +106,28 @@ namespace GOA.Level
                     candidates.Remove(id);
 
                     Sector sector = builder.sectors[sectorId];
-                    if (sector.tileIds.Contains(id - 1) && !tileIds.Contains(id - 1)) // Open left
+                    if (sector.TileIds.Contains(id - 1) && !tileIds.Contains(id - 1)) // Open left
                     {
                         //builder.connections.Add(Connection.CreateNormalConnection(builder, id, id - 1));
                         builder.tiles[id].openDirection = Vector3.left;
                         openingCount--;
                         continue;
                     }
-                    if (sector.tileIds.Contains(id + 1) && !tileIds.Contains(id + 1)) // Open right
+                    if (sector.TileIds.Contains(id + 1) && !tileIds.Contains(id + 1)) // Open right
                     {
                         //builder.connections.Add(Connection.CreateNormalConnection(builder, id, id + 1));
                         builder.tiles[id].openDirection = Vector3.right;
                         openingCount--;
                         continue;
                     }
-                    if (sector.tileIds.Contains(id - size) && !tileIds.Contains(id - size)) // Open up
+                    if (sector.TileIds.Contains(id - size) && !tileIds.Contains(id - size)) // Open up
                     {
                         //builder.connections.Add(Connection.CreateNormalConnection(builder, id, id - size));
                         builder.tiles[id].openDirection = Vector3.forward;
                         openingCount--;
                         continue;
                     }
-                    if (sector.tileIds.Contains(id + size) && !tileIds.Contains(id + size)) // Open down
+                    if (sector.TileIds.Contains(id + size) && !tileIds.Contains(id + size)) // Open down
                     {
                         //builder.connections.Add(Connection.CreateNormalConnection(builder, id, id + size));
                         builder.tiles[id].openDirection = Vector3.back;
