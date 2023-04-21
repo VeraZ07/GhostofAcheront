@@ -50,8 +50,8 @@ namespace GOA
 
         [Networked] public int State { get; private set; } = -1;
 
-        float idleTimeMin = 10f;
-        float idleTimeMax = 20f;
+        float idleTimeMin = 20f;
+        float idleTimeMax = 30f;
         float timer = 0;
 
         [SerializeField]
@@ -62,9 +62,13 @@ namespace GOA
         System.DateTime lastHuntingDT;
         NavMeshPath huntingPath;
         float attackRange = .8f;
+        int monsterNoTrackMax = 4;
 
         [SerializeField]
         List<AttackerData> attackers;
+
+        float walkSpeed;
+        float runSpeed;
         #endregion
 
         #region native
@@ -74,6 +78,8 @@ namespace GOA
             agent = GetComponent<NavMeshAgent>();
             //animator = GetComponent<Animator>();
             deathMaker = GetComponent<IKiller>();
+            runSpeed = agent.speed;
+            walkSpeed = runSpeed * .5f;
         }
 
         // Start is called before the first frame update
@@ -138,7 +144,7 @@ namespace GOA
                 
                 if (animator)
                 {
-                    animator.SetFloat(paramSpeed, agent.velocity.magnitude / agent.speed);
+                    animator.SetFloat(paramSpeed, agent.velocity.magnitude / runSpeed);
                 }
                 
             }
@@ -178,6 +184,7 @@ namespace GOA
 
         void EnterIdleState()
         {
+            agent.speed = walkSpeed;
             if(agent.hasPath)
                 agent.ResetPath();
             timer = Random.Range(idleTimeMin, idleTimeMax);
@@ -185,13 +192,14 @@ namespace GOA
 
         void EnterMovingState()
         {
+            agent.speed = walkSpeed;
             if (!agent.hasPath && !agent.pathPending)
                 agent.SetDestination(GetDestination());
         }
 
         void EnterHuntingState()
         {
-            
+            agent.speed = runSpeed;
         }
 
 
@@ -361,7 +369,7 @@ namespace GOA
             if(players.Count == 0)
                 players = new List<PlayerController>(FindObjectsOfType<PlayerController>());
 
-            bool trackPlayer = Random.Range(0, 4) == 0;
+            bool trackPlayer = Random.Range(0, monsterNoTrackMax) == 0;
 
             if (trackPlayer)
             {
@@ -370,19 +378,24 @@ namespace GOA
             }
             else
             {
-                Puzzle nextPuzzle = builder.GetNextPuzzleToSolve();
-                Debug.Log("NextPuzzleToSolve:" + nextPuzzle);
-                int puzzleId = builder.GetPuzzleId(nextPuzzle);
-                Debug.Log("NextPuzzleToSolve.Id:" + puzzleId);
-                int gateIndex = new List<CustomObject>(builder.CustomObjects).FindIndex(g => g.GetType() == typeof(Gate) && (g as Gate).PuzzleIndex == puzzleId);
-                Debug.Log("Gate.Id:" + gateIndex);
-                Connection conn = new List<Connection>(builder.Connections).Find(c => c.gateIndex == gateIndex);
-                Debug.Log("Conn:" + conn);
-                Tile tile = builder.GetTile(conn.SourceTileId);
-                Debug.Log("Tile:" + tile);
+                Puzzle lastPuzzle = builder.GetLastSolvedPuzzle();
+                Tile tile = null;
+                if (lastPuzzle == null)
+                {
+                    // Get the first sector
+                    Connection c = new List<Connection>(builder.Connections).Find(c => c.IsInitialConnection());
+                     tile = builder.GetTile(c.TargetTileId);
+                }
+                else
+                {
+                    int puzzleId = builder.GetPuzzleId(lastPuzzle);
+                    int gateIndex = new List<CustomObject>(builder.CustomObjects).FindIndex(g => g.GetType() == typeof(Gate) && (g as Gate).PuzzleIndex == puzzleId);
+                    Connection c = new List<Connection>(builder.Connections).Find(c => c.gateIndex == gateIndex);
+                    tile = builder.GetTile(c.TargetTileId);
+                }
+                
                 Sector sector = builder.GetSector(tile.sectorIndex);
-                Debug.Log("Sector:" + sector);
-
+                
                 int targetTileId = sector.TileIds[Random.Range(0, sector.TileIds.Count)];
                 Vector3 pos = builder.GetTile(targetTileId).GetPosition();
                 pos += Vector3.right * Tile.Size * .5f + Vector3.back * Tile.Size * .5f;

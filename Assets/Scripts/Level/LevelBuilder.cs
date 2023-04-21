@@ -1492,6 +1492,20 @@ namespace GOA.Level
             return null;
         }
 
+        public Puzzle GetLastSolvedPuzzle()
+        {
+            List<PuzzleController> puzzleControllers = new List<PuzzleController>(FindObjectsOfType<PuzzleController>());
+
+            for (int i = 0; i < puzzles.Count; i++)
+            {
+                Puzzle puzzle = puzzles[i];
+                PuzzleController pc = puzzleControllers.Find(p => p.PuzzleIndex == i && p.Solved);
+                if (pc)
+                    return puzzle;
+            }
+            return null;
+        }
+
         public int GetPuzzleId(Puzzle puzzle)
         {
             return puzzles.IndexOf(puzzle);
