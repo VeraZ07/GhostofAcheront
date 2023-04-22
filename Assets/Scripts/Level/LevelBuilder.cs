@@ -179,7 +179,8 @@ namespace GOA.Level
             //
             // Test puzzle
             //
-            TestPuzzle("PicturePuzzleAsset", 0);
+            //TestPuzzle("PicturePuzzleAsset", 0);
+            TestPuzzle("LeversPuzzleAsset", 0);
 #endif
 
             CreateUniqueObjects();

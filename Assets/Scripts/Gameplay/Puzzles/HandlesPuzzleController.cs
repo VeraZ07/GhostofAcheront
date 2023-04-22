@@ -10,7 +10,7 @@ namespace GOA
     /// <summary>
     /// Manage a combination of objects ( for example levers ).
     /// </summary>
-    public class MultiStatePuzzleController : PuzzleController
+    public class HandlesPuzzleController : PuzzleController
     {
         //[UnitySerializeField]
         //[Capacity(10)]
@@ -62,7 +62,7 @@ namespace GOA
             }
         }
 
-        public static void OnStateListChanged(Changed<MultiStatePuzzleController> changed)
+        public static void OnStateListChanged(Changed<HandlesPuzzleController> changed)
         {
             Debug.LogFormat("OnSolvedChanged:{0}", changed.Behaviour.StateList);
             //OnSolvedChangedCallback?.Invoke(changed.Behaviour);
@@ -70,15 +70,14 @@ namespace GOA
 
         public override void Initialize(int puzzleIndex)
         {
-            Initialize(puzzleIndex);
-
+            
             // Attach the puzzle previously created by the builder
             LevelBuilder builder = FindObjectOfType<LevelBuilder>();
 
             // Get the puzzle and set all the states
-            MultiStatePuzzle puzzle = builder.GetPuzzle(PuzzleIndex) as MultiStatePuzzle;
+            HandlesPuzzle puzzle = builder.GetPuzzle(PuzzleIndex) as HandlesPuzzle;
 
-            List<int> objIds = new List<int>(puzzle.ElementsIds);
+            List<int> objIds = new List<int>(puzzle.HandleIds);
             //StateArray = new NetworkArray<int>[objIds.Count];
             int[] array = new int[objIds.Count];
             for(int i=0; i<objIds.Count; i++)

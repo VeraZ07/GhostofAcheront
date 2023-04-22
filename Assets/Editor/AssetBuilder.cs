@@ -98,7 +98,7 @@ namespace GOA.Editor
         [MenuItem("Assets/Create/GOA/Puzzles/MultiStatePuzzleAsset")]
         public static void CreateMultiStatePuzzleAsset()
         {
-            MultiStatePuzzleAsset asset = ScriptableObject.CreateInstance<MultiStatePuzzleAsset>();
+            HandlesPuzzleAsset asset = ScriptableObject.CreateInstance<HandlesPuzzleAsset>();
 
             string name = "MultiStatePuzzle.asset";
 

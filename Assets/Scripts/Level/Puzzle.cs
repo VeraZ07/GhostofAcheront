@@ -13,9 +13,9 @@ namespace GOA.Level
         {
             public static Puzzle CreatePuzzle(LevelBuilder builder, PuzzleAsset asset, int sectorIndex)
             {
-                if(asset.GetType() == typeof(MultiStatePuzzleAsset))
+                if(asset.GetType() == typeof(HandlesPuzzleAsset))
                 {
-                    return new MultiStatePuzzle(builder, asset, sectorIndex);
+                    return new HandlesPuzzle(builder, asset, sectorIndex);
                 }
                 if (asset.GetType() == typeof(PicturePuzzleAsset))
                 {
@@ -68,28 +68,30 @@ namespace GOA.Level
             }
         }
 
-        public class MultiStatePuzzle: Puzzle
+        public class HandlesPuzzle: Puzzle
         {
             
-            List<int> elementIds = new List<int>();
-            public ICollection<int> ElementsIds
+            List<int> handleIds = new List<int>();
+            public ICollection<int> HandleIds
             {
-                get { return elementIds.AsReadOnly(); }
+                get { return handleIds.AsReadOnly(); }
             }
 
-            public MultiStatePuzzle(LevelBuilder builder, PuzzleAsset asset, int sectorId): base(builder, asset, sectorId)
+            public HandlesPuzzle(LevelBuilder builder, PuzzleAsset asset, int sectorId): base(builder, asset, sectorId)
             {
-                
-                int elementCount = Random.Range(1, 4); // Should depend by the number of players
+
+                HandlesPuzzleAsset hpa = asset as HandlesPuzzleAsset;
+                int elementCount = hpa.Handles.Count;
 
 
                 for (int i = 0; i < elementCount; i++)
                 {
-                    // Create a new custom object to hold the handle ( or whatever it is )
-                    CustomObject co = new CustomObject(builder, ((MultiStatePuzzleAsset)asset).ElementAsset);
+                    // Create custom objects
+                    CustomObject co = new CustomObject(builder, hpa.Handles[i].Asset);
+
                     builder.customObjects.Add(co);
                     // Add the new index in the internal list
-                    elementIds.Add(builder.customObjects.Count - 1);
+                    handleIds.Add(builder.customObjects.Count - 1);
 
                     // Attach to a random tile
                     co.AttachRandomly(sectorId);
@@ -101,9 +103,9 @@ namespace GOA.Level
             public override void CreateSceneObjects()
             {
                 // Loop through all the ids
-                for(int i=0; i<elementIds.Count; i++)
+                for(int i=0; i<handleIds.Count; i++)
                 {
-                    builder.customObjects[elementIds[i]].CreateSceneObject();
+                    builder.customObjects[handleIds[i]].CreateSceneObject();
                 }
             }
 
