@@ -85,13 +85,13 @@ MonoBehaviour:
     m_Value: 0
   top:
     m_OverrideState: 1
-    m_Value: {r: 0.008410462, g: 0.040520865, b: 0.1981132, a: 1}
+    m_Value: {r: 0.103773594, g: 0.050088167, b: 0.035733357, a: 1}
   middle:
     m_OverrideState: 1
-    m_Value: {r: 0.023529414, g: 0.16862746, b: 0.14756523, a: 1}
+    m_Value: {r: 0.2264151, g: 0.15913136, b: 0.15913136, a: 1}
   bottom:
     m_OverrideState: 1
-    m_Value: {r: 0.011764703, g: 0.036719557, b: 0.14117648, a: 1}
+    m_Value: {r: 0.6320754, g: 0.5008915, b: 0.33690813, a: 1}
   gradientDiffusion:
     m_OverrideState: 0
     m_Value: 1
@@ -200,10 +200,10 @@ MonoBehaviour:
     m_Value: 0
   intensity:
     m_OverrideState: 1
-    m_Value: 0.84
+    m_Value: 0.38
   directLightingStrength:
     m_OverrideState: 1
-    m_Value: 0.107
+    m_Value: 0.144
   radius:
     m_OverrideState: 1
     m_Value: 1.17
@@ -463,13 +463,13 @@ MonoBehaviour:
   active: 1
   lift:
     m_OverrideState: 0
-    m_Value: {x: 1, y: 1, z: 1, w: -0.0433213}
+    m_Value: {x: 1, y: 1, z: 1, w: 0.008402837}
   gamma:
     m_OverrideState: 0
-    m_Value: {x: 1, y: 1, z: 1, w: 0}
+    m_Value: {x: 1, y: 0.9859116, z: 0.9334897, w: 0}
   gain:
-    m_OverrideState: 0
-    m_Value: {x: 1, y: 1, z: 1, w: 0}
+    m_OverrideState: 1
+    m_Value: {x: 1, y: 1, z: 1, w: -0.22413793}
 --- !u!114 &6512966963674808170
 MonoBehaviour:
   m_ObjectHideFlags: 3
