@@ -239,7 +239,7 @@ namespace GOA
                 }
             }
 
-            if (interactable != null && interactable.IsInteractionEnabled())
+            if (interactable != null && interactable.IsInteractionEnabled()/* && !interactable.IsBusy()*/)
             {
                 // Set the cursor 
                 if(HasInputAuthority)
@@ -251,7 +251,7 @@ namespace GOA
                     
                     if (interactable != null)
                     {
-                        if (/*data.leftAction && */interactable.IsInteractionEnabled() && !interactable.IsBusy())
+                        if (interactable.IsInteractionEnabled()/* && !interactable.IsBusy()*/)
                         {
                             if (data.leftAction)
                             {
@@ -423,43 +423,6 @@ namespace GOA
             Renderer[] rends = GetComponentsInChildren<Renderer>();
             foreach (Renderer rend in rends)
                 rend.gameObject.layer = layer;
-        }
-        #endregion
-
-        #region rpc
-        /// <summary>
-        /// Sent by the server to the client when interaction starts.
-        /// </summary>
-        [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
-        public void RpcOpenItemSelector()
-        {
-            ItemSelectorUI.Instance.Open();
-        }
-
-        /// <summary>
-        /// Sent by the client to the server when interaction stops.
-        /// </summary>
-        [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-        public void RpcCloseItemSelector()
-        {
-            lockedInteractable.StopInteraction(this);
-            lockedInteractable = null;
-        }
-
-        /// <summary>
-        /// Sent by the client to the server to use an item.
-        /// </summary>
-        [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-        public void RpcUseItemByName(string itemName)
-        {
-            Debug.LogFormat("Using item {0}", itemName);
-
-            //if (lockedInteractable.TryUseItem(itemName))
-            //{
-            //    Inventory inventory = new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.PlayerId == PlayerId);
-            //    inventory.RemoveItem(itemName);
-            //}
-
         }
         #endregion
 

@@ -33,19 +33,15 @@ namespace GOA
 
         [Networked]
         public int CustomObjectId { get; private set; }
-
-        bool interactionEnabled = false;
         GameObject sceneObject;
 
         List<Inventory> inventories = null;
-
-        bool busy = false;
 
         public override void Spawned()
         {
             base.Spawned();
 
-            SetInteractionEnabled(!Empty);
+            //SetInteractionEnabled(!Empty);
 
             // Load the item asset
             itemAsset = new List<ItemAsset>(Resources.LoadAll<ItemAsset>(ItemAsset.ResourceFolder)).Find(i => i.name.ToLower().Equals(ItemAssetName.ToString().ToLower()));
@@ -73,36 +69,22 @@ namespace GOA
         public void StartInteraction(PlayerController playerController)
         {
             Debug.Log("Interact " + playerController.PlayerId);
-            if (interactionEnabled && !busy)
+            if (IsInteractionEnabled())
                 StartCoroutine(PickUp(playerController));
                 
         }
 
         public bool IsInteractionEnabled()
         {
-            return interactionEnabled;
+            return !Empty;
         }
 
-        public void SetInteractionEnabled(bool value)
-        {
-            interactionEnabled = value;
-        }
-
-        public bool IsBusy()
-        {
-            return busy;
-        }
  
         public void StopInteraction(PlayerController playerController)
         {
-            SetInteractionEnabled(false);
-            busy = false;
+           
         }
 
-        public bool TryUseItem(string itemName)
-        {
-            throw new System.NotImplementedException();
-        }
         #endregion
 
         public void Init(int customObjectId, string itemAssetName, bool empty)
@@ -114,8 +96,9 @@ namespace GOA
 
         IEnumerator PickUp(PlayerController playerController)
         {
-            busy = true;
            
+            Empty = true;
+
             // Add to the inventory
             if (inventories == null)
             {
@@ -127,7 +110,7 @@ namespace GOA
      
             yield return new WaitForSeconds(.5f);
 
-            Empty = true;
+           
 
             if (Runner.IsServer)
             {

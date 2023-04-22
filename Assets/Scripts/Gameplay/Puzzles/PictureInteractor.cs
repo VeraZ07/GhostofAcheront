@@ -9,9 +9,7 @@ namespace GOA
     {
         #region fields
         PicturePuzzleController puzzleController;
-
-        bool busy = false;
-
+                
         Inventory inventory;
         #endregion
 
@@ -32,7 +30,9 @@ namespace GOA
         #region private methods
         IEnumerator DoStartInteraction(PlayerController playerController)
         {
-            busy = true;
+            Debug.LogFormat("[PuzzleInteractor - Starting interaction...]");
+
+            puzzleController.Busy = true;
 
             if (!inventory)
                 inventory = new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.PlayerId == playerController.PlayerId);
@@ -51,28 +51,18 @@ namespace GOA
                 yield return new WaitForSeconds(2f);
 
             }
-                        
 
-            busy = false;
+
+            StopInteraction(playerController);
         }
         #endregion
 
 
         #region iinteractable implementation
 
-        public bool IsBusy()
-        {
-            return busy;
-        }
-
         public bool IsInteractionEnabled()
         {
-            return !puzzleController.Solved;
-        }
-
-        public void SetInteractionEnabled(bool value)
-        {
-            throw new System.NotImplementedException();
+            return !puzzleController.Solved && !puzzleController.Busy;
         }
 
         public void StartInteraction(PlayerController playerController)
@@ -82,13 +72,10 @@ namespace GOA
 
         public void StopInteraction(PlayerController playerController)
         {
-            throw new System.NotImplementedException();
+            puzzleController.Busy = false;
         }
 
-        //public bool TryUseItem(string itemName)
-        //{
-        //    throw new System.NotImplementedException();
-        //}
+     
         #endregion
 
 
