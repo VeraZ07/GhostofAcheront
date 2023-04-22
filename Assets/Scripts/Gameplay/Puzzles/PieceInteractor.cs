@@ -78,7 +78,7 @@ namespace GOA
             else
             {
                 // Remove the current inserted object
-                puzzleController.RemovePiece(this, playerController);
+                //puzzleController.RemovePiece(this, playerController);
 
                 //// Stop player update
                 //playerController.InputDisabled = true;
@@ -123,8 +123,8 @@ namespace GOA
         public bool TryUseItem(string itemName)
         {
             //throw new System.NotImplementedException();
-            return puzzleController.TryInsertPiece(pieceId, itemName);
-            
+            //return puzzleController.TryInsertPiece(pieceId, itemName);
+            return false;
         }
         #endregion
 

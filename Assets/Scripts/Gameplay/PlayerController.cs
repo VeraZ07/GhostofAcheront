@@ -454,14 +454,12 @@ namespace GOA
         {
             Debug.LogFormat("Using item {0}", itemName);
 
-            if (lockedInteractable.TryUseItem(itemName))
-            {
-                Inventory inventory = new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.PlayerId == PlayerId);
-                inventory.RemoveItem(itemName);
-            }
-            
-            //Inventory inventory = new List<Inventory>(GameObject.FindObjectsOfType<Inventory>()).Find(i => i.PlayerId == Runner.LocalPlayer.PlayerId);
-            //ItemAsset asset = 
+            //if (lockedInteractable.TryUseItem(itemName))
+            //{
+            //    Inventory inventory = new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.PlayerId == PlayerId);
+            //    inventory.RemoveItem(itemName);
+            //}
+
         }
         #endregion
 

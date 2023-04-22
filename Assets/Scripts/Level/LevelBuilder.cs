@@ -1,4 +1,4 @@
-//#define TEST_PUZZLE
+#define TEST_PUZZLE
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -209,12 +209,14 @@ namespace GOA.Level
             //
             BakeNavigationMesh();
 
-            
+
 
             // 
             // Spawn monster ( server only )
             //
+#if !TEST_PUZZLE
             SpawnMonster();
+#endif
 
             Debug.LogFormat("LevelBuilder - Level built in {0} seconds.", (System.DateTime.Now-startTime).TotalSeconds);
 
@@ -1546,7 +1548,7 @@ namespace GOA.Level
                 for (int i = 0; i < connections.Count - 1; i++)
                 {
                     // The connection source tile must be in the sector this puzzle belongs to
-                    int trgId = connections[i].targetTileId;
+                    int trgId = connections[i].TargetTileId;
                     int sectorId = tiles[trgId].sectorIndex;
                     int gateId = connections[i + 1].gateIndex; // The gate of the next connection in the list
 
