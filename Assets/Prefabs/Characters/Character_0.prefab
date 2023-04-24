@@ -481,7 +481,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 503
+    m_Bits: 2551
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -807,6 +807,9 @@ MonoBehaviour:
   light: {fileID: 4483808968645272673}
   dustParticle: {fileID: 6445270502224490385}
   characterObject: {fileID: 4296850704775083873}
+  meshRenderers:
+  - {fileID: 5820752857512008768}
+  - {fileID: 8227405605676731431}
   headPivot: {fileID: 4437239387702461575}
   headMesh: {fileID: 7005496745296367575}
   headBloodVfx: {fileID: 3452396977172471768}
@@ -2272,6 +2275,12 @@ CharacterJoint:
   m_EnablePreprocessing: 0
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!137 &5820752857512008768 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7469049287081170544, guid: a48af95f404552f4597db50027f92cf0,
+    type: 3}
+  m_PrefabInstance: {fileID: 3990210309335566896}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &7005496745296367575 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6221886776626628071, guid: a48af95f404552f4597db50027f92cf0,
@@ -2363,6 +2372,12 @@ CharacterJoint:
 --- !u!4 &7387654536421457752 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -3321919801592875672, guid: a48af95f404552f4597db50027f92cf0,
+    type: 3}
+  m_PrefabInstance: {fileID: 3990210309335566896}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &8227405605676731431 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -4229567329049573865, guid: a48af95f404552f4597db50027f92cf0,
     type: 3}
   m_PrefabInstance: {fileID: 3990210309335566896}
   m_PrefabAsset: {fileID: 0}

@@ -29,6 +29,9 @@ namespace GOA
         GameObject characterObject;
 
         [SerializeField]
+        List<Renderer> meshRenderers;
+
+        [SerializeField]
         GameObject headPivot;
         public GameObject HeadPivot
         {
@@ -420,9 +423,10 @@ namespace GOA
 
         void SetRenderingLayer(int layer)
         {
-            Renderer[] rends = GetComponentsInChildren<Renderer>();
-            foreach (Renderer rend in rends)
+            //Renderer[] rends = GetComponentsInChildren<Renderer>();
+            foreach (Renderer rend in meshRenderers)
                 rend.gameObject.layer = layer;
+
         }
         #endregion
 
