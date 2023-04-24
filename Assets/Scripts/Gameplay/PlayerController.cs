@@ -423,10 +423,8 @@ namespace GOA
 
         void SetRenderingLayer(int layer)
         {
-            //Renderer[] rends = GetComponentsInChildren<Renderer>();
             foreach (Renderer rend in meshRenderers)
                 rend.gameObject.layer = layer;
-
         }
         #endregion
 
