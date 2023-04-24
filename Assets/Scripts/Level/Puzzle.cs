@@ -103,18 +103,26 @@ namespace GOA.Level
             
 
             List<Handle> handles = new List<Handle>();
-            public ICollection<Handle> Handles
+            public IList<Handle> Handles
             {
                 get { return handles.AsReadOnly(); }
             }
+
+            bool stopHandleOnFinalState = false;
+            public bool StopHandleOnFinalState
+            {
+                get { return stopHandleOnFinalState; }
+            }
+
+           
 
             public HandlesPuzzle(LevelBuilder builder, PuzzleAsset asset, int sectorId): base(builder, asset, sectorId)
             {
 
                 HandlesPuzzleAsset hpa = asset as HandlesPuzzleAsset;
                 int elementCount = hpa.Handles.Count;
-
-
+                stopHandleOnFinalState = hpa.StopHandleOnFinalState;
+              
                 for (int i = 0; i < elementCount; i++)
                 {
                     // Create custom objects

@@ -20,6 +20,7 @@ namespace GOA
         NetworkLinkedList<byte> States { get; } = default;
 
         [Networked]
+        [Capacity(10)]
         NetworkLinkedList<NetworkBool> BusyList { get; } = default; 
 
         List<GameObject> handles = new List<GameObject>();
@@ -50,11 +51,13 @@ namespace GOA
             LevelBuilder builder = FindObjectOfType<LevelBuilder>();
             HandlesPuzzle puzzle = builder.GetPuzzle(PuzzleIndex) as HandlesPuzzle;
             
-            foreach(HandlesPuzzle.Handle handle in puzzle.Handles)
+            for(int i=0; i<puzzle.Handles.Count; i++)
             {
+                HandlesPuzzle.Handle handle = puzzle.Handles[i];
                 CustomObject co = builder.CustomObjects[handle.Id];
-                handles.Add(co.SceneObject);
-                co.SceneObject.GetComponent<IHandleController>().Init(this);
+                IHandleController hc = co.SceneObject.GetComponentInChildren<IHandleController>();
+                handles.Add((hc as MonoBehaviour).gameObject);
+                hc.Init(this, i);
             }
         }
         #endregion
@@ -69,12 +72,11 @@ namespace GOA
             // Get the puzzle and set all the states
             HandlesPuzzle puzzle = builder.GetPuzzle(PuzzleIndex) as HandlesPuzzle;
 
-            List<int> objIds = new List<int>(puzzle.Handles.Count);
             Debug.LogFormat("[HandlePuzzle - Initialize - Handle.Count:{0}]", puzzle.Handles.Count);
             
             for(int i=0; i< puzzle.Handles.Count; i++)
             {
-                States.Add((byte) new List<HandlesPuzzle.Handle>(puzzle.Handles)[i].InitialState);
+                States.Add((byte) puzzle.Handles[i].InitialState);
                 BusyList.Add(false);
             }
         }
@@ -116,11 +118,7 @@ namespace GOA
             return BusyList[handleId];
         }
 
-        public int HandleGetId(GameObject handle)
-        {
-            return handles.IndexOf(handle);
-        }
-        
+               
         public void HandleSetBusy(int handleId, bool value)
         {
             var busyList = BusyList;
@@ -128,10 +126,33 @@ namespace GOA
             
         }
 
-        public void HandleSetState(int handleId, int state)
+
+        public void HandleSwitchState(int handleId)
         {
+            HandlesPuzzle puzzle = FindObjectOfType<LevelBuilder>().GetPuzzle(PuzzleIndex) as HandlesPuzzle;
+            int currentState = States[handleId];
+            if (puzzle.StopHandleOnFinalState && currentState == puzzle.Handles[handleId].FinalState)
+                return;
+
+            currentState++;
+            if (currentState >= puzzle.Handles[handleId].StateCount)
+                currentState = 0;
+            else if (currentState < 0)
+                currentState = puzzle.Handles[handleId].StateCount - 1;
+         
             var states = States;
-            states[handleId] = (byte)state;
+            states[handleId] = (byte)currentState;
+
+        }
+
+        public bool HandleIsBlocked(int handleId)
+        {
+            HandlesPuzzle puzzle = FindObjectOfType<LevelBuilder>().GetPuzzle(PuzzleIndex) as HandlesPuzzle;
+            int currentState = States[handleId];
+            if (puzzle.StopHandleOnFinalState && currentState == puzzle.Handles[handleId].FinalState)
+                return true;
+            else 
+                return false;
         }
 
         public int HandleGetState(int handleId)

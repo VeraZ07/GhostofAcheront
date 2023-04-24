@@ -48,7 +48,19 @@ namespace GOA.Assets
             get { return handles.AsReadOnly(); }
         }
 
-        
+        [SerializeField]
+        bool stopHandleOnFinalState = false;
+        public bool StopHandleOnFinalState
+        {
+            get { return stopHandleOnFinalState; }
+        }
+
+        [SerializeField]
+        bool circular = false;
+        public bool Circular
+        {
+            get { return circular; }
+        }
     }
 
 }

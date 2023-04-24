@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 7166449488444673609}
   - component: {fileID: 7183723253790059405}
   - component: {fileID: 4887970127360320731}
-  m_Layer: 0
+  - component: {fileID: 4049353235989134402}
+  m_Layer: 6
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98,6 +99,20 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4049353235989134402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 145483070595786607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2488e52127d275499b77b51b3469dcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handleObject: {fileID: 5459112010756764038}
+  angle: 90
 --- !u!1 &5459112010756764038
 GameObject:
   m_ObjectHideFlags: 0
@@ -171,7 +186,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5946766457648286714}
-  - component: {fileID: 7800998856852687625}
   m_Layer: 0
   m_Name: Lever_Default
   m_TagString: Untagged
@@ -195,18 +209,3 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7800998856852687625
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5946766457648286713}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2488e52127d275499b77b51b3469dcc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  handleObject: {fileID: 5459112010756764038}
-  maxAngle: 90
-  circular: 0

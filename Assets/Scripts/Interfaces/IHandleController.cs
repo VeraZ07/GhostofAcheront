@@ -8,7 +8,7 @@ namespace GOA.Interfaces
     {
 
         //void Init(int initialState, int finalState, int stateCount);
-        void Init(HandlesPuzzleController puzzleController);
+        void Init(HandlesPuzzleController puzzleController, int handleId);
 
         void Move();
     }
