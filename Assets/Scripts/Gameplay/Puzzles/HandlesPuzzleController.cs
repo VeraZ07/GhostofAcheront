@@ -1,4 +1,5 @@
 using Fusion;
+using GOA.Interfaces;
 using GOA.Level;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,16 +13,17 @@ namespace GOA
     /// </summary>
     public class HandlesPuzzleController : PuzzleController
     {
-        //[UnitySerializeField]
-        //[Capacity(10)]
-        //[Networked(OnChanged = nameof(OnStateArrayChanged))] 
-        //public NetworkArray<int> StateArray { get; private set; } = default;
-
+        #region fields   
         [UnitySerializeField]
         [Capacity(10)]
-        [Networked(OnChanged = nameof(OnStateListChanged))]
-        NetworkLinkedList<int> StateList { get; } = default;
+        [Networked(OnChanged = nameof(OnStatesChanged))]
+        NetworkLinkedList<byte> States { get; } = default;
 
+        List<GameObject> handles = new List<GameObject>();
+
+        #endregion
+
+        #region native methods
         // Start is called before the first frame update
         void Start()
         {
@@ -33,41 +35,27 @@ namespace GOA
         {
 
         }
+        #endregion
 
+        #region fusion native
         public override void Spawned()
         {
             base.Spawned();
 
-            if (!Runner.IsHostMigrationEnabled)
+            // Attach all the objects
+            LevelBuilder builder = FindObjectOfType<LevelBuilder>();
+            HandlesPuzzle puzzle = builder.GetPuzzle(PuzzleIndex) as HandlesPuzzle;
+            
+            foreach(HandlesPuzzle.Handle handle in puzzle.Handles)
             {
-                //if (Runner.IsServer)
-                //{
-                //    // Attach the puzzle previously created by the builder
-                //    LevelBuilder builder = FindObjectOfType<LevelBuilder>();
-
-                //    // Get the puzzle and set all the states
-                //    MultiStatePuzzle puzzle = builder.GetPuzzle(PuzzleIndex) as MultiStatePuzzle;
-
-                //    List<int> objIds = new List<int>(puzzle.ElementsIds);
-                //    foreach(int id in objIds)
-                //    {
-                        
-                //    }
-                //}
-
-            }
-            else
-            {
-                // Resume state controllers from the builder
+                CustomObject co = builder.CustomObjects[handle.Id];
+                handles.Add(co.SceneObject);
+                co.SceneObject.GetComponent<IHandleController>().Init(handle.InitialState, handle.StateCount);
             }
         }
+        #endregion
 
-        public static void OnStateListChanged(Changed<HandlesPuzzleController> changed)
-        {
-            Debug.LogFormat("OnSolvedChanged:{0}", changed.Behaviour.StateList);
-            //OnSolvedChangedCallback?.Invoke(changed.Behaviour);
-        }
-
+        #region override
         public override void Initialize(int puzzleIndex)
         {
             
@@ -77,20 +65,34 @@ namespace GOA
             // Get the puzzle and set all the states
             HandlesPuzzle puzzle = builder.GetPuzzle(PuzzleIndex) as HandlesPuzzle;
 
-            List<int> objIds = new List<int>(puzzle.HandleIds);
-            //StateArray = new NetworkArray<int>[objIds.Count];
-            int[] array = new int[objIds.Count];
-            for(int i=0; i<objIds.Count; i++)
+            List<int> objIds = new List<int>(puzzle.Handles.Count);
+            Debug.LogFormat("[HandlePuzzle - Initialize - Handle.Count:{0}]", puzzle.Handles.Count);
+            
+            for(int i=0; i< puzzle.Handles.Count; i++)
             {
-                //StateArray.Set(i, 1);
-                //array[i] = 1;
-                StateList.Add(1);
+                States.Add((byte) new List<HandlesPuzzle.Handle>(puzzle.Handles)[i].InitialState);
+            }
+        }
+        #endregion
+
+        #region fusion callbacks
+        public static void OnStatesChanged(Changed<HandlesPuzzleController> changed)
+        {
+            bool solved = true;
+            LevelBuilder builder = FindObjectOfType<LevelBuilder>();
+            HandlesPuzzle puzzle = builder.GetPuzzle(changed.Behaviour.PuzzleIndex) as HandlesPuzzle;
+            List<HandlesPuzzle.Handle> handles = new List<HandlesPuzzle.Handle>(puzzle.Handles);
+            for(int i=0; i<changed.Behaviour.States.Count; i++)
+            {
+                int state = (int)changed.Behaviour.States[i];
+                if (state != handles[i].FinalState)
+                    solved = false;
             }
 
-            //StateArray = MakeInitializer<int>(array);
-
-
+            if (solved)
+                changed.Behaviour.Solved = true;
         }
+        #endregion
     }
 
 }

@@ -62,7 +62,6 @@ namespace GOA.Level
                 SessionManager.Instance.Runner.Spawn(Asset.ControllerPrefab, Vector3.zero, Quaternion.identity, null,
                        (runner, obj) =>
                        {
-                            //obj.GetComponent<PuzzleController>().PuzzleIndex = puzzles.IndexOf(puzzle);
                             obj.GetComponent<PuzzleController>().Initialize(builder.puzzles.IndexOf(this));
                        });
             }
@@ -70,11 +69,43 @@ namespace GOA.Level
 
         public class HandlesPuzzle: Puzzle
         {
-            
-            List<int> handleIds = new List<int>();
-            public ICollection<int> HandleIds
+            public class Handle
             {
-                get { return handleIds.AsReadOnly(); }
+                int id;
+                public int Id
+                {
+                    get { return id; }
+                }
+                int initialState;
+                public int InitialState
+                {
+                    get { return initialState; }
+                }
+                int finalState;
+                public int FinalState
+                {
+                    get { return finalState; }
+                }
+
+                int stateCount;
+                public int StateCount
+                {
+                    get { return stateCount; }
+                }
+                public Handle(int id, int initialState, int finalState, int stateCount)
+                {
+                    this.id = id;
+                    this.initialState = initialState;
+                    this.finalState = finalState;
+                    this.stateCount = stateCount;
+                }
+            }
+            
+
+            List<Handle> handles = new List<Handle>();
+            public ICollection<Handle> Handles
+            {
+                get { return handles.AsReadOnly(); }
             }
 
             public HandlesPuzzle(LevelBuilder builder, PuzzleAsset asset, int sectorId): base(builder, asset, sectorId)
@@ -91,7 +122,12 @@ namespace GOA.Level
 
                     builder.customObjects.Add(co);
                     // Add the new index in the internal list
-                    handleIds.Add(builder.customObjects.Count - 1);
+                    int initialState = hpa.Handles[i].InitialState < 0 ? Random.Range(0, hpa.Handles[i].StateCount) : hpa.Handles[i].InitialState;
+                    int finalState = hpa.Handles[i].FinalState < 0 ? Random.Range(0, hpa.Handles[i].StateCount) : hpa.Handles[i].FinalState;
+
+                    Handle h = new Handle(builder.customObjects.Count - 1, initialState, finalState, hpa.Handles[i].StateCount);
+
+                    handles.Add(h);
 
                     // Attach to a random tile
                     co.AttachRandomly(sectorId);
@@ -103,9 +139,9 @@ namespace GOA.Level
             public override void CreateSceneObjects()
             {
                 // Loop through all the ids
-                for(int i=0; i<handleIds.Count; i++)
+                for(int i=0; i<handles.Count; i++)
                 {
-                    builder.customObjects[handleIds[i]].CreateSceneObject();
+                    builder.customObjects[handles[i].Id].CreateSceneObject();
                 }
             }
 
