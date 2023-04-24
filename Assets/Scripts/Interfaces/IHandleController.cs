@@ -6,9 +6,11 @@ namespace GOA.Interfaces
 {
     public interface IHandleController
     {
-        void Init(int initialState, int stateCount);
 
-        void SetState(int state);
+        //void Init(int initialState, int finalState, int stateCount);
+        void Init(HandlesPuzzleController puzzleController);
+
+        void Move();
     }
 
 }

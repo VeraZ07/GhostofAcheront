@@ -16,7 +16,7 @@ MonoBehaviour:
     type: 3}
   handles:
   - asset: {fileID: 11400000, guid: e3c15d3381ce4a949ba95ac2ab644b68, type: 2}
-    initialState: 0
+    initialState: 1
     finalState: 1
     stateCount: 2
   - asset: {fileID: 11400000, guid: e3c15d3381ce4a949ba95ac2ab644b68, type: 2}

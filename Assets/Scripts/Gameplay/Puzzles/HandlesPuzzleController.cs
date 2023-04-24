@@ -19,7 +19,11 @@ namespace GOA
         [Networked(OnChanged = nameof(OnStatesChanged))]
         NetworkLinkedList<byte> States { get; } = default;
 
+        [Networked]
+        NetworkLinkedList<NetworkBool> BusyList { get; } = default; 
+
         List<GameObject> handles = new List<GameObject>();
+
 
         #endregion
 
@@ -50,7 +54,7 @@ namespace GOA
             {
                 CustomObject co = builder.CustomObjects[handle.Id];
                 handles.Add(co.SceneObject);
-                co.SceneObject.GetComponent<IHandleController>().Init(handle.InitialState, handle.StateCount);
+                co.SceneObject.GetComponent<IHandleController>().Init(this);
             }
         }
         #endregion
@@ -71,6 +75,7 @@ namespace GOA
             for(int i=0; i< puzzle.Handles.Count; i++)
             {
                 States.Add((byte) new List<HandlesPuzzle.Handle>(puzzle.Handles)[i].InitialState);
+                BusyList.Add(false);
             }
         }
         #endregion
@@ -79,18 +84,59 @@ namespace GOA
         public static void OnStatesChanged(Changed<HandlesPuzzleController> changed)
         {
             bool solved = true;
+            
             LevelBuilder builder = FindObjectOfType<LevelBuilder>();
             HandlesPuzzle puzzle = builder.GetPuzzle(changed.Behaviour.PuzzleIndex) as HandlesPuzzle;
-            List<HandlesPuzzle.Handle> handles = new List<HandlesPuzzle.Handle>(puzzle.Handles);
+            List<HandlesPuzzle.Handle> pHandles = new List<HandlesPuzzle.Handle>(puzzle.Handles);
             for(int i=0; i<changed.Behaviour.States.Count; i++)
             {
+                changed.LoadOld();
+                if (changed.Behaviour.States.Count == 0)
+                    return;
+
+                int oldState = changed.Behaviour.States[i];
                 int state = (int)changed.Behaviour.States[i];
-                if (state != handles[i].FinalState)
+                if (state != pHandles[i].FinalState)
                     solved = false;
+
+                if(oldState != state)
+                {
+                    changed.Behaviour.handles[i].GetComponent<IHandleController>().Move();
+                }
             }
 
             if (solved)
                 changed.Behaviour.Solved = true;
+        }
+        #endregion
+
+        #region public methods
+        public bool HandleIsBusy(int handleId)
+        {
+            return BusyList[handleId];
+        }
+
+        public int HandleGetId(GameObject handle)
+        {
+            return handles.IndexOf(handle);
+        }
+        
+        public void HandleSetBusy(int handleId, bool value)
+        {
+            var busyList = BusyList;
+            busyList[handleId] = value;
+            
+        }
+
+        public void HandleSetState(int handleId, int state)
+        {
+            var states = States;
+            states[handleId] = (byte)state;
+        }
+
+        public int HandleGetState(int handleId)
+        {
+            return States[handleId];
         }
         #endregion
     }
