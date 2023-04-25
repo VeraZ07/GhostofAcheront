@@ -8,16 +8,10 @@ using static GOA.Level.LevelBuilder;
 
 namespace GOA
 {
-    public class HandleController : MonoBehaviour, IHandleController, IInteractable
+    public abstract class HandleInteractor : MonoBehaviour, IHandle, IInteractable
     {
         #region fields
-        [SerializeField]
-        GameObject handleObject;
-
-        [SerializeField]
-        float angle = 90f;
-
-
+        
         int stateCount, finalState;
         bool stopOnFinalState;
         PuzzleController puzzleController;
@@ -25,6 +19,15 @@ namespace GOA
         IHandleManager handleManager;
 
         int handleId;
+
+        public int CurrentState
+        {
+            get { return handleManager.GetHandleState(handleId); }
+        }
+
+        public abstract IEnumerator DoMoveImpl(int oldState, int newState);
+
+        public abstract void Init(int state);
         #endregion
 
 
@@ -33,14 +36,11 @@ namespace GOA
 
         #region private methods
 
-        
 
-        IEnumerator DoMove()
+
+        IEnumerator DoMove(int oldState, int newState)
         {
-            
-            int currentState = handleManager.GetHandleState(handleId);
-            yield return handleObject.transform.DORotateQuaternion(Quaternion.AngleAxis(currentState * angle, handleObject.transform.forward), 1f).WaitForCompletion();
-            HandlesPuzzle puzzle = FindObjectOfType<LevelBuilder>().GetPuzzle(puzzleController.PuzzleIndex) as HandlesPuzzle;
+            yield return DoMoveImpl(oldState, newState);
             handleManager.SetHandleBusy(handleId, false);
         }
         #endregion
@@ -56,14 +56,15 @@ namespace GOA
             this.finalState = finalState;
             this.stopOnFinalState = stopOnFinalState;
 
-            handleObject.transform.rotation = Quaternion.AngleAxis(initialState * angle, handleObject.transform.forward);
+            Init(initialState);
+            
         }
 
 
-        public void Move()
+        public void Move(int oldState, int newState)
         {
             Debug.Log("Move handle:" + gameObject);
-            StartCoroutine(DoMove());
+            StartCoroutine(DoMove(oldState, newState));
         }
         #endregion
 

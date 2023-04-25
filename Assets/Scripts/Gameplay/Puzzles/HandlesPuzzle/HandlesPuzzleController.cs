@@ -55,7 +55,7 @@ namespace GOA
             {
                 HandlesPuzzle.Handle handle = puzzle.Handles[i];
                 CustomObject co = builder.CustomObjects[handle.CustomObjectId];
-                IHandleController hc = co.SceneObject.GetComponentInChildren<IHandleController>();
+                IHandle hc = co.SceneObject.GetComponentInChildren<IHandle>();
                 handles.Add((hc as MonoBehaviour).gameObject);
                 hc.Init(this, i, handle.InitialState, handle.FinalState, handle.StateCount, puzzle.StopHandleOnFinalState);
             }
@@ -128,7 +128,7 @@ namespace GOA
 
                 if(oldState != state)
                 {
-                    changed.Behaviour.handles[i].GetComponent<IHandleController>().Move();
+                    changed.Behaviour.handles[i].GetComponent<IHandle>().Move(oldState, state);
                 }
             }
 
