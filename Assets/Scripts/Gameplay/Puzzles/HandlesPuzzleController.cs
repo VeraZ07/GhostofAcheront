@@ -54,7 +54,7 @@ namespace GOA
             for(int i=0; i<puzzle.Handles.Count; i++)
             {
                 HandlesPuzzle.Handle handle = puzzle.Handles[i];
-                CustomObject co = builder.CustomObjects[handle.Id];
+                CustomObject co = builder.CustomObjects[handle.CustomObjectId];
                 IHandleController hc = co.SceneObject.GetComponentInChildren<IHandleController>();
                 handles.Add((hc as MonoBehaviour).gameObject);
                 hc.Init(this, i);
@@ -97,6 +97,7 @@ namespace GOA
                     return;
 
                 int oldState = changed.Behaviour.States[i];
+                changed.LoadNew();
                 int state = (int)changed.Behaviour.States[i];
                 if (state != pHandles[i].FinalState)
                     solved = false;

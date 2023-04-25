@@ -71,10 +71,10 @@ namespace GOA.Level
         {
             public class Handle
             {
-                int id;
-                public int Id
+                int customObjectId;
+                public int CustomObjectId
                 {
-                    get { return id; }
+                    get { return customObjectId; }
                 }
                 int initialState;
                 public int InitialState
@@ -94,7 +94,7 @@ namespace GOA.Level
                 }
                 public Handle(int id, int initialState, int finalState, int stateCount)
                 {
-                    this.id = id;
+                    this.customObjectId = id;
                     this.initialState = initialState;
                     this.finalState = finalState;
                     this.stateCount = stateCount;
@@ -149,7 +149,7 @@ namespace GOA.Level
                 // Loop through all the ids
                 for(int i=0; i<handles.Count; i++)
                 {
-                    builder.customObjects[handles[i].Id].CreateSceneObject();
+                    builder.customObjects[handles[i].CustomObjectId].CreateSceneObject();
                 }
             }
 

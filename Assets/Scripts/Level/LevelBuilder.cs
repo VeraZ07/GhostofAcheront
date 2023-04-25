@@ -1590,8 +1590,23 @@ namespace GOA.Level
                     }
                 }
 
+                if (puzzle.GetType() == typeof(HandlesPuzzle))
+                {
+                    Debug.LogFormat("Testing puzzle - id:{0}", puzzles.IndexOf(puzzle));
+
+                    float rOff = 0f;
+                    for(int i=0; i< (puzzle as HandlesPuzzle).Handles.Count; i++)
+                    {
+                        CustomObject obj = customObjects[(puzzle as HandlesPuzzle).Handles[i].CustomObjectId];
+                        obj.SceneObject.transform.position = sp.transform.position + sp.transform.forward * 12f + sp.transform.right * rOff;
+                        rOff += 4f;
+                    }
+                    
+                    
+                }
+
                 // Remove all the walls
-                foreach(Tile tile in tiles)
+                foreach (Tile tile in tiles)
                 {
                     Transform wall = new List<Transform>(tile.sceneObject.GetComponentsInChildren<Transform>()).Find(t => t.name.ToLower().Equals("pv"));
                     if (wall)
