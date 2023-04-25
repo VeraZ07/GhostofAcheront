@@ -8,7 +8,7 @@ namespace GOA.Interfaces
     {
         void StartInteraction(PlayerController playerController);
 
-        void StopInteraction(PlayerController playerController);
+        //void StopInteraction(PlayerController playerController);
 
         bool IsInteractionEnabled();
 

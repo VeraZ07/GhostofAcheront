@@ -80,11 +80,7 @@ namespace GOA
         }
 
  
-        public void StopInteraction(PlayerController playerController)
-        {
-           
-        }
-
+   
         #endregion
 
         public void Init(int customObjectId, string itemAssetName, bool empty)
@@ -118,7 +114,7 @@ namespace GOA
                 Runner.Despawn(GetComponent<NetworkObject>());
             }
 
-            StopInteraction(playerController);
+
         }
 
         public static void OnEmptyChanged(Changed<Picker> changed)

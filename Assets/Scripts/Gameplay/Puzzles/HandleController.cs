@@ -19,7 +19,11 @@ namespace GOA
 
 
         int stateCount, finalState;
-        HandlesPuzzleController puzzleController;
+        bool stopOnFinalState;
+        PuzzleController puzzleController;
+
+        IHandleManager handleManager;
+
         int handleId;
         #endregion
 
@@ -28,37 +32,31 @@ namespace GOA
         #endregion
 
         #region private methods
-        void Init(int initialState, int finalState, int stateCount)
-        {
-            this.stateCount = stateCount;
-            this.finalState = finalState;
-            handleObject.transform.rotation = Quaternion.AngleAxis(initialState * angle, handleObject.transform.forward);
-        }
 
         
 
         IEnumerator DoMove()
         {
-            int currentState = puzzleController.HandleGetState(handleId);
-            puzzleController.HandleSetBusy(handleId, true);
+            
+            int currentState = handleManager.GetHandleState(handleId);
             yield return handleObject.transform.DORotateQuaternion(Quaternion.AngleAxis(currentState * angle, handleObject.transform.forward), 1f).WaitForCompletion();
             HandlesPuzzle puzzle = FindObjectOfType<LevelBuilder>().GetPuzzle(puzzleController.PuzzleIndex) as HandlesPuzzle;
-            puzzleController.HandleSetBusy(handleId, false);
+            handleManager.SetHandleBusy(handleId, false);
         }
         #endregion
 
 
         #region ihandlecontroller implementation
-        public void Init(HandlesPuzzleController puzzleController, int handleId)
+        public void Init(PuzzleController puzzleController, int handleId, int initialState, int finalState, int stateCount, bool stopOnFinalState)
         {
             this.puzzleController = puzzleController;
-            LevelBuilder builder = FindObjectOfType<LevelBuilder>();
-            HandlesPuzzle puzzle = builder.GetPuzzle(puzzleController.PuzzleIndex) as HandlesPuzzle;
+            handleManager = puzzleController as IHandleManager;
             this.handleId = handleId;
-            List<HandlesPuzzle.Handle> hs = new List<HandlesPuzzle.Handle>(puzzle.Handles);
-            Init(hs[handleId].InitialState, hs[handleId].FinalState, hs[handleId].StateCount);
+            this.stateCount = stateCount;
+            this.finalState = finalState;
+            this.stopOnFinalState = stopOnFinalState;
 
-
+            handleObject.transform.rotation = Quaternion.AngleAxis(initialState * angle, handleObject.transform.forward);
         }
 
 
@@ -73,19 +71,21 @@ namespace GOA
 
         public bool IsInteractionEnabled()
         {
-            return !puzzleController.Solved && !puzzleController.HandleIsBusy(handleId) && !puzzleController.HandleIsBlocked(handleId);
+            return !puzzleController.Solved && !handleManager.IsHandleBusy(handleId) && (handleManager.GetHandleState(handleId) != finalState || !stopOnFinalState);
         }
 
         public void StartInteraction(PlayerController playerController)
         {
-            HandlesPuzzle puzzle = FindObjectOfType<LevelBuilder>().GetPuzzle(puzzleController.PuzzleIndex) as HandlesPuzzle;
-            puzzleController.HandleSwitchState(handleId);
+            int currentState = handleManager.GetHandleState(handleId);
+            currentState++;
+            if (currentState >= stateCount)
+                currentState = 0;
+
+            handleManager.SetHandleBusy(handleId, true);
+            handleManager.SetHandleState(handleId, currentState);
         }
 
-        public void StopInteraction(PlayerController playerController)
-        {
-            
-        }
+ 
         #endregion
     }
 

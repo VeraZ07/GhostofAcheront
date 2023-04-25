@@ -51,9 +51,8 @@ namespace GOA
                 yield return new WaitForSeconds(2f);
 
             }
+            puzzleController.Busy = false;
 
-
-            StopInteraction(playerController);
         }
         #endregion
 
@@ -70,11 +69,7 @@ namespace GOA
             StartCoroutine(DoStartInteraction(playerController));
         }
 
-        public void StopInteraction(PlayerController playerController)
-        {
-            puzzleController.Busy = false;
-        }
-
+        
      
         #endregion
 

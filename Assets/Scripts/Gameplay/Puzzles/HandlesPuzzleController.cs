@@ -11,7 +11,7 @@ namespace GOA
     /// <summary>
     /// Manage a combination of objects ( for example levers ).
     /// </summary>
-    public class HandlesPuzzleController : PuzzleController
+    public class HandlesPuzzleController : PuzzleController, IHandleManager
     {
         #region fields   
         [UnitySerializeField]
@@ -57,7 +57,7 @@ namespace GOA
                 CustomObject co = builder.CustomObjects[handle.CustomObjectId];
                 IHandleController hc = co.SceneObject.GetComponentInChildren<IHandleController>();
                 handles.Add((hc as MonoBehaviour).gameObject);
-                hc.Init(this, i);
+                hc.Init(this, i, handle.InitialState, handle.FinalState, handle.StateCount, puzzle.StopHandleOnFinalState);
             }
         }
         #endregion
@@ -79,6 +79,30 @@ namespace GOA
                 States.Add((byte) puzzle.Handles[i].InitialState);
                 BusyList.Add(false);
             }
+        }
+        #endregion
+
+        #region ihandlemanager implementation
+        public void SetHandleBusy(int handleId, bool value)
+        {
+            var busyList = BusyList;
+            busyList[handleId] = value;
+        }
+
+        public bool IsHandleBusy(int handleId)
+        {
+            return BusyList[handleId];
+        }
+
+        public int GetHandleState(int handleId)
+        {
+            return States[handleId];
+        }
+
+        public void SetHandleState(int handleId, int value)
+        {
+            var states = States;
+            states[handleId] = (byte)value;
         }
         #endregion
 
@@ -113,54 +137,7 @@ namespace GOA
         }
         #endregion
 
-        #region public methods
-        public bool HandleIsBusy(int handleId)
-        {
-            return BusyList[handleId];
-        }
-
-               
-        public void HandleSetBusy(int handleId, bool value)
-        {
-            var busyList = BusyList;
-            busyList[handleId] = value;
-            
-        }
-
-
-        public void HandleSwitchState(int handleId)
-        {
-            HandlesPuzzle puzzle = FindObjectOfType<LevelBuilder>().GetPuzzle(PuzzleIndex) as HandlesPuzzle;
-            int currentState = States[handleId];
-            if (puzzle.StopHandleOnFinalState && currentState == puzzle.Handles[handleId].FinalState)
-                return;
-
-            currentState++;
-            if (currentState >= puzzle.Handles[handleId].StateCount)
-                currentState = 0;
-            else if (currentState < 0)
-                currentState = puzzle.Handles[handleId].StateCount - 1;
-         
-            var states = States;
-            states[handleId] = (byte)currentState;
-
-        }
-
-        public bool HandleIsBlocked(int handleId)
-        {
-            HandlesPuzzle puzzle = FindObjectOfType<LevelBuilder>().GetPuzzle(PuzzleIndex) as HandlesPuzzle;
-            int currentState = States[handleId];
-            if (puzzle.StopHandleOnFinalState && currentState == puzzle.Handles[handleId].FinalState)
-                return true;
-            else 
-                return false;
-        }
-
-        public int HandleGetState(int handleId)
-        {
-            return States[handleId];
-        }
-        #endregion
+      
     }
 
 }
