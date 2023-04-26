@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameCursorImage: {fileID: 5094029385480655994}
   noEffectSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  effectSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  effectSprite: {fileID: 21300000, guid: 1b04482bb4151834483ed4b467390629, type: 3}
 --- !u!1 &4529426212794901774
 GameObject:
   m_ObjectHideFlags: 0

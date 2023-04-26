@@ -1,4 +1,4 @@
-#define TEST_PUZZLE
+//#define TEST_PUZZLE
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -180,7 +180,7 @@ namespace GOA.Level
             // Test puzzle
             //
             //TestPuzzle("PicturePuzzleAsset", 0);
-            TestPuzzle("LeversPuzzleAsset", 0);
+            TestPuzzle("PictureHandlePuzzleAsset", 0);
 #endif
 
             CreateUniqueObjects();

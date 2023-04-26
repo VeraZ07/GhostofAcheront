@@ -28,12 +28,14 @@ namespace GOA
 
         public override IEnumerator DoMoveImpl(int oldState, int newState)
         {
-            yield return handleObject.transform.DORotateQuaternion(Quaternion.AngleAxis(CurrentState * angle, handleObject.transform.forward), 1f).WaitForCompletion();
+            //yield return handleObject.transform.DOLocalRotate( Quaternion.AngleAxis(CurrentState * angle, handleObject.transform.forward), 1f).WaitForCompletion();
+            yield return handleObject.transform.DOLocalRotate(Vector3.forward * newState * angle, 1f).WaitForCompletion();
         }
 
         public override void Init(int state)
         {
-            handleObject.transform.rotation = Quaternion.AngleAxis(state * angle, handleObject.transform.forward);
+            //handleObject.transform.localRotation = Quaternion.AngleAxis(state * angle, handleObject.transform.forward);
+            handleObject.transform.DOLocalRotate(Vector3.forward * state * angle, 1f);
         }
     }
 

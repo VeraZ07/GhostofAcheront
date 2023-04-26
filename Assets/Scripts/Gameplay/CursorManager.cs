@@ -21,7 +21,7 @@ namespace GOA
         Sprite effectSprite;
 
         float noEffectSize = .025f;
-        float effectSize = .035f;
+        float effectSize = 1.035f;
         float noEffectAlpha = 0.5f;
         float effectAlpha = 0.8f;
 
@@ -109,33 +109,35 @@ namespace GOA
 
         public void StartGameCursorEffect()
         {
-            if (gameCursorTweener == null)
-                gameCursorTweener = gameCursorImage.transform.DOShakeScale(1, .5f).SetLoops(-1);
-            else if (!gameCursorTweener.IsPlaying())
-            {
-                gameCursorImage.sprite = effectSprite;
-                gameCursorImage.transform.localScale = Vector3.one * noEffectSize;
-                gameCursorImage.color = new Color(1f, 1f, 1f, effectAlpha);
-                gameCursorTweener.Restart();
-            }
-                
+            //if (gameCursorTweener == null)
+            //    gameCursorTweener = gameCursorImage.transform.DOShakeScale(1, .5f).SetLoops(-1);
+            //else if (!gameCursorTweener.IsPlaying())
+            //{
+            //    gameCursorImage.sprite = effectSprite;
+            //    gameCursorImage.transform.localScale = Vector3.one * noEffectSize;
+            //    gameCursorImage.color = new Color(1f, 1f, 1f, effectAlpha);
+            //    gameCursorTweener.Restart();
+            //}
 
-            
-            //gameCursorImage.transform.localScale = Vector3.one * 2f;
-            
-
+            gameCursorImage.sprite = effectSprite;
+            gameCursorImage.transform.localScale = Vector3.one * effectSize;
+            gameCursorImage.color = new Color(1f, 1f, 1f, effectAlpha);
         }
 
         public void StopGameCursorEffect()
         {
-            if (gameCursorTweener != null && gameCursorTweener.IsPlaying())
-            {
-                gameCursorImage.sprite = noEffectSprite;
-                gameCursorImage.transform.localScale = Vector3.one * effectSize;
-                gameCursorImage.color = new Color(1f, 1f, 1f, noEffectAlpha);
-                gameCursorTweener?.Rewind();
-            }
-            
+            //if (gameCursorTweener != null && gameCursorTweener.IsPlaying())
+            //{
+            //    gameCursorImage.sprite = noEffectSprite;
+            //    gameCursorImage.transform.localScale = Vector3.one * effectSize;
+            //    gameCursorImage.color = new Color(1f, 1f, 1f, noEffectAlpha);
+            //    gameCursorTweener?.Rewind();
+            //}
+
+            gameCursorImage.sprite = noEffectSprite;
+            gameCursorImage.transform.localScale = Vector3.one * noEffectSize;
+            gameCursorImage.color = new Color(1f, 1f, 1f, noEffectAlpha);
+
         }
     }
 
