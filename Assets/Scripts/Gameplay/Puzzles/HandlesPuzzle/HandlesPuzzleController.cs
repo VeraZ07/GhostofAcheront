@@ -65,13 +65,15 @@ namespace GOA
         #region override
         public override void Initialize(int puzzleIndex)
         {
-            
+            base.Initialize(puzzleIndex);
+
             // Attach the puzzle previously created by the builder
             LevelBuilder builder = FindObjectOfType<LevelBuilder>();
 
             // Get the puzzle and set all the states
             HandlesPuzzle puzzle = builder.GetPuzzle(PuzzleIndex) as HandlesPuzzle;
-
+            Debug.Log("Init puzzle:" + puzzleIndex);
+            Debug.LogFormat("Puzzle - name:{0}, id:{1}", puzzle.Asset.name, PuzzleIndex);
             Debug.LogFormat("[HandlePuzzle - Initialize - Handle.Count:{0}]", puzzle.Handles.Count);
             
             for(int i=0; i< puzzle.Handles.Count; i++)
