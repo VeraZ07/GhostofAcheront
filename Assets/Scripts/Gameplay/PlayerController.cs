@@ -492,6 +492,8 @@ namespace GOA
             cc.Velocity = Vector3.zero;
 
             ghostTime = 2f;
+
+            FindObjectOfType<GameManager>().PlayerDead(this);
         }
 
         void EnterRisingAgainState()

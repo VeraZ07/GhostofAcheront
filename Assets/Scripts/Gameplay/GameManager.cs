@@ -2,12 +2,16 @@ using Fusion;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace GOA
 {
     
     public class GameManager : NetworkBehaviour
     {
+        public UnityAction OnGameWin;
+        public UnityAction OnGameLose;
+
         
         //public static GameManager Instance { get; private set; }
 
@@ -58,7 +62,27 @@ namespace GOA
             GameSeed = (int)System.DateTime.UtcNow.Ticks;
         }
 
-     
+        public void YouWin()
+        {
+            OnGameWin?.Invoke();
+        }
+
+        public void YouLose()
+        {
+            OnGameLose?.Invoke();
+        }
+
+        public void PlayerExit(PlayerController player)
+        {
+            if (SessionManager.Instance.Runner.IsSinglePlayer)
+                YouWin();
+        }
+
+        public void PlayerDead(PlayerController player)
+        {
+            if (SessionManager.Instance.Runner.IsSinglePlayer)
+                YouLose();
+        }
     }
 
 }
