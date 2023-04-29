@@ -10,7 +10,7 @@ using static GOA.Level.LevelBuilder;
 
 namespace GOA
 {
-    public enum MonsterState { Idle, Moving, PlayerSpotted, Hunting, PlayerLost, Killing }
+    public enum MonsterState { Idle, Moving, PlayerSpotted, Hunting, PlayerLost, Killing, PlayerEscaped }
 
     public class MonsterController : NetworkBehaviour
     {
@@ -138,6 +138,9 @@ namespace GOA
                     case (int)MonsterState.Killing:
                         LoopKillingState();
                         break;
+                    case (int)MonsterState.PlayerEscaped:
+                        LoopPlayerEscapedState();
+                        break;
                 }
 
 
@@ -179,6 +182,9 @@ namespace GOA
                 case (int)MonsterState.Killing:
                     EnterKillingState();
                     break;
+                case (int)MonsterState.PlayerEscaped:
+                    EnterPlayerEscapedState();
+                    break;
             }
         }
 
@@ -213,7 +219,11 @@ namespace GOA
             attacker.Kill(prey, data.attackId);
         }
 
-
+        void EnterPlayerEscapedState()
+        {
+            agent.speed = 0;
+            agent.isStopped = true;
+        }
 
         void EnterPlayerLostState()
         {
@@ -225,7 +235,11 @@ namespace GOA
            
         }
 
-        
+        void LoopPlayerEscapedState()
+        {
+
+        }
+
         void LoopIdleState()
         {
             timer -= Time.fixedDeltaTime;
@@ -408,6 +422,11 @@ namespace GOA
         public void SetIdleState()
         {
             SetState((int)MonsterState.Idle);
+        }
+
+        public void SetPlayerEscapedState()
+        {
+            SetState((int)MonsterState.PlayerEscaped);
         }
 
         public void Init()

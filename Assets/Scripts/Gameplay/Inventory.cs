@@ -3,9 +3,13 @@ using GOA.Assets;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Inventory : NetworkBehaviour
 {
+    public UnityAction<string> OnItemAdded;
+    public UnityAction<string> OnItemRemoved;
+
     [Networked]
     [UnitySerializeField]
     public int PlayerId { get; private set; } // The player id this inventory belongs to
@@ -63,11 +67,15 @@ public class Inventory : NetworkBehaviour
     public void AddItem(string itemName)
     {
         Items.Add(itemName);
+        // This is only called on local inventory
+        OnItemAdded?.Invoke(itemName);
     }
 
     public void RemoveItem(string itemName)
     {
         Items.Remove(itemName);
+        // This is only called on local inventory
+        OnItemRemoved?.Invoke(itemName);
     }
 
     public static void OnItemsChanged(Changed<Inventory> changed)

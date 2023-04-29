@@ -2,6 +2,7 @@ using Fusion;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Events;
 
 namespace GOA
@@ -46,30 +47,45 @@ namespace GOA
             
         }
 
-       
+        IEnumerator LoadMenuDelayed(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+
+            // Get the player camera in order to destroy it on session quit
+            Camera.main.transform.parent = null;
+
+            SessionManager.Instance.QuitSession();
+            UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+        }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
             base.Despawned(runner, hasState);
-            
         }
 
 
 
         public void CreateNewSeed()
         {
-
             GameSeed = (int)System.DateTime.UtcNow.Ticks;
         }
 
         public void YouWin()
         {
             OnGameWin?.Invoke();
+            FindObjectOfType<MonsterController>().SetPlayerEscapedState();
+            PlayerController[] players = FindObjectsOfType<PlayerController>();
+            foreach(PlayerController player in players)
+            {
+                player.Escape();
+            }
+            StartCoroutine(LoadMenuDelayed(5f));
         }
 
         public void YouLose()
         {
             OnGameLose?.Invoke();
+            StartCoroutine(LoadMenuDelayed(5f));
         }
 
         public void PlayerExit(PlayerController player)

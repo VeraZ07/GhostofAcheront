@@ -27,11 +27,10 @@ namespace GOA
             if (!other.tag.Equals(Tags.Player))
                 return;
 
-            if (SessionManager.Instance.Runner.IsSinglePlayer)
-            {
-                GameManager gameManager = FindObjectOfType<GameManager>();
-                gameManager.PlayerExit(other.GetComponent<PlayerController>());
-            }
+            
+            GameManager gameManager = FindObjectOfType<GameManager>();
+            gameManager.PlayerExit(other.GetComponent<PlayerController>());
+            
         }
     }
 

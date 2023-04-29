@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace GOA.UI
 {
-    public class YouLoseUI : MonoBehaviour
+    public class YouWinUI : MonoBehaviour
     {
         [SerializeField]
         GameObject panel;
@@ -18,7 +18,7 @@ namespace GOA.UI
         void Start()
         {
             panel.SetActive(false);
-            FindObjectOfType<GameManager>().OnGameLose += HandleOnGameLose;
+            FindObjectOfType<GameManager>().OnGameWin += HandleOnGameWin;
         }
 
         // Update is called once per frame
@@ -27,7 +27,7 @@ namespace GOA.UI
 
         }
 
-        void HandleOnGameLose()
+        void HandleOnGameWin()
         {
             panel.SetActive(true);
         }

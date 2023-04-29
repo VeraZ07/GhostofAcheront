@@ -10,7 +10,7 @@ using UnityEngine.VFX;
 
 namespace GOA
 {
-    public enum PlayerState { Paused, Alive, Dying, Dead, RisingAgain }
+    public enum PlayerState { Paused, Alive, Dying, Dead, RisingAgain, Escaped }
 
     public class PlayerController : NetworkBehaviour
     {
@@ -461,6 +461,16 @@ namespace GOA
             }
         }
 
+        void LoopEscapedState()
+        {
+
+        }
+
+        void EnterEscapedState()
+        {
+
+        }
+
         void EnterAliveState()
         {
 
@@ -598,6 +608,11 @@ namespace GOA
             {
                 State = (int)PlayerState.RisingAgain;
             }
+        }
+
+        public void Escape()
+        {
+            State = (int)PlayerState.Escaped;
         }
 
         #endregion

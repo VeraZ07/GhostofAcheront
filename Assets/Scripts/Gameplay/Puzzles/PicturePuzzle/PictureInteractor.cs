@@ -43,7 +43,7 @@ namespace GOA
             {
                 // Get the first item and remove it from inventory
                 string itemName = inventory.Items[0].ToString();
-                inventory.Items.Remove(itemName);
+                inventory.RemoveItem(itemName);
                 // Insert item
                 Debug.LogFormat("[PictureInteractor - Adding new item:{0}]", itemName);
                 puzzleController.InsertPiece(itemName);
