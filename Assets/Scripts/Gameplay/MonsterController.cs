@@ -80,6 +80,7 @@ namespace GOA
             deathMaker = GetComponent<IKiller>();
             runSpeed = agent.speed;
             walkSpeed = runSpeed * .5f;
+            agent.enabled = false;
         }
 
         // Start is called before the first frame update
@@ -87,6 +88,7 @@ namespace GOA
         {
             //Hide();
             NavMesh.pathfindingIterationsPerFrame = 250;
+            agent.enabled = true;
         }
 
         #endregion
