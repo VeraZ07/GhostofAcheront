@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e88f6a28b060d3543b58b43ab70f7437, type: 3}
   m_Name: SkeletonPuzzleAsset
   m_EditorClassIdentifier: 
-  controllerPrefab: {fileID: 3553611794248569331, guid: 164dc961761d0de4d9d87dea5640c129,
+  controllerPrefab: {fileID: 7281534411891735578, guid: 164dc961761d0de4d9d87dea5640c129,
     type: 3}
   picture: {fileID: 11400000, guid: 28ef069f77940eb4795f61dab2044daa, type: 2}
   pieces:
