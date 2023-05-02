@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e88f6a28b060d3543b58b43ab70f7437, type: 3}
+  m_Name: SkeletonPuzzleAsset
+  m_EditorClassIdentifier: 
+  controllerPrefab: {fileID: 3553611794248569331, guid: 164dc961761d0de4d9d87dea5640c129,
+    type: 3}
+  picture: {fileID: 11400000, guid: 28ef069f77940eb4795f61dab2044daa, type: 2}
+  pieces:
+  - {fileID: 11400000, guid: 4aa376b0dacac4049b0c048b0e311901, type: 2}
+  - {fileID: 11400000, guid: ab01bd5d78af1ac41bd2a6dbb557a532, type: 2}
+  - {fileID: 11400000, guid: cd4f4151a63ce30428dbfd2a600f3004, type: 2}
+  - {fileID: 11400000, guid: 4b6d48656cf065b42abbc548b5491a38, type: 2}
+  items:
+  - {fileID: 11400000, guid: df597ff5126bca74c9a6200f0786d647, type: 2}
+  - {fileID: 11400000, guid: b5bdb7f9c6fcb7c4ea73c91b0d80ab16, type: 2}
+  - {fileID: 11400000, guid: 5329d33f3965db543a6dbc8bf4bab213, type: 2}
+  - {fileID: 11400000, guid: 1901dc9547a13574f93aaf13d7e9f3e4, type: 2}
+  pickerPrefab: {fileID: 3158072067443201482, guid: ed81bf2ecc946204fad73f3a02ef0a62,
+    type: 3}
