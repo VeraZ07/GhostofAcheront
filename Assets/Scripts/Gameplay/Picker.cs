@@ -37,6 +37,15 @@ namespace GOA
 
         List<Inventory> inventories = null;
 
+        float rotationSpeed = 20f;
+        Transform objectToRotate;
+
+        void Update()
+        {
+            if(objectToRotate)
+                objectToRotate.Rotate(Vector3.up * rotationSpeed * Time.deltaTime, Space.World);
+        }
+
         public override void Spawned()
         {
             base.Spawned();
@@ -53,7 +62,7 @@ namespace GOA
             {
                 LevelBuilder builder = FindObjectOfType<LevelBuilder>();
                 sceneObject = builder.CustomObjects[CustomObjectId].SceneObject;
-
+                objectToRotate = sceneObject.transform.GetChild(0).GetChild(0);
                
             }
         }
