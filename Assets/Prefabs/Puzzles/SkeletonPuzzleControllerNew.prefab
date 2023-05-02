@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3553611794248569329}
   - component: {fileID: 3553611794248569330}
   m_Layer: 0
-  m_Name: SkeletonPuzzleController
+  m_Name: SkeletonPuzzleControllerNew
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
