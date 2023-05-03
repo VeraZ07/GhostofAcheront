@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Fusion;
+using GOA.Audio;
 using GOA.Interfaces;
 using GOA.Level;
 using System.Collections;
@@ -69,6 +70,8 @@ namespace GOA
 
         float walkSpeed;
         float runSpeed;
+
+        MonsterAudioController audioController;
         #endregion
 
         #region native
@@ -196,6 +199,7 @@ namespace GOA
             if(agent.hasPath)
                 agent.ResetPath();
             timer = Random.Range(idleTimeMin, idleTimeMax);
+
         }
 
         void EnterMovingState()
