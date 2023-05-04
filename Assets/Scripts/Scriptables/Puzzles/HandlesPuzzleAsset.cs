@@ -55,12 +55,12 @@ namespace GOA.Assets
             get { return stopHandleOnFinalState; }
         }
 
-        [SerializeField]
-        bool circular = false;
-        public bool Circular
-        {
-            get { return circular; }
-        }
+        //[SerializeField]
+        //bool circular = false;
+        //public bool Circular
+        //{
+        //    get { return circular; }
+        //}
     }
 
 }

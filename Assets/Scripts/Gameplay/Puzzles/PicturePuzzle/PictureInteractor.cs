@@ -8,6 +8,12 @@ namespace GOA
     public class PictureInteractor : MonoBehaviour, IInteractable
     {
         #region fields
+        [SerializeField]
+        AudioSource audioSource;
+
+        [SerializeField]
+        AudioClip interactionClip;
+
         PicturePuzzleController puzzleController;
                 
         Inventory inventory;
@@ -47,6 +53,13 @@ namespace GOA
                 // Insert item
                 Debug.LogFormat("[PictureInteractor - Adding new item:{0}]", itemName);
                 puzzleController.InsertPiece(itemName);
+
+                if (audioSource)
+                {
+                    audioSource.clip = interactionClip;
+                    audioSource.Play();
+                }
+                    
 
                 yield return new WaitForSeconds(2f);
 

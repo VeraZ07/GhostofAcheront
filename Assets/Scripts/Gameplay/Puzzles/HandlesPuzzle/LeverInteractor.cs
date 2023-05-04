@@ -13,6 +13,11 @@ namespace GOA
         [SerializeField]
         float angle = 90f;
 
+        [SerializeField]
+        AudioSource audioSource;
+
+        [SerializeField]
+        AudioClip interactionClip;
        
         // Start is called before the first frame update
         void Start()
@@ -28,7 +33,12 @@ namespace GOA
 
         public override IEnumerator DoMoveImpl(int oldState, int newState)
         {
-            //yield return handleObject.transform.DOLocalRotate( Quaternion.AngleAxis(CurrentState * angle, handleObject.transform.forward), 1f).WaitForCompletion();
+
+            if (audioSource && interactionClip)
+            {
+                audioSource.clip = interactionClip;
+                audioSource.Play();
+            }
             yield return handleObject.transform.DOLocalRotate(Vector3.forward * newState * angle, 1f).WaitForCompletion();
         }
 

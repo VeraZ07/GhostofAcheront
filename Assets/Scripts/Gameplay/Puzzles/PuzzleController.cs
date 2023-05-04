@@ -13,6 +13,7 @@ namespace GOA
         public static UnityAction<PuzzleController> OnSolvedChangedCallback;
         public static UnityAction<PuzzleController> OnPuzzleControllerSpawned;
 
+        
         [Networked(OnChanged = nameof(OnSolvedChanged))] public NetworkBool Solved { get; protected set; } = false;
 
         [Networked] public int PuzzleIndex { get; private set; } = 0;
