@@ -55,6 +55,16 @@ namespace GOA.Assets
             get { return stopHandleOnFinalState; }
         }
 
+        [SerializeField]
+        List<int> clue; // The state 
+        public List<int> Clue
+        {
+            get { return clue; }
+        }
+
+        [SerializeField]
+        CustomObjectAsset clueAsset;
+
         //[SerializeField]
         //bool circular = false;
         //public bool Circular

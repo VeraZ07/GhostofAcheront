@@ -20,6 +20,8 @@ namespace GOA.Assets
         {
             get { return controllerPrefab; }
         }
+
+   
     }
 
 

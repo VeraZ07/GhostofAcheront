@@ -129,6 +129,10 @@ namespace GOA.Level
                     CustomObject co = new CustomObject(builder, hpa.Handles[i].Asset);
 
                     builder.customObjects.Add(co);
+
+                    // First check for clue
+                    if(hpa.clu)
+
                     // Add the new index in the internal list
                     int initialState = hpa.Handles[i].InitialState < 0 ? Random.Range(0, hpa.Handles[i].StateCount) : hpa.Handles[i].InitialState;
                     int finalState = hpa.Handles[i].FinalState < 0 ? Random.Range(0, hpa.Handles[i].StateCount) : hpa.Handles[i].FinalState;

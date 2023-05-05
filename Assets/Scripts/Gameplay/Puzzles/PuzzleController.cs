@@ -1,4 +1,5 @@
 using Fusion;
+using GOA.Interfaces;
 using GOA.Level;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace GOA
 
         [Networked] public int PuzzleIndex { get; private set; } = 0;
 
+                
         //public abstract void Initialize(int puzzleIndex);
 
         // Start is called before the first frame update
@@ -38,10 +40,6 @@ namespace GOA
 
             OnPuzzleControllerSpawned?.Invoke(this);
 
-            // Set the gate handler
-            //LevelBuilder builder = FindObjectOfType<LevelBuilder>();
-            //Gate gate = new List<CustomObject>(builder.CustomObjects).Find(c => c.GetType() == typeof(Gate) && (c as Gate).PuzzleIndex == puzzleIndex) as Gate;
-            //gate.Set
         }
 
         public static void OnSolvedChanged(Changed<PuzzleController> changed)
@@ -55,7 +53,7 @@ namespace GOA
             PuzzleIndex = puzzleIndex;
         }
        
-        
+  
     }
 
 }

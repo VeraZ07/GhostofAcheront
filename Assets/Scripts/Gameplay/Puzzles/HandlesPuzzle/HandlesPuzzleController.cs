@@ -25,21 +25,11 @@ namespace GOA
 
         List<GameObject> handles = new List<GameObject>();
 
-
+       
         #endregion
 
         #region native methods
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
+       
         #endregion
 
         #region fusion native
@@ -139,7 +129,8 @@ namespace GOA
         }
         #endregion
 
-      
+   
+
     }
 
 }

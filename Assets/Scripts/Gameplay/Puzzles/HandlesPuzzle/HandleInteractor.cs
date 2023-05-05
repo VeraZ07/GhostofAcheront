@@ -15,6 +15,10 @@ namespace GOA
         int stateCount, finalState;
         bool stopOnFinalState;
         PuzzleController puzzleController;
+        public PuzzleController PuzzleController
+        {
+            get { return puzzleController; }
+        }
 
         IHandleManager handleManager;
 
