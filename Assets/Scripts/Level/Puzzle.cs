@@ -114,7 +114,11 @@ namespace GOA.Level
                 get { return stopHandleOnFinalState; }
             }
 
-           
+            Handle clueHandle = null;
+            public Handle ClueHandle
+            {
+                get { return clueHandle; }
+            }
 
             public HandlesPuzzle(LevelBuilder builder, PuzzleAsset asset, int sectorId): base(builder, asset, sectorId)
             {
@@ -124,8 +128,20 @@ namespace GOA.Level
                 stopHandleOnFinalState = hpa.StopHandleOnFinalState;
 
                 // We compute a unique final state if required
-                int commonFinalState = hpa.UseTheSameRandomFinalState ? Random.Range(0, hpa.Handles[0].StateCount) : -1;
-                
+                int commonFinalState = hpa.UseClueHandle ? Random.Range(0, hpa.Handles[0].StateCount) : -1;
+
+                // Create the clue handle if required
+                if (hpa.UseClueHandle)
+                {
+                    // Create the custom objecT
+                    CustomObject co = new CustomObject(builder, hpa.ClueHandle.Asset);
+                    builder.customObjects.Add(co);
+
+                    clueHandle = new Handle(builder.customObjects.Count - 1, commonFinalState, commonFinalState, 1);
+
+                    co.AttachRandomly(sectorId);
+                }
+
                 for (int i = 0; i < elementCount; i++)
                 {
                     // Create custom objects
@@ -136,7 +152,7 @@ namespace GOA.Level
                     int finalState = 0;
                     
                     // Check if we need the same final state for every handle
-                    if (hpa.UseTheSameRandomFinalState)
+                    if (hpa.UseClueHandle)
                     {
                         finalState = commonFinalState;
                     }
@@ -155,9 +171,10 @@ namespace GOA.Level
 
                     // Attach to a random tile
                     co.AttachRandomly(sectorId);
-
-
                 }
+
+                
+
             }
 
             public override void CreateSceneObjects()

@@ -28,5 +28,9 @@ MonoBehaviour:
     finalState: 0
     stateCount: 4
   stopHandleOnFinalState: 0
-  useTheSameRandomFinalState: 1
-  clueAsset: {fileID: 0}
+  useClueHandle: 1
+  clueHandle:
+    asset: {fileID: 11400000, guid: bbd250a94b98f114691a4d4561e306e0, type: 2}
+    initialState: -1
+    finalState: -1
+    stateCount: 4

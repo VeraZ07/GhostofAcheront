@@ -59,14 +59,18 @@ namespace GOA.Assets
         /// Overrides final states in all the handles
         /// </summary>
         [SerializeField]
-        bool useTheSameRandomFinalState; // The state 
-        public bool UseTheSameRandomFinalState
+        bool useClueHandle; // The state 
+        public bool UseClueHandle
         {
-            get { return useTheSameRandomFinalState; }
+            get { return useClueHandle; }
         }
 
         [SerializeField]
-        CustomObjectAsset clueAsset;
+        Handle clueHandle;
+        public Handle ClueHandle
+        {
+            get { return clueHandle; }
+        }
 
         //[SerializeField]
         //bool circular = false;
