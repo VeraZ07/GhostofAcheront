@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42b49e6945c69c142b0c8a9ba6789206, type: 3}
-  m_Name: DebrisSide_3
+  m_Name: WallDecal_5
   m_EditorClassIdentifier: 
   alignment: 2
-  weight: 4
-  prefab: {fileID: 2710380108510274423, guid: 9a258aa00a58293418c92d52f6f22f67, type: 3}
+  weight: 16
+  prefab: {fileID: 5755490224904165247, guid: 646e4fa6c80baa44c9d9db80dfc5e5c6, type: 3}
