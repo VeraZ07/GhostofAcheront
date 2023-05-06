@@ -225,6 +225,21 @@ namespace GOA.Level
 #if TEST_PUZZLE
             TestPuzzle(null, 1);
 #endif
+            //
+            // Optimize decals
+            //
+            OptimizeDecals();
+        }
+
+        void OptimizeDecals()
+        {
+            float drawDistance = 16f;
+            UnityEngine.Rendering.HighDefinition.DecalProjector[] decals = FindObjectsOfType< UnityEngine.Rendering.HighDefinition.DecalProjector>();
+            foreach(var decal in decals)
+            {
+                decal.drawDistance = drawDistance;
+            }
+            
         }
 
         void SpawnMonster()
