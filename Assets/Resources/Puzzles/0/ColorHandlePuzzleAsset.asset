@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4538ff7292a77484485fc5c7b869d8f8, type: 3}
+  m_Name: ColorHandlePuzzleAsset
+  m_EditorClassIdentifier: 
+  controllerPrefab: {fileID: 4054846537309425920, guid: 13aa9e4c5a65eff44b989345270f4e6d,
+    type: 3}
+  handles:
+  - asset: {fileID: 11400000, guid: d959bddbe69860b4d887eb32e3bf19d6, type: 2}
+    initialState: -1
+    finalState: 0
+    stateCount: 4
+  - asset: {fileID: 11400000, guid: d959bddbe69860b4d887eb32e3bf19d6, type: 2}
+    initialState: -1
+    finalState: 0
+    stateCount: 4
+  - asset: {fileID: 11400000, guid: d959bddbe69860b4d887eb32e3bf19d6, type: 2}
+    initialState: -1
+    finalState: 0
+    stateCount: 4
+  stopHandleOnFinalState: 0
+  useTheSameRandomFinalState: 1
+  clueAsset: {fileID: 0}

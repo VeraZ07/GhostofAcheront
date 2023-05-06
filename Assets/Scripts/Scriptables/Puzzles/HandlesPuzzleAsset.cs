@@ -55,11 +55,14 @@ namespace GOA.Assets
             get { return stopHandleOnFinalState; }
         }
 
+        /// <summary>
+        /// Overrides final states in all the handles
+        /// </summary>
         [SerializeField]
-        List<int> clue; // The state 
-        public List<int> Clue
+        bool useTheSameRandomFinalState; // The state 
+        public bool UseTheSameRandomFinalState
         {
-            get { return clue; }
+            get { return useTheSameRandomFinalState; }
         }
 
         [SerializeField]

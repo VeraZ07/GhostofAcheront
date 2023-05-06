@@ -9,25 +9,38 @@ namespace GOA
     public class ColorInteractor : HandleInteractor
     {
         [SerializeField]
+        Renderer colorRenderer;
+        
+        [SerializeField]
         List<Color> colors;
 
+        [SerializeField]
+        float emissiveIntensity = 10f;
 
+        private void Awake()
+        {
+            Material mat = new Material(colorRenderer.material);
+            colorRenderer.material = mat;
+        }
 
         private void Start()
         {
-            LevelBuilder builder = FindObjectOfType<LevelBuilder>();
-            Puzzle puzzle = builder.GetPuzzle(PuzzleController.PuzzleIndex);
+           
             
         }
 
         public override IEnumerator DoMoveImpl(int oldState, int newState)
         {
-            throw new System.NotImplementedException();
+            colorRenderer.material.SetColor("_EmissiveColor", colors[newState] * emissiveIntensity);
+            yield break;
         }
 
         public override void Init(int state)
         {
-            throw new System.NotImplementedException();
+            //LevelBuilder builder = FindObjectOfType<LevelBuilder>();
+            //Puzzle puzzle = builder.GetPuzzle(PuzzleController.PuzzleIndex);
+            Debug.LogFormat("Color - Init - State:{0}", state);
+            colorRenderer.material.SetColor("_EmissiveColor",  colors[state] * emissiveIntensity);
         }
     }
 
