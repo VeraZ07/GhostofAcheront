@@ -120,6 +120,12 @@ namespace GOA.Level
                 get { return clueHandle; }
             }
 
+            bool useClueHandle = false;
+            public bool UseClueHandle
+            {
+                get { return useClueHandle; }
+            }
+
             public HandlesPuzzle(LevelBuilder builder, PuzzleAsset asset, int sectorId): base(builder, asset, sectorId)
             {
 
@@ -130,9 +136,12 @@ namespace GOA.Level
                 // We compute a unique final state if required
                 int commonFinalState = hpa.UseClueHandle ? Random.Range(0, hpa.Handles[0].StateCount) : -1;
 
+                useClueHandle = false;
                 // Create the clue handle if required
                 if (hpa.UseClueHandle)
                 {
+                    useClueHandle = true;
+
                     // Create the custom objecT
                     CustomObject co = new CustomObject(builder, hpa.ClueHandle.Asset);
                     builder.customObjects.Add(co);
@@ -179,6 +188,12 @@ namespace GOA.Level
 
             public override void CreateSceneObjects()
             {
+                // Create the clue handle scene object if required
+                if (useClueHandle)
+                {
+                    builder.customObjects[clueHandle.CustomObjectId].CreateSceneObject();
+                }
+
                 // Loop through all the ids
                 for(int i=0; i<handles.Count; i++)
                 {

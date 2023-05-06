@@ -32,6 +32,7 @@ namespace GOA
         public override IEnumerator DoMoveImpl(int oldState, int newState)
         {
             colorRenderer.material.SetColor("_EmissiveColor", colors[newState] * emissiveIntensity);
+            colorRenderer.material.SetColor("_BaseColor", colors[newState]);
             yield break;
         }
 
@@ -41,6 +42,7 @@ namespace GOA
             //Puzzle puzzle = builder.GetPuzzle(PuzzleController.PuzzleIndex);
             Debug.LogFormat("Color - Init - State:{0}", state);
             colorRenderer.material.SetColor("_EmissiveColor",  colors[state] * emissiveIntensity);
+            colorRenderer.material.SetColor("_BaseColor", colors[state]);
         }
     }
 

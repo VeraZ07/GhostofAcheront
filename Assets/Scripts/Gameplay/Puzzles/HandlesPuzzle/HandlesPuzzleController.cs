@@ -24,7 +24,7 @@ namespace GOA
         NetworkLinkedList<NetworkBool> BusyList { get; } = default; 
 
         List<GameObject> handles = new List<GameObject>();
-
+        GameObject clueHandle = null;
        
         #endregion
 
@@ -40,7 +40,16 @@ namespace GOA
             // Attach all the objects
             LevelBuilder builder = FindObjectOfType<LevelBuilder>();
             HandlesPuzzle puzzle = builder.GetPuzzle(PuzzleIndex) as HandlesPuzzle;
-            
+
+            // Create the clue handle if needed ( the clue handle is just a fake handle with interaction disabled )
+            if (puzzle.UseClueHandle)
+            {
+                HandlesPuzzle.Handle ch = puzzle.ClueHandle;
+                clueHandle = builder.CustomObjects[ch.CustomObjectId].SceneObject;
+                clueHandle.GetComponentInChildren<HandleInteractor>().Init(this, -1, ch.InitialState, ch.FinalState, 1, true);
+            }
+
+            // Create handles
             for(int i=0; i<puzzle.Handles.Count; i++)
             {
                 HandlesPuzzle.Handle handle = puzzle.Handles[i];
