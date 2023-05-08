@@ -28,7 +28,8 @@ namespace GOA.Audio
         // Start is called before the first frame update
         void Start()
         {
-            //waterTime = Random.Range(waterTimeMin, waterTimeMax);
+            waterTime = Random.Range(waterTimeMin, waterTimeMax);
+            dungeonTime = Random.Range(dungeonTimeMin, dungeonTimeMax);
         }
 
         // Update is called once per frame
@@ -64,7 +65,7 @@ namespace GOA.Audio
 
         void CheckDungeon()
         {
-            if (dungeonSource.isPlaying)
+            if (!dungeonSource.isPlaying)
             {
                 if (dungeonPlaying)
                 {
