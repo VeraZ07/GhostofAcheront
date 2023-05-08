@@ -1517,7 +1517,7 @@ namespace GOA.Level
 
             for (int i = 0; i < puzzles.Count; i++)
             {
-                Puzzle puzzle = puzzles[i];
+                Puzzle puzzle = puzzles[puzzles.Count-1-i];
                 PuzzleController pc = puzzleControllers.Find(p => p.PuzzleIndex == i && p.Solved);
                 if (pc)
                     return puzzle;
