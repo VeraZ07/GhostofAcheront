@@ -25,6 +25,9 @@ namespace GOA
         [SerializeField]
         new GameObject light;
 
+        [SerializeField]
+        AudioSource audioSource;
+
         [Networked (OnChanged = nameof(OnEmptyChanged))]
         public NetworkBool Empty { get; private set; } = false;
 
@@ -133,6 +136,8 @@ namespace GOA
                 DestroyImmediate(changed.Behaviour.sceneObject);
                 DestroyImmediate(changed.Behaviour.vfx);
                 DestroyImmediate(changed.Behaviour.light);
+
+                changed.Behaviour.audioSource.Play();
 
                 changed.Behaviour.OnItemPicked?.Invoke();
             }
