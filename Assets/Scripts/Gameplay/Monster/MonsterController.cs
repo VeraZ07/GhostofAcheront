@@ -51,8 +51,8 @@ namespace GOA
 
         [Networked] public int State { get; private set; } = -1;
 
-        float idleTimeMin = 20f;
-        float idleTimeMax = 30f;
+        float idleTimeMin = 6.0f;
+        float idleTimeMax = 9.0f;
         float timer = 0;
 
         [SerializeField]
@@ -390,7 +390,7 @@ namespace GOA
                 players = new List<PlayerController>(FindObjectsOfType<PlayerController>());
 
             bool trackPlayer = Random.Range(0, monsterNoTrackMax) == 0;
-
+            
             if (trackPlayer)
             {
                 Transform target = players[Random.Range(0, players.Count)].transform;
@@ -400,22 +400,28 @@ namespace GOA
             {
                 Puzzle lastPuzzle = builder.GetLastSolvedPuzzle();
                 Tile tile = null;
+                
                 if (lastPuzzle == null)
                 {
                     // Get the first sector
+                    Debug.LogFormat("MONSTER - last puzzle solved - null");
                     Connection c = new List<Connection>(builder.Connections).Find(c => c.IsInitialConnection());
-                     tile = builder.GetTile(c.TargetTileId);
+                    tile = builder.GetTile(c.TargetTileId);
                 }
                 else
                 {
                     int puzzleId = builder.GetPuzzleId(lastPuzzle);
+                    Debug.LogFormat("MONSTER - last puzzle solved - id:{0}", puzzleId);
                     int gateIndex = new List<CustomObject>(builder.CustomObjects).FindIndex(g => g.GetType() == typeof(Gate) && (g as Gate).PuzzleIndex == puzzleId);
                     Connection c = new List<Connection>(builder.Connections).Find(c => c.gateIndex == gateIndex);
-                    tile = builder.GetTile(c.TargetTileId);
+                    // Get the target tile of the connection or the source if the target is -1 ( it happens with the last puzzle )
+                    tile = c.TargetTileId < 0 ? builder.GetTile(c.SourceTileId) : tile = builder.GetTile(c.TargetTileId); ;
+                    
                 }
                 
                 Sector sector = builder.GetSector(tile.sectorIndex);
-                
+                Debug.LogFormat("MONSTER - sector to patrol - id:{0}", tile.sectorIndex);
+
                 int targetTileId = sector.TileIds[Random.Range(0, sector.TileIds.Count)];
                 Vector3 pos = builder.GetTile(targetTileId).GetPosition();
                 pos += Vector3.right * Tile.Size * .5f + Vector3.back * Tile.Size * .5f;

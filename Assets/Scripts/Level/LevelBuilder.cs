@@ -1517,8 +1517,9 @@ namespace GOA.Level
 
             for (int i = 0; i < puzzles.Count; i++)
             {
-                Puzzle puzzle = puzzles[puzzles.Count-1-i];
-                PuzzleController pc = puzzleControllers.Find(p => p.PuzzleIndex == i && p.Solved);
+                int id = puzzles.Count - 1 - i;
+                Puzzle puzzle = puzzles[id];
+                PuzzleController pc = puzzleControllers.Find(p => p.PuzzleIndex == id && p.Solved);
                 if (pc)
                     return puzzle;
             }
@@ -1529,6 +1530,8 @@ namespace GOA.Level
         {
             return puzzles.IndexOf(puzzle);
         }
+
+    
 
         public Tile GetTile(int tileId)
         {
