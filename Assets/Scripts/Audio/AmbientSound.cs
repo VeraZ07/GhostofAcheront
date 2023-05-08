@@ -12,10 +12,18 @@ namespace GOA.Audio
         [SerializeField]
         AudioSource waterSource;
 
+        [SerializeField]
+        AudioSource dungeonSource;
+
         float waterTimeMin = 20f;
         float waterTimeMax = 40f;
         float waterTime = 0;
-        bool playing = false;
+        bool waterPlaying = false;
+
+        float dungeonTimeMin = 20;
+        float dungeonTimeMax = 40;
+        float dungeonTime = 0;
+        bool dungeonPlaying = false;
 
         // Start is called before the first frame update
         void Start()
@@ -27,22 +35,23 @@ namespace GOA.Audio
         void Update()
         {
             //CheckWater();
+            CheckDungeon();
         }
 
         void CheckWater()
         {
             if (!waterSource.isPlaying)
             {
-                if (playing)
+                if (waterPlaying)
                 {
-                    playing = false;
+                    waterPlaying = false;
                     waterTime = Random.Range(waterTimeMin, waterTimeMax);     
                 }
                 else
                 {
                     if (waterTime < 0)
                     {
-                        playing = true;
+                        waterPlaying = true;
                         waterSource.Play();
                     }
                     else
@@ -51,6 +60,31 @@ namespace GOA.Audio
                     }
                 }
             }
+        }
+
+        void CheckDungeon()
+        {
+            if (dungeonSource.isPlaying)
+            {
+                if (dungeonPlaying)
+                {
+                    dungeonPlaying = false;
+                    dungeonTime = Random.Range(dungeonTimeMin, dungeonTimeMax);
+                }
+                else
+                {
+                    if(dungeonTime > 0)
+                    {
+                        dungeonTime -= Time.deltaTime;
+                    }
+                    else
+                    {
+                        dungeonPlaying = true;
+                        dungeonSource.Play();
+                    }
+                }
+            }
+           
         }
     }
 

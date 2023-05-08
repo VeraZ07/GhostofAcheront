@@ -195,6 +195,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4479114331045758493}
     m_Modifications:
+    - target: {fileID: 616236967848311943, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 659839066547732426, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 696152802599451026, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 717310507438354969, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce,
         type: 3}
       propertyPath: prewarm
@@ -285,10 +300,65 @@ PrefabInstance:
       propertyPath: m_Name
       value: VFX_BlueFire
       objectReference: {fileID: 0}
+    - target: {fileID: 1665038395145261077, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3120971733383192831, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3649987836208491110, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4038332422102630351, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce,
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4055710177736712865, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce,
+        type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4055710177736712865, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce,
+        type: 3}
+      propertyPath: rolloffCustomCurve.m_Curve.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4055710177736712865, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce,
+        type: 3}
+      propertyPath: rolloffCustomCurve.m_Curve.Array.data[1].time
+      value: 0.80281067
+      objectReference: {fileID: 0}
+    - target: {fileID: 4055710177736712865, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce,
+        type: 3}
+      propertyPath: rolloffCustomCurve.m_Curve.Array.data[2].time
+      value: 0.80281067
+      objectReference: {fileID: 0}
+    - target: {fileID: 4055710177736712865, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce,
+        type: 3}
+      propertyPath: rolloffCustomCurve.m_Curve.Array.data[1].value
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4055710177736712865, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce,
+        type: 3}
+      propertyPath: rolloffCustomCurve.m_Curve.Array.data[2].value
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4055710177736712865, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce,
+        type: 3}
+      propertyPath: rolloffCustomCurve.m_Curve.Array.data[1].inSlope
+      value: -0.20007975
+      objectReference: {fileID: 0}
+    - target: {fileID: 4055710177736712865, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce,
+        type: 3}
+      propertyPath: rolloffCustomCurve.m_Curve.Array.data[1].outSlope
+      value: -0.20007975
       objectReference: {fileID: 0}
     - target: {fileID: 4123859969552816282, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce,
         type: 3}
@@ -300,10 +370,20 @@ PrefabInstance:
       propertyPath: prewarm
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4500943775523373595, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4991880198628311242, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce,
         type: 3}
       propertyPath: prewarm
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4997529238336246988, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5169372719515599631, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce,
         type: 3}
@@ -320,10 +400,20 @@ PrefabInstance:
       propertyPath: prewarm
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7147612493425166173, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8208986892585196097, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce,
         type: 3}
       propertyPath: prewarm
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9139480721330393101, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce, type: 3}
@@ -399,6 +489,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Brazier_02
+      objectReference: {fileID: 0}
+    - target: {fileID: 2120372761636120686, guid: ce6a113e266c19e48a5a7cd902c549fa,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ce6a113e266c19e48a5a7cd902c549fa, type: 3}
