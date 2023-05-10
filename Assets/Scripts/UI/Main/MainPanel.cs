@@ -91,8 +91,8 @@ namespace GOA.UI
         void EnableInput(bool value)
         {
             buttonSingleplayerMatch.interactable = value;
-            buttonMultiplayerMatch.interactable = value;
-            buttonOptions.interactable = value;
+            //buttonMultiplayerMatch.interactable = value;
+            //buttonOptions.interactable = value;
             buttonExit.interactable = value;
             
         }
