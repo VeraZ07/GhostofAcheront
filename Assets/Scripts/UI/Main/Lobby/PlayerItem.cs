@@ -23,6 +23,9 @@ namespace GOA.UI
         [SerializeField]
         Sprite spriteLocked;
 
+        Color unlockedColor = Color.white;
+        Color lockedColor = Color.gray;
+
         Player player;
         public Player Player
         {
@@ -36,7 +39,8 @@ namespace GOA.UI
 
         private void Awake()
         {
-            imageReady.color = Color.red;
+           
+            SetReady(false);
         }
 
         // Start is called before the first frame update
@@ -55,19 +59,30 @@ namespace GOA.UI
         {
             this.player = player;
             textName.text = player.Name;
-            imageReady.color = player.Ready ? Color.green : Color.red;
+            textName.color = unlockedColor;
+            SetReady(player.Ready ? true : false);
+         
         }
 
         public void Reset()
         {
             player = null;
             textName.text = "Waiting...";
-            imageReady.color = Color.red;
+            textName.color = unlockedColor;
+            SetReady(false);
+        }
+
+        public void SetLocked()
+        {
+            Reset();
+            textName.text = "Not available";
+            textName.color = lockedColor;
+            imageReady.sprite = spriteLocked;
         }
 
         public void SetReady(bool value)
         {
-            imageReady.color = value ? Color.green : Color.red;
+            imageReady.sprite = value ? spriteReady : spriteNotReady;
         }
     }
 

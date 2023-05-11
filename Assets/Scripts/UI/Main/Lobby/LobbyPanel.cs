@@ -54,12 +54,10 @@ namespace GOA.UI
             NetworkRunner runner = FindObjectOfType<NetworkRunner>();
             if ( runner && ( runner.SessionInfo || runner.GameMode == GameMode.Single ) )
             {
-
                 List<Player> players = new List<Player>(FindObjectsOfType<Player>());
                 foreach(PlayerRef pRef in runner.ActivePlayers)
                 {
                     // Get the player
-                   
                     Player player = players.Find(p => p.PlayerRef == pRef);
 
                     // Set player item
@@ -67,7 +65,7 @@ namespace GOA.UI
                     playerItem.SetPlayer(player);
 
                     HandleOnReadyChanged(player);
-                    //SetReadyButton(false);
+
                 }
 
             }
@@ -111,12 +109,10 @@ namespace GOA.UI
                 // Check the ready button
                 if (!player.Ready)
                 {
-                    //buttonReady.GetComponentInChildren<TMP_Text>().text = "Not Ready";
                     buttonReady.GetComponent<Image>().sprite = readySprite;
                 }
                 else
                 {
-                    //buttonReady.GetComponentInChildren<TMP_Text>().text = "Ready";
                     buttonReady.GetComponent<Image>().sprite = notReadySprite;
                 }
 
@@ -154,9 +150,30 @@ namespace GOA.UI
 
         void ClearAll()
         {
+            NetworkRunner runner = FindObjectOfType<NetworkRunner>();
+            if (!runner)
+            {
+                Debug.LogError("Runner not found");
+                return;
+            }
+
             PlayerItem[] playerItemList = GetComponentsInChildren<PlayerItem>();
             foreach (PlayerItem player in playerItemList)
-                player.Reset();
+            {
+                
+                
+                if (runner && runner.GameMode == GameMode.Single)
+                {
+                    player.SetLocked();
+                }
+                else
+                {
+                    player.Reset();
+                }
+                    
+
+            }
+                
 
         }
 
