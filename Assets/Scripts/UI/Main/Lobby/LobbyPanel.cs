@@ -15,7 +15,12 @@ namespace GOA.UI
         [SerializeField]
         Button buttonQuitMatch;
 
-     
+        [SerializeField]
+        Sprite readySprite;
+
+        [SerializeField]
+        Sprite notReadySprite;
+
         private void Awake()
         {
             buttonQuitMatch.onClick.AddListener(()=>SessionManager.Instance.QuitSession());
@@ -106,11 +111,13 @@ namespace GOA.UI
                 // Check the ready button
                 if (!player.Ready)
                 {
-                    buttonReady.GetComponentInChildren<TMP_Text>().text = "Not Ready";
+                    //buttonReady.GetComponentInChildren<TMP_Text>().text = "Not Ready";
+                    buttonReady.GetComponent<Image>().sprite = readySprite;
                 }
                 else
                 {
-                    buttonReady.GetComponentInChildren<TMP_Text>().text = "Ready";
+                    //buttonReady.GetComponentInChildren<TMP_Text>().text = "Ready";
+                    buttonReady.GetComponent<Image>().sprite = notReadySprite;
                 }
 
             }

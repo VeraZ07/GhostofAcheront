@@ -14,6 +14,15 @@ namespace GOA.UI
         [SerializeField]
         Image imageReady;
 
+        [SerializeField]
+        Sprite spriteReady;
+
+        [SerializeField]
+        Sprite spriteNotReady;
+
+        [SerializeField]
+        Sprite spriteLocked;
+
         Player player;
         public Player Player
         {
