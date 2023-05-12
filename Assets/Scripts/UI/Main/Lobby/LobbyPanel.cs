@@ -36,6 +36,27 @@ namespace GOA.UI
         // Update is called once per frame
         void Update()
         {
+            GameManager gameManager = FindObjectOfType<GameManager>();
+            if (gameManager)
+            {
+                if (Input.GetKeyDown(KeyCode.Alpha1))
+                {
+                    gameManager.LevelSize = 0;
+                }
+                if (Input.GetKeyDown(KeyCode.Alpha2))
+                {
+                    gameManager.LevelSize = 1;
+                }
+                if (Input.GetKeyDown(KeyCode.Alpha3))
+                {
+                    gameManager.LevelSize = 2;
+                }
+                if (Input.GetKeyDown(KeyCode.Alpha4))
+                {
+                    gameManager.LevelSize = 3;
+                }
+            }
+            
 
         }
 

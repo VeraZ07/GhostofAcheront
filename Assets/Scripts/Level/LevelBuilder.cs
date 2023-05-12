@@ -15,7 +15,7 @@ namespace GOA.Level
 
         
         // From 0 to N, 0 is the smallest one.
-        public static int LevelSize = 3;
+        //public static int LevelSize = 3;
         public static float TileSize = Tile.Size;
         public static float TileHeight = Tile.Height;
 
@@ -91,26 +91,26 @@ namespace GOA.Level
         private void Update()
         {
 
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                LevelSize = 0;
-                Create();
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                LevelSize = 1;
-                Create();
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha3))
-            {
-                LevelSize = 2;
-                Create();
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha4))
-            {
-                LevelSize = 3;
-                Create();
-            }
+            //if (Input.GetKeyDown(KeyCode.Alpha1))
+            //{
+            //    LevelSize = 0;
+            //    Create();
+            //}
+            //if (Input.GetKeyDown(KeyCode.Alpha2))
+            //{
+            //    LevelSize = 1;
+            //    Create();
+            //}
+            //if (Input.GetKeyDown(KeyCode.Alpha3))
+            //{
+            //    LevelSize = 2;
+            //    Create();
+            //}
+            //if (Input.GetKeyDown(KeyCode.Alpha4))
+            //{
+            //    LevelSize = 3;
+            //    Create();
+            //}
         }
 
         private void OnDestroy()
@@ -949,7 +949,8 @@ namespace GOA.Level
             int tileCount = 0;
             int sectorCount = 0;
 
-            switch (LevelSize)
+            GameManager gameManager = FindObjectOfType<GameManager>();
+            switch (gameManager.LevelSize)
             {
                 case 0:
                     sectorCount = Random.Range(1, 3);
@@ -1240,7 +1241,9 @@ namespace GOA.Level
                     continue;
                 if (customObjects.Exists(o => o.TileId == tid && o.Direction == Vector3.zero))
                     continue;
-                
+                if (tiles[tid].unreachable)
+                    continue;
+
                 availables.Add(tid);
             }
 
@@ -1270,8 +1273,6 @@ namespace GOA.Level
                 if (closedWalls.Contains(i))
                     continue;
 
-                
-
                 List<int> tl = new List<int>();
                 // Starting from the current wall we try to draw a closed shape using wall from the other tiles
                 
@@ -1280,7 +1281,6 @@ namespace GOA.Level
                 int current = i;
 
                 List<int> candidates = new List<int>();
-  
 
                 while (true)
                 {

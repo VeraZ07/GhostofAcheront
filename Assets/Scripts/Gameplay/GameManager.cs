@@ -18,6 +18,8 @@ namespace GOA
 
         [Networked] public int GameSeed { get; private set; } = 0;
 
+        [Networked] public int LevelSize { get; set; } = 3;
+
         private void Awake()
         {
             //if (!Instance)
@@ -56,6 +58,12 @@ namespace GOA
 
             SessionManager.Instance.QuitSession();
             UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+        }
+
+        public override void Spawned()
+        {
+            base.Spawned();
+            LevelSize = 3;
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
