@@ -621,6 +621,7 @@ namespace GOA.Level
 
             if(sectors.Length == 2)
             {
+                // Create two ordered lists of sources and targets ( src[n] => trg[n] )
                 List<int> src = new List<int>();
                 List<int> trg = new List<int>();
                 Sector s = sectors[0];
@@ -632,22 +633,22 @@ namespace GOA.Level
                     if (tileId % size == 0 || tileId % size == size - 1 || tileId / size == 0 || tileId / size == size - 1)
                         continue; // Tiles at the edge of the level
 
-                    if(tiles[tileId - size].sectorIndex == 1)
+                    if(tiles[tileId - size].sectorIndex == 1) // Tile to the bottom
                     {
                         src.Add(tileId);
                         trg.Add(tileId - size);
                     }
-                    else if(tiles[tileId + size].sectorIndex == 1)
+                    else if(tiles[tileId + size].sectorIndex == 1) // Tile to the top
                     {
                         src.Add(tileId);
                         trg.Add(tileId + size);
                     }
-                    else if(tiles[tileId - 1].sectorIndex == 1)
+                    else if(tiles[tileId - 1].sectorIndex == 1) // Tile to the left
                     {
                         src.Add(tileId);
                         trg.Add(tileId - 1);
                     }
-                    else if(tiles[tileId + 1].sectorIndex == 1)
+                    else if(tiles[tileId + 1].sectorIndex == 1) // Tile to the right
                     {
                         src.Add(tileId);
                         trg.Add(tileId + 1);
@@ -656,16 +657,22 @@ namespace GOA.Level
                      
                 }
 
+                // Choose a pair of src/trg
                 int id = Random.Range(0, src.Count);
                 int srcId = src[id];
                 int trgId = trg[id];
 
+                // We want to create a connection between the two sectors following the normal flow the player should walk
+                // to find the exit ( so we want the initial sector to be the source of the connection )
+                Connection initialConn = connections.Find(c => c.SourceTileId < 0);
+                if(tiles[initialConn.TargetTileId].sectorIndex == 0)
+                    connections.Add(Connection.CreateNormalConnection(this, srcId, trgId));
+                else
+                    connections.Add(Connection.CreateNormalConnection(this, trgId, srcId));
                 
-                // Logic
-                connections.Add(Connection.CreateNormalConnection(this, srcId, trgId));
-                //connections.Add(Connection.CreateNormalConnection(trgId, srcId));
+                
 
-                // Geometry
+                // Set the openings
                 Vector3 dir = Vector3.zero;
                 if(srcId < trgId)
                 {
@@ -683,27 +690,28 @@ namespace GOA.Level
                 }
                 tiles[srcId].openDirection = dir;
                 tiles[trgId].openDirection = -dir;
-                //tiles[srcId].code = tiles[srcId].code.Substring(0, 2) + "CC" + tiles[srcId].code.Substring(4, 2);
-                //tiles[trgId].code = tiles[trgId].code.Substring(0, 2) + "CC" + tiles[trgId].code.Substring(4, 2);
+                
             }
 
+            // Create a flow from initial to final sctor
             if (sectors.Length > 2)
             {
                 // Create a list with all the possible sources
                 List<int> srcIds = new List<int>();
                 for(int i=0;i<sectors.Length; i++)
                 {
-                    //if (!IsFinalSector(i))
-                    if(!sectors[i].IsFinalSector())
-                        srcIds.Add(i);
+                    
+                    //if(!sectors[i].IsFinalSector() || sectors[i].IsInitialSector())
+                    // Every sector can be a source for another sector, even the final sector.
+                    srcIds.Add(i);
                 }
 
                 // Create a list with all the possible targets
-                // Each element on this list can only be used once, so we can loop throughout until the list is empty
+                // Each element on this list can only be used once as target, so we can loop throughout until the list is empty
                 List<int> trgIds = new List<int>();
                 for (int i = 0; i < sectors.Length; i++)
                 {
-                    //if (!IsInitialSector(i))
+                    // The initial sector can not be a target because the player starts from there.
                     if(!sectors[i].IsInitialSector())
                         trgIds.Add(i);
                 }
@@ -724,7 +732,8 @@ namespace GOA.Level
                         if (!SectorsBorderOneOnother(src, id))
                             continue;
 
-                        if (connections.Exists(c => c.SourceTileId == src && c.TargetTileId == id))
+                        if (connections.Exists(c => c.SourceTileId == src && c.TargetTileId == id) || 
+                            connections.Exists(c => c.SourceTileId == id && c.TargetTileId == src))
                             continue;
 
                         tmp.Add(id);
@@ -775,16 +784,51 @@ namespace GOA.Level
            
 
             }
-
-            // We better reorder all the connections from the initial to the last one.
+           
             if(sectors.Length > 1)
             {
+                int total = connections.Count-1;
                 List<Connection> orderedList = new List<Connection>();
-                orderedList.Add(connections[0]);
-                for (int i = 0; i < connections.Count - 1; i++)
-                    orderedList.Add(connections[connections.Count - 1 - i]);
+                Connection conn = connections.Find(c => c.IsInitialConnection());
+                orderedList.Add(conn);
+                connections.Remove(conn);
+                conn = null;
+                total--;
+                while (total > 0)
+                {
+                    foreach(Connection c in connections)
+                    {
+                        int srcId = c.SourceTileId;
+                        if(orderedList.Exists(c2 => tiles[c2.TargetTileId].sectorIndex == tiles[srcId].sectorIndex && !c.IsFinalConnection()))
+                        {
+                            conn = c;
+                            break;
+                        }
+                    }
+
+                    orderedList.Add(conn);
+                    connections.Remove(conn);
+                    conn = null;
+                    total--;
+                    
+                }
+
+                orderedList.Add(connections[0]);// Only the final connection remains
+                connections.Clear();
                 connections = orderedList;
             }
+
+
+          
+            // We better reorder all the connections from the initial to the last one.
+            //if(sectors.Length > 1)
+            //{
+            //    List<Connection> orderedList = new List<Connection>();
+            //    orderedList.Add(connections[0]);
+            //    for (int i = 0; i < connections.Count - 1; i++)
+            //        orderedList.Add(connections[connections.Count - 1 - i]);
+            //    connections = orderedList;
+            //}
 
         }
 
@@ -992,6 +1036,9 @@ namespace GOA.Level
 
         void BuildSectors()
         {
+            // 
+            // Split tiles into sectors
+            //
             switch (sectors.Length)
             {
                 case 1:
@@ -1049,8 +1096,9 @@ namespace GOA.Level
 
             
 
-
-            // Set width and height for each sector
+            //
+            // Set max width and max height for each sector
+            //
             for (int i=0; i<sectors.Length; i++)
             {
                 int size = (int)Mathf.Sqrt(tiles.Length);
