@@ -706,6 +706,8 @@ namespace GOA.Level
                     srcIds.Add(i);
                 }
 
+                
+
                 // Create a list with all the possible targets
                 // Each element on this list can only be used once as target, so we can loop throughout until the list is empty
                 List<int> trgIds = new List<int>();
@@ -732,8 +734,8 @@ namespace GOA.Level
                         if (!SectorsBorderOneOnother(src, id))
                             continue;
 
-                        if (connections.Exists(c => c.SourceTileId == src && c.TargetTileId == id) || 
-                            connections.Exists(c => c.SourceTileId == id && c.TargetTileId == src))
+                        if (connections.Exists(c => c.SourceTileId >= 0 && c.TargetTileId >= 0 && tiles[c.SourceTileId].sectorIndex == src && tiles[c.TargetTileId].sectorIndex == id) ||
+                            connections.Exists(c => c.SourceTileId >= 0 && c.TargetTileId >= 0 && tiles[c.SourceTileId].sectorIndex == id && tiles[c.TargetTileId].sectorIndex == src))
                             continue;
 
                         tmp.Add(id);
@@ -817,18 +819,7 @@ namespace GOA.Level
                 connections.Clear();
                 connections = orderedList;
             }
-
-
-          
-            // We better reorder all the connections from the initial to the last one.
-            //if(sectors.Length > 1)
-            //{
-            //    List<Connection> orderedList = new List<Connection>();
-            //    orderedList.Add(connections[0]);
-            //    for (int i = 0; i < connections.Count - 1; i++)
-            //        orderedList.Add(connections[connections.Count - 1 - i]);
-            //    connections = orderedList;
-            //}
+            
 
         }
 
