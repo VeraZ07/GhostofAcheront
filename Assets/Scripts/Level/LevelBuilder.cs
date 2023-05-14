@@ -1014,21 +1014,21 @@ namespace GOA.Level
             GameManager gameManager = FindObjectOfType<GameManager>();
             switch (gameManager.LevelSize)
             {
+                //case 0:
+                //    sectorCount = Random.Range(1, 3);
+                //    tileCount = 8 * 8;//Random.Range(30, 45);
+                //    break;
                 case 0:
-                    sectorCount = Random.Range(1, 3);
-                    tileCount = 8 * 8;//Random.Range(30, 45);
-                    break;
-                case 1:
                     sectorCount = Random.Range(2, 5);
                     sectorCount = 3;
                     tileCount = 12 * 12;//20 * 20;//Random.Range(50, 75);
                     break;
-                case 2:
+                case 1:
                     sectorCount = Random.Range(3, 6);
                     sectorCount = 3;
                     tileCount = 16 * 16;//Random.Range(60, 90);
                     break;
-                case 3:
+                case 2:
                     sectorCount = Random.Range(3, 6);
                     sectorCount = 3;
                     tileCount = 20 * 20;// Random.Range(70, 105);

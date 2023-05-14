@@ -18,7 +18,7 @@ namespace GOA
 
         [Networked] public int GameSeed { get; private set; } = 0;
 
-        [Networked] public int LevelSize { get; set; } = 3;
+        [Networked] public int LevelSize { get; set; } = 1;
 
         private void Awake()
         {
@@ -63,7 +63,7 @@ namespace GOA
         public override void Spawned()
         {
             base.Spawned();
-            LevelSize = 3;
+            LevelSize = 1;
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
