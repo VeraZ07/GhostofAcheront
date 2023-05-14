@@ -380,6 +380,21 @@ PrefabInstance:
       propertyPath: prewarm
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3173941968701101668, guid: 846aa7285a97a4b4c990d89b2f0c09bf,
+        type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3173941968701101668, guid: 846aa7285a97a4b4c990d89b2f0c09bf,
+        type: 3}
+      propertyPath: MaxDistance
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3173941968701101668, guid: 846aa7285a97a4b4c990d89b2f0c09bf,
+        type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 420c3f1569d954840aa7218e257a9338, type: 3}
     - target: {fileID: 3367640847824963907, guid: 846aa7285a97a4b4c990d89b2f0c09bf,
         type: 3}
       propertyPath: prewarm

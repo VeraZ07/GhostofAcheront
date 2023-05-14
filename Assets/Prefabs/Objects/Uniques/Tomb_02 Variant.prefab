@@ -7,6 +7,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1664055722644486768, guid: 4b80a31d6c83bc64db9c881c4dd12c12,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 1762864821947346002, guid: 4b80a31d6c83bc64db9c881c4dd12c12,
         type: 3}
       propertyPath: InitialModule.startRotation.scalar
@@ -92,6 +97,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.y
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 5767077309542721176, guid: 4b80a31d6c83bc64db9c881c4dd12c12,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6865552810966131783, guid: 4b80a31d6c83bc64db9c881c4dd12c12,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 7931087446081968786, guid: 4b80a31d6c83bc64db9c881c4dd12c12,
         type: 3}
       propertyPath: particles.Array.size
@@ -127,6 +142,21 @@ PrefabInstance:
       propertyPath: prewarm
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3173941968701101668, guid: 846aa7285a97a4b4c990d89b2f0c09bf,
+        type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3173941968701101668, guid: 846aa7285a97a4b4c990d89b2f0c09bf,
+        type: 3}
+      propertyPath: MaxDistance
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3173941968701101668, guid: 846aa7285a97a4b4c990d89b2f0c09bf,
+        type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 420c3f1569d954840aa7218e257a9338, type: 3}
     - target: {fileID: 3367640847824963907, guid: 846aa7285a97a4b4c990d89b2f0c09bf,
         type: 3}
       propertyPath: prewarm

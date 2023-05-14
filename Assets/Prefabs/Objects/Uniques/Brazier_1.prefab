@@ -327,6 +327,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4055710177736712865, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce,
         type: 3}
+      propertyPath: MaxDistance
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4055710177736712865, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce,
+        type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: a2893b1c573810f46b3ea8213a25ba82, type: 3}
+    - target: {fileID: 4055710177736712865, guid: 9bb9ac31f48fe424a8837ebb25d0d3ce,
+        type: 3}
       propertyPath: rolloffCustomCurve.m_Curve.Array.size
       value: 2
       objectReference: {fileID: 0}
