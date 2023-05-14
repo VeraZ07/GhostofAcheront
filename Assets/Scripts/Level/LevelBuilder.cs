@@ -896,6 +896,33 @@ namespace GOA.Level
                     // We can't use the same tile twice
                     notAllowed.AddRange(tiles);
 
+                    // We also set not allowed all the adiacent tiles
+                    int size = (int)Mathf.Sqrt(tiles.Count);
+                    for(int i=0; i<room.tileIds.Count; i++)
+                    {
+                        bool isTop = i / room.width == 0;
+                        bool isRight = i % room.width == room.width - 1;
+                        bool isBottom = i / room.width == room.width - 1;
+                        bool isLeft = i % room.width == 0;
+                        int id = room.tileIds[i];
+                        if (isTop && id / size > 0)
+                            notAllowed.Add(id - size);
+                        if (isRight && id % size < size - 1)
+                            notAllowed.Add(id + 1);
+                        if (isBottom && id / size < size - 1)
+                            notAllowed.Add(id + size);
+                        if (isLeft && id % size > 0)
+                            notAllowed.Add(id - 1);
+                        if (isTop && id / size > 0 && isRight && id % size < size - 1)
+                            notAllowed.Add(id - size + 1);
+                        if (isTop && id / size > 0 && isLeft && id % size > 0)
+                            notAllowed.Add(id - size - 1);
+                        if (isBottom && id / size < size - 1 && isRight && id % size < size - 1)
+                            notAllowed.Add(id + size + 1);
+                        if (isBottom && id / size < size - 1 && isLeft && id % size > 0)
+                            notAllowed.Add(id + size - 1);
+                    }
+
                     room.tileIds = tiles;
 
                     room.Create();
@@ -1237,7 +1264,7 @@ namespace GOA.Level
                     if ((origin / size) + (i / width) != id / size)
                         break;
 
-                    // If one of the corner of the candidate room falls in a north or south tile connection then break
+                    // If one of the corners of the candidate room falls in a north or south tile connection then break
                     if ((i == 0 || i == width - 1) && tiles[id].openDirection != Vector3.zero)
                         break;
                     if ((i == width * (height - 1) || i == width * (height - 1) + width - 1) && tiles[id].openDirection != Vector3.zero)
