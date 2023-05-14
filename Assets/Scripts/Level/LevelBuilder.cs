@@ -1019,19 +1019,29 @@ namespace GOA.Level
                 //    tileCount = 8 * 8;//Random.Range(30, 45);
                 //    break;
                 case 0:
-                    sectorCount = Random.Range(2, 5);
-                    sectorCount = 3;
-                    tileCount = 12 * 12;//20 * 20;//Random.Range(50, 75);
+                    sectorCount = Random.Range(1, 3);
+                    sectorCount = 1;
+                    //sectorCount = 3;
+                    if(sectorCount == 2)
+                        tileCount = 12 * 12;
+                    else
+                        tileCount = 9 * 9;
                     break;
                 case 1:
-                    sectorCount = Random.Range(3, 6);
-                    sectorCount = 3;
-                    tileCount = 16 * 16;//Random.Range(60, 90);
+                    sectorCount = Random.Range(2, 4);
+                    sectorCount = 2;
+                    if(sectorCount == 3)
+                        tileCount = 16 * 16;
+                    else
+                        tileCount = 14 * 14;
                     break;
                 case 2:
-                    sectorCount = Random.Range(3, 6);
+                    sectorCount = Random.Range(2, 4);
                     sectorCount = 3;
-                    tileCount = 20 * 20;// Random.Range(70, 105);
+                    if(sectorCount == 3)
+                        tileCount = 20 * 20;// Random.Range(70, 105);
+                    else
+                        tileCount = 18 * 18;// Random.Range(70, 105);
                     break;
 
             }
