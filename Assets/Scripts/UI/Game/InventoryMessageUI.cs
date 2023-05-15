@@ -15,6 +15,9 @@ namespace GOA.UI
         [SerializeField]
         GameObject outMessage;
 
+        [SerializeField]
+        GameObject emptyMessage;
+
         Inventory inventory;
 
         float hideDelay = 1f;
@@ -37,6 +40,7 @@ namespace GOA.UI
                 {
                     inventory.OnItemAdded += HandleOnItemAdded;
                     inventory.OnItemRemoved += HandleOnItemRemoved;
+                    inventory.OnEmptyInventory += HandleOnEmptyInventory;
                 }
             }
 
@@ -55,6 +59,7 @@ namespace GOA.UI
         {
             inMessage.SetActive(true);
             outMessage.SetActive(false);
+            emptyMessage.SetActive(false);
             panel.SetActive(true);
             ResetHideDelay();
         }
@@ -63,10 +68,19 @@ namespace GOA.UI
         {
             inMessage.SetActive(false);
             outMessage.SetActive(true);
+            emptyMessage.SetActive(false);
             panel.SetActive(true);
             ResetHideDelay();
         }
-                
+              
+        void HandleOnEmptyInventory()
+        {
+            inMessage.SetActive(false);
+            outMessage.SetActive(false);
+            emptyMessage.SetActive(true);
+            panel.SetActive(true);
+            ResetHideDelay();
+        }
 
         void ResetHideDelay()
         {

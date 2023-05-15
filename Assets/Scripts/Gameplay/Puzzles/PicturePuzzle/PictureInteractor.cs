@@ -64,6 +64,10 @@ namespace GOA
                 yield return new WaitForSeconds(2f);
 
             }
+            else
+            {
+                inventory?.OnEmptyInventory();
+            }
             puzzleController.Busy = false;
 
         }

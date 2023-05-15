@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4642563553631810732
 Transform:
   m_ObjectHideFlags: 0
@@ -529,6 +529,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: VFX_Pickup
+      objectReference: {fileID: 0}
+    - target: {fileID: 4724337638484956881, guid: 989714d9736effe418010b4481d2d21a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4869403360589855401, guid: 989714d9736effe418010b4481d2d21a,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6578107855529680666, guid: 989714d9736effe418010b4481d2d21a,
         type: 3}

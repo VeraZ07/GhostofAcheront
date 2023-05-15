@@ -9,6 +9,7 @@ public class Inventory : NetworkBehaviour
 {
     public UnityAction<string> OnItemAdded;
     public UnityAction<string> OnItemRemoved;
+    public UnityAction OnEmptyInventory;
 
     [Networked]
     [UnitySerializeField]
@@ -19,36 +20,36 @@ public class Inventory : NetworkBehaviour
 
     public void Update()
     {
-        if (Runner.IsServer)
-        {
-            if (Input.GetKeyDown(KeyCode.I))
-            {
-                string[] itemNames = new string[] { "pippo", "pluto", "paperino", "minnie", "topolino" };
-                if (PlayerId == 3 || PlayerId == 9)
-                {
-                    Items.Add(itemNames[Items.Count]);
-                }
+        //if (Runner.IsServer)
+        //{
+        //    if (Input.GetKeyDown(KeyCode.I))
+        //    {
+        //        string[] itemNames = new string[] { "pippo", "pluto", "paperino", "minnie", "topolino" };
+        //        if (PlayerId == 3 || PlayerId == 9)
+        //        {
+        //            Items.Add(itemNames[Items.Count]);
+        //        }
                 
-            }
-            if (Input.GetKeyDown(KeyCode.O))
-            {
-                string[] itemNames = new string[] { "pippo", "pluto", "paperino", "minnie", "topolino" };
-                if (PlayerId == 0)
-                {
-                    Items.Add(itemNames[Items.Count]);
-                }
+        //    }
+        //    if (Input.GetKeyDown(KeyCode.O))
+        //    {
+        //        string[] itemNames = new string[] { "pippo", "pluto", "paperino", "minnie", "topolino" };
+        //        if (PlayerId == 0)
+        //        {
+        //            Items.Add(itemNames[Items.Count]);
+        //        }
 
-            }
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                string[] itemNames = new string[] { "pippo", "pluto", "paperino", "minnie", "topolino" };
-                if (PlayerId == 1)
-                {
-                    Items.Add(itemNames[Items.Count]);
-                }
+        //    }
+        //    if (Input.GetKeyDown(KeyCode.P))
+        //    {
+        //        string[] itemNames = new string[] { "pippo", "pluto", "paperino", "minnie", "topolino" };
+        //        if (PlayerId == 1)
+        //        {
+        //            Items.Add(itemNames[Items.Count]);
+        //        }
 
-            }
-        }
+        //    }
+        //}
         
         
 
