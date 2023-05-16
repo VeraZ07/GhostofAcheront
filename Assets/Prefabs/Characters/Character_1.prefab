@@ -751,7 +751,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 2
   m_Height: 2
-  m_Radius: 0.5
+  m_Radius: 0.25
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
@@ -773,6 +773,7 @@ MonoBehaviour:
   light: {fileID: 4483808968645272673}
   dustParticle: {fileID: 1931854306254654234}
   characterObject: {fileID: 0}
+  meshRenderers: []
   headPivot: {fileID: 0}
   headMesh: {fileID: 0}
   headBloodVfx: {fileID: 0}
