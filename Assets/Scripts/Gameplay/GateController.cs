@@ -16,6 +16,8 @@ namespace GOA
         [SerializeField]
         Material dissolveMaterial;
 
+        [SerializeField]
+        List<GameObject> symbols;
 
         PuzzleController puzzleController;
         //bool dissolving = false;
@@ -112,6 +114,13 @@ namespace GOA
             // Check if the puzzle has been solved ( it may happen on host migration ??? )
             if (puzzleController.Solved)
                 DisableCollisionAndDestroy();
+
+            foreach(GameObject s in symbols)
+            {
+                s.SetActive(false);
+            }
+
+            symbols[puzzleController.PuzzleIndex].SetActive(true);
             
         }
     }
