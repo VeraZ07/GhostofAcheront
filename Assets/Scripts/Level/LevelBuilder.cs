@@ -7,12 +7,13 @@ using Fusion;
 using Unity.AI.Navigation;
 using GOA.Interfaces;
 using UnityEngine.AI;
+using UnityEngine.Events;
 
 namespace GOA.Level
 {
     public partial class LevelBuilder : MonoBehaviour
     {
-
+        public UnityAction OnLevelBuilt;
         
         // From 0 to N, 0 is the smallest one.
         //public static int LevelSize = 3;
@@ -1540,6 +1541,8 @@ namespace GOA.Level
             Random.InitState(seed);
 
             Create();
+
+            OnLevelBuilt?.Invoke();
         }
 
         public Puzzle GetPuzzle(int puzzleId)
