@@ -184,8 +184,6 @@ namespace GOA.Level
             int size = (int)Mathf.Sqrt(tiles.Length);
 
             int max = (int)(tiles.Length * ratio);
-            Debug.Log("Max Floating Lights:" + max);
-            Debug.Log("Available Tiles:" + availableTilesForLights.Count);
            
             while (floatingLightDictionary.Keys.Count < max && availableTilesForLights.Count > 0)
             {
@@ -248,8 +246,7 @@ namespace GOA.Level
             int max = (int)(floatingLightDictionary.Keys.Count * ratio);
 
             // Create an array of available tiles       
-            Debug.Log("AvailableTiles.Count:" + availableTilesForLights.Count);
-
+           
             while (crackLightDictionary.Keys.Count < max && availableTilesForLights.Count > 0)
             {
                 // Get the next tile

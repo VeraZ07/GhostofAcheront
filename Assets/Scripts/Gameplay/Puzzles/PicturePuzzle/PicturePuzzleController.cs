@@ -85,9 +85,7 @@ namespace GOA
             // Set network states to synch
             for(int i=0; i<puzzle.PieceIds.Count; i++)
             {
-                Debug.Log("PC - intialize piece:" + i);
                 Pieces.Add(false); // Empty
-                
             }
             
         }
@@ -110,15 +108,12 @@ namespace GOA
         public static void OnPiecesChanged(Changed<PicturePuzzleController> changed)
         {
             bool solved = true;
-            Debug.Log("PC - Num of pieces:" + changed.Behaviour.Pieces.Count);
             for(int i=0; i<changed.Behaviour.Pieces.Count; i++)
             {
-                Debug.Log("PC - Loading old value:" + changed.Behaviour.Pieces[i]);
                 changed.LoadOld();
                 if (changed.Behaviour.Pieces.Count == 0)
                     return;
                 bool oldValue = changed.Behaviour.Pieces[i]; 
-                Debug.Log("PC - old value:" + oldValue);
                 changed.LoadNew();
                 bool newValue = changed.Behaviour.Pieces[i];
 

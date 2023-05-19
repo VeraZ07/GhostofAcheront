@@ -40,7 +40,6 @@ namespace GOA
         {
             //LevelBuilder builder = FindObjectOfType<LevelBuilder>();
             //Puzzle puzzle = builder.GetPuzzle(PuzzleController.PuzzleIndex);
-            Debug.LogFormat("Color - Init - State:{0}", state);
             colorRenderer.material.SetColor("_EmissiveColor",  colors[state] * emissiveIntensity);
             colorRenderer.material.SetColor("_BaseColor", colors[state]);
         }

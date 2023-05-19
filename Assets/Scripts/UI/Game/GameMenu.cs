@@ -74,7 +74,6 @@ namespace GOA.UI
 
         public void Hide()
         {
-            Debug.Log("Hide Game Menu");
             DeactivateAllPanels();
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;

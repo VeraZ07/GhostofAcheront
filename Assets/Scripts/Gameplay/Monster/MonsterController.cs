@@ -166,7 +166,7 @@ namespace GOA
         {
             if (State == state)
                 return;
-            Debug.Log("Monster - Setting new state: " + (MonsterState)state);
+            
             State = state;
             switch (State)
             {
@@ -404,14 +404,12 @@ namespace GOA
                 if (lastPuzzle == null)
                 {
                     // Get the first sector
-                    Debug.LogFormat("MONSTER - last puzzle solved - null");
                     Connection c = new List<Connection>(builder.Connections).Find(c => c.IsInitialConnection());
                     tile = builder.GetTile(c.TargetTileId);
                 }
                 else
                 {
                     int puzzleId = builder.GetPuzzleId(lastPuzzle);
-                    Debug.LogFormat("MONSTER - last puzzle solved - id:{0}", puzzleId);
                     int gateIndex = new List<CustomObject>(builder.CustomObjects).FindIndex(g => g.GetType() == typeof(Gate) && (g as Gate).PuzzleIndex == puzzleId);
                     Connection c = new List<Connection>(builder.Connections).Find(c => c.gateIndex == gateIndex);
                     // Get the target tile of the connection or the source if the target is -1 ( it happens with the last puzzle )
@@ -420,8 +418,7 @@ namespace GOA
                 }
                 
                 Sector sector = builder.GetSector(tile.sectorIndex);
-                Debug.LogFormat("MONSTER - sector to patrol - id:{0}", tile.sectorIndex);
-
+                
                 int targetTileId = sector.TileIds[Random.Range(0, sector.TileIds.Count)];
                 Vector3 pos = builder.GetTile(targetTileId).GetPosition();
                 pos += Vector3.right * Tile.Size * .5f + Vector3.back * Tile.Size * .5f;

@@ -22,7 +22,6 @@ namespace GOA.UI
             
             if (GetGameManager())
             {
-                Debug.Log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
                 Init(GetGameManager().LevelSize);
             }
         }

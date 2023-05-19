@@ -1077,8 +1077,7 @@ namespace GOA.Level
                 case 2:
                     int cols = (int)Mathf.Sqrt(tiles.Length);
                     bool vertical = Random.Range(0, 2) == 0;
-                    Debug.Log("Builder - Vertical Distribution:" + vertical);
-                   
+                                       
                     for(int i=0; i<tiles.Length; i++)
                     {
                         int id = 1;
@@ -1509,11 +1508,6 @@ namespace GOA.Level
             
             List<PuzzleAsset> puzzleCollection = new List<PuzzleAsset>(Resources.LoadAll<PuzzleAsset>(System.IO.Path.Combine(PuzzleAsset.ResourceFolder, theme.ToString()))).FindAll(p=>!p.name.ToLower().StartsWith("_"));
 
-            Debug.Log("PuzzleCollection.Count:" + puzzleCollection.Count);
-            foreach(PuzzleAsset asset in puzzleCollection)
-            {
-                Debug.Log("PuzzleAsset:" + asset.name);
-            }
            
             // Get all gates
             List<CustomObject> gates = customObjects.FindAll(g => g.GetType() == typeof(Gate));

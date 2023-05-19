@@ -529,8 +529,7 @@ namespace GOA
 
         public static void OnStateChanged(Changed<PlayerController> changed)
         {
-            Debug.Log("OnStateChanged:" + changed.Behaviour.State);
-
+           
             switch (changed.Behaviour.State)
             {
                 case (int)PlayerState.Alive:

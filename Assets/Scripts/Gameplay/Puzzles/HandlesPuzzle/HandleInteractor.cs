@@ -67,7 +67,6 @@ namespace GOA
 
         public void Move(int oldState, int newState)
         {
-            Debug.Log("Move handle:" + gameObject);
             StartCoroutine(DoMove(oldState, newState));
         }
         #endregion

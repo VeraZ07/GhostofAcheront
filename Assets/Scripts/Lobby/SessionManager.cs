@@ -92,23 +92,7 @@ namespace GOA
 
         void Update()
         {
-            if(Input.GetKeyDown(KeyCode.L))
-            {
-                //if(GameManager.Instance)
-                //    Debug.Log("GameSeed:" + GameManager.Instance.GameSeed);
-                //else
-                //    Debug.Log("ERROR - GameManager not found");
-            }
-
-            if (Input.GetKeyDown(KeyCode.K))
-            {
-                //if (GameManager.Instance)
-                //    runner.Despawn(GameManager.Instance.GetComponent<NetworkObject>());
-                //else
-                //    Debug.Log("ERROR - GameManager not found");
-            }
-
-            
+                       
         }
 
         IEnumerator StartMatch()
@@ -587,7 +571,6 @@ namespace GOA
         public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
         {
             this.sessionList = sessionList;
-            Debug.LogFormat("SessionManager - OnSessionListUpdated - Counts:{0}", sessionList.Count);
             OnSessionListUpdatedCallback?.Invoke(runner, sessionList);
         }
 
@@ -595,7 +578,6 @@ namespace GOA
         {
             if(shutdownReason == ShutdownReason.HostMigration)
             {
-                Debug.LogFormat("Runner shutdown for host migration");
                 DestroyImmediate(runner);
                 runner = null;
             }
