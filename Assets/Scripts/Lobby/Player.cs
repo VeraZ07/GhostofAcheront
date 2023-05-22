@@ -59,7 +59,7 @@ namespace GOA
                 /****************** Test ******************/
                 if (SessionManager.Instance.Runner.IsClient)
                 {
-                    RpcSetCharacterId((byte)1);
+                    RpcSetCharacterId((byte)0);
                 }
 
 

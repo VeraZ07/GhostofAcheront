@@ -1,4 +1,4 @@
-//#define TEST_PUZZLE
+#define TEST_PUZZLE
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -224,7 +224,13 @@ namespace GOA.Level
             Debug.LogFormat("LevelBuilder - Level built in {0} seconds.", (System.DateTime.Now-startTime).TotalSeconds);
 
 #if TEST_PUZZLE
-            TestPuzzle(null, 1);
+            //TestPuzzle(null, 1);
+            Transform[] tl = FindObjectsOfType<Transform>();
+            foreach(Transform t in tl)
+            {
+                if (t.gameObject.layer == LayerMask.NameToLayer("Wall"))
+                    t.gameObject.SetActive(false);
+            }
 #endif
             //
             // Optimize decals
@@ -1624,7 +1630,9 @@ namespace GOA.Level
 #if TEST_PUZZLE
         void TestPuzzle(string puzzleAssetName, int step)
         {
-            if(step == 0)
+            
+
+            if (step == 0)
             {
                 List<PuzzleAsset> puzzleCollection = new List<PuzzleAsset>(Resources.LoadAll<PuzzleAsset>(System.IO.Path.Combine(PuzzleAsset.ResourceFolder, theme.ToString()))).FindAll(p => !p.name.ToLower().StartsWith("_"));
 
@@ -1670,16 +1678,18 @@ namespace GOA.Level
                     obj.SceneObject.transform.position = sp.transform.position + sp.transform.forward * 7f + sp.transform.right * rOff;
                     obj.SceneObject.transform.forward = -sp.transform.forward;
                     rOff += -4f;
-                    foreach (int id in (puzzle as PicturePuzzle).PieceIds)
-                    {
-                        obj = customObjects[id];
-                        Debug.LogFormat("Testing puzzle - piece id:{0}, piece obj:{1}", id, obj);
-                        Picker picker = new List<Picker>(FindObjectsOfType<Picker>()).Find(p=>p.CustomObjectId == id);
-                        Debug.LogFormat("Testing puzzle - picker:{0}", picker);
-                        picker.transform.position = sp.transform.position + sp.transform.forward * 7f + sp.transform.right * rOff;
-                        obj.SceneObject.transform.position = picker.transform.position;
-                        rOff += 4f;
-                    }
+                        foreach (int id in (puzzle as PicturePuzzle).PieceIds)
+                        {
+                            obj = customObjects[id];
+                            Debug.LogFormat("Testing puzzle - piece id:{0}, piece obj:{1}", id, obj);
+                        Debug.Log("Pickers.Count:" + FindObjectsOfType<Picker>().Length);
+                            Picker picker = new List<Picker>(FindObjectsOfType<Picker>()).Find(p => p.CustomObjectId == id);
+                            Debug.LogFormat("Testing puzzle - picker:{0}", picker);
+                            picker.transform.position = sp.transform.position + sp.transform.forward * 7f + sp.transform.right * rOff;
+                            obj.SceneObject.transform.position = picker.transform.position;
+                            rOff += 4f;
+                        }
+                    
                 }
 
                 if (puzzle.GetType() == typeof(HandlesPuzzle))

@@ -66,7 +66,7 @@ namespace GOA
             }
             else
             {
-                inventory?.OnEmptyInventory();
+                inventory.OnEmptyInventory?.Invoke();
             }
             puzzleController.Busy = false;
 
