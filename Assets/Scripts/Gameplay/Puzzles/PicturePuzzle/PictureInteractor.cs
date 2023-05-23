@@ -36,12 +36,12 @@ namespace GOA
         #region private methods
         IEnumerator DoStartInteraction(PlayerController playerController)
         {
-            Debug.LogFormat("[PuzzleInteractor - Starting interaction...]");
+            Debug.LogFormat("[PuzzleInteractor - Starting interaction - playerId:{0}]", playerController.PlayerId);
 
             puzzleController.Busy = true;
 
-            if (!inventory)
-                inventory = new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.PlayerId == playerController.PlayerId);
+            //if (!inventory)
+            inventory = new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.PlayerId == playerController.PlayerId);
 
             Debug.LogFormat("[PuzzleInteractor - Starting interaction - Inventory.Items.Count:{0}]", inventory.Items.Count);
 
