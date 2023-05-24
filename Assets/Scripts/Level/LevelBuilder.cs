@@ -1,4 +1,4 @@
-#define TEST_PUZZLE
+//#define TEST_PUZZLE
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -218,7 +218,7 @@ namespace GOA.Level
             // Spawn monster ( server only )
             //
 #if !TEST_PUZZLE
-            SpawnMonster();
+            //SpawnMonster();
 #endif
 
             Debug.LogFormat("LevelBuilder - Level built in {0} seconds.", (System.DateTime.Now-startTime).TotalSeconds);
