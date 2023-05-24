@@ -218,7 +218,7 @@ namespace GOA.Level
             // Spawn monster ( server only )
             //
 #if !TEST_PUZZLE
-            //SpawnMonster();
+            SpawnMonster();
 #endif
 
             Debug.LogFormat("LevelBuilder - Level built in {0} seconds.", (System.DateTime.Now-startTime).TotalSeconds);
