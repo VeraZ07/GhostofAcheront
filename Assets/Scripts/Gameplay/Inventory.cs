@@ -11,9 +11,9 @@ public class Inventory : NetworkBehaviour
     public UnityAction<string> OnItemRemoved;
     public UnityAction OnEmptyInventory;
 
-    [Networked]
-    [UnitySerializeField]
-    public int PlayerId { get; private set; } // The player id this inventory belongs to
+    //[Networked]
+    //[UnitySerializeField]
+    //public int PlayerId { get; private set; } // The player id this inventory belongs to
 
     [Networked(OnChanged = nameof(OnItemsChanged))]
     [Capacity(10)] public NetworkLinkedList<NetworkString<_16>> Items => default;
@@ -60,29 +60,43 @@ public class Inventory : NetworkBehaviour
         base.Spawned();
     }
 
-    public void Init(int playerId)
-    {
-        PlayerId = playerId;
-    }
+    //public void Init(int playerId)
+    //{
+    //    PlayerId = playerId;
+    //}
 
     public void AddItem(string itemName)
     {
         Items.Add(itemName);
         // This is only called on local inventory
-        OnItemAdded?.Invoke(itemName);
+        //OnItemAdded?.Invoke(itemName);
     }
 
     public void RemoveItem(string itemName)
     {
         Items.Remove(itemName);
         // This is only called on local inventory
-        OnItemRemoved?.Invoke(itemName);
+        //OnItemRemoved?.Invoke(itemName);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
+    public void RpcReportEmpty()
+    {
+        OnEmptyInventory?.Invoke();
     }
 
     public static void OnItemsChanged(Changed<Inventory> changed)
     {
         //Debug.LogFormat("OnSolvedChanged:{0}", changed.Behaviour.Solved);
         //OnItemsChangedCallback?.Invoke(changed.Behaviour);
+        changed.LoadOld();
+        int oldCount = changed.Behaviour.Items.Count;
+        changed.LoadNew();
+        int newCount = changed.Behaviour.Items.Count;
+        if (oldCount < newCount)
+            changed.Behaviour.OnItemAdded?.Invoke("");
+        else
+            changed.Behaviour.OnItemRemoved?.Invoke("");
     }
 
 }

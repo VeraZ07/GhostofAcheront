@@ -113,9 +113,12 @@ namespace GOA
                 inventories = new List<Inventory>(GameObject.FindObjectsOfType<Inventory>());
             }
 
-            Inventory inventory = inventories.Find(i => i.PlayerId == playerController.PlayerId);
+            //Inventory inventory = inventories.Find(i => i.PlayerId == playerController.PlayerId);
+            Inventory inventory = inventories.Find(i => i.Object.InputAuthority == playerController.Object.InputAuthority);
             inventory.AddItem(itemAsset.name);
-     
+
+            
+
             yield return new WaitForSeconds(.5f);
 
            

@@ -116,7 +116,8 @@ namespace GOA.UI
 
         Inventory GetPlayerInventory(Player player)
         {
-            return new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.PlayerId == player.PlayerRef.PlayerId);
+            //return new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.PlayerId == player.PlayerRef.PlayerId);
+            return new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.Object.InputAuthority == player.PlayerRef);
         }
     }
 

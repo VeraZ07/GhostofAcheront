@@ -35,7 +35,8 @@ namespace GOA.UI
         {
             if (!inventory)
             {
-                inventory = new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.PlayerId == Player.Local.PlayerRef.PlayerId);
+                //inventory = new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.PlayerId == Player.Local.PlayerRef.PlayerId);
+                inventory = new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.Object.InputAuthority == Player.Local.PlayerRef);
                 if (inventory)
                 {
                     inventory.OnItemAdded += HandleOnItemAdded;

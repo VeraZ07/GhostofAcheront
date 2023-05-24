@@ -374,10 +374,12 @@ namespace GOA
                             
                             Debug.Log("Found Inventory to resume");
                             //if ((player.PlayerId >= runner.SessionInfo.MaxPlayers && piOut.PlayerId == runner.SessionInfo.MaxPlayers-1) || player.PlayerId == piOut.PlayerId - 1)
-                            if ((player == runner.LocalPlayer && piOut.PlayerId == 0) || player.PlayerId == piOut.PlayerId - 1)
+                            //if ((player == runner.LocalPlayer && piOut.PlayerId == 0) || player.PlayerId == piOut.PlayerId - 1)
+                            //if ((player == runner.LocalPlayer && piOut.Object.InputAuthority.PlayerId == 0) || player.PlayerId == piOut.Object.InputAuthority.PlayerId - 1)
+                            if (resNO.InputAuthority.PlayerId == oldPlayerId)
                             {
                                 
-                                runner.Spawn(resNO, inputAuthority: runner.LocalPlayer,
+                                runner.Spawn(resNO, inputAuthority: player,
                                     onBeforeSpawned: (runner, newNO) =>
                                     {
 
@@ -393,7 +395,7 @@ namespace GOA
                                             newNO.GetComponent<NetworkBehaviour>().CopyStateFrom(myCustomNetworkBehaviour);
                                         }
 
-                                        newNO.GetComponent<Inventory>().Init(player.PlayerId);
+                                        //newNO.GetComponent<Inventory>().Init(player.PlayerId);
                                     });
                             }
 
@@ -534,9 +536,9 @@ namespace GOA
                             });
 
                         // Each character has an inventory attached to it. Server has authority on all inventories.
-                        runner.Spawn(inventoryPrefab, Vector3.zero, Quaternion.identity, runner.LocalPlayer, 
+                        runner.Spawn(inventoryPrefab, Vector3.zero, Quaternion.identity, player.PlayerRef, 
                             (r, o) => {
-                                o.GetComponent<Inventory>().Init(player.PlayerRef.PlayerId);
+                                //o.GetComponent<Inventory>().Init(player.PlayerRef.PlayerId);
                             });
 
 

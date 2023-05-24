@@ -40,8 +40,8 @@ namespace GOA
 
             puzzleController.Busy = true;
 
-            //if (!inventory)
-            inventory = new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.PlayerId == playerController.PlayerId);
+            //inventory = new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.PlayerId == playerController.PlayerId);
+            inventory = new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.Object.InputAuthority == playerController.Object.InputAuthority);
 
             Debug.LogFormat("[PuzzleInteractor - Starting interaction - Inventory.Items.Count:{0}]", inventory.Items.Count);
 
@@ -66,7 +66,8 @@ namespace GOA
             }
             else
             {
-                inventory.OnEmptyInventory?.Invoke();
+                //inventory.OnEmptyInventory?.Invoke();
+                inventory.RpcReportEmpty();
             }
             puzzleController.Busy = false;
 
