@@ -390,7 +390,7 @@ namespace GOA
                 players = new List<PlayerController>(FindObjectsOfType<PlayerController>());
 
             bool trackPlayer = Random.Range(0, monsterNoTrackMax) == 0;
-            trackPlayer = true; // TO REMOVE
+            //trackPlayer = true; // TO REMOVE
 
             if (trackPlayer)
             {
