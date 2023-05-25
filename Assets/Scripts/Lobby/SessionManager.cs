@@ -240,21 +240,19 @@ namespace GOA
                 if (runner.IsServer)
                 {
 
-                    
-
                     Debug.Log("ResumeSnapshot.Count:" + new List<NetworkObject>(runner.GetResumeSnapshotNetworkObjects()).Count);
 
                     //new List<NetworkObject>(runner.GetResumeSnapshotNetworkObjects()).FindAll(o=>o.GetBehaviour<)
                     foreach (var resNO in runner.GetResumeSnapshotNetworkObjects())
                     {
-                       
                         // The old player-0 becomes the new host, so the old player-1 becomes the new player-0 and so on.
-                        int oldPlayerId = 0;
-                        if (player.PlayerId < runner.SessionInfo.MaxPlayers)
-                            oldPlayerId = player.PlayerId + 1;
-                        else
-                            oldPlayerId = runner.SessionInfo.MaxPlayers - 1;
-                            
+                        // It works only for two players at the moment
+                        int oldPlayerId = 0; 
+                        //if (player.PlayerId < runner.SessionInfo.MaxPlayers)
+                        //    oldPlayerId = player.PlayerId + 1;
+                        //else
+                        //    oldPlayerId = runner.SessionInfo.MaxPlayers - 1;
+                        
                         // Player
                         if (resNO.TryGetBehaviour<Player>(out var ppOut))
                         {
@@ -696,6 +694,27 @@ namespace GOA
         {
             sessionList.Clear();
             runner.Shutdown(false, ShutdownReason.Ok, true);
+        }
+
+        public void PushSnapshot()
+        {
+            if (!Runner.IsServer || Runner.IsSinglePlayer)
+                return;
+
+            Runner.PushHostMigrationSnapshot().ContinueWith((t)=>
+            {
+                if (t.IsCompleted)
+                {
+                    if (t.IsFaulted)
+                    {
+                        Debug.LogErrorFormat("PushSnapshot failed:{0}", t.Exception.Message.ToString());
+                    }
+                    else
+                    {
+                        Debug.Log("PushSnapshot succeeded");
+                    }
+                }
+            });
         }
 
         #endregion

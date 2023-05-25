@@ -125,6 +125,7 @@ namespace GOA
 
             if (Runner.IsServer)
             {
+                SessionManager.Instance.PushSnapshot();
                 yield return new WaitForSeconds(1.0f);
                 Runner.Despawn(GetComponent<NetworkObject>());
             }

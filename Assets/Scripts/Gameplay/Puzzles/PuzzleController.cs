@@ -46,6 +46,9 @@ namespace GOA
         {
             Debug.LogFormat("OnSolvedChanged:{0}", changed.Behaviour.Solved);
             OnSolvedChangedCallback?.Invoke(changed.Behaviour);
+
+            // Try to save the current snapshot
+            SessionManager.Instance.PushSnapshot();
         }
 
         public virtual void Initialize(int puzzleIndex)
