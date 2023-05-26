@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Fusion;
 using GOA.Interfaces;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,13 +9,17 @@ using UnityEngine.Events;
 
 namespace GOA
 {
-    public class SharkKiller : MonoBehaviour, IKiller
+    public class SharkKiller : NetworkBehaviour, IKiller
     {
         #region fields
         [SerializeField]
         Transform[] bitePivots;
 
-       
+        [Networked(OnChanged = nameof(OnVictimIdChanged))]
+        [UnitySerializeField] 
+        int VictimId { get; set; }
+
+        
         PlayerController victim;
         MonsterController monster;
         NavMeshAgent agent;
@@ -36,7 +41,11 @@ namespace GOA
         
         public void Kill(PlayerController victim, int attackId)
         {
+            if (!Runner.IsServer)
+                return;
+
             this.victim = victim;
+            VictimId = victim.Object.InputAuthority.PlayerId;
             agent.velocity = Vector3.zero;
             agent.isStopped = true;
             victim.SetDyingState();
@@ -54,11 +63,10 @@ namespace GOA
 
         public void OnBite(int id)
         {
+           
             switch (id)
             {
                 case 0: // Adjust monster position
-                    
-                    
                     transform.DORotateQuaternion(Quaternion.LookRotation((victim.transform.position - transform.position).normalized, Vector3.up), 0.2f); 
 
                     break;
@@ -76,10 +84,13 @@ namespace GOA
                     bitePivots[1].GetComponent<FixedJoint>().connectedBody = null;
                     break;
                 case 3: // Exit
-                    
-                    victim.SetDeadState();
-                    agent.isStopped = false;
-                    monster.SetIdleState();
+
+                    if (Runner.IsServer)
+                    {
+                        victim.SetDeadState();
+                        agent.isStopped = false;
+                        monster.SetIdleState();
+                    }
                     break;
             }
 
@@ -88,6 +99,7 @@ namespace GOA
 
         IEnumerator DoBite()
         {
+            Debug.Log("DoBite()");
             Joint joint = bitePivots[1].GetComponent<FixedJoint>();
             Vector3 oldPos = bitePivots[1].localPosition;
 
@@ -99,8 +111,19 @@ namespace GOA
             victim.GetComponent<Animator>().enabled = false;
             joint.connectedBody = victim.HeadPivot.transform.parent.GetComponent<Rigidbody>();
             
-
             victim.ExplodeHead();
+        }
+        #endregion
+
+        #region fusion callbacks
+        public static void OnVictimIdChanged(Changed<SharkKiller> changed)
+        {
+            if (changed.Behaviour.Runner.IsClient)
+            {
+                // Find player controller by player id
+                changed.Behaviour.victim = new List<PlayerController>(FindObjectsOfType<PlayerController>()).Find(p => p.Object.InputAuthority.PlayerId == changed.Behaviour.VictimId);
+            }
+     
         }
         #endregion
     }

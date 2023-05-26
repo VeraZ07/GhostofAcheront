@@ -164,33 +164,38 @@ namespace GOA
         #region state management
         void SetState(int state)
         {
-            if (State == state)
-                return;
-            
-            State = state;
-            switch (State)
+            if (Runner.IsServer)
             {
-                case (int)MonsterState.Idle:
-                    EnterIdleState();
-                    break;
-                case (int)MonsterState.Moving:
-                    EnterMovingState();
-                    break;
-                case (int)MonsterState.PlayerSpotted:
-                    break;
-                case (int)MonsterState.Hunting:
-                    EnterHuntingState();
-                    break;
-                case (int)MonsterState.PlayerLost:
-                    EnterPlayerLostState();
-                    break;
-                case (int)MonsterState.Killing:
-                    EnterKillingState();
-                    break;
-                case (int)MonsterState.PlayerEscaped:
-                    EnterPlayerEscapedState();
-                    break;
+                if (State == state)
+                    return;
+
+                State = state;
+                switch (State)
+                {
+                    case (int)MonsterState.Idle:
+                        EnterIdleState();
+                        break;
+                    case (int)MonsterState.Moving:
+                        EnterMovingState();
+                        break;
+                    case (int)MonsterState.PlayerSpotted:
+                        break;
+                    case (int)MonsterState.Hunting:
+                        EnterHuntingState();
+                        break;
+                    case (int)MonsterState.PlayerLost:
+                        EnterPlayerLostState();
+                        break;
+                    case (int)MonsterState.Killing:
+                        EnterKillingState();
+                        break;
+                    case (int)MonsterState.PlayerEscaped:
+                        EnterPlayerEscapedState();
+                        break;
+                }
             }
+            
+            
         }
 
         void EnterIdleState()

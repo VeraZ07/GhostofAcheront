@@ -245,6 +245,7 @@ MonoBehaviour:
   - {fileID: 6511887328113569427}
   - {fileID: 2410193084856851999}
   - {fileID: 4475389152104920689}
+  - {fileID: 3222279416841208496}
   - {fileID: 551653469021792624}
   SimulationBehaviours: []
 --- !u!114 &6511887328113569427
@@ -310,8 +311,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
   Animator: {fileID: 4422084046540371764}
-  TotalWords: 4
-  SyncSettings: 79
+  TotalWords: 6
+  SyncSettings: 95
   FloatAccuracy:
     _value: 0
     _inverse: 0
@@ -358,9 +359,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e99c277c94ae64c45ab82a307e4cf2c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
   bitePivots:
   - {fileID: 8710266255205388137}
   - {fileID: 2224379871934155418}
+  _VictimId: 0
 --- !u!114 &551653469021792624
 MonoBehaviour:
   m_ObjectHideFlags: 0

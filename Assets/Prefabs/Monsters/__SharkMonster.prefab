@@ -87,6 +87,7 @@ MonoBehaviour:
   - {fileID: 6511887328113569427}
   - {fileID: 2410193084856851999}
   - {fileID: 4475389152104920689}
+  - {fileID: 3222279416841208496}
   SimulationBehaviours: []
 --- !u!114 &6511887328113569427
 MonoBehaviour:
@@ -199,6 +200,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e99c277c94ae64c45ab82a307e4cf2c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
   bitePivots:
   - {fileID: 8710266255205388137}
   - {fileID: 2224379871934155418}
