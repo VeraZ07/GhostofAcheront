@@ -20,6 +20,8 @@ namespace GOA
 
         [Networked] public int LevelSize { get; set; } = 1;
 
+        
+
         private void Awake()
         {
             //if (!Instance)
@@ -71,7 +73,7 @@ namespace GOA
             base.Despawned(runner, hasState);
         }
 
-
+       
 
         public void CreateNewSeed()
         {
@@ -81,13 +83,15 @@ namespace GOA
         public void YouWin()
         {
             OnGameWin?.Invoke();
-            FindObjectOfType<MonsterController>().SetPlayerEscapedState();
+            FindObjectOfType<MonsterController>()?.SetPlayerEscapedState();
             PlayerController[] players = FindObjectsOfType<PlayerController>();
             foreach(PlayerController player in players)
             {
                 player.Escape();
             }
-            StartCoroutine(LoadMenuDelayed(5f));
+           
+            // Just wait a little more on the server to give every client the time to quit
+            StartCoroutine(LoadMenuDelayed(Runner.IsServer ? 5f : 4f));
         }
 
         public void YouLose()
@@ -96,17 +100,25 @@ namespace GOA
             StartCoroutine(LoadMenuDelayed(5f));
         }
 
-        public void PlayerExit(PlayerController player)
-        {
-            if (SessionManager.Instance.Runner.IsSinglePlayer)
-                YouWin();
-        }
+        //public void PlayerExit(PlayerController player)
+        //{
+        //    if (SessionManager.Instance.Runner.IsSinglePlayer)
+        //        YouWin();
+        //}
 
         public void PlayerDead(PlayerController player)
         {
             if (SessionManager.Instance.Runner.IsSinglePlayer)
                 YouLose();
         }
+
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        public void RpcGameWin()
+        {
+            YouWin();
+        }
+
+
     }
 
 }

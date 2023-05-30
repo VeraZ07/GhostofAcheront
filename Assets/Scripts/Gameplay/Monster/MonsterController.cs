@@ -71,6 +71,8 @@ namespace GOA
         float walkSpeed;
         float runSpeed;
 
+        bool patching = false;
+
         MonsterAudioController audioController;
         #endregion
 
@@ -120,7 +122,7 @@ namespace GOA
         {
             base.FixedUpdateNetwork();
 
-            if (Runner.IsServer)
+            if (Runner.IsServer && !patching)
             {
 
                 switch (State)
@@ -198,11 +200,22 @@ namespace GOA
             
         }
 
+        IEnumerator PatchAgent()
+        {
+            patching = true;
+            agent.ResetPath();
+            agent.enabled = false;
+            yield return new WaitForSeconds(0.5f);
+            agent.enabled = true;
+            patching = false;
+        }
+
         void EnterIdleState()
         {
+            StartCoroutine(PatchAgent());
             agent.speed = walkSpeed;
-            if(agent.hasPath)
-                agent.ResetPath();
+            
+            agent.ResetPath();
             timer = Random.Range(idleTimeMin, idleTimeMax);
 
         }
@@ -254,6 +267,7 @@ namespace GOA
         void LoopIdleState()
         {
             timer -= Time.fixedDeltaTime;
+            timer = 0; // To remove
             if(timer < 0) // Prepare for state changing
             {
                 SetState((int)MonsterState.Moving);

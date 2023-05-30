@@ -50,20 +50,21 @@ namespace GOA.UI
 
         IEnumerator DoQuitGame()
         {
-            SessionManager.Instance.Runner.PushHostMigrationSnapshot().ContinueWith((t)=> {
-                if (t.IsCompleted)
-                {
-                    if (t.IsFaulted)
-                    {
-                        Debug.Log("PushSnapshot failed");
-                    }
-                    else
-                    {
-                        Debug.Log("PushSnapshot succeeded");
-                    }
-                }
-            });
-            yield return new WaitForSeconds(3.2f);
+            yield return SessionManager.Instance.Runner.PushHostMigrationSnapshot();
+            //SessionManager.Instance.Runner.PushHostMigrationSnapshot().ContinueWith((t)=> {
+            //    if (t.IsCompleted)
+            //    {
+            //        if (t.IsFaulted)
+            //        {
+            //            Debug.Log("PushSnapshot failed");
+            //        }
+            //        else
+            //        {
+            //            Debug.Log("PushSnapshot succeeded");
+            //        }
+            //    }
+            //});
+            //yield return new WaitForSeconds(3.2f);
             SessionManager.Instance.QuitSession();
             UnityEngine.SceneManagement.SceneManager.LoadScene(0);
             
