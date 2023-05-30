@@ -267,7 +267,7 @@ namespace GOA
         void LoopIdleState()
         {
             timer -= Time.fixedDeltaTime;
-            timer = 0; // To remove
+            
             if(timer < 0) // Prepare for state changing
             {
                 SetState((int)MonsterState.Moving);
@@ -409,7 +409,9 @@ namespace GOA
                 players = new List<PlayerController>(FindObjectsOfType<PlayerController>());
 
             bool trackPlayer = Random.Range(0, monsterNoTrackMax) == 0;
+#if UNITY_EDITOR
             //trackPlayer = true; // TO REMOVE
+#endif
 
             if (trackPlayer)
             {
@@ -418,26 +420,27 @@ namespace GOA
             }
             else
             {
-                Puzzle lastPuzzle = builder.GetLastSolvedPuzzle();
-                Tile tile = null;
-                
-                if (lastPuzzle == null)
-                {
-                    // Get the first sector
-                    Connection c = new List<Connection>(builder.Connections).Find(c => c.IsInitialConnection());
-                    tile = builder.GetTile(c.TargetTileId);
-                }
-                else
-                {
-                    int puzzleId = builder.GetPuzzleId(lastPuzzle);
-                    int gateIndex = new List<CustomObject>(builder.CustomObjects).FindIndex(g => g.GetType() == typeof(Gate) && (g as Gate).PuzzleIndex == puzzleId);
-                    Connection c = new List<Connection>(builder.Connections).Find(c => c.gateIndex == gateIndex);
-                    // Get the target tile of the connection or the source if the target is -1 ( it happens with the last puzzle )
-                    tile = c.TargetTileId < 0 ? builder.GetTile(c.SourceTileId) : tile = builder.GetTile(c.TargetTileId); ;
-                    
-                }
-                
-                Sector sector = builder.GetSector(tile.sectorIndex);
+                //Puzzle lastPuzzle = builder.GetLastSolvedPuzzle();
+                //Tile tile = null;
+
+                //if (lastPuzzle == null)
+                //{
+                //    // Get the first sector
+                //    Connection c = new List<Connection>(builder.Connections).Find(c => c.IsInitialConnection());
+                //    tile = builder.GetTile(c.TargetTileId);
+                //}
+                //else
+                //{
+                //    int puzzleId = builder.GetPuzzleId(lastPuzzle);
+                //    int gateIndex = new List<CustomObject>(builder.CustomObjects).FindIndex(g => g.GetType() == typeof(Gate) && (g as Gate).PuzzleIndex == puzzleId);
+                //    Connection c = new List<Connection>(builder.Connections).Find(c => c.gateIndex == gateIndex);
+                //    // Get the target tile of the connection or the source if the target is -1 ( it happens with the last puzzle )
+                //    tile = c.TargetTileId < 0 ? builder.GetTile(c.SourceTileId) : tile = builder.GetTile(c.TargetTileId); ;
+
+                //}
+
+                //Sector sector = builder.GetSector(tile.sectorIndex);
+                Sector sector = builder.GetCurrentPlayingSector();
                 
                 int targetTileId = sector.TileIds[Random.Range(0, sector.TileIds.Count)];
                 Vector3 pos = builder.GetTile(targetTileId).GetPosition();

@@ -1,4 +1,4 @@
-//#define TEST_PUZZLE
+#define TEST_PUZZLE
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -1603,6 +1603,30 @@ namespace GOA.Level
                     return puzzle;
             }
             return null;
+        }
+
+        public Sector GetCurrentPlayingSector()
+        {
+            Puzzle lastPuzzle = GetLastSolvedPuzzle();
+            Tile tile = null;
+
+            if (lastPuzzle == null)
+            {
+                // Get the first sector
+                Connection c = new List<Connection>(Connections).Find(c => c.IsInitialConnection());
+                tile = GetTile(c.TargetTileId);
+            }
+            else
+            {
+                int puzzleId = GetPuzzleId(lastPuzzle);
+                int gateIndex = new List<CustomObject>(CustomObjects).FindIndex(g => g.GetType() == typeof(Gate) && (g as Gate).PuzzleIndex == puzzleId);
+                Connection c = new List<Connection>(Connections).Find(c => c.gateIndex == gateIndex);
+                // Get the target tile of the connection or the source if the target is -1 ( it happens with the last puzzle )
+                tile = c.TargetTileId < 0 ? GetTile(c.SourceTileId) : tile = GetTile(c.TargetTileId); ;
+
+            }
+
+            return GetSector(tile.sectorIndex);
         }
 
         public int GetPuzzleId(Puzzle puzzle)

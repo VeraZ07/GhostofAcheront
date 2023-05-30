@@ -130,11 +130,25 @@ namespace GOA
                     animator.SetFloat(animParamAngle, -animAngle / 180f);
                     break;
             }
-            
+
 
 #if UNITY_EDITOR
             //if (Input.GetKeyDown(KeyCode.P))
             //    RiseAgain();
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                Inventory inv = new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.Object.HasInputAuthority);
+                Debug.Log("Found local inventory:" + inv);
+                if(inv.Items.Count > 0)
+                {
+                    Level.LevelBuilder builder = FindObjectOfType<Level.LevelBuilder>();
+                    
+                    Picker picker = new List<Picker>(FindObjectsOfType<Picker>()).Find(p => p.ItemAssetName == inv.Items[0].ToString() && p.Empty && builder.GetCurrentPlayingSector() == builder.GetSector(builder.GetTile(builder.CustomObjects[p.CustomObjectId].TileId).sectorIndex));
+                    Debug.Log("Found empty picker:" + picker.name);
+                    inv.RemoveItem(inv.Items[0].ToString());
+                    picker.Reactivate();
+                }
+            }
 #endif
         }
         #endregion

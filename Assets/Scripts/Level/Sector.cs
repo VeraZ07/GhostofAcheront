@@ -106,6 +106,8 @@ namespace GOA.Level
                 this.builder = builder;
             }
 
+            
+
             public void Build()
             {
                 //Sector sector = sectors[sectorIndex];

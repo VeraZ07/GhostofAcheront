@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 57bf282b04a307e4d99ebafbaf6e43f5, type: 3}
-  m_Name: Pic1_5
+  m_Name: Pic2_2
   m_EditorClassIdentifier: 
-  icon: {fileID: 21300000, guid: c1d9903ad00b32746bafb452f913357a, type: 3}
+  icon: {fileID: 21300000, guid: 9e62064e128e99e4db3409598303f427, type: 3}
   description: A piece of a picture
-  displayName: Part 4
+  displayName: Part 3

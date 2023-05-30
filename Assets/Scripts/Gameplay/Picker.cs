@@ -127,25 +127,35 @@ namespace GOA
             {
                 SessionManager.Instance.PushSnapshot();
                 yield return new WaitForSeconds(1.0f);
-                Runner.Despawn(GetComponent<NetworkObject>());
+                //Runner.Despawn(GetComponent<NetworkObject>());
             }
 
 
+        }
+
+        public void Reactivate()
+        {
+            Empty = false;
         }
 
         public static void OnEmptyChanged(Changed<Picker> changed)
         {
             if (changed.Behaviour.Empty)
             {
-                DestroyImmediate(changed.Behaviour.sceneObject);
-                DestroyImmediate(changed.Behaviour.vfx);
-                DestroyImmediate(changed.Behaviour.light);
+                //DestroyImmediate(changed.Behaviour.sceneObject);
+                //DestroyImmediate(changed.Behaviour.vfx);
+                //DestroyImmediate(changed.Behaviour.light);
 
+                changed.Behaviour.sceneObject.SetActive(false);
+                
                 changed.Behaviour.audioSource.Play();
 
                 changed.Behaviour.OnItemPicked?.Invoke();
             }
-
+            else
+            {
+                changed.Behaviour.sceneObject.SetActive(true);
+            }
         }
 
   
