@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
+using static GOA.Level.LevelBuilder;
 
 namespace GOA
 {
@@ -242,6 +243,9 @@ namespace GOA
 
                     Debug.Log("ResumeSnapshot.Count:" + new List<NetworkObject>(runner.GetResumeSnapshotNetworkObjects()).Count);
 
+                    Inventory oldHostInventory = null;
+                    LevelBuilder builder = FindObjectOfType<LevelBuilder>();
+
                     //new List<NetworkObject>(runner.GetResumeSnapshotNetworkObjects()).FindAll(o=>o.GetBehaviour<)
                     foreach (var resNO in runner.GetResumeSnapshotNetworkObjects())
                     {
@@ -396,7 +400,10 @@ namespace GOA
                                         //newNO.GetComponent<Inventory>().Init(player.PlayerId);
                                     });
                             }
-
+                            else
+                            {
+                                oldHostInventory = piOut;
+                            }
                             // Manage the items of the previous host here
                             // ...
                             // ...
@@ -411,7 +418,12 @@ namespace GOA
                             Debug.Log("Found Picker to resume");
                             if (player == runner.LocalPlayer)
                             {
-                                runner.Spawn(resNO, inputAuthority: player,
+                                int customObjectId = pickOut.CustomObjectId;
+                                CustomObject co = builder.CustomObjects[pickOut.CustomObjectId];
+                                Tile tile = builder.GetTile(co.TileId);
+                                Vector3 pos = tile.GetPosition();
+
+                                runner.Spawn(resNO, inputAuthority: player, position: pos, rotation: Quaternion.identity,
                                     onBeforeSpawned: (runner, newNO) =>
                                     {
 
@@ -465,11 +477,18 @@ namespace GOA
                             }
                         }
                     }
+
+                    // At this point we need to check for the inventry to resume
+                    StartCoroutine(RespawnOldHostItems(oldHostInventory));
                 }
             }
         }
 
-        
+        IEnumerator RespawnOldHostItems(Inventory inventory)
+        {
+            yield return new WaitForEndOfFrame();
+            inventory.RespawnAllItems();
+        }
 
         public void OnPlayerLeft(NetworkRunner runner, PlayerRef playerRef)
         {
@@ -478,12 +497,26 @@ namespace GOA
             // The server despawns the player
             if (runner.IsServer)
             {
+                // Desapwn controller
+                PlayerController playerController = new List<PlayerController>(FindObjectsOfType<PlayerController>()).Find(p => p.Object.InputAuthority == playerRef);
+                if (playerController)
+                    runner.Despawn(playerController.GetComponent<NetworkObject>());
+
+                // Despawn player
                 Player player = new List<Player>(FindObjectsOfType<Player>()).Find(p=>p.PlayerRef == playerRef);
                 if (player)
                     runner.Despawn(player.GetComponent<NetworkObject>());
-              
+
                 // Manage the items of the disconnected player here
                 // ...
+                Inventory inv = new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.Object.InputAuthority == playerRef);
+                if (inv)
+                {
+                    inv.RespawnAllItems();
+                    runner.Despawn(inv.GetComponent<NetworkObject>());
+                }
+                    
+                
             }
 
             OnPlayerLeftCallback?.Invoke(runner, playerRef);

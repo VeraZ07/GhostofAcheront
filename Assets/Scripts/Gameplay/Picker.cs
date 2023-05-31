@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using static GOA.Level.LevelBuilder;
 
 namespace GOA
 {
@@ -61,10 +62,13 @@ namespace GOA
             if (!root)
                 root = transform;
 
-            if (!Empty)
+            Debug.Log("Spawning picker:" + name);
+            //if (!Empty)
             {
                 LevelBuilder builder = FindObjectOfType<LevelBuilder>();
-                sceneObject = builder.CustomObjects[CustomObjectId].SceneObject;
+                CustomObject co = builder.CustomObjects[CustomObjectId];
+                sceneObject = co.SceneObject;
+                Debug.Log("Spawning picker - found scene object:" + sceneObject.name);
                 objectToRotate = sceneObject.transform.GetChild(0).GetChild(0);
                
             }
@@ -73,7 +77,6 @@ namespace GOA
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
             base.Despawned(runner, hasState);
-
         }
 
         #region interface implementation
@@ -133,15 +136,20 @@ namespace GOA
 
         }
 
+        
+
         public void Reactivate()
         {
             Empty = false;
         }
 
+
+
         public static void OnEmptyChanged(Changed<Picker> changed)
         {
             if (changed.Behaviour.Empty)
             {
+                Debug.Log("BBBBBBBBBBBBBBBBBBBBBBBBB");
                 //DestroyImmediate(changed.Behaviour.sceneObject);
                 //DestroyImmediate(changed.Behaviour.vfx);
                 //DestroyImmediate(changed.Behaviour.light);
@@ -154,6 +162,7 @@ namespace GOA
             }
             else
             {
+                Debug.Log("AAAAAAAAAAAAAAAAAAAAAAAAAAAA");
                 changed.Behaviour.sceneObject.SetActive(true);
             }
         }

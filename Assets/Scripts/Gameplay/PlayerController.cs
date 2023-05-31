@@ -137,20 +137,24 @@ namespace GOA
             //    RiseAgain();
             if (Input.GetKeyDown(KeyCode.P))
             {
-                Inventory inv = new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.Object.HasInputAuthority);
-                Debug.Log("Found local inventory:" + inv);
-                if(inv.Items.Count > 0)
-                {
-                    Level.LevelBuilder builder = FindObjectOfType<Level.LevelBuilder>();
-                    
-                    Picker picker = new List<Picker>(FindObjectsOfType<Picker>()).Find(p => p.ItemAssetName == inv.Items[0].ToString() && p.Empty && builder.GetCurrentPlayingSector() == builder.GetSector(builder.GetTile(builder.CustomObjects[p.CustomObjectId].TileId).sectorIndex));
-                    Debug.Log("Found empty picker:" + picker.name);
-                    inv.RemoveItem(inv.Items[0].ToString());
-                    picker.Reactivate();
-                }
+                //Inventory inv = new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.Object.HasInputAuthority);
+                //Debug.Log("Found local inventory:" + inv);
+                //if(inv.Items.Count > 0)
+                //{
+                //    Level.LevelBuilder builder = FindObjectOfType<Level.LevelBuilder>();
+
+                //    Picker picker = new List<Picker>(FindObjectsOfType<Picker>()).Find(p => p.ItemAssetName == inv.Items[0].ToString() && p.Empty && builder.GetCurrentPlayingSector() == builder.GetSector(builder.GetTile(builder.CustomObjects[p.CustomObjectId].TileId).sectorIndex));
+                //    Debug.Log("Found empty picker:" + picker.name);
+                //    inv.RemoveItem(inv.Items[0].ToString());
+                //    picker.Reactivate();
+                //}
+                if (Runner.IsServer)
+                    State = (int)PlayerState.Dead;
             }
 #endif
         }
+
+       
         #endregion
 
 
@@ -503,6 +507,8 @@ namespace GOA
 
         void EnterDeadState()
         {
+            
+
             // Both on client and server
             // Move the character out of the controller
             characterObject.transform.parent = null;
@@ -518,6 +524,14 @@ namespace GOA
             ghostTime = 2f;
 
             FindObjectOfType<GameManager>().PlayerDead(this);
+
+            if (Runner.IsServer && !Runner.IsSinglePlayer)
+            {
+                Inventory inv = new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.Object.InputAuthority == this.Object.InputAuthority);
+                inv.RespawnAllItems();
+            }
+            
+
         }
 
         void EnterRisingAgainState()
