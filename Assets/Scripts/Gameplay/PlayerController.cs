@@ -2,6 +2,7 @@ using DG.Tweening;
 using Fusion;
 using GOA.Assets;
 using GOA.Interfaces;
+using GOA.Level;
 using GOA.UI;
 using System.Collections;
 using System.Collections.Generic;
@@ -150,6 +151,8 @@ namespace GOA
                 //}
                 if (Runner.IsServer)
                     State = (int)PlayerState.Dead;
+
+                
             }
 #endif
         }
@@ -389,7 +392,11 @@ namespace GOA
         {
             yield return EyesEffect.Instance.CloseEyes();
             characterObject.transform.parent = null;
-            //Camera.main.transform.parent = null;
+
+            // Switch the post processing 
+            UnityEngine.Rendering.Volume volume = FindObjectOfType<UnityEngine.Rendering.Volume>();
+            volume.profile = FindObjectOfType<LevelBuilder>().GhostProfile;
+
             // Check a safe position for the player to move
             transform.position += Vector3.up * 3f + Vector3.right * 3f - Vector3.forward * 3f;
             Camera.main.transform.LookAt(transform);
@@ -399,8 +406,12 @@ namespace GOA
 
         IEnumerator DoLookAtYouDying()
         {
+           
             MonsterController monster = FindObjectOfType<MonsterController>();
             yield return EyesEffect.Instance.CloseEyes();
+
+            
+
             //characterObject.transform.parent = null;
             Camera.main.transform.parent = null;
             // Check a safe position for the camera to move
@@ -429,6 +440,9 @@ namespace GOA
             }
             Camera.main.transform.position = transform.position + Vector3.up * Level.LevelBuilder.TileHeight * .8f + dir.normalized * dist;
             Camera.main.transform.LookAt(HeadPivot.transform);
+            // Switch the post processing 
+            UnityEngine.Rendering.Volume volume = FindObjectOfType<UnityEngine.Rendering.Volume>();
+            volume.profile = FindObjectOfType<LevelBuilder>().GhostProfile;
             SetRenderingLayer(LayerMask.NameToLayer(Layers.Default));
             yield return EyesEffect.Instance.OpenEyes();
         }
@@ -484,6 +498,11 @@ namespace GOA
 
         }
 
+        void LoopRisingAgainState()
+        {
+
+        }
+
         void EnterEscapedState()
         {
 
@@ -496,13 +515,9 @@ namespace GOA
 
         void EnterDyingState()
         {
-            //if (Runner.IsServer)
-            //{
-                
-                cc.enabled = false;
-                cc.Velocity = Vector3.zero;
-                ResetAnimator();
-            //}
+            cc.enabled = false;
+            cc.Velocity = Vector3.zero;
+            ResetAnimator();
         }
 
         void EnterDeadState()
@@ -550,10 +565,7 @@ namespace GOA
             State = (int)PlayerState.Alive;
         }
 
-        void LoopRisingAgainState()
-        {
-
-        }
+        
 
         public static void OnStateChanged(Changed<PlayerController> changed)
         {
@@ -591,17 +603,20 @@ namespace GOA
             PlayerId = playerId;
         }
 
+        /// <summary>
+        /// This method is called by the monster server side
+        /// </summary>
         public void SetDyingState()
         {
             if (Runner.IsServer)
             {
                 State = (int)PlayerState.Dying;
-                //this.deadType = deadType;
-
-
             }
         }
 
+        /// <summary>
+        /// This method is called by the monster server side
+        /// </summary>
         public void SetDeadState()
         {
             if (Runner.IsServer)

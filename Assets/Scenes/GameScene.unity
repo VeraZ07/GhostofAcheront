@@ -371,6 +371,7 @@ MonoBehaviour:
   triggers: []
   globalVolumePrefab: {fileID: 705222808106588541, guid: ab15ed540b2e41047b614aca33527333,
     type: 3}
+  ghostProfile: {fileID: 11400000, guid: 1fa5cf8e36c65f44282164d9a0de140c, type: 2}
   localVolumetricFogPrefab: {fileID: 8742450213894873476, guid: 90fe8f485e8f2524287a729c08cbe53f,
     type: 3}
   floatingLightPrefabList:

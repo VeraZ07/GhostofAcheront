@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 
 namespace GOA.Level
@@ -9,6 +10,13 @@ namespace GOA.Level
     {
         [SerializeField]
         GameObject globalVolumePrefab;
+
+        [SerializeField]
+        VolumeProfile ghostProfile;
+        public VolumeProfile GhostProfile
+        {
+            get { return ghostProfile; }
+        }
 
         [SerializeField]
         GameObject localVolumetricFogPrefab;

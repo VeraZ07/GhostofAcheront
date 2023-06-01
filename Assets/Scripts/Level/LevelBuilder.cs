@@ -218,7 +218,7 @@ namespace GOA.Level
             // Spawn monster ( server only )
             //
 #if !TEST_PUZZLE
-            //SpawnMonster();
+            SpawnMonster();
 #endif
 
             Debug.LogFormat("LevelBuilder - Level built in {0} seconds.", (System.DateTime.Now-startTime).TotalSeconds);
@@ -909,7 +909,7 @@ namespace GOA.Level
                     {
                         bool isTop = i / room.width == 0;
                         bool isRight = i % room.width == room.width - 1;
-                        bool isBottom = i / room.width == room.width - 1;
+                        bool isBottom = i / room.width == room.height - 1;
                         bool isLeft = i % room.width == 0;
                         int id = room.tileIds[i];
                         if (isTop && id / size > 0)

@@ -30,7 +30,7 @@ namespace GOA
         GameObject meshRoot;
 
         [SerializeField]
-        float sightRange = 8f;
+        float sightRange = 8f * 1.1f;
 
         
         [SerializeField]
@@ -57,12 +57,17 @@ namespace GOA
 
         [SerializeField]
         PlayerController prey = null;
-        Vector3 preyLastPosition;
+        
+        //bool preyLost = false;
+        //float preyLostTime = 0f;
+        float extraTime = 0;
+        bool usingExtraTime = false;
+        PlayerController lastPrey;
                 
         float huntingTime = .5f;
         System.DateTime lastHuntingDT;
         NavMeshPath huntingPath;
-        float attackRange = .8f;
+        float attackRange = .8f * 1.1f;
         int monsterNoTrackMax = 4;
 
         [SerializeField]
@@ -181,6 +186,7 @@ namespace GOA
                         EnterMovingState();
                         break;
                     case (int)MonsterState.PlayerSpotted:
+                        EnterPlayerSpottedState();
                         break;
                     case (int)MonsterState.Hunting:
                         EnterHuntingState();
@@ -232,6 +238,11 @@ namespace GOA
             agent.speed = runSpeed;
         }
 
+        void EnterPlayerSpottedState()
+        {
+            usingExtraTime = false;
+            SetState((int)MonsterState.Hunting);
+        }
 
         void EnterKillingState()
         {
@@ -252,6 +263,8 @@ namespace GOA
         void EnterPlayerLostState()
         {
             huntingPath = null;
+            usingExtraTime = false;
+            SetState((int)MonsterState.Moving);
         }
 
         void LoopKillingState()
@@ -286,21 +299,22 @@ namespace GOA
                 SetState((int)MonsterState.PlayerSpotted);
             else if ((!agent.hasPath && !agent.pathPending) || Vector3.Distance(transform.position, agent.destination) < Tile.Size * .5f)
                 SetState((int)MonsterState.Idle);
-
         }
 
        
         void LoopHuntingState()
         {
+            Vector3 preyPos = !usingExtraTime ? prey.transform.position : lastPrey.transform.position;
 
-            float preyDistance = Vector3.Distance(prey.transform.position, transform.position);
+            float preyDistance = Vector3.Distance(preyPos, transform.position);
             if(preyDistance < attackRange)
             {
+                usingExtraTime = false;
                 SetState((int)MonsterState.Killing);
                 return;
             }
 
-            if (CheckForPlayer())
+            if (CheckForPlayer() || usingExtraTime)
             {
 
                 if ((System.DateTime.Now - lastHuntingDT).TotalSeconds > huntingTime)
@@ -310,8 +324,9 @@ namespace GOA
                     
                     lastHuntingDT = System.DateTime.Now;
                    
-                    agent.CalculatePath(prey.transform.position, huntingPath);
+                    agent.CalculatePath(preyPos, huntingPath);
                     
+
                 }
 
                 if (huntingPath != null && (huntingPath.status == NavMeshPathStatus.PathComplete || huntingPath.status == NavMeshPathStatus.PathPartial))
@@ -319,25 +334,33 @@ namespace GOA
                     agent.SetPath(huntingPath);
                     huntingPath = null;
                 }
-                    
-                    
+
+                if (usingExtraTime)
+                {
+                    extraTime -= Time.deltaTime;
+                    if (extraTime < 0)
+                    {
+                        usingExtraTime = false;
+                        huntingPath = null;
+                        SetState((int)MonsterState.PlayerLost);
+                    }
+                        
+                }    
                
             }
             else
             {
-                huntingPath = null;
-                SetState((int)MonsterState.PlayerLost);
+               usingExtraTime = true;
+               extraTime = 1.5f;
             }
         }
 
         void LoopPlayerSpottedState()
         {
-            SetState((int)MonsterState.Hunting);
         }
 
         void LoopPlayerLostState()
         {
-            SetState((int)MonsterState.Moving);
         }
 
 
@@ -378,6 +401,7 @@ namespace GOA
                 PlayerController tmp = candidates[Random.Range(0, candidates.Count)];
                 if(prey != tmp)
                 {
+                   
                     prey = tmp;
                     huntingPath = null;
                 }
@@ -388,7 +412,7 @@ namespace GOA
             {
                 if (prey)
                 {
-                    preyLastPosition = prey.transform.position;
+                    lastPrey = prey;
                     prey = null;
                     huntingPath = null;
                 }
@@ -420,25 +444,7 @@ namespace GOA
             }
             else
             {
-                //Puzzle lastPuzzle = builder.GetLastSolvedPuzzle();
-                //Tile tile = null;
-
-                //if (lastPuzzle == null)
-                //{
-                //    // Get the first sector
-                //    Connection c = new List<Connection>(builder.Connections).Find(c => c.IsInitialConnection());
-                //    tile = builder.GetTile(c.TargetTileId);
-                //}
-                //else
-                //{
-                //    int puzzleId = builder.GetPuzzleId(lastPuzzle);
-                //    int gateIndex = new List<CustomObject>(builder.CustomObjects).FindIndex(g => g.GetType() == typeof(Gate) && (g as Gate).PuzzleIndex == puzzleId);
-                //    Connection c = new List<Connection>(builder.Connections).Find(c => c.gateIndex == gateIndex);
-                //    // Get the target tile of the connection or the source if the target is -1 ( it happens with the last puzzle )
-                //    tile = c.TargetTileId < 0 ? builder.GetTile(c.SourceTileId) : tile = builder.GetTile(c.TargetTileId); ;
-
-                //}
-
+                
                 //Sector sector = builder.GetSector(tile.sectorIndex);
                 Sector sector = builder.GetCurrentPlayingSector();
                 
