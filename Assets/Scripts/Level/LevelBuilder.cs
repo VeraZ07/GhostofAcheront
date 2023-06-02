@@ -20,12 +20,9 @@ namespace GOA.Level
         public static float TileSize = Tile.Size;
         public static float TileHeight = Tile.Height;
 
-
         [SerializeField]
         Tile[] tiles;
         
-
-
         [SerializeField]
         Sector[] sectors;
        
@@ -181,7 +178,7 @@ namespace GOA.Level
             // Test puzzle
             //
             //TestPuzzle("PicturePuzzleAsset", 0);
-            TestPuzzle("PicturePuzzleAsset", 0);
+            TestPuzzle("SkeletonPuzzleAsset", 0);
             //TestPuzzle("SkeletonPuzzleAsset", 0);
 #endif
 

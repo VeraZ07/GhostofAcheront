@@ -84,12 +84,12 @@ namespace GOA
         public void YouWin()
         {
             OnGameWin?.Invoke();
-            FindObjectOfType<MonsterController>()?.SetPlayerEscapedState();
-            PlayerController[] players = FindObjectsOfType<PlayerController>();
-            foreach(PlayerController player in players)
-            {
-                player.Escape();
-            }
+            //FindObjectOfType<MonsterController>()?.SetPlayerEscapedState();
+            //PlayerController[] players = FindObjectsOfType<PlayerController>();
+            //foreach(PlayerController player in players)
+            //{
+            //    player.SetEscapedState();
+            //}
            
             // Just wait a little more on the server to give every client the time to quit
             StartCoroutine(LoadMenuDelayed(Runner.IsServer ? 5f : 4f));
@@ -101,24 +101,36 @@ namespace GOA
             StartCoroutine(LoadMenuDelayed(5f));
         }
 
-        //public void PlayerExit(PlayerController player)
-        //{
-        //    if (SessionManager.Instance.Runner.IsSinglePlayer)
-        //        YouWin();
-        //}
-
+  
         public void PlayerDead(PlayerController player)
         {
             if (SessionManager.Instance.Runner.IsSinglePlayer)
+            {
                 YouLose();
+            }
+            else
+            {
+                List<PlayerController> all = new List<PlayerController>(FindObjectsOfType<PlayerController>());
+                bool allDead = true;
+                foreach(PlayerController p in all)
+                {
+                    if(p.State == (int)PlayerState.Alive)
+                    {
+                        allDead = false;
+                        break;
+                    }
+                }
+                if (allDead)
+                {
+                    foreach(PlayerController p in all)
+                    {
+                        p.SetSacrificedState();
+                    }
+                }
+            }
         }
 
-        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-        public void RpcGameWin()
-        {
-            YouWin();
-        }
-
+    
         public static void OnLevelSizeChanged(Changed<GameManager> changed)
         {
             changed.Behaviour.OnLeveSizeChanged?.Invoke(changed.Behaviour.LevelSize);

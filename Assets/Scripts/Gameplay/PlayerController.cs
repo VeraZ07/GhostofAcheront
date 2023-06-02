@@ -11,7 +11,7 @@ using UnityEngine.VFX;
 
 namespace GOA
 {
-    public enum PlayerState { Paused, Alive, Dying, Dead, RisingAgain, Escaped }
+    public enum PlayerState { Paused, Alive, Dying, Dead, RisingAgain, Escaped, Sacrificed }
 
     public class PlayerController : NetworkBehaviour
     {
@@ -505,7 +505,14 @@ namespace GOA
 
         void EnterEscapedState()
         {
+            if (this == Local)
+                FindObjectOfType<GameManager>().YouWin();
+        }
 
+        void EnterSacrificedState()
+        {
+            if (this == Local)
+                FindObjectOfType<GameManager>().YouLose();
         }
 
         void EnterAliveState()
@@ -523,7 +530,6 @@ namespace GOA
         void EnterDeadState()
         {
             
-
             // Both on client and server
             // Move the character out of the controller
             characterObject.transform.parent = null;
@@ -538,7 +544,8 @@ namespace GOA
 
             ghostTime = 2f;
 
-            FindObjectOfType<GameManager>().PlayerDead(this);
+            if(Runner.IsServer)
+                FindObjectOfType<GameManager>().PlayerDead(this);
 
             if (Runner.IsServer && !Runner.IsSinglePlayer)
             {
@@ -583,6 +590,12 @@ namespace GOA
                     break;
                 case (int)PlayerState.RisingAgain:
                     changed.Behaviour.EnterRisingAgainState();
+                    break;
+                case (int)PlayerState.Escaped:
+                    changed.Behaviour.EnterEscapedState();
+                    break;
+                case (int)PlayerState.Sacrificed:
+                    changed.Behaviour.EnterSacrificedState();
                     break;
             }
         }
@@ -653,9 +666,14 @@ namespace GOA
             }
         }
 
-        public void Escape()
+        public void SetEscapedState()
         {
             State = (int)PlayerState.Escaped;
+        }
+
+        public void SetSacrificedState()
+        {
+            State = (int)PlayerState.Sacrificed;
         }
 
         #endregion

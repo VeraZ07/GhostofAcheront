@@ -52,8 +52,13 @@ namespace GOA
             if (outside)
                 return;
 
-            
-            FindObjectOfType<GameManager>().RpcGameWin();
+            // Report the monster
+            FindObjectOfType<MonsterController>()?.SetPlayerEscapedState();
+            // All the alive players escaped 
+            List<PlayerController> aliveAll = new List<PlayerController>(FindObjectsOfType<PlayerController>()).FindAll(p => p.State == (int)PlayerState.Alive);
+            foreach (PlayerController player in aliveAll)
+                player.SetEscapedState();
+            //FindObjectOfType<GameManager>().RpcGameWin();
         }
 
         private void OnTriggerExit(Collider other)
