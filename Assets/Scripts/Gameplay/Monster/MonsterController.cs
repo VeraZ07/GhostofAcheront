@@ -30,7 +30,10 @@ namespace GOA
         GameObject meshRoot;
 
         [SerializeField]
-        float sightRange = 8f * 1.1f;
+        float sightRange = 8f * 1.5f;
+
+        [SerializeField]
+        float sightAngle = 60f;
 
         [SerializeField]
         Transform head;
@@ -395,22 +398,35 @@ namespace GOA
                 if (Vector3.Distance(transform.position, player.transform.position) > sightRange)
                     continue; // Too far
 
-                Vector3 dir = Vector3.ProjectOnPlane(head.forward, Vector3.up) + Vector3.up * 1.5f;
-                //if (State == (int)MonsterState.Idle)
-                //{
+                Vector3 dir = Vector3.zero;
+                if (State == (int)MonsterState.Idle)
+                {
+                    dir = Vector3.ProjectOnPlane(head.forward, Vector3.up);
+                    Vector3 pmDir = Vector3.ProjectOnPlane(player.transform.position - transform.position, Vector3.up);
+                    if (Vector3.Angle(dir, pmDir) > sightAngle * .5f)
+                        continue;
+                }
+                else
+                {
+                    dir = Vector3.ProjectOnPlane(player.transform.position - transform.position, Vector3.up);
+                }
 
-                //}
-                //else
-                //{
-                //    dir = Vector3.ProjectOnPlane(player.transform.position - transform.position, Vector3.up);
-                //}
+                //Vector3 dir = Vector3.ProjectOnPlane(head.forward, Vector3.up);
+                //Vector3 pmDir = Vector3.ProjectOnPlane(player.transform.position - transform.position, Vector3.up);
+                //if (Vector3.Angle(dir, pmDir) > sightAngle * .5f)
+                //    continue;
 
+                //dir += Vector3.up * 1.5f;
                 
+                
+                
+
+
                 LayerMask mask = LayerMask.GetMask(new string[] { Layers.Wall });
                 if (Physics.Raycast(transform.position + Vector3.up, dir.normalized, dir.magnitude, mask))
                     continue; // A wall is stopping the sight
 
-                //Debug.Log("MONSTER - Adding new prey candidate:" + player);
+                Debug.Log("MONSTER - Adding new prey candidate:" + player);
 
                 candidates.Add(player);
             }
