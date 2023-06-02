@@ -211,7 +211,7 @@ NavMeshAgent:
   m_Speed: 3.5
   m_Acceleration: 6
   avoidancePriority: 50
-  m_AngularSpeed: 360
+  m_AngularSpeed: 720
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 0
   m_AutoBraking: 1
@@ -291,6 +291,7 @@ MonoBehaviour:
   _interpolationDataSource: 0
   meshRoot: {fileID: 5188498993014477991}
   sightRange: 8
+  sightAngle: 60
   head: {fileID: 5901452235368897544}
   animator: {fileID: 4422084046540371764}
   _State: -1
