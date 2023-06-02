@@ -395,7 +395,7 @@ namespace GOA
                 if (Vector3.Distance(transform.position, player.transform.position) > sightRange)
                     continue; // Too far
 
-                Vector3 dir = Vector3.ProjectOnPlane(head.forward, Vector3.up);
+                Vector3 dir = Vector3.ProjectOnPlane(head.forward, Vector3.up) + Vector3.up * 1.5f;
                 //if (State == (int)MonsterState.Idle)
                 //{
 
