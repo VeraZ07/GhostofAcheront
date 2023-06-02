@@ -218,8 +218,9 @@ namespace GOA
         IEnumerator PatchAgent()
         {
             patching = true;
-            agent.ResetPath();
+            //agent.ResetPath();
             agent.enabled = false;
+            agent.path = null;
             yield return new WaitForSeconds(0.5f);
             agent.enabled = true;
             patching = false;
@@ -227,10 +228,17 @@ namespace GOA
 
         void EnterIdleState()
         {
-            StartCoroutine(PatchAgent());
+            //StartCoroutine(PatchAgent());
             agent.speed = walkSpeed;
+            try
+            {
+                agent.ResetPath();
+            }
+            catch (System.Exception) 
+            {
+                StartCoroutine(PatchAgent());
+            }
             
-            agent.ResetPath();
             timer = Random.Range(idleTimeMin, idleTimeMax);
 
         }
