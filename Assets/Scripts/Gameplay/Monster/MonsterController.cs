@@ -32,6 +32,8 @@ namespace GOA
         [SerializeField]
         float sightRange = 8f * 1.1f;
 
+        [SerializeField]
+        Transform head;
         
         [SerializeField]
         Animator animator;
@@ -393,7 +395,17 @@ namespace GOA
                 if (Vector3.Distance(transform.position, player.transform.position) > sightRange)
                     continue; // Too far
 
-                Vector3 dir = Vector3.ProjectOnPlane(player.transform.position - transform.position, Vector3.up);
+                Vector3 dir = Vector3.ProjectOnPlane(head.forward, Vector3.up);
+                //if (State == (int)MonsterState.Idle)
+                //{
+
+                //}
+                //else
+                //{
+                //    dir = Vector3.ProjectOnPlane(player.transform.position - transform.position, Vector3.up);
+                //}
+
+                
                 LayerMask mask = LayerMask.GetMask(new string[] { Layers.Wall });
                 if (Physics.Raycast(transform.position + Vector3.up, dir.normalized, dir.magnitude, mask))
                     continue; // A wall is stopping the sight
@@ -441,9 +453,9 @@ namespace GOA
 
             bool trackPlayer = Random.Range(0, monsterNoTrackMax) == 0;
 #if UNITY_EDITOR
-            trackPlayer = true; // TO REMOVE
+            //trackPlayer = true; // TO REMOVE
 #endif
-            trackPlayer = true; // TO REMOVE
+            
             if (trackPlayer)
             {
                 Transform target = players[Random.Range(0, players.Count)].transform;

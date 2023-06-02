@@ -291,6 +291,7 @@ MonoBehaviour:
   _interpolationDataSource: 0
   meshRoot: {fileID: 5188498993014477991}
   sightRange: 8
+  head: {fileID: 5901452235368897544}
   animator: {fileID: 4422084046540371764}
   _State: -1
   prey: {fileID: 0}
