@@ -65,8 +65,9 @@ namespace GOA
         
         //bool preyLost = false;
         //float preyLostTime = 0f;
-        float extraTime = 0;
+        float extraTimeCurrent = 0;
         bool usingExtraTime = false;
+        float extraTime = 1f;
         PlayerController lastPrey;
                 
         float huntingTime = .5f;
@@ -345,8 +346,8 @@ namespace GOA
 
                 if (usingExtraTime)
                 {
-                    extraTime -= Time.deltaTime;
-                    if (extraTime < 0)
+                    extraTimeCurrent -= Time.deltaTime;
+                    if (extraTimeCurrent < 0)
                     {
                         usingExtraTime = false;
                         huntingPath = null;
@@ -359,7 +360,7 @@ namespace GOA
             else
             {
                usingExtraTime = true;
-               extraTime = 1.5f;
+               extraTimeCurrent = extraTime;
             }
         }
 
