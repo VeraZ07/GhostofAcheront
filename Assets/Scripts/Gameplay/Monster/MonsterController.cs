@@ -99,6 +99,8 @@ namespace GOA
             //Hide();
             NavMesh.pathfindingIterationsPerFrame = 250;
             agent.enabled = true;
+
+            
         }
 
         #endregion
@@ -118,6 +120,7 @@ namespace GOA
                 builder = FindObjectOfType<LevelBuilder>();
 
                 SetState((int)MonsterState.Idle);
+
             }
                 
         }
@@ -365,6 +368,7 @@ namespace GOA
 
 
         #endregion
+                
 
         #region private methods
         bool CheckForPlayer()
@@ -373,6 +377,9 @@ namespace GOA
 #if UNITY_EDITOR
             //return false;
 #endif
+
+            if (players.Count != new List<PlayerRef>(Runner.ActivePlayers).Count)
+                players.Clear();
 
             if (players.Count == 0)
                 players = new List<PlayerController>(FindObjectsOfType<PlayerController>());

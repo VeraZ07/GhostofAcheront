@@ -23,7 +23,21 @@ namespace GOA.UI
             if (GetGameManager())
             {
                 Init(GetGameManager().LevelSize);
+                GetGameManager().OnLeveSizeChanged += OnLevelSizeChanged;
             }
+        }
+
+        public void OnDisable()
+        {
+            if (GetGameManager())
+            {
+                GetGameManager().OnLeveSizeChanged -= OnLevelSizeChanged;
+            }
+        }
+
+        void OnLevelSizeChanged(int levelSize)
+        {
+            Init(levelSize);
         }
 
         protected override void OptionChanged(int value)

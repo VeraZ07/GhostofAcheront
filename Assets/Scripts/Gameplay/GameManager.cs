@@ -12,13 +12,14 @@ namespace GOA
     {
         public UnityAction OnGameWin;
         public UnityAction OnGameLose;
+        public UnityAction<int> OnLeveSizeChanged;
 
         
         //public static GameManager Instance { get; private set; }
 
         [Networked] public int GameSeed { get; private set; } = 0;
 
-        [Networked] public int LevelSize { get; set; } = 1;
+        [Networked(OnChanged =nameof(OnLevelSizeChanged))] public int LevelSize { get; set; } = 1;
 
         
 
@@ -118,7 +119,10 @@ namespace GOA
             YouWin();
         }
 
-
+        public static void OnLevelSizeChanged(Changed<GameManager> changed)
+        {
+            changed.Behaviour.OnLeveSizeChanged?.Invoke(changed.Behaviour.LevelSize);
+        }
     }
 
 }

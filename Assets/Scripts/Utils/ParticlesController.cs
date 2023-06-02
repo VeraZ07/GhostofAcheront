@@ -29,7 +29,11 @@ namespace GOA
             //if (!PlayerController.Local)
             //    return;
 
+            if (Camera.main == null)
+                return;
+
             Transform target = Camera.main.transform;
+
 
             Vector3 direction = Vector3.ProjectOnPlane(transform.position - target.position, Vector3.up);
             float currentDistance = direction.magnitude;

@@ -23,6 +23,9 @@ namespace GOA.UI
         [SerializeField]
         Button buttonNext;
 
+        [SerializeField]
+        bool serverOnlyInput = false;
+
         int currentOptionId;
 
         protected abstract void OptionChanged(int value);
@@ -70,11 +73,17 @@ namespace GOA.UI
         {
             buttonNext.interactable = false;
             buttonPrev.interactable = false;
+
+            if (serverOnlyInput && SessionManager.Instance.Runner.IsClient)
+                return;
+
             if (currentOptionId > 0)
                 buttonPrev.interactable = true;
             if (currentOptionId < options.Length - 1)
                 buttonNext.interactable = true;
         }
+          
+        
     }
 
 }
