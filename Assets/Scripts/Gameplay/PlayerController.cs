@@ -638,7 +638,8 @@ namespace GOA
 
         public void LookAtYouDying()
         {
-            if(Local == this)
+            Debug.Log("KILL - LookAtYouDying()");
+            if (Local == this)
             {
                 StartCoroutine(DoLookAtYouDying());
             }

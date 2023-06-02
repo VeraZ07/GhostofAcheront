@@ -43,10 +43,6 @@ namespace GOA
         // Update is called once per frame
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.L))
-            {
-                SessionManager.Instance.PushSnapshot();
-            }
         }
     }
 

@@ -443,7 +443,7 @@ namespace GOA
 #if UNITY_EDITOR
             trackPlayer = true; // TO REMOVE
 #endif
-
+            trackPlayer = true; // TO REMOVE
             if (trackPlayer)
             {
                 Transform target = players[Random.Range(0, players.Count)].transform;

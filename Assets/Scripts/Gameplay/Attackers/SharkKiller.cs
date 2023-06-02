@@ -63,7 +63,7 @@ namespace GOA
 
         public void OnBite(int id)
         {
-           
+            Debug.Log("Bite:" + id);
             switch (id)
             {
                 case 0: // Adjust monster position
@@ -118,12 +118,9 @@ namespace GOA
         #region fusion callbacks
         public static void OnVictimIdChanged(Changed<SharkKiller> changed)
         {
-            Debug.Log("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV OUT");
             if (changed.Behaviour.Runner.IsClient)
             {
-                Debug.Log("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
                 // Find player controller by player id
-                Debug.Log("Victim:" + new List<PlayerController>(FindObjectsOfType<PlayerController>()).Find(p => p.Object.InputAuthority.PlayerId == changed.Behaviour.VictimId));
                 changed.Behaviour.victim = new List<PlayerController>(FindObjectsOfType<PlayerController>()).Find(p => p.Object.InputAuthority.PlayerId == changed.Behaviour.VictimId);
             }
      

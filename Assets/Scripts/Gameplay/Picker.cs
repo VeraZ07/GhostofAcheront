@@ -149,11 +149,7 @@ namespace GOA
         {
             if (changed.Behaviour.Empty)
             {
-                Debug.Log("BBBBBBBBBBBBBBBBBBBBBBBBB");
-                //DestroyImmediate(changed.Behaviour.sceneObject);
-                //DestroyImmediate(changed.Behaviour.vfx);
-                //DestroyImmediate(changed.Behaviour.light);
-
+                
                 changed.Behaviour.sceneObject.SetActive(false);
                 
                 changed.Behaviour.audioSource.Play();
@@ -162,7 +158,6 @@ namespace GOA
             }
             else
             {
-                Debug.Log("AAAAAAAAAAAAAAAAAAAAAAAAAAAA");
                 changed.Behaviour.sceneObject.SetActive(true);
             }
         }

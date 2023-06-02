@@ -40,9 +40,12 @@ namespace GOA.Audio
         }
 
         // Update is called once per frame
-        void Update()
+        public override void FixedUpdateNetwork()
         {
-            LoopState();
+            base.FixedUpdateNetwork();
+
+            if(Runner.IsServer)
+                LoopState();
         }
 
         void LoopState()
@@ -118,14 +121,17 @@ namespace GOA.Audio
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
         void RpcBreath()
         {
+          
             // Breath
             AudioClip clip = breathClips[Random.Range(0, breathClips.Count)];
             mainSource.clip = clip;
             mainSource.Play();
         }
 
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
         void RpcGrowl()
         {
+           
             // Breath
             AudioClip clip = growlClips[Random.Range(0, growlClips.Count)];
             mainSource.clip = clip;
