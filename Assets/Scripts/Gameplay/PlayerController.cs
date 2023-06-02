@@ -149,8 +149,8 @@ namespace GOA
                 //    inv.RemoveItem(inv.Items[0].ToString());
                 //    picker.Reactivate();
                 //}
-                if (Runner.IsServer)
-                    State = (int)PlayerState.Dead;
+                //if (Runner.IsServer)
+                //    State = (int)PlayerState.Dead;
 
                 
             }

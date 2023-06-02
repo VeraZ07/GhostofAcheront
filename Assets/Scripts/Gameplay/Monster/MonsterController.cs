@@ -441,7 +441,7 @@ namespace GOA
 
             bool trackPlayer = Random.Range(0, monsterNoTrackMax) == 0;
 #if UNITY_EDITOR
-            //trackPlayer = true; // TO REMOVE
+            trackPlayer = true; // TO REMOVE
 #endif
 
             if (trackPlayer)

@@ -363,7 +363,7 @@ MonoBehaviour:
   bitePivots:
   - {fileID: 8710266255205388137}
   - {fileID: 2224379871934155418}
-  _VictimId: 0
+  _VictimId: -1
 --- !u!114 &551653469021792624
 MonoBehaviour:
   m_ObjectHideFlags: 0
