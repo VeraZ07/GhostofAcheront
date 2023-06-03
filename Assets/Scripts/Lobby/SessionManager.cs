@@ -109,6 +109,9 @@ namespace GOA
             if (ReadyToPlay())
             {
                 FindObjectOfType<GameManager>().CreateNewSeed();
+                // Set the current session closed and not visible
+                runner.SessionInfo.IsVisible = false;
+                runner.SessionInfo.IsOpen = false;
                 // Load game scene
                 runner.SetActiveScene(1);
             }
