@@ -178,7 +178,7 @@ namespace GOA.Level
             // Test puzzle
             //
             //TestPuzzle("PicturePuzzleAsset", 0);
-            TestPuzzle("SkeletonPuzzleAsset", 0);
+            TestPuzzle("PicturePuzzleAsset", 0);
             //TestPuzzle("SkeletonPuzzleAsset", 0);
 #endif
 

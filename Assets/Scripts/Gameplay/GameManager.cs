@@ -63,6 +63,28 @@ namespace GOA
             UnityEngine.SceneManagement.SceneManager.LoadScene(0);
         }
 
+        void CheckForAliveAndDead()
+        {
+            // Check if there is at least a player alive outside this trigger
+            PlayerController outside = new List<PlayerController>(FindObjectsOfType<PlayerController>()).Find(p => !EscapeTrigger.Instance.IsPlayerInside(p) && p.State == (int)PlayerState.Alive);
+            if (outside) // Yes there is, do nothing
+                return;
+
+            // There is no one still alive outside the trigger ( maybe they are all dead ). All the players inside the trigger
+            // are finally free to escape.
+            // Report the monster
+            FindObjectOfType<MonsterController>()?.SetPlayerEscapedState();
+            // Set players free
+            List<PlayerController> aliveAll = new List<PlayerController>(FindObjectsOfType<PlayerController>()).FindAll(p => p.State == (int)PlayerState.Alive);
+            foreach (PlayerController p in aliveAll)
+                p.SetEscapedState();
+
+            // Sacrifice all the players already in the dead state: dying players will be sacrificed when moving to the dead state too. 
+            List<PlayerController> deadAll = new List<PlayerController>(FindObjectsOfType<PlayerController>()).FindAll(p => p.State == (int)PlayerState.Dead);
+            foreach (PlayerController p in deadAll)
+                p.SetSacrificedState();
+        }
+
         public override void Spawned()
         {
             base.Spawned();
@@ -101,8 +123,41 @@ namespace GOA
             StartCoroutine(LoadMenuDelayed(5f));
         }
 
+        public void PlayerEnteredTheEscapeTrigger(PlayerController player)
+        {
+            if(SessionManager.Instance.Runner.IsSinglePlayer)
+            {
+                FindObjectOfType<MonsterController>()?.SetPlayerEscapedState();
+                player.SetEscapedState();
+            }
+            else
+            {
+                CheckForAliveAndDead();
+                //// Check if there is at least a player alive outside this trigger
+                //PlayerController outside = new List<PlayerController>(FindObjectsOfType<PlayerController>()).Find(p => !EscapeTrigger.Instance.IsPlayerInside(p) && p.State == (int)PlayerState.Alive);
+                //if (outside) // Yes there is, do nothing
+                //    return;
+
+                //// There is no one still alive outside the trigger ( maybe they are all dead ). All the players inside the trigger
+                //// are finally free to escape.
+                //// Report the monster
+                //FindObjectOfType<MonsterController>()?.SetPlayerEscapedState();
+                //// Set players free
+                //List<PlayerController> aliveAll = new List<PlayerController>(FindObjectsOfType<PlayerController>()).FindAll(p => p.State == (int)PlayerState.Alive);
+                //foreach (PlayerController p in aliveAll)
+                //    p.SetEscapedState();
+
+                //// Sacrifice all the players already in the dead state: dying players will be sacrificed when moving to the dead state too. 
+                //List<PlayerController> deadAll = new List<PlayerController>(FindObjectsOfType<PlayerController>()).FindAll(p => p.State == (int)PlayerState.Dead);
+                //foreach (PlayerController p in deadAll)
+                //    p.SetSacrificedState();
+            }
+            
+
+
+        }
   
-        public void PlayerDead(PlayerController player)
+        public void PlayerDied(PlayerController player)
         {
             if (SessionManager.Instance.Runner.IsSinglePlayer)
             {
@@ -110,6 +165,7 @@ namespace GOA
             }
             else
             {
+                // We first check if all the players are dead
                 List<PlayerController> all = new List<PlayerController>(FindObjectsOfType<PlayerController>());
                 bool allDead = true;
                 foreach(PlayerController p in all)
@@ -120,13 +176,19 @@ namespace GOA
                         break;
                     }
                 }
-                if (allDead)
+                
+                if (allDead) // No one is alive
                 {
                     foreach(PlayerController p in all)
                     {
                         p.SetSacrificedState();
                     }
                 }
+                else // Someone is still alive, check where they are: are they in the escape trigger?
+                {
+                    CheckForAliveAndDead();
+                }
+
             }
         }
 

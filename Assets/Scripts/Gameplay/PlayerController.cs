@@ -545,7 +545,7 @@ namespace GOA
             ghostTime = 2f;
 
             if(Runner.IsServer)
-                FindObjectOfType<GameManager>().PlayerDead(this);
+                FindObjectOfType<GameManager>().PlayerDied(this);
 
             if (Runner.IsServer && !Runner.IsSinglePlayer)
             {
