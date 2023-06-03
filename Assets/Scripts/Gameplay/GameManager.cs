@@ -19,7 +19,7 @@ namespace GOA
 
         [Networked] public int GameSeed { get; private set; } = 0;
 
-        [Networked(OnChanged =nameof(OnLevelSizeChanged))] public int LevelSize { get; set; } = 1;
+        [Networked(OnChanged =nameof(OnLevelSizeChanged))] public int LevelSize { get; set; } = 0;
 
         
 
@@ -88,7 +88,7 @@ namespace GOA
         public override void Spawned()
         {
             base.Spawned();
-            LevelSize = 1;
+            LevelSize = 0;
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
