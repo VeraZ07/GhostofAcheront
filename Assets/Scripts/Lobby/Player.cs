@@ -11,6 +11,7 @@ namespace GOA
         public static UnityAction<Player> OnDespawned;
         public static UnityAction<Player> OnReadyChangedCallback;
         public static UnityAction<Player> OnNameChangedCallback;
+        public static UnityAction<Player> OnCharacterIdChangedCallback;
 
         public static Player Local { get; private set; }
 
@@ -120,7 +121,10 @@ namespace GOA
         {
             OnNameChangedCallback?.Invoke(changed.Behaviour);
         }
-
+        public static void OnCharacterIdChanged(Changed<Player> changed)
+        {
+            OnCharacterIdChangedCallback?.Invoke(changed.Behaviour);
+        }
         #endregion
 
     }

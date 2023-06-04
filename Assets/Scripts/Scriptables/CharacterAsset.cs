@@ -24,6 +24,13 @@ namespace GOA.Assets
         }
 
         [SerializeField]
+        GameObject lobbyPlaceholderPrefab;
+        public GameObject LobbyPlaceholderPrefab
+        {
+            get { return lobbyPlaceholderPrefab; }
+        }
+
+        [SerializeField]
         NetworkObject characterPrefab;
         public NetworkObject CharacterPrefab
         {

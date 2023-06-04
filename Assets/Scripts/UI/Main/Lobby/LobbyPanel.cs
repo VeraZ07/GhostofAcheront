@@ -1,4 +1,5 @@
 using Fusion;
+using GOA.Assets;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -25,6 +26,7 @@ namespace GOA.UI
         {
             buttonQuitMatch.onClick.AddListener(()=>SessionManager.Instance.QuitSession());
             buttonReady.onClick.AddListener(ToggleReady);
+           
         }
 
         // Start is called before the first frame update
@@ -89,7 +91,12 @@ namespace GOA.UI
 
                 }
 
+                //LobbyCharacterHelper.Instance.ShowCharacter(Player.Local.CharacterId);
+                
+                
             }
+
+            
 
         }
 
@@ -100,6 +107,9 @@ namespace GOA.UI
             SessionManager.OnPlayerJoinedCallback -= HandleOnPlayerJoined;
             Player.OnReadyChangedCallback -= HandleOnReadyChanged;
             Player.OnNameChangedCallback -= HandleOnNameChanged;
+
+            //LobbyCharacterHelper.Instance.HideCharacter();
+           
         }
 
         void ToggleReady()

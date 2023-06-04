@@ -14,5 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterId: 0
   avatar: {fileID: 21300000, guid: 850ac339c18ffc94a91d2e843a6b5b56, type: 3}
+  lobbyPlaceholderPrefab: {fileID: 8859919808006590603, guid: 6993cd6abde75ca48a137cc428db933a,
+    type: 3}
   characterPrefab: {fileID: 5232603779821705813, guid: 556123d719c5b9241a886bd21c30074b,
     type: 3}
