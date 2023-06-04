@@ -48,27 +48,28 @@ namespace GOA
 
         private void OnEnable()
         {
-            SessionManager.OnPlayerJoinedCallback += HandleOnPlayerJoined;
-            SessionManager.OnShutdownCallback += HandleOnShutdown;
+            Player.OnSpawned += HandleOnPlayerSpawned;
+            Player.OnDespawned += HandleOnPlayerDespawned;
             Player.OnCharacterIdChangedCallback += HandleOnCharacterIdChanged;
         }
 
         private void OnDisable()
         {
-            SessionManager.OnPlayerJoinedCallback -= HandleOnPlayerJoined;
-            SessionManager.OnShutdownCallback -= HandleOnShutdown;
             Player.OnCharacterIdChangedCallback -= HandleOnCharacterIdChanged;
+            Player.OnSpawned -= HandleOnPlayerSpawned;
+            Player.OnDespawned -= HandleOnPlayerDespawned;
         }
 
-        public void HandleOnPlayerJoined(NetworkRunner runner, PlayerRef player)
+        public void HandleOnPlayerSpawned(Player player)
         {
-            if (runner.LocalPlayer == player)
+            if (player.HasInputAuthority)
                 ShowCharacter(0);
         }
 
-        public void HandleOnShutdown(NetworkRunner runner, ShutdownReason reason)
+        public void HandleOnPlayerDespawned(Player player)
         {
-            HideCharacter();
+            if(player.HasInputAuthority)
+                HideCharacter();
         }
 
         void HandleOnCharacterIdChanged(Player player) 

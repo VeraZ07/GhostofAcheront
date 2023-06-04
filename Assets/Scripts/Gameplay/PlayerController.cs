@@ -46,8 +46,11 @@ namespace GOA
         //    get { return headMesh; }
         //}
 
+        //[SerializeField]
+        //VisualEffect headBloodVfx;
+
         [SerializeField]
-        VisualEffect headBloodVfx;
+        ParticleSystem headBloodParticles;
 
         Animator animator;
 
@@ -97,7 +100,8 @@ namespace GOA
             cc = GetComponent<NetworkCharacterControllerPrototypeCustom>();
             defaultSpeed = cc.maxSpeed;
             animator = GetComponentInChildren<Animator>();
-            headBloodVfx.Stop();
+            //headBloodVfx.Stop();
+            headBloodParticles.Stop();
             characterRoot = characterObject.transform.parent;
         }
 
@@ -105,13 +109,13 @@ namespace GOA
         void Start()
         {
             // Disable collisions between controller and internal ragdoll
-            Collider coll = GetComponent<Collider>();
-            Collider[] rc = GetComponentsInChildren<Collider>();
-            foreach(Collider c in rc)
-            {
-                Physics.IgnoreCollision(coll, c, true);
-            }
-            
+            //Collider coll = GetComponent<Collider>();
+            //Collider[] rc = GetComponentsInChildren<Collider>();
+            //foreach(Collider c in rc)
+            //{
+            //    Physics.IgnoreCollision(coll, c, true);
+            //}
+            EnableRagdollColliders(false);
         }
 
         // Update is called once per frame
@@ -239,6 +243,15 @@ namespace GOA
         #endregion
 
         #region private methods
+        void EnableRagdollColliders(bool value)
+        {
+            Collider[] rc = characterObject.GetComponentsInChildren<Collider>();
+            foreach (Collider c in rc)
+            {
+                c.enabled = value;
+            }
+        }
+
         /// <summary>
         /// Simply checks if there is any object we can interact with ( we might look at it ).
         /// Both client and server.
@@ -450,7 +463,8 @@ namespace GOA
         IEnumerator StopHeadBloodVfx(float delay)
         {
             yield return new WaitForSeconds(delay);
-            headBloodVfx.Stop();
+            //headBloodVfx.Stop();
+            headBloodParticles.Stop();
         }
 
         void SetRenderingLayer(int layer)
@@ -525,6 +539,7 @@ namespace GOA
             cc.enabled = false;
             cc.Velocity = Vector3.zero;
             ResetAnimator();
+            EnableRagdollColliders(true);
         }
 
         void EnterDeadState()
@@ -558,6 +573,7 @@ namespace GOA
 
         void EnterRisingAgainState()
         {
+            EnableRagdollColliders(false);
             // Both on client and server
             characterObject.transform.parent = characterRoot;
             characterObject.transform.localPosition = Vector3.zero;
@@ -645,8 +661,9 @@ namespace GOA
         {
             headMesh.SetActive(false);
             //headBloodVfx.SendEvent("OnPlay");
-            headBloodVfx.Play();
-            StartCoroutine(StopHeadBloodVfx(4f));
+            //headBloodVfx.Play();
+            headBloodParticles.Play();
+            StartCoroutine(StopHeadBloodVfx(8f));
         }
 
         public void LookAtYouDying()

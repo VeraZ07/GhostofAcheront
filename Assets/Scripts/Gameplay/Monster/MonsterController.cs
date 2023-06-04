@@ -238,13 +238,14 @@ namespace GOA
             {
                 StartCoroutine(PatchAgent());
             }
-            
+            agent.enabled = false;
             timer = Random.Range(idleTimeMin, idleTimeMax);
 
         }
 
         void EnterMovingState()
         {
+            agent.enabled = true;
             agent.speed = walkSpeed;
             if (!agent.hasPath && !agent.pathPending)
                 agent.SetDestination(GetDestination());

@@ -8,6 +8,7 @@ namespace GOA
 {
     public class Player: NetworkBehaviour
     {
+        public static UnityAction<Player> OnSpawned;
         public static UnityAction<Player> OnDespawned;
         public static UnityAction<Player> OnReadyChangedCallback;
         public static UnityAction<Player> OnNameChangedCallback;
@@ -65,8 +66,8 @@ namespace GOA
 
 
             }
-                       
-            
+
+            OnSpawned?.Invoke(this);
         }
 
         
