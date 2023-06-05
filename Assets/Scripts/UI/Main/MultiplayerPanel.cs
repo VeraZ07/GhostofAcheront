@@ -82,7 +82,7 @@ namespace GOA.UI
         {
             buttonBack.interactable = value;
             buttonHostMatch.interactable = value;
-            togglePrivate.interactable = value;
+            //togglePrivate.interactable = value;
         }
 
         void JoinSession(string sessionName)
