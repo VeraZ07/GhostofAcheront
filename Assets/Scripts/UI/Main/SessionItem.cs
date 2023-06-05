@@ -19,6 +19,9 @@ namespace GOA.UI
         [SerializeField]
         TMP_Text textPlayerCount;
 
+        [SerializeField]
+        TMP_Text textMapSize;
+
         SessionInfo info;
         
 
@@ -40,7 +43,21 @@ namespace GOA.UI
             
             textSessionName.text = info.Name.Substring(0, 10);
             textPlayerCount.text = string.Format("{0}/{1}", info.PlayerCount, info.MaxPlayers);
-                        
+
+            //GameManager gameManager = FindObjectOfType<GameManager>();
+            //switch (gameManager.LevelSize)
+            //{
+            //    case 0:
+            //        textMapSize.text = "SMALL";
+            //        break;
+            //    case 1:
+            //        textMapSize.text = "MEDIUM";
+            //        break;
+            //    case 2:
+            //        textMapSize.text = "LARGE";
+            //        break;
+            //}
+            
 
             buttonJoin.onClick.AddListener(() => { JoinSession(info.Name); });
         }

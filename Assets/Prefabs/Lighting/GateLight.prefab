@@ -230,10 +230,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a3d2a38050d635448d1c12b78451664, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  light: {fileID: 0}
-  minIntensity: 3
-  maxIntensity: 5
-  smoothing: 26
+  flicker: 1
+  flickerIntensity: 8
 --- !u!1 &701811009306465393
 GameObject:
   m_ObjectHideFlags: 0

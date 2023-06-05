@@ -230,10 +230,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a3d2a38050d635448d1c12b78451664, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  light: {fileID: 0}
-  minIntensity: 8
-  maxIntensity: 11
-  smoothing: 20
+  flicker: 1
+  flickerIntensity: 1.1
 --- !u!1 &4572779522757689337
 GameObject:
   m_ObjectHideFlags: 0
@@ -465,10 +463,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a3d2a38050d635448d1c12b78451664, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  light: {fileID: 0}
-  minIntensity: 80
-  maxIntensity: 130
-  smoothing: 24
+  flicker: 1
+  flickerIntensity: 50
 --- !u!1 &4572779523218499056
 GameObject:
   m_ObjectHideFlags: 0
@@ -789,10 +785,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a3d2a38050d635448d1c12b78451664, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  light: {fileID: 0}
-  minIntensity: 120
-  maxIntensity: 180
-  smoothing: 24
+  flicker: 1
+  flickerIntensity: 8
 --- !u!1 &4572779524457052603
 GameObject:
   m_ObjectHideFlags: 0

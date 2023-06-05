@@ -231,10 +231,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a3d2a38050d635448d1c12b78451664, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  light: {fileID: 0}
-  minIntensity: 10
-  maxIntensity: 16
-  smoothing: 26
+  flicker: 1
+  flickerIntensity: 8
 --- !u!114 &315480974035187059
 MonoBehaviour:
   m_ObjectHideFlags: 0

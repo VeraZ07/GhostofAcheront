@@ -91,28 +91,6 @@ ParticleSystem:
     type: 3}
   m_PrefabInstance: {fileID: 197356366789654485}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &2572801369170892616 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2380517059474317469, guid: c72f9e81cafa2b04281a41ea31936b1e,
-    type: 3}
-  m_PrefabInstance: {fileID: 197356366789654485}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &3631531757194171871
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2572801369170892616}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a3d2a38050d635448d1c12b78451664, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  light: {fileID: 0}
-  minIntensity: 0.7
-  maxIntensity: 1
-  smoothing: 25
 --- !u!198 &5272371781098877393 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 5446572283753235972, guid: c72f9e81cafa2b04281a41ea31936b1e,
@@ -126,6 +104,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3609187795912585283, guid: 646fe8f619070e8428421fb694a60545,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 5432608299200219051, guid: 646fe8f619070e8428421fb694a60545,
         type: 3}
       propertyPath: particles.Array.size
@@ -205,6 +188,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7722070057767457390, guid: 646fe8f619070e8428421fb694a60545,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8775622282537853902, guid: 646fe8f619070e8428421fb694a60545,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 646fe8f619070e8428421fb694a60545, type: 3}

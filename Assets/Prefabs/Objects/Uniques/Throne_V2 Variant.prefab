@@ -96,6 +96,11 @@ PrefabInstance:
       propertyPath: particles.Array.data[3]
       value: 
       objectReference: {fileID: 6142614500861858488}
+    - target: {fileID: 538957283640956006, guid: 6d75ef394b145b2488892885ca1ac589,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 17
+      objectReference: {fileID: 0}
     - target: {fileID: 1866650383415508039, guid: 6d75ef394b145b2488892885ca1ac589,
         type: 3}
       propertyPath: m_RootOrder
@@ -156,6 +161,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Throne_V2 Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 3976140933739628032, guid: 6d75ef394b145b2488892885ca1ac589,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3976140933843592228, guid: 6d75ef394b145b2488892885ca1ac589,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 3976140934334993964, guid: 6d75ef394b145b2488892885ca1ac589,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 13
+      objectReference: {fileID: 0}
     - target: {fileID: 5523927524147512067, guid: 6d75ef394b145b2488892885ca1ac589,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -174,7 +194,7 @@ PrefabInstance:
     - target: {fileID: 6199016619777708179, guid: 6d75ef394b145b2488892885ca1ac589,
         type: 3}
       propertyPath: m_RootOrder
-      value: 13
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 9096250606187702355, guid: 6d75ef394b145b2488892885ca1ac589,
         type: 3}
@@ -300,28 +320,6 @@ ParticleSystem:
     type: 3}
   m_PrefabInstance: {fileID: 2209279454861153468}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &4585126569129292833 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2380517059474317469, guid: c72f9e81cafa2b04281a41ea31936b1e,
-    type: 3}
-  m_PrefabInstance: {fileID: 2209279454861153468}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2494187384646579160
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4585126569129292833}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a3d2a38050d635448d1c12b78451664, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  light: {fileID: 0}
-  minIntensity: 0.7
-  maxIntensity: 1
-  smoothing: 28
 --- !u!198 &6142614500861858488 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 5446572283753235972, guid: c72f9e81cafa2b04281a41ea31936b1e,
