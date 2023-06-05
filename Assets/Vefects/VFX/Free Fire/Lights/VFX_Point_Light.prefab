@@ -91,7 +91,7 @@ Light:
   m_BounceIntensity: 0
   m_ColorTemperature: 18345
   m_UseColorTemperature: 1
-  m_BoundingSphereOverride: {x: 0, y: 4.5233586e+33, z: 0, w: 2.878536e-39}
+  m_BoundingSphereOverride: {x: 0, y: NaN, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -231,4 +231,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flicker: 1
-  flickerIntensity: 7
+  flickerIntensity: 5.5
