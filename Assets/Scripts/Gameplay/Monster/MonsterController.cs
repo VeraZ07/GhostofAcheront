@@ -138,6 +138,8 @@ namespace GOA
 
             if (Runner.IsServer && !patching)
             {
+                
+
 
                 switch (State)
                 {
@@ -170,7 +172,9 @@ namespace GOA
                 {
                     animator.SetFloat(paramSpeed, agent.velocity.magnitude / runSpeed);
                 }
-                
+
+
+                agent.enabled = false;
             }
             
         }
