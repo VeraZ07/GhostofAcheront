@@ -184,7 +184,6 @@ namespace GOA.UI
             NetworkRunner runner = FindObjectOfType<NetworkRunner>();
             if (!runner)
             {
-                Debug.LogError("Runner not found");
                 return;
             }
 
