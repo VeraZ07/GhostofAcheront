@@ -65,13 +65,18 @@ namespace GOA
             // Replace material
             foreach (GameObject obj in objects)
             {
-                Renderer rend = obj.GetComponentInChildren<Renderer>();
-                rend.material = dissolveMaterial;
+                if (obj)
+                {
+                    Renderer rend = obj.GetComponentInChildren<Renderer>();
+                    rend.material = dissolveMaterial;
+                }
+                
             }
 
             foreach (VisualEffect vfx in vfxs)
             {
-                vfx.Play();
+                if(vfx)
+                    vfx.Play();
             }
 
             StartCoroutine(Dissolve());
