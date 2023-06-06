@@ -174,7 +174,6 @@ namespace GOA
                 }
 
 
-                agent.enabled = false;
             }
             
         }
