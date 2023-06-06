@@ -54,14 +54,14 @@ namespace GOA
         // Update is called once per frame
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                StartGameCursorEffect();
-            }
-            if (Input.GetKeyDown(KeyCode.O))
-            {
-                StopGameCursorEffect();
-            }
+            //if (Input.GetKeyDown(KeyCode.P))
+            //{
+            //    StartGameCursorEffect();
+            //}
+            //if (Input.GetKeyDown(KeyCode.O))
+            //{
+            //    StopGameCursorEffect();
+            //}
         }
 
         void HandleOnSceneLoaded(Scene scene, LoadSceneMode mode)

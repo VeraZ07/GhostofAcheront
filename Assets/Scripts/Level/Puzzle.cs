@@ -170,8 +170,16 @@ namespace GOA.Level
                         finalState = hpa.Handles[i].FinalState < 0 ? Random.Range(0, hpa.Handles[i].StateCount) : hpa.Handles[i].FinalState;
                     }
 
+                    List<int> candidates = new List<int>();
+                    for (int j = 0; j < hpa.Handles[i].StateCount - 1; j++)
+                    {
+                        if (j != finalState)
+                            candidates.Add(j);
+                    }
+
                     // Add the new index in the internal list
-                    int initialState = hpa.Handles[i].InitialState < 0 ? Random.Range(0, hpa.Handles[i].StateCount) : hpa.Handles[i].InitialState;
+                    //int initialState = hpa.Handles[i].InitialState < 0 ? Random.Range(0, hpa.Handles[i].StateCount) : hpa.Handles[i].InitialState;
+                    int initialState = hpa.Handles[i].InitialState < 0 ? candidates[Random.Range(0, candidates.Count)] : hpa.Handles[i].InitialState;
 
                     // Create a new handle
                     Handle h = new Handle(builder.customObjects.Count - 1, initialState, finalState, hpa.Handles[i].StateCount);
