@@ -111,6 +111,8 @@ namespace GOA.UI
             // Fill the list
             foreach(SessionInfo session in sessions)
             {
+                if (!session.IsValid || session.PlayerCount >= session.MaxPlayers || !session.IsVisible || !session.IsOpen)
+                    continue;
                 GameObject sessionItem = Instantiate(sessionItemPrefab, sessionItemContainer.transform);
                 sessionItem.GetComponent<SessionItem>().Init(session, JoinSession);
             }
