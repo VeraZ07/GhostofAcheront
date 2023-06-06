@@ -455,9 +455,10 @@ namespace GOA
                             //if (player.PlayerId >= runner.SessionInfo.MaxPlayers)
                             // We only create the game manager when the local player ( which is the server in this case ) joins 
                             // the match.
+                            NetworkTransform nt = mcOut.GetComponent<NetworkTransform>();
                             if (player == runner.LocalPlayer)
                             {
-                                runner.Spawn(resNO, inputAuthority: null,
+                                runner.Spawn(resNO, inputAuthority: null, position: nt.ReadPosition(), rotation: nt.ReadRotation(),
                                     onBeforeSpawned: (runner, newNO) =>
                                     {
 
