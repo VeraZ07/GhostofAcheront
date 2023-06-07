@@ -47,7 +47,7 @@ namespace GOA
             this.victim = victim;
             VictimId = victim.Object.InputAuthority.PlayerId;
             agent.velocity = Vector3.zero;
-            agent.isStopped = true;
+            //agent.isStopped = true;
             victim.SetDyingState();
 
             animator.SetFloat(IKiller.ParamAttackId, attackId);
@@ -88,7 +88,7 @@ namespace GOA
                     if (Runner.IsServer)
                     {
                         victim.SetDeadState();
-                        agent.isStopped = false;
+                        //agent.isStopped = false;
                         monster.SetIdleState();
                     }
                     break;

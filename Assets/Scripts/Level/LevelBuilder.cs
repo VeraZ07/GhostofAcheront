@@ -209,7 +209,7 @@ namespace GOA.Level
             //
             // Bake the navigation mesh
             //
-            BakeNavigationMesh();
+            //BakeNavigationMesh();
 
 
 

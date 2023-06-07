@@ -42,15 +42,11 @@ namespace GOA
         Animator animator;
 
         IKiller deathMaker;        
-
         
         NavMeshAgent agent;
 
-  
         string paramSpeed = "Speed";
-        
-
-
+   
         List<PlayerController> players = new List<PlayerController>();
         LevelBuilder builder;
 
@@ -92,7 +88,6 @@ namespace GOA
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
-            //animator = GetComponent<Animator>();
             deathMaker = GetComponent<IKiller>();
             runSpeed = agent.speed;
             walkSpeed = runSpeed * .5f;
@@ -138,9 +133,7 @@ namespace GOA
 
             if (Runner.IsServer && !patching)
             {
-                
-
-
+         
                 switch (State)
                 {
                     case (int)MonsterState.Idle:
@@ -221,9 +214,10 @@ namespace GOA
         IEnumerator PatchAgent()
         {
             patching = true;
-            //agent.ResetPath();
+            agent.ResetPath();
             agent.enabled = false;
             agent.path = null;
+            
             yield return new WaitForSeconds(0.5f);
             agent.enabled = true;
             patching = false;
@@ -239,16 +233,16 @@ namespace GOA
             }
             catch (System.Exception) 
             {
-                StartCoroutine(PatchAgent());
+                //StartCoroutine(PatchAgent());
             }
-            agent.enabled = false;
+            //agent.enabled = false;
             timer = Random.Range(idleTimeMin, idleTimeMax);
 
         }
 
         void EnterMovingState()
         {
-            agent.enabled = true;
+            //agent.enabled = true;
             agent.speed = walkSpeed;
             if (!agent.hasPath && !agent.pathPending)
                 agent.SetDestination(GetDestination());
@@ -482,7 +476,7 @@ namespace GOA
 
             bool trackPlayer = Random.Range(0, monsterNoTrackMax) == 0;
 #if UNITY_EDITOR
-            //trackPlayer = true; // TO REMOVE
+            //trackPlayer = false; // TO REMOVE
 #endif
             
             if (trackPlayer)
