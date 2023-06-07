@@ -85,6 +85,12 @@ namespace GOA
                 p.SetSacrificedState();
         }
 
+        IEnumerator SetSacrificedStateDelayed(PlayerController player, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            player.SetSacrificedState();
+        }
+
         public override void Spawned()
         {
             base.Spawned();
@@ -181,7 +187,10 @@ namespace GOA
                 {
                     foreach(PlayerController p in all)
                     {
-                        p.SetSacrificedState();
+                        if (p.HasInputAuthority)
+                            StartCoroutine(SetSacrificedStateDelayed(p, 1.5f));
+                        else
+                            p.SetSacrificedState();
                     }
                 }
                 else // Someone is still alive, check where they are: are they in the escape trigger?
