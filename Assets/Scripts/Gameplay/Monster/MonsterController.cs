@@ -267,6 +267,8 @@ namespace GOA
             IKiller attacker = GetComponent<IKiller>();
             // Call the attacker
             attacker.Kill(prey, data.attackId);
+            prey = null;
+            lastPrey = null;
         }
 
         void EnterPlayerEscapedState()
