@@ -310,7 +310,8 @@ namespace GOA
                                                 newNO.GetComponent<NetworkBehaviour>().CopyStateFrom(myCustomNetworkBehaviour);
                                             }
 
-                                            //newNO.GetComponent<PlayerController>().Init(player.PlayerId);
+                                            newNO.GetComponent<PlayerController>().Init(player.PlayerId);
+
                                         });
 
                                 
@@ -318,34 +319,36 @@ namespace GOA
                         }
 
                         // Player controller
-                        if (resNO.TryGetBehaviour<PlayerController>(out var pcOut))
-                        {
+                        //if (resNO.TryGetBehaviour<PlayerController>(out var pcOut))
+                        //{
 
-                            Debug.Log("Found player controller to resume -> playerId:" + resNO.InputAuthority.PlayerId);
-                            if (resNO.InputAuthority.PlayerId == oldPlayerId)
-                            {
-                                runner.Spawn(resNO, inputAuthority: player,
-                                    onBeforeSpawned: (runner, newNO) =>
-                                    {
+                        //    Debug.Log("Found player controller to resume -> playerId:" + resNO.InputAuthority.PlayerId);
+                        //    Debug.Log("AAA - PlayerRef:" + player.PlayerId);
 
-                                        // One key aspects of the Host Migration is to have a simple way of restoring the old NetworkObjects state
-                                        // If all state of the old NetworkObject is all what is necessary, just call the NetworkObject.CopyStateFrom
-                                        newNO.CopyStateFrom(resNO);
+                        //    if (resNO.InputAuthority.PlayerId == oldPlayerId)
+                        //    {
+                        //        runner.Spawn(resNO, inputAuthority: player,
+                        //            onBeforeSpawned: (runner, newNO) =>
+                        //            {
 
-                                        // and/or
+                        //                // One key aspects of the Host Migration is to have a simple way of restoring the old NetworkObjects state
+                        //                // If all state of the old NetworkObject is all what is necessary, just call the NetworkObject.CopyStateFrom
+                        //                newNO.CopyStateFrom(resNO);
 
-                                        // If only partial State is necessary, it is possible to copy it only from specific NetworkBehaviours
-                                        if (resNO.TryGetBehaviour<NetworkBehaviour>(out var myCustomNetworkBehaviour))
-                                        {
-                                            newNO.GetComponent<NetworkBehaviour>().CopyStateFrom(myCustomNetworkBehaviour);
-                                        }
+                        //                // and/or
 
-                                        newNO.GetComponent<PlayerController>().Init(player.PlayerId);
-                                    });
+                        //                // If only partial State is necessary, it is possible to copy it only from specific NetworkBehaviours
+                        //                if (resNO.TryGetBehaviour<NetworkBehaviour>(out var myCustomNetworkBehaviour))
+                        //                {
+                        //                    newNO.GetComponent<NetworkBehaviour>().CopyStateFrom(myCustomNetworkBehaviour);
+                        //                }
+
+                        //                //newNO.GetComponent<PlayerController>().Init(player.PlayerId);
+                        //            });
 
 
-                            }
-                        }
+                        //    }
+                        //}
 
                         // Game manager
                         if (resNO.TryGetBehaviour<GameManager>(out var gmOut))

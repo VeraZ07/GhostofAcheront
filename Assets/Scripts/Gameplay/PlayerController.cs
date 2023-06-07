@@ -87,7 +87,7 @@ namespace GOA
         float animAngle = 0f;
 
         [Networked(OnChanged = nameof(OnStateChanged))]
-        public int State { get; private set; } = -1;
+        public int State { get; private set; } = 1;  
 
         int deadType = 0;
         Transform characterRoot;
@@ -205,10 +205,10 @@ namespace GOA
              
             }
 
-            if (Runner.IsServer)
-            {
-                State = (int)PlayerState.Alive;
-            }
+            //if (Runner.IsServer)
+            //{
+            //    State = (int)PlayerState.Alive;
+            //}
 
             // Destroy level camera if any
             Camera levelCam = new List<Camera>(GameObject.FindObjectsOfType<Camera>()).Find(c => c.transform.parent == null);
