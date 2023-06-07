@@ -47,13 +47,13 @@ namespace GOA
             this.victim = victim;
             VictimId = victim.Object.InputAuthority.PlayerId;
             agent.velocity = Vector3.zero;
-            //agent.isStopped = true;
+            agent.isStopped = true;
             victim.SetDyingState();
 
             animator.SetFloat(IKiller.ParamAttackId, attackId);
             animator.SetTrigger(IKiller.ParamAttackTrigger);
 
-            StartCoroutine(SetVictimDeadForSure(5f));
+            //StartCoroutine(SetVictimDeadForSure(5f));
 
             //StartCoroutine(Bite(victim));
         }
@@ -91,7 +91,7 @@ namespace GOA
                     {
                         Debug.Log("DEAD SET");
                         victim.SetDeadState();
-                        //agent.isStopped = false;
+                        agent.isStopped = false;
                         monster.SetIdleState();
                     }
                     break;
@@ -116,11 +116,11 @@ namespace GOA
             
             victim.ExplodeHead();
         }
-        IEnumerator SetVictimDeadForSure(float delay)
-        {
-            if (!Runner.IsServer)
-                yield break;
-        }
+        //IEnumerator SetVictimDeadForSure(float delay)
+        //{
+        //    if (!Runner.IsServer)
+        //        yield break;
+        //}
 
         #endregion
 

@@ -77,18 +77,36 @@ namespace GOA
             // Set players free
             List<PlayerController> aliveAll = new List<PlayerController>(FindObjectsOfType<PlayerController>()).FindAll(p => p.State == (int)PlayerState.Alive);
             foreach (PlayerController p in aliveAll)
-                p.SetEscapedState();
+            {
+                if (p.HasInputAuthority)
+                    SetEscapedStateDelayed(p, 1.5f);
+                else
+                    p.SetEscapedState();
+            }
+                
 
             // Sacrifice all the players already in the dead state: dying players will be sacrificed when moving to the dead state too. 
             List<PlayerController> deadAll = new List<PlayerController>(FindObjectsOfType<PlayerController>()).FindAll(p => p.State == (int)PlayerState.Dead);
             foreach (PlayerController p in deadAll)
-                p.SetSacrificedState();
+            {
+                if (p.HasInputAuthority)
+                    SetSacrificedStateDelayed(p, 1.5f);
+                else
+                    p.SetSacrificedState();
+            }
+                
         }
 
         IEnumerator SetSacrificedStateDelayed(PlayerController player, float delay)
         {
             yield return new WaitForSeconds(delay);
             player.SetSacrificedState();
+        }
+
+        IEnumerator SetEscapedStateDelayed(PlayerController player, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            player.SetEscapedState();
         }
 
         public override void Spawned()
