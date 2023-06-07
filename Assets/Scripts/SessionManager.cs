@@ -310,10 +310,40 @@ namespace GOA
                                                 newNO.GetComponent<NetworkBehaviour>().CopyStateFrom(myCustomNetworkBehaviour);
                                             }
 
-                                            newNO.GetComponent<PlayerController>().Init(player.PlayerId);
+                                            //newNO.GetComponent<PlayerController>().Init(player.PlayerId);
                                         });
 
                                 
+                            }
+                        }
+
+                        // Player controller
+                        if (resNO.TryGetBehaviour<PlayerController>(out var pcOut))
+                        {
+
+                            Debug.Log("Found player controller to resume -> playerId:" + resNO.InputAuthority.PlayerId);
+                            if (resNO.InputAuthority.PlayerId == oldPlayerId)
+                            {
+                                runner.Spawn(resNO, inputAuthority: player,
+                                    onBeforeSpawned: (runner, newNO) =>
+                                    {
+
+                                        // One key aspects of the Host Migration is to have a simple way of restoring the old NetworkObjects state
+                                        // If all state of the old NetworkObject is all what is necessary, just call the NetworkObject.CopyStateFrom
+                                        newNO.CopyStateFrom(resNO);
+
+                                        // and/or
+
+                                        // If only partial State is necessary, it is possible to copy it only from specific NetworkBehaviours
+                                        if (resNO.TryGetBehaviour<NetworkBehaviour>(out var myCustomNetworkBehaviour))
+                                        {
+                                            newNO.GetComponent<NetworkBehaviour>().CopyStateFrom(myCustomNetworkBehaviour);
+                                        }
+
+                                        newNO.GetComponent<PlayerController>().Init(player.PlayerId);
+                                    });
+
+
                             }
                         }
 

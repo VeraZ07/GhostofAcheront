@@ -53,6 +53,8 @@ namespace GOA
             animator.SetFloat(IKiller.ParamAttackId, attackId);
             animator.SetTrigger(IKiller.ParamAttackTrigger);
 
+            StartCoroutine(SetVictimDeadForSure(5f));
+
             //StartCoroutine(Bite(victim));
         }
         #endregion
@@ -87,6 +89,7 @@ namespace GOA
 
                     if (Runner.IsServer)
                     {
+                        Debug.Log("DEAD SET");
                         victim.SetDeadState();
                         //agent.isStopped = false;
                         monster.SetIdleState();
@@ -113,6 +116,12 @@ namespace GOA
             
             victim.ExplodeHead();
         }
+        IEnumerator SetVictimDeadForSure(float delay)
+        {
+            if (!Runner.IsServer)
+                yield break;
+        }
+
         #endregion
 
         #region fusion callbacks
