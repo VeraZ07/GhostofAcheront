@@ -63,40 +63,7 @@ namespace GOA
             UnityEngine.SceneManagement.SceneManager.LoadScene(0);
         }
 
-        void CheckForAliveAndDead()
-        {
-            // Check if there is at least a player alive outside this trigger
-            PlayerController outside = new List<PlayerController>(FindObjectsOfType<PlayerController>()).Find(p => !EscapeTrigger.Instance.IsPlayerInside(p) && p.State == (int)PlayerState.Alive);
-            if (outside) // Yes there is, do nothing
-                return;
-
-            // There is no one still alive outside the trigger ( maybe they are all dead ). All the players inside the trigger
-            // are finally free to escape.
-            // Report the monster
-            FindObjectOfType<MonsterController>()?.SetPlayerEscapedState();
-            // Set players free
-            List<PlayerController> aliveAll = new List<PlayerController>(FindObjectsOfType<PlayerController>()).FindAll(p => p.State == (int)PlayerState.Alive);
-            foreach (PlayerController p in aliveAll)
-            {
-                if (p.HasInputAuthority)
-                    SetEscapedStateDelayed(p, 1.5f);
-                else
-                    p.SetEscapedState();
-            }
-                
-
-            // Sacrifice all the players already in the dead state: dying players will be sacrificed when moving to the dead state too. 
-            List<PlayerController> deadAll = new List<PlayerController>(FindObjectsOfType<PlayerController>()).FindAll(p => p.State == (int)PlayerState.Dead);
-            foreach (PlayerController p in deadAll)
-            {
-                if (p.HasInputAuthority)
-                    SetSacrificedStateDelayed(p, 1.5f);
-                else
-                    p.SetSacrificedState();
-            }
-                
-        }
-
+        
         IEnumerator SetSacrificedStateDelayed(PlayerController player, float delay)
         {
             yield return new WaitForSeconds(delay);
@@ -130,12 +97,7 @@ namespace GOA
         public void YouWin()
         {
             OnGameWin?.Invoke();
-            //FindObjectOfType<MonsterController>()?.SetPlayerEscapedState();
-            //PlayerController[] players = FindObjectsOfType<PlayerController>();
-            //foreach(PlayerController player in players)
-            //{
-            //    player.SetEscapedState();
-            //}
+         
            
             // Just wait a little more on the server to give every client the time to quit
             StartCoroutine(LoadMenuDelayed(Runner.IsServer ? 5f : 4f));
@@ -157,24 +119,7 @@ namespace GOA
             else
             {
                 CheckForAliveAndDead();
-                //// Check if there is at least a player alive outside this trigger
-                //PlayerController outside = new List<PlayerController>(FindObjectsOfType<PlayerController>()).Find(p => !EscapeTrigger.Instance.IsPlayerInside(p) && p.State == (int)PlayerState.Alive);
-                //if (outside) // Yes there is, do nothing
-                //    return;
-
-                //// There is no one still alive outside the trigger ( maybe they are all dead ). All the players inside the trigger
-                //// are finally free to escape.
-                //// Report the monster
-                //FindObjectOfType<MonsterController>()?.SetPlayerEscapedState();
-                //// Set players free
-                //List<PlayerController> aliveAll = new List<PlayerController>(FindObjectsOfType<PlayerController>()).FindAll(p => p.State == (int)PlayerState.Alive);
-                //foreach (PlayerController p in aliveAll)
-                //    p.SetEscapedState();
-
-                //// Sacrifice all the players already in the dead state: dying players will be sacrificed when moving to the dead state too. 
-                //List<PlayerController> deadAll = new List<PlayerController>(FindObjectsOfType<PlayerController>()).FindAll(p => p.State == (int)PlayerState.Dead);
-                //foreach (PlayerController p in deadAll)
-                //    p.SetSacrificedState();
+                
             }
             
 
@@ -219,7 +164,46 @@ namespace GOA
             }
         }
 
-    
+        public void CheckForAliveAndDead()
+        {
+            Debug.Log("DeadOrAlive:1");
+
+            // Check if there is at least a player alive outside this trigger
+            PlayerController outside = new List<PlayerController>(FindObjectsOfType<PlayerController>()).Find(p => !EscapeTrigger.Instance.IsPlayerInside(p) && p.State == (int)PlayerState.Alive);
+            if (outside) // Yes there is, do nothing
+                return;
+
+            Debug.Log("DeadOrAlive:2");
+
+            // There is no one still alive outside the trigger ( maybe they are all dead ). All the players inside the trigger
+            // are finally free to escape.
+            // Report the monster
+            FindObjectOfType<MonsterController>()?.SetPlayerEscapedState();
+            // Set players free
+            List<PlayerController> aliveAll = new List<PlayerController>(FindObjectsOfType<PlayerController>()).FindAll(p => p.State == (int)PlayerState.Alive);
+            foreach (PlayerController p in aliveAll)
+            {
+                if (p.HasInputAuthority)
+                    StartCoroutine(SetEscapedStateDelayed(p, 1.5f));
+                else
+                    p.SetEscapedState();
+            }
+
+            Debug.Log("DeadOrAlive:3");
+            // Sacrifice all the players already in the dead state: dying players will be sacrificed when moving to the dead state too. 
+            List<PlayerController> deadAll = new List<PlayerController>(FindObjectsOfType<PlayerController>()).FindAll(p => p.State == (int)PlayerState.Dead);
+            Debug.Log("DeadAll.Count:" + deadAll.Count);
+            foreach (PlayerController p in deadAll)
+            {
+                if (p.HasInputAuthority)
+                    StartCoroutine(SetSacrificedStateDelayed(p, 1.5f));
+                else
+                    p.SetSacrificedState();
+            }
+
+        }
+
+
         public static void OnLevelSizeChanged(Changed<GameManager> changed)
         {
             changed.Behaviour.OnLeveSizeChanged?.Invoke(changed.Behaviour.LevelSize);

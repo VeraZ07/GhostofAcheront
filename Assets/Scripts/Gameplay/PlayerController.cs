@@ -216,6 +216,17 @@ namespace GOA
                 DestroyImmediate(levelCam.gameObject);
         }
 
+        public override void Despawned(NetworkRunner runner, bool hasState)
+        {
+            base.Despawned(runner, hasState);
+
+            Debug.LogFormat("Despawned player " + this.Object.InputAuthority);
+
+            
+        }
+
+
+
         public override void FixedUpdateNetwork()
         {
             base.FixedUpdateNetwork();
@@ -243,6 +254,8 @@ namespace GOA
         #endregion
 
         #region private methods
+       
+
         void EnableRagdollColliders(bool value)
         {
             Collider[] rc = characterObject.GetComponentsInChildren<Collider>();
@@ -592,6 +605,7 @@ namespace GOA
 
         public static void OnStateChanged(Changed<PlayerController> changed)
         {
+            Debug.LogFormat("Setting new state: {0}", (PlayerState)changed.Behaviour.State);
            
             switch (changed.Behaviour.State)
             {
@@ -690,6 +704,7 @@ namespace GOA
 
         public void SetSacrificedState()
         {
+            Debug.Log("Sacrificed:" + gameObject.name);
             State = (int)PlayerState.Sacrificed;
         }
 

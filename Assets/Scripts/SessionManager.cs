@@ -522,12 +522,23 @@ namespace GOA
                     inv.RespawnAllItems();
                     runner.Despawn(inv.GetComponent<NetworkObject>());
                 }
-                    
+
                 
+                StartCoroutine(CheckDeadOrAliveDelayed());
             }
 
             OnPlayerLeftCallback?.Invoke(runner, playerRef);
             
+        }
+
+        IEnumerator CheckDeadOrAliveDelayed()
+        {
+            yield return new WaitForEndOfFrame();
+
+            Debug.LogFormat("Check for dead or alive after despawning player");
+
+            if (SessionManager.Instance.Runner.IsServer)
+                FindObjectOfType<GameManager>().CheckForAliveAndDead();
         }
 
         public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ArraySegment<byte> data)

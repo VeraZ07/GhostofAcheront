@@ -395,12 +395,13 @@ namespace GOA
             if (players.Count != new List<PlayerRef>(Runner.ActivePlayers).Count)
                 players.Clear();
 
-            if (players.Count == 0)
+            //if (players.Count == 0)
                 players = new List<PlayerController>(FindObjectsOfType<PlayerController>());
 
             List<PlayerController> candidates = new List<PlayerController>();
             foreach(PlayerController player in players)
             {
+
                 if (player.State != (int)PlayerState.Alive)
                     continue;
 
@@ -435,7 +436,7 @@ namespace GOA
                 if (Physics.Raycast(transform.position + Vector3.up, dir.normalized, dir.magnitude, mask))
                     continue; // A wall is stopping the sight
 
-                Debug.Log("MONSTER - Adding new prey candidate:" + player);
+                
 
                 candidates.Add(player);
             }
@@ -478,7 +479,7 @@ namespace GOA
 
             bool trackPlayer = Random.Range(0, monsterNoTrackMax) == 0;
 #if UNITY_EDITOR
-            //trackPlayer = false; // TO REMOVE
+            trackPlayer = true; // TO REMOVE
 #endif
             
             if (trackPlayer)
