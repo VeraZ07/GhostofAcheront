@@ -579,7 +579,10 @@ namespace GOA
             {
                 Inventory inv = new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.Object.InputAuthority == this.Object.InputAuthority);
                 inv.RespawnAllItems();
+
+                SessionManager.Instance.PushSnapshot();
             }
+
             
 
         }

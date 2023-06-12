@@ -523,7 +523,8 @@ namespace GOA
                     runner.Despawn(inv.GetComponent<NetworkObject>());
                 }
 
-                
+                SessionManager.Instance.PushSnapshot();
+
                 StartCoroutine(CheckDeadOrAliveDelayed());
             }
 
