@@ -538,7 +538,7 @@ namespace GOA
             Debug.LogFormat("Check for dead or alive after despawning player");
 
             if (SessionManager.Instance.Runner.IsServer)
-                FindObjectOfType<GameManager>().CheckForAliveAndDead();
+                FindObjectOfType<GameManager>().CheckForEscaped();
         }
 
         public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ArraySegment<byte> data)

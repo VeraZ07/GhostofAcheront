@@ -16,7 +16,7 @@ namespace GOA
     public class PlayerController : NetworkBehaviour
     {
         #region fields
-        public static PlayerController Local { get; private set; }
+        //public static PlayerController Local { get; private set; }
 
         public const float InteractionMinimumDistance = 1.5f;
 
@@ -200,7 +200,7 @@ namespace GOA
             }
             else
             {
-                Local = this;
+                //Local = this;
                 SetRenderingLayer(LayerMask.NameToLayer(Layers.LocalCharacter));
              
             }
@@ -532,13 +532,13 @@ namespace GOA
 
         void EnterEscapedState()
         {
-            if (this == Local)
+            if (HasInputAuthority)
                 FindObjectOfType<GameManager>().YouWin();
         }
 
         void EnterSacrificedState()
         {
-            if (this == Local)
+            if (HasInputAuthority)
                 FindObjectOfType<GameManager>().YouLose();
         }
 
@@ -573,7 +573,7 @@ namespace GOA
             ghostTime = 2f;
 
             if(Runner.IsServer)
-                FindObjectOfType<GameManager>().PlayerDied(this);
+                FindObjectOfType<GameManager>().PlayerHasDead(this);
 
             if (Runner.IsServer && !Runner.IsSinglePlayer)
             {
@@ -683,7 +683,7 @@ namespace GOA
         public void LookAtYouDying()
         {
             Debug.Log("KILL - LookAtYouDying()");
-            if (Local == this)
+            if (this.HasInputAuthority)
             {
                 StartCoroutine(DoLookAtYouDying());
             }

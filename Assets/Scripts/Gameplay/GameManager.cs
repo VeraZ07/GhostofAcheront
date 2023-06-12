@@ -76,6 +76,43 @@ namespace GOA
             player.SetEscapedState();
         }
 
+        IEnumerator CheckForDeadAndAlive()
+        {
+            yield return new WaitForSeconds(1f);
+
+            Debug.Log("GameManager - PlayerDead() - multiplayer");
+            // We first check if all the players are dead
+            List<PlayerController> all = new List<PlayerController>(FindObjectsOfType<PlayerController>());
+            Debug.Log("GameManager - PlayerDead() - number of players:" + all.Count);
+            bool allDead = true;
+            foreach (PlayerController p in all)
+            {
+                if (p.State == (int)PlayerState.Alive)
+                {
+                    allDead = false;
+                    break;
+                }
+            }
+
+            Debug.Log("GameManager - PlayerDead() - allDead:" + allDead);
+
+            if (allDead) // No one is alive
+            {
+                foreach (PlayerController p in all)
+                {
+                    Debug.Log("GameManager - PlayerDead() - player:" + p.name);
+                    if (p.HasInputAuthority)
+                        StartCoroutine(SetSacrificedStateDelayed(p, 1.5f));
+                    else
+                        p.SetSacrificedState();
+                }
+            }
+            else // Someone is still alive, check where they are: are they in the escape trigger?
+            {
+                CheckForEscaped();
+            }
+        }
+
         public override void Spawned()
         {
             base.Spawned();
@@ -118,7 +155,7 @@ namespace GOA
             }
             else
             {
-                CheckForAliveAndDead();
+                CheckForEscaped();
                 
             }
             
@@ -126,45 +163,24 @@ namespace GOA
 
         }
   
-        public void PlayerDied(PlayerController player)
+        public void PlayerHasDead(PlayerController player)
         {
+            Debug.Log("GameManager - PlayerDead()");
+
             if (SessionManager.Instance.Runner.IsSinglePlayer)
             {
                 YouLose();
             }
             else
             {
-                // We first check if all the players are dead
-                List<PlayerController> all = new List<PlayerController>(FindObjectsOfType<PlayerController>());
-                bool allDead = true;
-                foreach(PlayerController p in all)
-                {
-                    if(p.State == (int)PlayerState.Alive)
-                    {
-                        allDead = false;
-                        break;
-                    }
-                }
-                
-                if (allDead) // No one is alive
-                {
-                    foreach(PlayerController p in all)
-                    {
-                        if (p.HasInputAuthority)
-                            StartCoroutine(SetSacrificedStateDelayed(p, 1.5f));
-                        else
-                            p.SetSacrificedState();
-                    }
-                }
-                else // Someone is still alive, check where they are: are they in the escape trigger?
-                {
-                    CheckForAliveAndDead();
-                }
+                StartCoroutine(CheckForDeadAndAlive());
 
             }
         }
 
-        public void CheckForAliveAndDead()
+       
+
+        public void CheckForEscaped()
         {
             Debug.Log("DeadOrAlive:1");
 

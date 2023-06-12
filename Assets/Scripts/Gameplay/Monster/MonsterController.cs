@@ -244,6 +244,10 @@ namespace GOA
         {
             //agent.enabled = true;
             agent.speed = walkSpeed;
+
+            Debug.Log("MONSTER - agent.hasPath:" + agent.hasPath);
+            Debug.Log("MONSTER - agent.pathPending:" + agent.pathPending);
+
             if (!agent.hasPath && !agent.pathPending)
                 agent.SetDestination(GetDestination());
         }
@@ -392,11 +396,11 @@ namespace GOA
             //return false;
 #endif
 
-            if (players.Count != new List<PlayerRef>(Runner.ActivePlayers).Count)
-                players.Clear();
+            //if (players.Count != new List<PlayerRef>(Runner.ActivePlayers).Count)
+            //    players.Clear();
 
             //if (players.Count == 0)
-                players = new List<PlayerController>(FindObjectsOfType<PlayerController>());
+            players = new List<PlayerController>(FindObjectsOfType<PlayerController>());
 
             List<PlayerController> candidates = new List<PlayerController>();
             foreach(PlayerController player in players)
@@ -474,8 +478,9 @@ namespace GOA
         public Vector3 GetDestination()
         {
             // Load all the player controllers into a list
-            if(players.Count == 0)
-                players = new List<PlayerController>(FindObjectsOfType<PlayerController>());
+            //if(players.Count == 0)
+            //    players = new List<PlayerController>(FindObjectsOfType<PlayerController>());
+            
 
             bool trackPlayer = Random.Range(0, monsterNoTrackMax) == 0;
 #if UNITY_EDITOR
@@ -484,6 +489,7 @@ namespace GOA
             
             if (trackPlayer)
             {
+                players = new List<PlayerController>(FindObjectsOfType<PlayerController>());
                 Transform target = players[Random.Range(0, players.Count)].transform;
                 return target.position;
             }
