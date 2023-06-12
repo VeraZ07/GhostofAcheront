@@ -425,6 +425,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: FloatingLight
       objectReference: {fileID: 0}
+    - target: {fileID: 701811009306465393, guid: 0839a3a08299f2c49a1e22a9230e727d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1714964483865622675, guid: 0839a3a08299f2c49a1e22a9230e727d,
         type: 3}
       propertyPath: m_RootOrder
@@ -602,6 +607,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Global Volume
+      objectReference: {fileID: 0}
+    - target: {fileID: 705222808106588541, guid: ab15ed540b2e41047b614aca33527333,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ab15ed540b2e41047b614aca33527333, type: 3}
