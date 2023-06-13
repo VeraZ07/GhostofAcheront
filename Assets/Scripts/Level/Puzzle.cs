@@ -73,14 +73,31 @@ namespace GOA.Level
 
         public class MemoryPuzzle : Puzzle
         {
+            int frameId;
+                        
+
             public MemoryPuzzle(LevelBuilder builder, PuzzleAsset asset, int sectorId) : base(builder, asset, sectorId)
             {
+                // Add custom objects to the builder
+                MemoryPuzzleAsset mpa = asset as MemoryPuzzleAsset;
+                for(int i=0; i<mpa.FramesCount; i++)
+                {
+                    // Create the frame custom object
+                    CustomObject co = new CustomObject(builder, mpa.Frame);
+                    builder.customObjects.Add(co);
+                    frameId = builder.CustomObjects.Count - 1;
+                    co.AttachRandomly(sectorId);
+
+                    // Rearrange tiles
+                    int numOfTiles = int.Parse(mpa.Frame.name.Substring(mpa.Frame.name.LastIndexOf("_") + 1));
+                    
+                }
 
             }
 
             public override void CreateSceneObjects()
             {
-                //throw new System.NotImplementedException();
+                builder.CustomObjects[frameId].CreateSceneObject();
             }
         }
 
