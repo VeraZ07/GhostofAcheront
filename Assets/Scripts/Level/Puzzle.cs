@@ -21,6 +21,10 @@ namespace GOA.Level
                 {
                     return new PicturePuzzle(builder, asset, sectorIndex);
                 }
+                if (asset.GetType() == typeof(MemoryPuzzleAsset))
+                {
+                    return new MemoryPuzzle(builder, asset, sectorIndex);
+                }
                 //return puzzle;
                 throw new System.Exception(string.Format("PuzzleFactory - Puzzle '{0}' not found.", asset.name));
             }
@@ -64,6 +68,19 @@ namespace GOA.Level
                        {
                             obj.GetComponent<PuzzleController>().Initialize(builder.puzzles.IndexOf(this));
                        });
+            }
+        }
+
+        public class MemoryPuzzle : Puzzle
+        {
+            public MemoryPuzzle(LevelBuilder builder, PuzzleAsset asset, int sectorId) : base(builder, asset, sectorId)
+            {
+
+            }
+
+            public override void CreateSceneObjects()
+            {
+                //throw new System.NotImplementedException();
             }
         }
 

@@ -95,12 +95,12 @@ namespace GOA.Editor
             Selection.activeObject = asset;
         }
 
-        [MenuItem("Assets/Create/GOA/Puzzles/MultiStatePuzzleAsset")]
-        public static void CreateMultiStatePuzzleAsset()
+        [MenuItem("Assets/Create/GOA/Puzzles/HandlesPuzzleAsset")]
+        public static void CreateHandlesPuzzleAsset()
         {
             HandlesPuzzleAsset asset = ScriptableObject.CreateInstance<HandlesPuzzleAsset>();
 
-            string name = "MultiStatePuzzle.asset";
+            string name = "HandlesPuzzle.asset";
 
             string folder = System.IO.Path.Combine(ResourceFolder, PuzzleAsset.ResourceFolder);
 
@@ -117,11 +117,32 @@ namespace GOA.Editor
         }
 
         [MenuItem("Assets/Create/GOA/Puzzles/PicturePuzzleAsset")]
-        public static void CreatePucturePuzzleAsset()
+        public static void CreatePicturePuzzleAsset()
         {
             PicturePuzzleAsset asset = ScriptableObject.CreateInstance<PicturePuzzleAsset>();
 
             string name = "PicturePuzzleAsset.asset";
+
+            string folder = System.IO.Path.Combine(ResourceFolder, PuzzleAsset.ResourceFolder);
+
+            if (!System.IO.Directory.Exists(folder))
+                System.IO.Directory.CreateDirectory(folder);
+
+            AssetDatabase.CreateAsset(asset, System.IO.Path.Combine(folder, name));
+
+            AssetDatabase.SaveAssets();
+
+            EditorUtility.FocusProjectWindow();
+
+            Selection.activeObject = asset;
+        }
+
+        [MenuItem("Assets/Create/GOA/Puzzles/MemoryPuzzleAsset")]
+        public static void CreateMemoryPuzzleAsset()
+        {
+            MemoryPuzzleAsset asset = ScriptableObject.CreateInstance<MemoryPuzzleAsset>();
+
+            string name = "MemoryPuzzle.asset";
 
             string folder = System.IO.Path.Combine(ResourceFolder, PuzzleAsset.ResourceFolder);
 
