@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace GOA
 {
-    public class MemoryTileInteractor : IInteractable
+    public class MemoryTileInteractor : MonoBehaviour, IInteractable
     {
         
         // Start is called before the first frame update

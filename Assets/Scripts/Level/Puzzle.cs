@@ -79,8 +79,13 @@ namespace GOA.Level
             public IList<int> FrameIds
             {
                 get { return frameIds.AsReadOnly(); }
-            } 
-          
+            }
+
+            public int TilesCount
+            {
+                get { return int.Parse((Asset as MemoryPuzzleAsset).Frame.name.Substring((Asset as MemoryPuzzleAsset).Frame.name.LastIndexOf("_") + 1)); }
+            }
+
             public MemoryPuzzle(LevelBuilder builder, PuzzleAsset asset, int sectorId) : base(builder, asset, sectorId)
             {
                 // Add custom objects to the builder
@@ -136,6 +141,8 @@ namespace GOA.Level
                 }
                 
             }
+
+            
         }
 
         public class HandlesPuzzle: Puzzle

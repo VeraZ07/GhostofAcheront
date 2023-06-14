@@ -11,21 +11,40 @@ namespace GOA
     public class MemoryPuzzleController : PuzzleController
     {
         [System.Serializable]
-        public struct FrameStruct: INetworkStruct
+        public struct NetworkFrameStruct: INetworkStruct
         {
-            [UnitySerializeField][Networked] public int FrameId { get; set; }
+            //[UnitySerializeField][Networked] public int FrameIndex { get; set; }
+
+            // False if the tile is hidden, otherwise true
+            [UnitySerializeField] [Networked] [Capacity(16)] public NetworkLinkedList<NetworkBool> Tiles { get; }
+
+            
         }
 
-        [Networked][Capacity(5)] public NetworkArray<FrameStruct> Frames { get; }
+
+        [UnitySerializeField][Networked(OnChanged = nameof(OnNetworkFramesChanged))] [Capacity(5)] public NetworkLinkedList<NetworkFrameStruct> NetworkFrames { get; } = default;
 
 
-        //List<IInteractable> tiles = new List<IInteractable>();
+        [System.Serializable]
+        public class Frame
+        {
+            [SerializeField]
+            List<IInteractable> tiles = new List<IInteractable>();
+
+            public Frame(List<IInteractable> tiles)
+            {
+                this.tiles = tiles;
+                Debug.Log("Tiles.Count:" + tiles.Count);
+            }
+        }
+
+        [SerializeField]
+        List<Frame> frames = new List<Frame>();
 
         //[UnitySerializeField]
         //[Networked(OnChanged = nameof(OnFlippedTilesChanged))]
         //[Capacity(10)]
         //public NetworkLinkedList<NetworkBool> FlippedTiles { get; } = default;
-
 
 
         public override void Spawned()
@@ -35,8 +54,17 @@ namespace GOA
             // Get all the tiles
             LevelBuilder builder = FindObjectOfType<LevelBuilder>();
             LevelBuilder.MemoryPuzzle puzzle = builder.GetPuzzle(PuzzleIndex) as LevelBuilder.MemoryPuzzle;
-            //GameObject sceneObject = 
-            //tiles = new List<IInteractable>(GetComponentsInChildren<IInteractable>());
+
+            for(int i=0; i<puzzle.FrameIds.Count; i++)
+            {
+                GameObject so = builder.CustomObjects[puzzle.FrameIds[i]].SceneObject;
+
+                List<IInteractable> tiles = new List<IInteractable>(so.GetComponentsInChildren<IInteractable>());
+                frames.Add(new Frame(tiles));
+            }
+
+            //GameObject sceneObject = puzzle.
+            //
         }
 
         public override void Initialize(int puzzleIndex)
@@ -45,20 +73,27 @@ namespace GOA
 
             LevelBuilder builder = FindObjectOfType<LevelBuilder>();
             LevelBuilder.MemoryPuzzle puzzle = builder.GetPuzzle(PuzzleIndex) as LevelBuilder.MemoryPuzzle;
-
+            int tilesCount = puzzle.TilesCount;
             for (int i = 0; i < puzzle.FrameIds.Count; i++)
             {
-                FrameStruct fs = new FrameStruct();
-                fs.FrameId = puzzle.FrameIds[i];
-                Frames.Set(i, fs);
+                NetworkFrameStruct fs = new NetworkFrameStruct();
+                //fs.FrameIndex = puzzle.FrameIds[i];
+                for (int j = 0; j < tilesCount; j++)
+                {
+                    fs.Tiles.Add(false);
+                }
+
+                NetworkFrames.Add(fs);
             }
 
         }
 
 
         #region fusion callbacks
-        public static void OnFlippedTilesChanged(Changed<MemoryPuzzleController> changed)
+        public static void OnNetworkFramesChanged(Changed<MemoryPuzzleController> changed)
         {
+            Debug.Log("networkframes changed");
+
             //bool solved = true;
             //for (int i = 0; i < changed.Behaviour.Pieces.Count; i++)
             //{
