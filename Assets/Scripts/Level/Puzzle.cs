@@ -73,23 +73,27 @@ namespace GOA.Level
 
         public class MemoryPuzzle : Puzzle
         {
-            int frameId;
-                        
-
+            
+          
+            List<int> frameIds = new List<int>();
+            public IList<int> FrameIds
+            {
+                get { return frameIds.AsReadOnly(); }
+            } 
+          
             public MemoryPuzzle(LevelBuilder builder, PuzzleAsset asset, int sectorId) : base(builder, asset, sectorId)
             {
                 // Add custom objects to the builder
                 MemoryPuzzleAsset mpa = asset as MemoryPuzzleAsset;
                 for(int i=0; i<mpa.FramesCount; i++)
                 {
+                    
                     // Create the frame custom object
                     CustomObject co = new CustomObject(builder, mpa.Frame);
                     builder.customObjects.Add(co);
-                    frameId = builder.CustomObjects.Count - 1;
+                    frameIds.Add(builder.CustomObjects.Count - 1);
                     co.AttachRandomly(sectorId);
 
-                    // Rearrange tiles
-                    int numOfTiles = int.Parse(mpa.Frame.name.Substring(mpa.Frame.name.LastIndexOf("_") + 1));
                     
                 }
 
@@ -97,7 +101,40 @@ namespace GOA.Level
 
             public override void CreateSceneObjects()
             {
-                builder.CustomObjects[frameId].CreateSceneObject();
+                foreach(int frameId in frameIds)
+                {
+                    builder.CustomObjects[frameId].CreateSceneObject();
+
+                    // Get the scene object
+                    GameObject sceneObject = builder.customObjects[frameId].SceneObject;
+
+                    // Get the tile container
+                    Transform tileGroup = sceneObject.transform.GetChild(0).GetChild(0);
+                    
+                    // Rearrange tiles
+                    int numOfTiles = tileGroup.childCount;
+                    List<int> indices = new List<int>();
+                    List<Vector3> positions = new List<Vector3>();
+                    List<Quaternion> rotations = new List<Quaternion>();
+
+                    for (int j = 0; j < numOfTiles; j++)
+                    {
+                        indices.Add(j);
+                        positions.Add(tileGroup.GetChild(j).position);
+                        rotations.Add(tileGroup.GetChild(j).rotation);
+                    }
+                    // Rearranging
+                    for (int j = 0; j < numOfTiles; j++)
+                    {
+                        
+                        // Get the new position you want to move the tile at index j
+                        int newIndex = indices[Random.Range(0, indices.Count)];
+                        indices.Remove(newIndex);
+                        tileGroup.GetChild(j).position = positions[newIndex];
+                        tileGroup.GetChild(j).rotation = rotations[newIndex];
+                    }
+                }
+                
             }
         }
 
