@@ -7,6 +7,10 @@ namespace GOA
 {
     public class MemoryTileInteractor : MonoBehaviour, IInteractable
     {
+        MemoryPuzzleController puzzleController;
+        int frameId;
+        int tileId;
+
         
         // Start is called before the first frame update
         void Start()
@@ -21,13 +25,33 @@ namespace GOA
         }
         public bool IsInteractionEnabled()
         {
-            throw new System.NotImplementedException();
+            return !puzzleController.IsTileVisible(frameId, tileId);
         }
 
         public void StartInteraction(PlayerController playerController)
         {
-            throw new System.NotImplementedException();
+            puzzleController.SetTileVisible(frameId, tileId, true);
         }
+
+        public void Show()
+        {
+            // Rotate tile
+            transform.localEulerAngles = Vector3.up * 180f;
+        }
+
+        public void Hide()
+        {
+            transform.localEulerAngles = Vector3.zero;
+        }
+
+        public void Init(MemoryPuzzleController puzzleController, int frameId, int tileId)
+        {
+            this.puzzleController = puzzleController;
+            this.frameId = frameId;
+            this.tileId = tileId;
+        }
+
+
 
     }
 

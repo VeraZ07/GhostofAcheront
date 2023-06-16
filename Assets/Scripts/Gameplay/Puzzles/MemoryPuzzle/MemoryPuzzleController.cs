@@ -29,9 +29,9 @@ namespace GOA
         public class Frame
         {
             [SerializeField]
-            List<IInteractable> tiles = new List<IInteractable>();
+            List<MemoryTileInteractor> tiles = new List<MemoryTileInteractor>();
 
-            public Frame(List<IInteractable> tiles)
+            public Frame(List<MemoryTileInteractor> tiles)
             {
                 this.tiles = tiles;
                 Debug.Log("Tiles.Count:" + tiles.Count);
@@ -59,8 +59,14 @@ namespace GOA
             {
                 GameObject so = builder.CustomObjects[puzzle.FrameIds[i]].SceneObject;
 
-                List<IInteractable> tiles = new List<IInteractable>(so.GetComponentsInChildren<IInteractable>());
+                List<MemoryTileInteractor> tiles = new List<MemoryTileInteractor>(so.GetComponentsInChildren<MemoryTileInteractor>());
                 frames.Add(new Frame(tiles));
+
+                // Init tiles
+                for(int j=0; j<tiles.Count; j++)
+                {
+                    tiles[j].Init(this, i, j);
+                }
             }
 
             //GameObject sceneObject = puzzle.
@@ -88,11 +94,24 @@ namespace GOA
 
         }
 
+       
+        public bool IsTileVisible(int frameId, int tileId)
+        {
+            return NetworkFrames[frameId].Tiles[tileId];
+        }
+
+        public void SetTileVisible(int frameId, int tileId, bool value)
+        {
+            var tiles = NetworkFrames[frameId].Tiles;
+            tiles[tileId] = value;
+        }
 
         #region fusion callbacks
         public static void OnNetworkFramesChanged(Changed<MemoryPuzzleController> changed)
         {
             Debug.Log("networkframes changed");
+
+            // Show and hide tiles
 
             //bool solved = true;
             //for (int i = 0; i < changed.Behaviour.Pieces.Count; i++)
