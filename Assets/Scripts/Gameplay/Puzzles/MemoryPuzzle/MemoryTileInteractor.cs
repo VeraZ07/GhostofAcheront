@@ -25,12 +25,15 @@ namespace GOA
         }
         public bool IsInteractionEnabled()
         {
-            return !puzzleController.IsTileVisible(frameId, tileId);
+            return puzzleController.TileIsSelectable(frameId, tileId);
         }
 
         public void StartInteraction(PlayerController playerController)
         {
-            puzzleController.SetTileVisible(frameId, tileId, true);
+     
+            if (!IsInteractionEnabled())
+                return;
+            puzzleController.SelectTile(frameId, tileId);
         }
 
         public void Show()
