@@ -142,7 +142,28 @@ namespace GOA.Editor
         {
             MemoryPuzzleAsset asset = ScriptableObject.CreateInstance<MemoryPuzzleAsset>();
 
-            string name = "MemoryPuzzle.asset";
+            string name = "MemoryPuzzleAsset.asset";
+
+            string folder = System.IO.Path.Combine(ResourceFolder, PuzzleAsset.ResourceFolder);
+
+            if (!System.IO.Directory.Exists(folder))
+                System.IO.Directory.CreateDirectory(folder);
+
+            AssetDatabase.CreateAsset(asset, System.IO.Path.Combine(folder, name));
+
+            AssetDatabase.SaveAssets();
+
+            EditorUtility.FocusProjectWindow();
+
+            Selection.activeObject = asset;
+        }
+
+        [MenuItem("Assets/Create/GOA/Puzzles/JigSawPuzzleAsset")]
+        public static void CreateJigSawPuzzleAsset()
+        {
+            JigSawPuzzleAsset asset = ScriptableObject.CreateInstance<JigSawPuzzleAsset>();
+
+            string name = "JigSawPuzzleAsset.asset";
 
             string folder = System.IO.Path.Combine(ResourceFolder, PuzzleAsset.ResourceFolder);
 

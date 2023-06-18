@@ -48,16 +48,7 @@ namespace GOA
 
         const int maxSelectables = 2;
 
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                SelectTile(0, 1);
-
-            }
-
-        }
+            
 
         #region fusion initialization
         public override void Spawned()
@@ -128,7 +119,7 @@ namespace GOA
         #region private methods
         IEnumerator CheckTilesDelayed(int frameId, int tile1Id, int tile2Id)
         {
-            yield return new WaitForSeconds(2);
+            yield return new WaitForSeconds(1f);
 
             var newFrame = NetworkFrames[frameId];
             newFrame.SelectedTiles.Clear();
@@ -141,6 +132,25 @@ namespace GOA
             }
 
             NetworkFrames.Set(frameId, newFrame);
+
+            
+        }
+
+        void CheckForPuzzleSolved()
+        {
+            // Check if the puzzle has been solved
+            bool solved = true;
+            for (int i = 0; i < frames.Count; i++)
+            {
+                if (NetworkFrames[i].SolvedTiles.Count < frames[i].Tiles.Count)
+                {
+                    solved = false;
+                    break;
+                }
+            }
+
+            if (solved)
+                Solved = true;
         }
 
         bool TilesCanPairEachOther(int frameId, int tile1, int tile2)
@@ -246,6 +256,11 @@ namespace GOA
                                 
                                 changed.Behaviour.frames[i].Tiles[tile1].Hide();
                                 changed.Behaviour.frames[i].Tiles[tile2].Hide();
+                            }
+                            else
+                            {
+                                // Check if the puzzle has been solved
+                                changed.Behaviour.CheckForPuzzleSolved();
                             }
                         }
                     }

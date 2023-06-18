@@ -25,6 +25,10 @@ namespace GOA.Level
                 {
                     return new MemoryPuzzle(builder, asset, sectorIndex);
                 }
+                if (asset.GetType() == typeof(JigSawPuzzleAsset))
+                {
+                    return new JigSawPuzzle(builder, asset, sectorIndex);
+                }
                 //return puzzle;
                 throw new System.Exception(string.Format("PuzzleFactory - Puzzle '{0}' not found.", asset.name));
             }
@@ -71,6 +75,19 @@ namespace GOA.Level
             }
         }
 
+        public class JigSawPuzzle : Puzzle
+        {
+            public JigSawPuzzle(LevelBuilder builder, PuzzleAsset asset, int sectorId) : base(builder, asset, sectorId)
+            {
+
+            }
+
+            public override void CreateSceneObjects()
+            {
+                //throw new System.NotImplementedException();
+            }
+        }
+
         public class MemoryPuzzle : Puzzle
         {
             
@@ -90,7 +107,7 @@ namespace GOA.Level
             {
                 // Add custom objects to the builder
                 MemoryPuzzleAsset mpa = asset as MemoryPuzzleAsset;
-                for(int i=0; i<mpa.FramesCount; i++)
+                for(int i=0; i<mpa.FrameCount; i++)
                 {
                     
                     // Create the frame custom object

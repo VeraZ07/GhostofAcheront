@@ -4,15 +4,8 @@ using UnityEngine;
 
 namespace GOA.Assets
 {
-    public class MemoryPuzzleAsset : PuzzleAsset
+    public class JigSawPuzzleAsset : PuzzleAsset
     {
-        //[SerializeField]
-        //List<CustomObjectAsset> tiles;
-        //public List<CustomObjectAsset> Tiles
-        //{
-        //    get { return tiles; }
-        //}
-
         [SerializeField]
         CustomObjectAsset frame;
         public CustomObjectAsset Frame
@@ -26,6 +19,7 @@ namespace GOA.Assets
         {
             get { return frameCount; }
         }
+
     }
 
 }
