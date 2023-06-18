@@ -77,15 +77,64 @@ namespace GOA.Level
 
         public class JigSawPuzzle : Puzzle
         {
+            List<int> frameIds = new List<int>();
+
+            public int TilesCount
+            {
+                get { return int.Parse((Asset as JigSawPuzzleAsset).Frame.name.Substring((Asset as JigSawPuzzleAsset).Frame.name.LastIndexOf("_") + 1)); }
+            }
+
             public JigSawPuzzle(LevelBuilder builder, PuzzleAsset asset, int sectorId) : base(builder, asset, sectorId)
             {
-
+                JigSawPuzzleAsset jsasset = Asset as JigSawPuzzleAsset;
+                for (int i = 0; i < jsasset.FrameCount; i++)
+                {
+                    CustomObject co = new CustomObject(builder, jsasset.Frame);
+                    builder.customObjects.Add(co);
+                    frameIds.Add(builder.customObjects.Count - 1);
+                    co.AttachRandomly(sectorId);
+                }
             }
 
             public override void CreateSceneObjects()
             {
-                //throw new System.NotImplementedException();
+                foreach(int frameId in frameIds)
+                {
+                    // Create the scene object
+                    builder.CustomObjects[frameId].CreateSceneObject();
+
+                    // Get the scene object
+                    GameObject sceneObject = builder.customObjects[frameId].SceneObject;
+
+                    // Get the tile container
+                    Transform tileGroup = sceneObject.transform.GetChild(0).GetChild(0);
+
+                    // Rearrange tiles
+                    int numOfTiles = tileGroup.childCount;
+                    List<int> indices = new List<int>();
+                    List<Vector3> positions = new List<Vector3>();
+                    List<Quaternion> rotations = new List<Quaternion>();
+
+                    for (int j = 0; j < numOfTiles; j++)
+                    {
+                        indices.Add(j);
+                        positions.Add(tileGroup.GetChild(j).position);
+                        rotations.Add(tileGroup.GetChild(j).rotation);
+                    }
+                    // Rearranging
+                    for (int j = 0; j < numOfTiles; j++)
+                    {
+
+                        // Get the new position you want to move the tile at index j
+                        int newIndex = indices[Random.Range(0, indices.Count)];
+                        indices.Remove(newIndex);
+                        tileGroup.GetChild(j).position = positions[newIndex];
+                        tileGroup.GetChild(j).rotation = rotations[newIndex];
+                    }
+                }
             }
+
+           
         }
 
         public class MemoryPuzzle : Puzzle
