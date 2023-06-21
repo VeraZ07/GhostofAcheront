@@ -15,4 +15,4 @@ MonoBehaviour:
   controllerPrefab: {fileID: 5239240042662556491, guid: 9b461fd5834371f479530b199dd49c07,
     type: 3}
   frame: {fileID: 11400000, guid: 02d3a212a429cc040a02f5d5f0d3c224, type: 2}
-  framesCount: 3
+  frameCount: 3

@@ -78,6 +78,10 @@ namespace GOA.Level
         public class JigSawPuzzle : Puzzle
         {
             List<int> frameIds = new List<int>();
+            public IList<int> FrameIds
+            {
+                get { return frameIds; }
+            }
 
             public int TilesCount
             {
