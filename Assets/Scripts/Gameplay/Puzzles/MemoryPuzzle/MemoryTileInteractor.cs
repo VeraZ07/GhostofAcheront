@@ -16,6 +16,7 @@ namespace GOA
 
         float zDefault = 0;
         float moveTime = 0.5f;
+        float moveDist = .05f;
 
         private void Awake()
         {
@@ -51,7 +52,7 @@ namespace GOA
             if (!selected)
             {
                 selected = true;
-                transform.DOLocalMoveZ(zDefault - 0.5f, moveTime, false);
+                transform.DOLocalMoveZ(zDefault - moveDist, moveTime, false);
                 transform.DOLocalRotate(Vector3.up * 180f, moveTime, RotateMode.Fast).SetEase(Ease.OutBounce);
                 //transform.localEulerAngles = Vector3.up * 180f;
             }
