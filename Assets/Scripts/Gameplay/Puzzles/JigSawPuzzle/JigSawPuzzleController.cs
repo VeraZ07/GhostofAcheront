@@ -12,7 +12,7 @@ namespace GOA
         [System.Serializable]
         public struct NetworkFrameStruct : INetworkStruct
         {
-            [UnitySerializeField] [Networked] [Capacity(16)] public NetworkLinkedList<int> TilePositions { get; }
+            [UnitySerializeField] [Networked] [Capacity(16)] public NetworkLinkedList<int> TilesOrder { get; }
 
             [UnitySerializeField] [Networked] [Capacity(maxSelectables)] public NetworkLinkedList<int> SelectedTiles { get; }
 
@@ -75,6 +75,7 @@ namespace GOA
                     {
                         int tile1 = NetworkFrames[i].SelectedTiles[0];
                         int tile2 = NetworkFrames[i].SelectedTiles[1];
+                        
                         //if (TilesCanPairEachOther(i, tile1, tile2))
                         //{
                         //    var copy = NetworkFrames[i];
@@ -84,6 +85,7 @@ namespace GOA
                         //    NetworkFrames.Set(i, copy);
                         //}
                     }
+                   
                 }
             }
 
@@ -100,6 +102,10 @@ namespace GOA
             for (int i = 0; i < puzzle.FrameIds.Count; i++)
             {
                 NetworkFrameStruct fs = new NetworkFrameStruct();
+                for(int j=0; j<puzzle.StartingOrder[i].Length; j++)
+                {
+                    fs.TilesOrder.Add(puzzle.StartingOrder[i][j]);
+                }
                 NetworkFrames.Add(fs);
             }
         }
@@ -119,9 +125,30 @@ namespace GOA
             {
                 NetworkFrameStruct frame = NetworkFrames[frameId];
                 frame.SelectedTiles.Clear();
+                int orderTileA = frame.TilesOrder.IndexOf(tileA);
+                int orderTileB = frame.TilesOrder.IndexOf(tileB);
+                frame.TilesOrder.Set(orderTileA, tileB);
+                frame.TilesOrder.Set(orderTileB, tileA);
+
                 NetworkFrames.Set(frameId, frame);
             }
                 
+        }
+
+        void CheckTilesOrder()
+        {
+            foreach(NetworkFrameStruct netFrame in NetworkFrames)
+            {
+                for(int i=0; i<netFrame.TilesOrder.Count; i++)
+                {
+                    if (netFrame.TilesOrder[i] != i)
+                        return;
+
+                }
+                
+            }
+
+            Solved = true;
         }
 
         public bool TileIsSelectable(int frameId, int tileId)
@@ -191,6 +218,8 @@ namespace GOA
                                 int tileB = oldFrame.SelectedTiles[1];
                                 changed.Behaviour.frames[i].Tiles[tileA].Unselect();
                                 changed.Behaviour.frames[i].Tiles[tileB].Unselect();
+
+                                changed.Behaviour.CheckTilesOrder();
                             }
                         }
                     }

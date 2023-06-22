@@ -1,3 +1,4 @@
+using DG.Tweening;
 using GOA.Interfaces;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,7 +12,16 @@ namespace GOA
         int frameId;
         int tileId;
 
-        
+        bool selected = false;
+
+        float zDefault = 0;
+        float moveTime = 0.5f;
+
+        private void Awake()
+        {
+            zDefault = transform.localPosition.z;
+        }
+
         // Start is called before the first frame update
         void Start()
         {
@@ -36,15 +46,37 @@ namespace GOA
             puzzleController.SelectTile(frameId, tileId);
         }
 
-        public void Show()
+        public void Select()
         {
-            // Rotate tile
-            transform.localEulerAngles = Vector3.up * 180f;
+            if (!selected)
+            {
+                selected = true;
+                transform.DOLocalMoveZ(zDefault - 0.5f, moveTime, false);
+                transform.DOLocalRotate(Vector3.up * 180f, moveTime, RotateMode.Fast).SetEase(Ease.OutBounce);
+                //transform.localEulerAngles = Vector3.up * 180f;
+            }
+            
         }
 
-        public void Hide()
+        public void Unselect()
         {
-            transform.localEulerAngles = Vector3.zero;
+            if (selected)
+            {
+                selected = false;
+                transform.DOLocalMoveZ(zDefault, moveTime, false);
+                transform.DOLocalRotate(Vector3.zero, moveTime, RotateMode.Fast).SetEase(Ease.OutBounce);
+                
+                //transform.localEulerAngles = Vector3.zero;
+            }
+            
+        }
+
+        public void Show()
+        {
+            selected = true;
+            transform.DOLocalMoveZ(zDefault, moveTime, false);
+            transform.DOLocalRotate(Vector3.up * 180f, moveTime, RotateMode.Fast).SetEase(Ease.InOutElastic);
+            //transform.localEulerAngles = Vector3.up * 180f;
         }
 
         public void Init(MemoryPuzzleController puzzleController, int frameId, int tileId)

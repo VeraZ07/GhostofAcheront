@@ -88,6 +88,13 @@ namespace GOA.Level
                 get { return int.Parse((Asset as JigSawPuzzleAsset).Frame.name.Substring((Asset as JigSawPuzzleAsset).Frame.name.LastIndexOf("_") + 1)); }
             }
 
+            List<int[]> startingOrder = new List<int[]>();
+            public IList<int[]> StartingOrder
+            {
+                get { return startingOrder.AsReadOnly(); }
+            }
+            
+
             public JigSawPuzzle(LevelBuilder builder, PuzzleAsset asset, int sectorId) : base(builder, asset, sectorId)
             {
                 JigSawPuzzleAsset jsasset = Asset as JigSawPuzzleAsset;
@@ -100,8 +107,11 @@ namespace GOA.Level
                 }
             }
 
+
             public override void CreateSceneObjects()
             {
+                
+                int count = 0;
                 foreach(int frameId in frameIds)
                 {
                     // Create the scene object
@@ -126,6 +136,8 @@ namespace GOA.Level
                         rotations.Add(tileGroup.GetChild(j).rotation);
                     }
                     // Rearranging
+                    int[] order = new int[numOfTiles];
+                    
                     for (int j = 0; j < numOfTiles; j++)
                     {
 
@@ -134,7 +146,11 @@ namespace GOA.Level
                         indices.Remove(newIndex);
                         tileGroup.GetChild(j).position = positions[newIndex];
                         tileGroup.GetChild(j).rotation = rotations[newIndex];
+
+                        order[newIndex] = j;
                     }
+                    startingOrder.Add(order);
+                    count++;
                 }
             }
 

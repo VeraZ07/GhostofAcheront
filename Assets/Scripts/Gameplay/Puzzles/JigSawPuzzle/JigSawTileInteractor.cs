@@ -10,6 +10,19 @@ public class JigSawTileInteractor : MonoBehaviour, IInteractable
     int frameId;
     int tileId;
 
+    bool selected = false;
+
+    Vector3 positionDefault;
+    public Vector3 PositionDefault
+    {
+        get { return positionDefault; }
+    }
+
+    private void Awake()
+    {
+        positionDefault = transform.position;
+    }
+
     public bool IsInteractionEnabled()
     {
         if (puzzleController.TileIsSelectable(frameId, tileId))
@@ -39,12 +52,20 @@ public class JigSawTileInteractor : MonoBehaviour, IInteractable
 
     public void Select()
     {
+        if (!selected)
+        {
+            selected = true;
+            
+        }
 
     }
 
     public void Unselect()
     {
-
+        if (selected)
+        {
+            selected = false;
+        }
     }
 
     public void Init(JigSawPuzzleController puzzleController, int frameId, int tileId)

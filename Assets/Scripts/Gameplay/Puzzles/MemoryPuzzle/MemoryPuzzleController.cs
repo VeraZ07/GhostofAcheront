@@ -71,9 +71,9 @@ namespace GOA
                 {
                     tiles[j].Init(this, i, j);
                     if (NetworkFrames[i].SolvedTiles.Contains(j) || NetworkFrames[i].SelectedTiles.Contains(j))
-                        frames[i].Tiles[j].Show();
+                        frames[i].Tiles[j].Select();
                     else
-                        frames[i].Tiles[j].Hide();
+                        frames[i].Tiles[j].Unselect();
                 }
 
                 // If there is more than one tile selected we need to check if they can pair with each other
@@ -139,18 +139,16 @@ namespace GOA
         void CheckForPuzzleSolved()
         {
             // Check if the puzzle has been solved
-            bool solved = true;
             for (int i = 0; i < frames.Count; i++)
             {
                 if (NetworkFrames[i].SolvedTiles.Count < frames[i].Tiles.Count)
                 {
-                    solved = false;
-                    break;
+                    return;
                 }
             }
 
-            if (solved)
-                Solved = true;
+            
+            Solved = true;
         }
 
         bool TilesCanPairEachOther(int frameId, int tile1, int tile2)
@@ -225,7 +223,7 @@ namespace GOA
                     if(newFrame.SelectedTiles.Count == 1)
                     {
                         int tileId = newFrame.SelectedTiles[0];
-                        changed.Behaviour.frames[i].Tiles[tileId].Show();
+                        changed.Behaviour.frames[i].Tiles[tileId].Select();
                     }
                     else
                     {
@@ -233,17 +231,8 @@ namespace GOA
                         {
                             int tile1 = newFrame.SelectedTiles[0];
                             int tile2 = newFrame.SelectedTiles[1];
-                            changed.Behaviour.frames[i].Tiles[tile2].Show();
-                            //newFrame.SelectedTiles.Clear();
-                            //Debug.LogFormat("Check for tiles as pair - {0}, {1}", tile1, tile2);
-                            //if(changed.Behaviour.TilesCanPairEachOther(i, tile1, tile2))
-                            //{
-                            //    newFrame.SolvedTiles.Add(tile1);
-                            //    newFrame.SolvedTiles.Add(tile2);
-
-                            //}
-
-                            //changed.Behaviour.NetworkFrames.Set(i, newFrame);
+                            changed.Behaviour.frames[i].Tiles[tile2].Select();
+                           
                             changed.Behaviour.StartCoroutine(changed.Behaviour.CheckTilesDelayed(i, tile1, tile2));
                         }
                         else // Is zero
@@ -253,12 +242,14 @@ namespace GOA
                             int tile2 = oldFrame.SelectedTiles[1];
                             if(!newFrame.SolvedTiles.Contains(tile1)) // At least one
                             {
-                                
-                                changed.Behaviour.frames[i].Tiles[tile1].Hide();
-                                changed.Behaviour.frames[i].Tiles[tile2].Hide();
+                                changed.Behaviour.frames[i].Tiles[tile1].Unselect();
+                                changed.Behaviour.frames[i].Tiles[tile2].Unselect();
                             }
                             else
                             {
+                                changed.Behaviour.frames[i].Tiles[tile1].Show();
+                                changed.Behaviour.frames[i].Tiles[tile2].Show();
+
                                 // Check if the puzzle has been solved
                                 changed.Behaviour.CheckForPuzzleSolved();
                             }
