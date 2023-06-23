@@ -40,12 +40,8 @@ namespace GOA.UI
         {
             textUI.SetActive(false);
 
-            Debug.Log("OnEnabled:" + gameObject);
-
             if (!SessionManager.Instance || !SessionManager.Instance.Runner)
                 return;
-
-            Debug.Log("OnEnabled passed instance:" + gameObject);
 
             if (!clientOnly || SessionManager.Instance.Runner.IsClient)
             {

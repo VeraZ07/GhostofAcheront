@@ -7,6 +7,7 @@ using GOA.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.VFX;
 
 namespace GOA
@@ -15,6 +16,7 @@ namespace GOA
 
     public class PlayerController : NetworkBehaviour
     {
+
         #region fields
         //public static PlayerController Local { get; private set; }
 
@@ -121,6 +123,8 @@ namespace GOA
         // Update is called once per frame
         void Update()
         {
+           
+
             switch (State)
             {
                 case (int)PlayerState.Alive:
@@ -214,6 +218,7 @@ namespace GOA
             Camera levelCam = new List<Camera>(GameObject.FindObjectsOfType<Camera>()).Find(c => c.transform.parent == null);
             if (levelCam)
                 DestroyImmediate(levelCam.gameObject);
+
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
@@ -222,7 +227,12 @@ namespace GOA
 
             Debug.LogFormat("Despawned player " + this.Object.InputAuthority);
 
-            
+            if (HasInputAuthority)
+            {
+                // Move the camera outside
+                cam.transform.parent = null;
+            }
+
         }
 
 
@@ -579,8 +589,9 @@ namespace GOA
             {
                 Inventory inv = new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.Object.InputAuthority == this.Object.InputAuthority);
                 inv.RespawnAllItems();
-
+#if USE_HOST_MIGRATION
                 SessionManager.Instance.PushSnapshot();
+#endif
             }
 
             
@@ -632,9 +643,9 @@ namespace GOA
                     break;
             }
         }
-        #endregion
+#endregion
 
-        #region public methods     
+#region public methods     
 
         public void SetCameraPitch(float value)
         {
@@ -711,7 +722,7 @@ namespace GOA
             State = (int)PlayerState.Sacrificed;
         }
 
-        #endregion
+#endregion
     }
 
 }

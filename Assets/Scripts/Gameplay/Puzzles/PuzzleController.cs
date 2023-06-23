@@ -48,7 +48,9 @@ namespace GOA
             OnSolvedChangedCallback?.Invoke(changed.Behaviour);
 
             // Try to save the current snapshot
+#if USE_HOST_MIGRATION
             SessionManager.Instance.PushSnapshot();
+#endif
         }
 
         public virtual void Initialize(int puzzleIndex)

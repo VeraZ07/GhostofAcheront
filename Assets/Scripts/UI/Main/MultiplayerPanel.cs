@@ -145,7 +145,7 @@ namespace GOA.UI
         }
 
         
-        void HandleOnShutdown(NetworkRunner runner, ShutdownReason reason)
+        void HandleOnShutdown(ShutdownReason reason)
         {
             
             GetComponentInParent<MainMenu>().ActivateMainPanel();

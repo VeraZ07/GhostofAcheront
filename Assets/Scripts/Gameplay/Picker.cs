@@ -128,7 +128,9 @@ namespace GOA
 
             if (Runner.IsServer)
             {
+#if USE_HOST_MIGRATION
                 SessionManager.Instance.PushSnapshot();
+#endif
                 yield return new WaitForSeconds(1.0f);
                 //Runner.Despawn(GetComponent<NetworkObject>());
             }

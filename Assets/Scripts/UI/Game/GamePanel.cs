@@ -38,41 +38,42 @@ namespace GOA.UI
 
             if (SessionManager.Instance.Runner.IsServer && !SessionManager.Instance.Runner.IsSinglePlayer)
             {
-                StartCoroutine(DoQuitGame());
+#if USE_HOST_MIGRATION
+                StartCoroutine(
+#endif
+                    DoQuitGame()
+#if USE_HOST_MIGRATION
+                    )
+#endif
+                    ;
             }
             else
             {
                 SessionManager.Instance.QuitSession();
-                UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+                //UnityEngine.SceneManagement.SceneManager.LoadScene(0);
             }
-            
+
         }
 
+#if USE_HOST_MIGRATION
         IEnumerator DoQuitGame()
+#else
+        void DoQuitGame()
+#endif
         {
+#if USE_HOST_MIGRATION
             yield return SessionManager.Instance.Runner.PushHostMigrationSnapshot();
-            //SessionManager.Instance.Runner.PushHostMigrationSnapshot().ContinueWith((t)=> {
-            //    if (t.IsCompleted)
-            //    {
-            //        if (t.IsFaulted)
-            //        {
-            //            Debug.Log("PushSnapshot failed");
-            //        }
-            //        else
-            //        {
-            //            Debug.Log("PushSnapshot succeeded");
-            //        }
-            //    }
-            //});
-            //yield return new WaitForSeconds(3.2f);
+#endif
             SessionManager.Instance.QuitSession();
-            UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+            //UnityEngine.SceneManagement.SceneManager.LoadScene(0);
             
         }
 
-        #endregion
 
-    
+
+#endregion
+
+
     }
 
 }

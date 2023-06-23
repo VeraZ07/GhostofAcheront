@@ -161,7 +161,7 @@ namespace GOA.UI
             pItem.SetPlayer(player);
         }
 
-        void HandleOnShutdown(NetworkRunner runner, ShutdownReason reason)
+        void HandleOnShutdown(ShutdownReason reason)
         {
             GetComponentInParent<MainMenu>().ActivateMainPanel();
         }

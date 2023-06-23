@@ -18,7 +18,7 @@ namespace GOA
         public static UnityAction<NetworkRunner, PlayerRef> OnPlayerJoinedCallback;
         public static UnityAction<NetworkRunner, PlayerRef> OnPlayerLeftCallback;
         public static UnityAction<String> OnStartSessionFailed;
-        public static UnityAction<NetworkRunner, ShutdownReason> OnShutdownCallback;
+        public static UnityAction<ShutdownReason> OnShutdownCallback;
         public static UnityAction<NetworkRunner, List<SessionInfo>> OnSessionListUpdatedCallback;
         public static UnityAction<SessionLobby> OnLobbyJoint;
         public static UnityAction<SessionLobby, string> OnLobbyJoinFailed;
@@ -62,8 +62,9 @@ namespace GOA
 
         bool loading = false;
 
+#if USE_HOST_MIGRATION
         bool resumingFromHostMigration = false;
-
+#endif
         private void Awake()
         {
             if (!Instance)
@@ -170,11 +171,13 @@ namespace GOA
 
         public void OnDisconnectedFromServer(NetworkRunner runner)
         {
-            Debug.LogFormat("SessionManager - OnDisconnectedToServer.");
+            Debug.LogFormat("SessionManager - OnDisconnectedFromServer.");
         }
 
+#if USE_HOST_MIGRATION
         public async void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken)
         {
+
             Debug.LogFormat("SessionManager - OnHostMigration");
 
             await runner.Shutdown(shutdownReason: ShutdownReason.HostMigration);
@@ -187,10 +190,9 @@ namespace GOA
                                                            //HostMigrationResume = HostMigrationResume, // this will be invoked to resume the simulation
                                                            // other args
                 HostMigrationResume = HostMigrationResume
-            }); 
-        }
+            });
+    }
 
-        
         void HostMigrationResume(NetworkRunner runner)
         {
             Debug.Log("HostMigrationResume");
@@ -205,7 +207,13 @@ namespace GOA
 
            
         }
+#else
+        public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken)
+        {
+           
+        }
 
+#endif
         public void OnInput(NetworkRunner runner, NetworkInput input)
         {
             
@@ -223,9 +231,10 @@ namespace GOA
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
         {
             Debug.LogFormat("SessionManager - OnPlayerJoint: {0}", player);
-
+#if USE_HOST_MIGRATION
             if (!resumingFromHostMigration)
             {
+#endif
                 // The server spawns the new player
                 if (runner.IsServer)
                 {
@@ -238,9 +247,11 @@ namespace GOA
                 }
 
                 OnPlayerJoinedCallback?.Invoke(runner, player);
+#if USE_HOST_MIGRATION
             }
             else
             {
+                
                 if (runner.IsServer)
                 {
 
@@ -489,14 +500,16 @@ namespace GOA
                     StartCoroutine(RespawnOldHostItems(oldHostInventory));
                 }
             }
+#endif
         }
 
+#if USE_HOST_MIGRATION
         IEnumerator RespawnOldHostItems(Inventory inventory)
         {
             yield return new WaitForEndOfFrame();
             inventory.RespawnAllItems();
         }
-
+#endif
         public void OnPlayerLeft(NetworkRunner runner, PlayerRef playerRef)
         {
             Debug.LogFormat("SessionManager - OnPlayerLeft: {0}", playerRef);
@@ -523,7 +536,9 @@ namespace GOA
                     runner.Despawn(inv.GetComponent<NetworkObject>());
                 }
 
+#if USE_HOST_MIGRATION
                 SessionManager.Instance.PushSnapshot();
+#endif
 
                 StartCoroutine(CheckDeadOrAliveDelayed());
             }
@@ -625,9 +640,13 @@ namespace GOA
             this.sessionList = sessionList;
             OnSessionListUpdatedCallback?.Invoke(runner, sessionList);
         }
-
+        
         public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
         {
+            Debug.Log("Shutting down session:" + shutdownReason);
+            OnShutdownCallback?.Invoke(shutdownReason);
+            
+#if USE_HOST_MIGRATION
             if(shutdownReason == ShutdownReason.HostMigration)
             {
                 DestroyImmediate(runner);
@@ -635,44 +654,34 @@ namespace GOA
             }
             else
             {
-                resumingFromHostMigration = false;
 
-                NetworkBehaviour[] nbs = FindObjectsOfType<NetworkBehaviour>();
+            resumingFromHostMigration = false;    
+#endif
+
+            NetworkBehaviour[] nbs = FindObjectsOfType<NetworkBehaviour>();
                 for (int i = 0; i < nbs.Length; i++)
                     Destroy(nbs[i].gameObject);
-
-                //// Destroy all the player objects
-                //Player[] players = FindObjectsOfType<Player>();
-                //for (int i = 0; i < players.Length; i++)
-                //{
-                //    Destroy(players[i].gameObject);
-                //}
-                //// Destroy all inventories
-                //Inventory[] inventories = FindObjectsOfType<Inventory>();
-                //for (int i = 0; i < inventories.Length; i++)
-                //{
-                //    Destroy(inventories[i].gameObject);
-                //}
-                //// Destroy match manager
-                //GameManager gm = FindObjectOfType<GameManager>();
-                //if (gm)
-                //    Destroy(gm.gameObject);
-                // Reset runner
-                DestroyImmediate(runner);
-                runner = null;
-                OnShutdownCallback?.Invoke(runner, shutdownReason);
+        
+            
+            DestroyImmediate(runner);
+            runner = null;
+            
+            //if(UnityEngine.SceneManagement.SceneManager.GetSceneByBuildIndex(0) != UnityEngine.SceneManagement.SceneManager.GetActiveScene())
+            //    UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+#if USE_HOST_MIGRATION
             }
-           
+#endif
+
         }
 
         public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)
         {
             
         }
-        #endregion
+#endregion
 
 
-        #region public methods
+#region public methods
         public void PlaySolo()
         {
             
@@ -748,6 +757,7 @@ namespace GOA
             runner.Shutdown(false, ShutdownReason.Ok, true);
         }
 
+#if USE_HOST_MIGRATION
         public void PushSnapshot()
         {
             if (!Runner.IsServer || Runner.IsSinglePlayer)
@@ -768,14 +778,14 @@ namespace GOA
                 }
             });
         }
+#endif
+#endregion
 
-        #endregion
+#region spawn methods
 
-        #region spawn methods
+#endregion
 
-        #endregion
-
-        #region private methods
+#region private methods
         async void StartSession(StartGameArgs args)
         {
             loading = false;
@@ -828,7 +838,7 @@ namespace GOA
             }
         }
 
-        #endregion
+#endregion
     }
 
 }

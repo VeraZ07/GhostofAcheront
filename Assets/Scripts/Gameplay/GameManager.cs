@@ -1,6 +1,7 @@
 using Fusion;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
@@ -43,7 +44,20 @@ namespace GOA
         // Start is called before the first frame update
         void Start()
         {
+            SessionManager.OnShutdownCallback += (reason) =>
+            {
+                if (UnityEngine.SceneManagement.SceneManager.GetSceneByBuildIndex(0) != UnityEngine.SceneManagement.SceneManager.GetActiveScene())
+                {
+                    Debug.Log("GameManager - Shutdown reason:" + reason);
+                    if(reason != ShutdownReason.Ok)
+                    {
+                        Task.Delay(5000).Wait();
 
+                    }
+                    UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+                }
+                    
+            };
         }
 
         // Update is called once per frame
@@ -52,15 +66,15 @@ namespace GOA
             
         }
 
-        IEnumerator LoadMenuDelayed(float delay)
+        IEnumerator QuitGameDelayed(float delay)
         {
             yield return new WaitForSeconds(delay);
 
             // Get the player camera in order to destroy it on session quit
-            Camera.main.transform.parent = null;
+            //Camera.main.transform.parent = null;
 
             SessionManager.Instance.QuitSession();
-            UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+            //UnityEngine.SceneManagement.SceneManager.LoadScene(0);
         }
 
         
@@ -137,13 +151,13 @@ namespace GOA
          
            
             // Just wait a little more on the server to give every client the time to quit
-            StartCoroutine(LoadMenuDelayed(Runner.IsServer ? 5f : 4f));
+            StartCoroutine(QuitGameDelayed(Runner.IsServer ? 5f : 4f));
         }
 
         public void YouLose()
         {
             OnGameLose?.Invoke();
-            StartCoroutine(LoadMenuDelayed(5f));
+            StartCoroutine(QuitGameDelayed(5f));
         }
 
         public void PlayerEnteredTheEscapeTrigger(PlayerController player)

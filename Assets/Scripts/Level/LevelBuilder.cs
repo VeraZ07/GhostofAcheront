@@ -180,8 +180,8 @@ namespace GOA.Level
             //TestPuzzle("PicturePuzzleAsset", 0);
             //TestPuzzle("PictureHandlePuzzleAsset", 0);
             //TestPuzzle("SkeletonPuzzleAsset", 0);
-            //TestPuzzle("JigSawPuzzleAsset", 0);
-            TestPuzzle("MemoryPuzzleAsset", 0);
+            TestPuzzle("JigSawPuzzleAsset", 0);
+            //TestPuzzle("MemoryPuzzleAsset", 0);
 
 #endif
 
@@ -1528,6 +1528,9 @@ namespace GOA.Level
 
                 // Get a random puzzle
                 PuzzleAsset asset = puzzleCollection[Random.Range(0, puzzleCollection.Count)];
+#if UNITY_EDITOR
+                //asset = puzzleCollection.Find(p => p.name.StartsWith("JigSaw"));
+#endif
                 // Build the puzzle
                 Puzzle puzzle = PuzzleFactory.CreatePuzzle(this, asset, sectorId);
                 puzzles.Add(puzzle);

@@ -213,6 +213,8 @@ namespace GOA
             for (int i=0; i<frameCount; i++)
             {
                 changed.LoadOld();
+                if (changed.Behaviour.NetworkFrames.Count == 0)
+                    return;
                 var oldFrame = changed.Behaviour.NetworkFrames[i];
                 changed.LoadNew();
                 var newFrame = changed.Behaviour.NetworkFrames[i];
