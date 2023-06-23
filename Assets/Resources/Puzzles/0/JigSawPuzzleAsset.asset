@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae6e358acb15a6343bc7527aa7567539, type: 3}
   m_Name: JigSawPuzzleAsset
   m_EditorClassIdentifier: 
-  controllerPrefab: {fileID: 739324584106867037, guid: 791849141fda73245be85addb24f5a20,
+  controllerPrefab: {fileID: 1971330100886675519, guid: 791849141fda73245be85addb24f5a20,
     type: 3}
   frame: {fileID: 11400000, guid: 9ba7ed6b94bf06b47ac0c574b8c41a8b, type: 2}
+  frameCount: 1
