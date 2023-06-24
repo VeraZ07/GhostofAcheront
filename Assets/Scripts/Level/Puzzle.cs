@@ -103,7 +103,7 @@ namespace GOA.Level
                     CustomObject co = new CustomObject(builder, jsasset.Frame);
                     builder.customObjects.Add(co);
                     frameIds.Add(builder.customObjects.Count - 1);
-                    co.AttachRandomly(sectorId);
+                    co.AttachRandomly(sectorId, emptyTilesOnly:true);
                 }
             }
 
@@ -183,7 +183,7 @@ namespace GOA.Level
                     CustomObject co = new CustomObject(builder, mpa.Frame);
                     builder.customObjects.Add(co);
                     frameIds.Add(builder.CustomObjects.Count - 1);
-                    co.AttachRandomly(sectorId);
+                    co.AttachRandomly(sectorId, emptyTilesOnly:true);
 
                     
                 }
@@ -312,7 +312,7 @@ namespace GOA.Level
 
                     clueHandle = new Handle(builder.customObjects.Count - 1, commonFinalState, commonFinalState, 1);
 
-                    co.AttachRandomly(sectorId);
+                    co.AttachRandomly(sectorId, emptyTilesOnly:true);
                 }
 
                 for (int i = 0; i < elementCount; i++)
@@ -351,7 +351,7 @@ namespace GOA.Level
                     handles.Add(h);
 
                     // Attach to a random tile
-                    co.AttachRandomly(sectorId);
+                    co.AttachRandomly(sectorId, emptyTilesOnly:true);
                 }
 
                 
@@ -400,7 +400,7 @@ namespace GOA.Level
                 // Set the corresponding id
                 pictureId = builder.customObjects.Count - 1;
                 // Choose a free tile 
-                co.AttachRandomly(sectorId);
+                co.AttachRandomly(sectorId, emptyTilesOnly:true);
 
                 // Create all the pieces
                 pieceIds = new List<int>();
@@ -414,7 +414,7 @@ namespace GOA.Level
                     // Set the corresponding id
                     pieceIds.Add(builder.customObjects.Count - 1);
                     // Choose a free tile 
-                    co.AttachRandomly(sectorId);
+                    co.AttachRandomly(sectorId, emptyTilesOnly:true);
                 }
             }
 

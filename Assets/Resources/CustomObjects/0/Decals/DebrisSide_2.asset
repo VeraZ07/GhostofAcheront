@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: DebrisSide_2
   m_EditorClassIdentifier: 
   alignment: 2
-  weight: 8
+  weight: 16
   prefab: {fileID: 729078924753386575, guid: 38fd2582f388f334aa115c4931c85cc1, type: 3}

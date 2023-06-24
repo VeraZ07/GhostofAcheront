@@ -180,8 +180,8 @@ namespace GOA.Level
             //TestPuzzle("PicturePuzzleAsset", 0);
             //TestPuzzle("PictureHandlePuzzleAsset", 0);
             //TestPuzzle("SkeletonPuzzleAsset", 0);
-            TestPuzzle("JigSawPuzzleAsset", 0);
-            //TestPuzzle("MemoryPuzzleAsset", 0);
+            //TestPuzzle("JigSawPuzzleAsset", 0);
+            TestPuzzle("MemoryPuzzleAsset", 0);
 
 #endif
 
@@ -299,7 +299,7 @@ namespace GOA.Level
                         alignment = Random.Range(0, 2) == 0 ? ObjectAlignment.MiddleOnly : ObjectAlignment.SideOnly;
 
 
-                    co.AttachRandomly(i, alignment);
+                    co.AttachRandomly(i, emptyTilesOnly:false, alignment);
 
                     if (co.TileId >= 0)
                     {
@@ -341,7 +341,7 @@ namespace GOA.Level
                         alignment = Random.Range(0, 2) == 0 ? ObjectAlignment.MiddleOnly : ObjectAlignment.SideOnly;
                     
                     
-                    co.AttachRandomly(i, alignment, exclusionList );
+                    co.AttachRandomly(i, emptyTilesOnly:true, alignment, exclusionList );
 
                     if(co.TileId >= 0)
                     {
@@ -977,8 +977,8 @@ namespace GOA.Level
                 // Keep only the opposite side
                 if (enteringTileIndex % size == 0) // Left
                     indices.RemoveAll(i => i % size == 0);
-                else if (enteringTileIndex % size == size - 2) // Right
-                    indices.RemoveAll(i => i % size == size - 2);
+                else if (enteringTileIndex % size == size - 1) // Right
+                    indices.RemoveAll(i => i % size == size - 1);
                 else if (enteringTileIndex / size == 0)
                     indices.RemoveAll(i => i / size == 0);
                 else if (enteringTileIndex / size == size-1)
@@ -989,6 +989,8 @@ namespace GOA.Level
                 // Remove only tiles from this sector
                 indices.RemoveAll(i => tiles[i].sectorIndex == tiles[enteringTileIndex].sectorIndex);
             }
+
+
 
             int exitingTileIndex = indices[Random.Range(0, indices.Count)];
 
@@ -1541,7 +1543,10 @@ namespace GOA.Level
 
         public void Build(int seed)
         {
+            seed = 1481849213;
             Random.InitState(seed);
+
+            Debug.LogFormat("Building level using seed: {0}", seed);
 
             Create();
 

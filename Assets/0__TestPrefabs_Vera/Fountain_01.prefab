@@ -80,7 +80,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49c4b036cd01aa84eac7f0b5ecb6f0db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  particles: []
+  particles:
+  - {fileID: 4573091235580930357}
+  - {fileID: 3249715888987076003}
+  - {fileID: 7412529963241466885}
   distance: 16
 --- !u!1001 &3263003172828604929
 PrefabInstance:
@@ -151,9 +154,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c72f9e81cafa2b04281a41ea31936b1e, type: 3}
+--- !u!198 &3249715888987076003 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 23023201607983010, guid: c72f9e81cafa2b04281a41ea31936b1e,
+    type: 3}
+  m_PrefabInstance: {fileID: 3263003172828604929}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &4573091235580930357 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 1314600459585651508, guid: c72f9e81cafa2b04281a41ea31936b1e,
+    type: 3}
+  m_PrefabInstance: {fileID: 3263003172828604929}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6352124136100495336 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8462196800682431977, guid: c72f9e81cafa2b04281a41ea31936b1e,
+    type: 3}
+  m_PrefabInstance: {fileID: 3263003172828604929}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &7412529963241466885 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 5446572283753235972, guid: c72f9e81cafa2b04281a41ea31936b1e,
     type: 3}
   m_PrefabInstance: {fileID: 3263003172828604929}
   m_PrefabAsset: {fileID: 0}

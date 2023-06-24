@@ -53,27 +53,27 @@ namespace GOA.Level
 
             }
 
-            public void AttachRandomly(int sector, ObjectAlignment forceAlignment = ObjectAlignment.Both, List<int> exclusionList = null)
+            public void AttachRandomly(int sector, bool emptyTilesOnly, ObjectAlignment forceAlignment = ObjectAlignment.Both, List<int> exclusionList = null)
             {
                 if(forceAlignment == ObjectAlignment.MiddleOnly || forceAlignment == ObjectAlignment.SideOnly)
                 {
                     if(forceAlignment == ObjectAlignment.MiddleOnly)
-                        AttachRandomly(sector, true, exclusionList);
+                        AttachRandomly(sector, emptyTilesOnly, true, exclusionList);
                     else
-                        AttachRandomly(sector, false, exclusionList);
+                        AttachRandomly(sector, emptyTilesOnly, false, exclusionList);
                 }
                 else
                 {
                     switch (asset.Alignment)
                     {
                         case ObjectAlignment.Both:
-                            AttachRandomly(sector, Random.Range(0, 2) == 0 ? true : false, exclusionList);
+                            AttachRandomly(sector, emptyTilesOnly, Random.Range(0, 2) == 0 ? true : false, exclusionList);
                             break;
                         case ObjectAlignment.MiddleOnly:
-                            AttachRandomly(sector, true, exclusionList);
+                            AttachRandomly(sector, emptyTilesOnly, true, exclusionList);
                             break;
                         case ObjectAlignment.SideOnly:
-                            AttachRandomly(sector, false, exclusionList);
+                            AttachRandomly(sector, emptyTilesOnly, false, exclusionList);
                             break;
                     }
                 }
@@ -83,7 +83,7 @@ namespace GOA.Level
 
        
 
-            void AttachRandomly(int sectorId, bool inTheMiddle, List<int> exclusionList = null)
+            void AttachRandomly(int sectorId, bool emptyTilesOnly, bool inTheMiddle, List<int> exclusionList = null)
             {
                 if ((asset.Alignment == ObjectAlignment.SideOnly && inTheMiddle) || (asset.Alignment == ObjectAlignment.MiddleOnly && !inTheMiddle))
                     throw new System.Exception(string.Format("CustomObject.AttachRandomly() - {0} alignement failed ({1})", asset.name, inTheMiddle));
@@ -96,6 +96,10 @@ namespace GOA.Level
 
                 foreach (int excludedId in exclusionList)
                     tileIds.Remove(excludedId);
+
+                // Remove all tiles with already a custom object inside
+                //if(emptyTilesOnly)
+                //    tileIds.RemoveAll(i => builder.customObjects.Exists(c => c.tileId == i));
 
                 int count = tileIds.Count;
 
