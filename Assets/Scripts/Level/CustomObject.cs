@@ -98,8 +98,8 @@ namespace GOA.Level
                     tileIds.Remove(excludedId);
 
                 // Remove all tiles with already a custom object inside
-                //if(emptyTilesOnly)
-                //    tileIds.RemoveAll(i => builder.customObjects.Exists(c => c.tileId == i));
+                if(emptyTilesOnly)
+                    tileIds.RemoveAll(i => builder.customObjects.Exists(c => c.tileId == i));
 
                 int count = tileIds.Count;
 
