@@ -1543,7 +1543,9 @@ namespace GOA.Level
 
         public void Build(int seed)
         {
-            seed = 1481849213;
+#if UNITY_EDITOR
+            //seed = 1481849213;
+#endif
             Random.InitState(seed);
 
             Debug.LogFormat("Building level using seed: {0}", seed);
