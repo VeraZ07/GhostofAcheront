@@ -1,3 +1,4 @@
+using DG.Tweening;
 using GOA;
 using GOA.Interfaces;
 using System.Collections;
@@ -12,16 +13,19 @@ public class JigSawTileInteractor : MonoBehaviour, IInteractable
 
     bool selected = false;
 
-    Vector3 positionDefault;
-    public Vector3 PositionDefault
-    {
-        get { return positionDefault; }
-    }
 
-    private void Awake()
-    {
-        positionDefault = transform.position;
-    }
+    float moveTime = 0.25f;
+    float moveDist = .05f;
+
+    //public Vector3 PositionDefault
+    //{
+    //    get { return positionDefault; }
+    //}
+
+    //private void Awake()
+    //{
+    //    positionDefault = transform.position;
+    //}
 
     public bool IsInteractionEnabled()
     {
@@ -55,18 +59,27 @@ public class JigSawTileInteractor : MonoBehaviour, IInteractable
         if (!selected)
         {
             selected = true;
-            
+            transform.DOLocalMoveZ(transform.localPosition.z - moveDist, moveTime, false);
+            //transform.DOShakeRotation(moveTime);
+            //transform.DOLocalRotate(Vector3.up * 180f, moveTime, RotateMode.Fast).SetEase(Ease.OutBounce);
         }
-
     }
 
     public void Unselect()
     {
         if (selected)
         {
-            selected = false;
+            //selected = false;
+            transform.DOLocalMoveZ(transform.localPosition.z + moveDist, moveTime, false).onComplete += () => { selected = false; };
         }
     }
+
+    public void SwitchPosition(Vector3 newPosition)
+    {
+        transform.DOLocalMove(newPosition, moveTime, false);
+    }
+
+    
 
     public void Init(JigSawPuzzleController puzzleController, int frameId, int tileId)
     {

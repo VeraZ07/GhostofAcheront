@@ -119,7 +119,7 @@ namespace GOA
         #region private methods
         IEnumerator CheckTilesDelayed(int frameId, int tile1Id, int tile2Id)
         {
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(.5f);
 
             var newFrame = NetworkFrames[frameId];
             newFrame.SelectedTiles.Clear();

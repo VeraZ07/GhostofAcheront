@@ -15,7 +15,7 @@ namespace GOA
         bool selected = false;
 
         float zDefault = 0;
-        float moveTime = 0.5f;
+        float moveTime = 0.25f;
         float moveDist = .05f;
 
         private void Awake()
@@ -63,8 +63,8 @@ namespace GOA
         {
             if (selected)
             {
-                selected = false;
-                transform.DOLocalMoveZ(zDefault, moveTime, false);
+                //selected = false;
+                transform.DOLocalMoveZ(zDefault, moveTime, false).onComplete += () => { selected = false; };
                 transform.DOLocalRotate(Vector3.zero, moveTime, RotateMode.Fast).SetEase(Ease.OutBounce);
                 
                 //transform.localEulerAngles = Vector3.zero;

@@ -3,6 +3,7 @@ using GOA.Level;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static GOA.Level.LevelBuilder;
 
 namespace GOA
 {
@@ -76,14 +77,7 @@ namespace GOA
                         int tile1 = NetworkFrames[i].SelectedTiles[0];
                         int tile2 = NetworkFrames[i].SelectedTiles[1];
                         
-                        //if (TilesCanPairEachOther(i, tile1, tile2))
-                        //{
-                        //    var copy = NetworkFrames[i];
-                        //    copy.SelectedTiles.Clear();
-                        //    copy.SolvedTiles.Add(tile1);
-                        //    copy.SolvedTiles.Add(tile2);
-                        //    NetworkFrames.Set(i, copy);
-                        //}
+                      
                     }
                    
                 }
@@ -113,13 +107,18 @@ namespace GOA
 
         IEnumerator SwitchTiles(int frameId, int tileA, int tileB)
         {
-            Vector3 posA = frames[frameId].Tiles[tileA].transform.position;
-            Vector3 posB = frames[frameId].Tiles[tileB].transform.position;
+            yield return new WaitForSeconds(.5f);
 
-            frames[frameId].Tiles[tileA].transform.position = posB;
-            frames[frameId].Tiles[tileB].transform.position = posA;
+            Vector3 posA = frames[frameId].Tiles[tileA].transform.localPosition;
+            Vector3 posB = frames[frameId].Tiles[tileB].transform.localPosition;
 
-            yield return new WaitForSeconds(1f);
+            //frames[frameId].Tiles[tileA].transform.position = posB;
+            //frames[frameId].Tiles[tileB].transform.position = posA;
+
+            frames[frameId].Tiles[tileA].SwitchPosition(posB);
+            frames[frameId].Tiles[tileB].SwitchPosition(posA);
+
+            yield return new WaitForSeconds(.5f);
 
             if (Runner.IsServer)
             {
@@ -208,6 +207,7 @@ namespace GOA
                     {
                         if (newFrame.SelectedTiles.Count == 2) // Two tiles selected, we need to check move them
                         {
+                            changed.Behaviour.frames[i].Tiles[newFrame.SelectedTiles[1]].Select();
                             changed.Behaviour.StartCoroutine(changed.Behaviour.SwitchTiles(i, newFrame.SelectedTiles[0], newFrame.SelectedTiles[1]));
                         }
                         else
@@ -225,68 +225,6 @@ namespace GOA
                     }
                 }
             }
-
-            // Show and hide tiles
-            //int frameCount = changed.Behaviour.NetworkFrames.Count;
-            //for (int i = 0; i < frameCount; i++)
-            //{
-            //    changed.LoadOld();
-            //    var oldFrame = changed.Behaviour.NetworkFrames[i];
-            //    changed.LoadNew();
-            //    var newFrame = changed.Behaviour.NetworkFrames[i];
-
-            //    if (oldFrame.SelectedTiles.Count != newFrame.SelectedTiles.Count)
-            //    {
-            //        // Something changed in the selection
-            //        if (newFrame.SelectedTiles.Count == 1)
-            //        {
-            //            int tileId = newFrame.SelectedTiles[0];
-            //            changed.Behaviour.frames[i].Tiles[tileId].Show();
-            //        }
-            //        else
-            //        {
-            //            if (newFrame.SelectedTiles.Count == 2)
-            //            {
-            //                int tile1 = newFrame.SelectedTiles[0];
-            //                int tile2 = newFrame.SelectedTiles[1];
-            //                changed.Behaviour.frames[i].Tiles[tile2].Show();
-            //                //newFrame.SelectedTiles.Clear();
-            //                //Debug.LogFormat("Check for tiles as pair - {0}, {1}", tile1, tile2);
-            //                //if(changed.Behaviour.TilesCanPairEachOther(i, tile1, tile2))
-            //                //{
-            //                //    newFrame.SolvedTiles.Add(tile1);
-            //                //    newFrame.SolvedTiles.Add(tile2);
-
-            //                //}
-
-            //                //changed.Behaviour.NetworkFrames.Set(i, newFrame);
-            //                changed.Behaviour.StartCoroutine(changed.Behaviour.CheckTilesDelayed(i, tile1, tile2));
-            //            }
-            //            else // Is zero
-            //            {
-            //                // If the two tiles are in the solved tile list then leave them visible, otherwise hide them
-            //                int tile1 = oldFrame.SelectedTiles[0];
-            //                int tile2 = oldFrame.SelectedTiles[1];
-            //                if (!newFrame.SolvedTiles.Contains(tile1)) // At least one
-            //                {
-
-            //                    changed.Behaviour.frames[i].Tiles[tile1].Hide();
-            //                    changed.Behaviour.frames[i].Tiles[tile2].Hide();
-            //                }
-            //                else
-            //                {
-            //                    // Check if the puzzle has been solved
-            //                    changed.Behaviour.CheckForPuzzleSolved();
-            //                }
-            //            }
-            //        }
-            //    }
-
-
-
-            //}
-
-
 
         }
     }
