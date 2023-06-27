@@ -136,23 +136,40 @@ namespace GOA
 
         void CheckTilesOrder()
         {
-            foreach(NetworkFrameStruct netFrame in NetworkFrames)
+            Debug.Log("Checking tiles");
+            //foreach(NetworkFrameStruct netFrame in NetworkFrames)
+            for (int i = 0; i < NetworkFrames.Count; i++)
             {
-                for(int i=0; i<netFrame.TilesOrder.Count; i++)
-                {
-                    if (netFrame.TilesOrder[i] != i)
-                        return;
+                //for(int i=0; i<netFrame.TilesOrder.Count; i++)
+                //{
+                //    if (netFrame.TilesOrder[i] != i)
+                //        return;
 
-                }
-                
+                //}
+                if (!IsFrameSolved(i))
+                    return;
+            }
+            Debug.Log("Checking tiles: solved");
+            Solved = true;
+        }
+
+        bool IsFrameSolved(int frameId)
+        {
+
+            for (int i = 0; i < NetworkFrames[frameId].TilesOrder.Count; i++)
+            {
+                if (NetworkFrames[frameId].TilesOrder[i] != i)
+                    return false;
+
             }
 
-            Solved = true;
+            return true;
         }
 
         public bool TileIsSelectable(int frameId, int tileId)
         {
             return  !Solved && 
+                    !IsFrameSolved(frameId) &&
                     NetworkFrames[frameId].SelectedTiles.Count < maxSelectables &&
                     !NetworkFrames[frameId].SelectedTiles.Contains(tileId);
         }
@@ -169,7 +186,7 @@ namespace GOA
 
         }
 
-
+        
 
         public void UnselectTile(int frameId, int tileId)
         {
@@ -190,6 +207,8 @@ namespace GOA
             for (int i = 0; i < frameCount; i++)
             {
                 changed.LoadOld();
+                if (changed.Behaviour.NetworkFrames.Count == 0)
+                    return;
                 var oldFrame = changed.Behaviour.NetworkFrames[i];
                 changed.LoadNew();
                 var newFrame = changed.Behaviour.NetworkFrames[i];
