@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae6e358acb15a6343bc7527aa7567539, type: 3}
+  m_Name: FifteenPuzzleAsset
+  m_EditorClassIdentifier: 
+  controllerPrefab: {fileID: 1971330100886675519, guid: 791849141fda73245be85addb24f5a20,
+    type: 3}
+  frame: {fileID: 11400000, guid: 14a011f0a48fc294ea62d542b2393174, type: 2}
+  frameCount: 3
