@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   alignment: 2
   weight: 1
-  prefab: {fileID: 8158905288235872547, guid: 0fbce074bfb3e924f84c84fd21dad7b0, type: 3}
+  prefab: {fileID: 8158905288235872547, guid: 118068668b09da840ab06ffa8b269d28, type: 3}

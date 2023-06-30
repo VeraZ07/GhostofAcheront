@@ -29,6 +29,10 @@ namespace GOA.Level
                 {
                     return new JigSawPuzzle(builder, asset, sectorIndex);
                 }
+                if (asset.GetType() == typeof(FifteenPuzzleAsset))
+                {
+                    return new FifteenPuzzle(builder, asset, sectorIndex);
+                }
                 //return puzzle;
                 throw new System.Exception(string.Format("PuzzleFactory - Puzzle '{0}' not found.", asset.name));
             }
@@ -72,6 +76,86 @@ namespace GOA.Level
                        {
                             obj.GetComponent<PuzzleController>().Initialize(builder.puzzles.IndexOf(this));
                        });
+            }
+
+           
+        }
+
+        public class FifteenPuzzle : Puzzle
+        {
+            List<int> frameIds = new List<int>();
+            public IList<int> FrameIds
+            {
+                get { return frameIds; }
+            }
+
+            public int TileCount { get; } = 9;
+
+            List<int[]> startingOrder = new List<int[]>();
+            public IList<int[]> StartingOrder
+            {
+                get { return startingOrder.AsReadOnly(); }
+            }
+
+            public FifteenPuzzle(LevelBuilder builder, PuzzleAsset asset, int sectorId) : base(builder, asset, sectorId)
+            {
+                FifteenPuzzleAsset jsasset = Asset as FifteenPuzzleAsset;
+            
+                for (int i = 0; i < jsasset.FrameCount; i++)
+                {
+                    CustomObject co = new CustomObject(builder, jsasset.Frame);
+                    builder.customObjects.Add(co);
+                    frameIds.Add(builder.customObjects.Count - 1);
+                    co.AttachRandomly(sectorId, emptyTilesOnly: true);
+                }
+            }
+
+            public override void CreateSceneObjects()
+            {
+                for(int i=0; i<frameIds.Count; i++)
+                {
+                    int frameId = frameIds[i];
+
+                    // Create the scene object
+                    builder.CustomObjects[frameId].CreateSceneObject();
+
+                    // Get the scene object
+                    GameObject sceneObject = builder.customObjects[frameId].SceneObject;
+
+                    // Get the tile container ( the frame child )
+                    Transform tileGroup = sceneObject.transform.GetChild(0).GetChild(0);
+
+                    // Rearrange tiles
+                    int numOfTiles = tileGroup.childCount;
+                    List<int> indices = new List<int>();
+                    List<Vector3> positions = new List<Vector3>();
+                    List<Quaternion> rotations = new List<Quaternion>();
+
+                    for (int j = 0; j < numOfTiles; j++)
+                    {
+                        indices.Add(j);
+                        positions.Add(tileGroup.GetChild(j).position);
+                        rotations.Add(tileGroup.GetChild(j).rotation);
+                    }
+                    // Rearranging
+                    int[] order = new int[numOfTiles];
+
+                    for (int j = 0; j < numOfTiles; j++)
+                    {
+
+                        // Get the new position you want to move the tile at index j
+                        int newIndex = indices[Random.Range(0, indices.Count)];
+                        indices.Remove(newIndex);
+                        tileGroup.GetChild(j).position = positions[newIndex];
+                        tileGroup.GetChild(j).rotation = rotations[newIndex];
+
+                        order[newIndex] = j;
+                    }
+                    startingOrder.Add(order);
+                   
+                }
+
+                
             }
         }
 

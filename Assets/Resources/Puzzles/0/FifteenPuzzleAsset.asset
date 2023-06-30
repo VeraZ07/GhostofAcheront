@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae6e358acb15a6343bc7527aa7567539, type: 3}
+  m_Script: {fileID: 11500000, guid: b899cbd5f17cb4e4cac8482728effad3, type: 3}
   m_Name: FifteenPuzzleAsset
   m_EditorClassIdentifier: 
-  controllerPrefab: {fileID: 1971330100886675519, guid: 791849141fda73245be85addb24f5a20,
+  controllerPrefab: {fileID: 7366191475598060619, guid: adfdede5cc6f26143a0819de613e75b4,
     type: 3}
-  frame: {fileID: 11400000, guid: 14a011f0a48fc294ea62d542b2393174, type: 2}
   frameCount: 3
+  frame: {fileID: 11400000, guid: 14a011f0a48fc294ea62d542b2393174, type: 2}
