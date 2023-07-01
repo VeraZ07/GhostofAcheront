@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Fusion;
 using GOA.Level;
 using System.Collections;
@@ -13,7 +14,8 @@ namespace GOA
         {
             [UnitySerializeField] [Networked] [Capacity(16)] public NetworkLinkedList<int> TilesOrder { get; }
 
-            [UnitySerializeField] [Networked] [Capacity(maxSelectables)] public NetworkLinkedList<int> SelectedTiles { get; }
+            // Just one, the other one is the black tile
+            [UnitySerializeField] [Networked] public int SelectedTile { get; set; }
 
         }
 
@@ -21,6 +23,10 @@ namespace GOA
         [UnitySerializeField] [Networked(OnChanged = nameof(OnNetworkFramesChanged))] [Capacity(5)] public NetworkLinkedList<NetworkFrameStruct> NetworkFrames { get; } = default;
 
         const int maxSelectables = 2;
+
+        const int blackTileId = 4;
+
+        const int size = 3;
 
         [System.Serializable]
         public class Frame
@@ -71,24 +77,9 @@ namespace GOA
                 for (int j = 0; j < tiles.Count; j++)
                 {
                     tiles[j].Init(this, i, j);
-                    if (NetworkFrames[i].SelectedTiles.Contains(j))
-                        frames[i].Tiles[j].Select();
-                    else
-                        frames[i].Tiles[j].Unselect();
                 }
 
-                // If there is more than one tile selected we need to check if they can pair with each other
-                if (Runner.IsServer)
-                {
-                    if (NetworkFrames[i].SelectedTiles.Count == maxSelectables)
-                    {
-                        int tile1 = NetworkFrames[i].SelectedTiles[0];
-                        int tile2 = NetworkFrames[i].SelectedTiles[1];
 
-
-                    }
-
-                }
             }
 
 
@@ -108,6 +99,7 @@ namespace GOA
                 {
                     fs.TilesOrder.Add(puzzle.StartingOrder[i][j]);
                 }
+                fs.SelectedTile = -1;
                 NetworkFrames.Add(fs);
             }
         }
@@ -127,15 +119,120 @@ namespace GOA
 
         public bool TileIsSelectable(int frameId, int tileId)
         {
-            return !Solved &&
-                    !IsFrameSolved(frameId) &&
-                    NetworkFrames[frameId].SelectedTiles.Count < maxSelectables &&
-                    !NetworkFrames[frameId].SelectedTiles.Contains(tileId);
+            
+            if (Solved || IsFrameSolved(frameId))
+                return false;
+
+            if (NetworkFrames[frameId].SelectedTile != -1)
+                return false;
+
+            //if (NetworkFrames[frameId].SelectedTiles.Contains(tileId))
+            //    return false;
+
+            // White tile can only be selected after the black one
+            //if (!frames[frameId].Tiles[tileId].Black && NetworkFrames[frameId].SelectedTiles.Count == 0)
+            //    return false;
+
+            //if(NetworkFrames[frameId].SelectedTile == -1)
+            //{
+                int blackOrderId = NetworkFrames[frameId].TilesOrder.IndexOf(blackTileId); // Black
+                int whiteOrderId = NetworkFrames[frameId].TilesOrder.IndexOf(tileId); // White
+    
+                if (!(((whiteOrderId == blackOrderId - 1 || whiteOrderId == blackOrderId + 1) && whiteOrderId / size == blackOrderId / size) ||
+                     ((whiteOrderId == blackOrderId - 3 || whiteOrderId == blackOrderId + 3) && whiteOrderId % size == blackOrderId % size)))
+                    return false;
+            //}
+
+            
+
+            return true;
+        }
+
+        public void SelectTile(int frameId, int tileId)
+        {
+            if (!TileIsSelectable(frameId, tileId))
+                return;
+
+            var copy = NetworkFrames[frameId];
+            copy.SelectedTile = tileId;
+            NetworkFrames.Set(frameId, copy);
+
+
+        }
+
+        void CheckPuzzle()
+        {
+            for(int i=0; i<frames.Count; i++)
+            {
+                if (!IsFrameSolved(i))
+                    return;
+            }
+
+            Solved = true;
+        }
+
+        void SwitchTiles(int frameId, int whiteTileId)
+        {
+            Frame frame = frames[frameId];
+
+            float moveDist = 0.1f;
+            float moveTime = .25f;
+
+            Transform bT = frame.Tiles[blackTileId].transform;
+            Transform wT = frame.Tiles[whiteTileId].transform;
+
+            // Switch tiles
+            Vector3 wPos = frame.Tiles[whiteTileId].transform.localPosition;
+            Vector3 bPos = frame.Tiles[blackTileId].transform.localPosition;
+            float bZ = bT.localPosition.z + moveDist;
+
+            Sequence seq = DOTween.Sequence();
+            seq.Append(bT.DOLocalMoveZ(bZ, moveTime, false));
+            seq.Append(bT.DOLocalMove(new Vector3(wPos.x, wPos.y, bZ), moveTime));
+            seq.Join(wT.DOLocalMove(new Vector3(bPos.x, bPos.y, wPos.z), moveTime));
+            seq.Append(bT.DOLocalMoveZ(bT.localPosition.z, moveTime, false));
+            
+            seq.onComplete += () => 
+            {
+                var nFrame = NetworkFrames[frameId];
+                nFrame.SelectedTile = -1;
+                int blackOrder = nFrame.TilesOrder.IndexOf(blackTileId);
+                int whiteOrder = nFrame.TilesOrder.IndexOf(whiteTileId);
+                nFrame.TilesOrder.Set(blackOrder, whiteTileId);
+                nFrame.TilesOrder.Set(whiteOrder, blackTileId);
+                NetworkFrames.Set(frameId, nFrame);
+            };
+
+            seq.Play();
+
         }
 
         public static void OnNetworkFramesChanged(Changed<FifteenPuzzleController> changed)
         {
+            int frameCount = changed.Behaviour.NetworkFrames.Count;
+            for (int i = 0; i < frameCount; i++)
+            {
+                changed.LoadOld();
+                if (changed.Behaviour.NetworkFrames.Count == 0)
+                    return;
+                var oldFrame = changed.Behaviour.NetworkFrames[i];
+                changed.LoadNew();
+                var newFrame = changed.Behaviour.NetworkFrames[i];
 
+                if(oldFrame.SelectedTile != newFrame.SelectedTile)
+                {
+                    if(newFrame.SelectedTile < 0) // Switch completed, lets check the puzzle
+                    {
+                        changed.Behaviour.CheckPuzzle();
+                    }
+                    else // Switch tiles
+                    {
+                        changed.Behaviour.SwitchTiles(i, newFrame.SelectedTile);
+                    }
+                }
+
+              
+            }
         }
     }
 
