@@ -138,21 +138,61 @@ namespace GOA.Level
                         rotations.Add(tileGroup.GetChild(j).rotation);
                     }
                     // Rearranging
+                    int size = 3;
                     int[] order = new int[numOfTiles];
+                    for (int j = 0; j < size * size; j++)
+                        order[j] = j;
 
+                    int black = 4;
+                    int blackIndex = 4;
+                    
+                    List<int> dirs = new List<int> { -size, +1, size, -1 }; // Nord, East, South, West
+                    
+                    for(int j=0; j<20; j++)
+                    {
+                        // Get a random direction
+                        int dir = dirs[Random.Range(0, dirs.Count)];
+                        int whiteIndex = blackIndex + dir;
+                        int white = order[whiteIndex];
+
+                        order[whiteIndex] = black;
+                        order[blackIndex] = white;
+
+                        blackIndex = whiteIndex;
+                        dirs = new List<int> { -size, +1, size, -1 };
+                        if (blackIndex % size == 0)
+                            dirs.Remove(-1);
+                        if (blackIndex % size == size - 1)
+                            dirs.Remove(1);
+                        if (blackIndex / size == 0)
+                            dirs.Remove(-size);
+                        if (blackIndex / size == size - 1)
+                            dirs.Remove(size);
+                            
+
+                    }
+
+
+                    //for (int j = 0; j < numOfTiles; j++)
+                    //{
+
+                    //    // Get the new position you want to move the tile at index j
+                    //    int newIndex = indices[Random.Range(0, indices.Count)];
+                    //    indices.Remove(newIndex);
+                    //    tileGroup.GetChild(j).position = positions[newIndex];
+                    //    tileGroup.GetChild(j).rotation = rotations[newIndex];
+
+                    //    order[newIndex] = j;
+                    //}
                     for (int j = 0; j < numOfTiles; j++)
                     {
-
-                        // Get the new position you want to move the tile at index j
-                        int newIndex = indices[Random.Range(0, indices.Count)];
-                        indices.Remove(newIndex);
-                        tileGroup.GetChild(j).position = positions[newIndex];
-                        tileGroup.GetChild(j).rotation = rotations[newIndex];
-
-                        order[newIndex] = j;
+                        tileGroup.GetChild(order[j]).position = positions[j];
+                        tileGroup.GetChild(order[j]).rotation = rotations[j];
                     }
+
                     startingOrder.Add(order);
-                   
+                    
+                    
                 }
 
                 
