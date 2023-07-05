@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e88f6a28b060d3543b58b43ab70f7437, type: 3}
-  m_Name: PicturePuzzleAsset
+  m_Name: __PicturePuzzleAsset
   m_EditorClassIdentifier: 
   controllerPrefab: {fileID: 4855549830297252762, guid: 63437caa19a26b040b62130dbd75596c,
     type: 3}

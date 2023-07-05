@@ -162,6 +162,9 @@ namespace GOA
 
         void CheckPuzzle()
         {
+            if (!Runner.IsServer)
+                return;
+
             for(int i=0; i<frames.Count; i++)
             {
                 if (!IsFrameSolved(i))
@@ -194,13 +197,17 @@ namespace GOA
             
             seq.onComplete += () => 
             {
-                var nFrame = NetworkFrames[frameId];
-                nFrame.SelectedTile = -1;
-                int blackOrder = nFrame.TilesOrder.IndexOf(blackTileId);
-                int whiteOrder = nFrame.TilesOrder.IndexOf(whiteTileId);
-                nFrame.TilesOrder.Set(blackOrder, whiteTileId);
-                nFrame.TilesOrder.Set(whiteOrder, blackTileId);
-                NetworkFrames.Set(frameId, nFrame);
+                if(Runner.IsServer)
+                {
+                    var nFrame = NetworkFrames[frameId];
+                    nFrame.SelectedTile = -1;
+                    int blackOrder = nFrame.TilesOrder.IndexOf(blackTileId);
+                    int whiteOrder = nFrame.TilesOrder.IndexOf(whiteTileId);
+                    nFrame.TilesOrder.Set(blackOrder, whiteTileId);
+                    nFrame.TilesOrder.Set(whiteOrder, blackTileId);
+                    NetworkFrames.Set(frameId, nFrame);
+                }
+                
             };
 
             seq.Play();

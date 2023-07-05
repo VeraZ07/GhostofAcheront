@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e88f6a28b060d3543b58b43ab70f7437, type: 3}
-  m_Name: SkeletonPuzzleAsset
+  m_Name: __SkeletonPuzzleAsset
   m_EditorClassIdentifier: 
   controllerPrefab: {fileID: 7281534411891735578, guid: 164dc961761d0de4d9d87dea5640c129,
     type: 3}

@@ -1,4 +1,4 @@
-#define TEST_PUZZLE
+//#define TEST_PUZZLE
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

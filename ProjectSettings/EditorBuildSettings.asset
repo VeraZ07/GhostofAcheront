@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Pier/TestPlayer.unity
     guid: 53ba09b0b13f2f04094cd9a35a216a8f
+  - enabled: 0
+    path: Assets/Scenes/Pier/TestMazeMiniGame.unity
+    guid: e132ef4d18a3231458e3c66426982ba0
   m_configObjects: {}
