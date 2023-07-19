@@ -133,7 +133,8 @@ namespace GOA
 
             if (Runner.IsServer && !patching)
             {
-         
+                //agent.enabled = false; // TO REMOVE *******************************************
+
                 switch (State)
                 {
                     case (int)MonsterState.Idle:
@@ -391,6 +392,8 @@ namespace GOA
         #region private methods
         bool CheckForPlayer()
         {
+           
+
             //Debug.Log("MONSTER - Checking for player...");
 #if UNITY_EDITOR
             //return false;

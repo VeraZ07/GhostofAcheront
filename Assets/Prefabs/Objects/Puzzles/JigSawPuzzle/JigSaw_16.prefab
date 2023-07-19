@@ -2378,6 +2378,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7463058237187702924}
+  - component: {fileID: 7223515431044685851}
   m_Layer: 0
   m_Name: JigSaw_16
   m_TagString: Untagged
@@ -2401,6 +2402,56 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7223515431044685851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8158905288235872547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 652318c129f896f419b5124f9cf14228, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  materials:
+  - {fileID: 2100000, guid: 7e87655ac02a7a7409e28b9bb09e9efe, type: 2}
+  - {fileID: 2100000, guid: 24fbadda852c4194684839fbfdebc2db, type: 2}
+  elements:
+  - renderer: {fileID: 8563538383841522370}
+    materialId: 1
+  - renderer: {fileID: 4796501955952297279}
+    materialId: 1
+  - renderer: {fileID: 821851893346365698}
+    materialId: 1
+  - renderer: {fileID: 8543057775445980676}
+    materialId: 1
+  - renderer: {fileID: 5063298623099532865}
+    materialId: 1
+  - renderer: {fileID: 6226312783051900398}
+    materialId: 1
+  - renderer: {fileID: 4402440066530261190}
+    materialId: 1
+  - renderer: {fileID: 7732621767668214090}
+    materialId: 1
+  - renderer: {fileID: 4095098418545453430}
+    materialId: 1
+  - renderer: {fileID: 8439104543039079766}
+    materialId: 1
+  - renderer: {fileID: 3158930738135708299}
+    materialId: 1
+  - renderer: {fileID: 27910911197174962}
+    materialId: 1
+  - renderer: {fileID: 6488489498415225173}
+    materialId: 1
+  - renderer: {fileID: 3432841543302067782}
+    materialId: 1
+  - renderer: {fileID: 6486069446868860334}
+    materialId: 1
+  - renderer: {fileID: 2720799980815427112}
+    materialId: 1
+  - renderer: {fileID: 7438248758917190281}
+    materialId: 1
 --- !u!1 &8760989796478746374
 GameObject:
   m_ObjectHideFlags: 0
