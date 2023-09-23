@@ -58,6 +58,7 @@ namespace GOA.Level
                 this.asset = asset;
                 this.sectorId = sectorId;
                 this.builder = builder;
+                Debug.Log($"Creating puzzle {asset.name} in the sector {sectorId}");
             }
 
             /// <summary>
@@ -173,17 +174,6 @@ namespace GOA.Level
                     }
 
 
-                    //for (int j = 0; j < numOfTiles; j++)
-                    //{
-
-                    //    // Get the new position you want to move the tile at index j
-                    //    int newIndex = indices[Random.Range(0, indices.Count)];
-                    //    indices.Remove(newIndex);
-                    //    tileGroup.GetChild(j).position = positions[newIndex];
-                    //    tileGroup.GetChild(j).rotation = rotations[newIndex];
-
-                    //    order[newIndex] = j;
-                    //}
                     for (int j = 0; j < numOfTiles; j++)
                     {
                         tileGroup.GetChild(order[j]).position = positions[j];
@@ -338,16 +328,21 @@ namespace GOA.Level
                         positions.Add(tileGroup.GetChild(j).position);
                         rotations.Add(tileGroup.GetChild(j).rotation);
                     }
+
                     // Rearranging
-                    for (int j = 0; j < numOfTiles; j++)
+                    if((Asset as MemoryPuzzleAsset).ShuffleTiles)
                     {
-                        
-                        // Get the new position you want to move the tile at index j
-                        int newIndex = indices[Random.Range(0, indices.Count)];
-                        indices.Remove(newIndex);
-                        tileGroup.GetChild(j).position = positions[newIndex];
-                        tileGroup.GetChild(j).rotation = rotations[newIndex];
+                        for (int j = 0; j < numOfTiles; j++)
+                        {
+
+                            // Get the new position where you want to move the tile at index j
+                            int newIndex = indices[Random.Range(0, indices.Count)];
+                            indices.Remove(newIndex);
+                            tileGroup.GetChild(j).position = positions[newIndex];
+                            tileGroup.GetChild(j).rotation = rotations[newIndex];
+                        }
                     }
+                    
                 }
                 
             }

@@ -14,6 +14,13 @@ namespace GOA.Assets
         //}
 
         [SerializeField]
+        bool shuffleTiles = false;
+        public bool ShuffleTiles
+        {
+            get { return shuffleTiles; }
+        }
+
+        [SerializeField]
         CustomObjectAsset frame;
         public CustomObjectAsset Frame
         {
