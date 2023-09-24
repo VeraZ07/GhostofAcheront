@@ -22,17 +22,7 @@ namespace GOA
                 
         //public abstract void Initialize(int puzzleIndex);
 
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
+   
 
         public override void Spawned()
         {

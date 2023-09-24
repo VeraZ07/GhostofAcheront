@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace GOA.Assets
 {
-    public class MemoryPuzzleAsset : PuzzleAsset
+    public class ArrowPuzzleAsset : PuzzleAsset
     {
- 
+
 
         [SerializeField]
         CustomObjectAsset frame;

@@ -136,8 +136,11 @@ namespace GOA
             
         }
 
-        void CheckForPuzzleSolved()
+        void ServerCheckForPuzzleSolved()
         {
+            if (!Runner.IsServer)
+                return;
+
             // Check if the puzzle has been solved
             for (int i = 0; i < frames.Count; i++)
             {
@@ -253,7 +256,8 @@ namespace GOA
                                 changed.Behaviour.frames[i].Tiles[tile2].Show();
 
                                 // Check if the puzzle has been solved
-                                changed.Behaviour.CheckForPuzzleSolved();
+                                //if(changed.Behaviour.Runner.IsServer)
+                                changed.Behaviour.ServerCheckForPuzzleSolved();
                             }
                         }
                     }

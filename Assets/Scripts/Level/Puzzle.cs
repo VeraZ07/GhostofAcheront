@@ -33,6 +33,10 @@ namespace GOA.Level
                 {
                     return new FifteenPuzzle(builder, asset, sectorIndex);
                 }
+                if (asset.GetType() == typeof(ArrowPuzzleAsset))
+                {
+                    return new ArrowPuzzle(builder, asset, sectorIndex);
+                }
                 //return puzzle;
                 throw new System.Exception(string.Format("PuzzleFactory - Puzzle '{0}' not found.", asset.name));
             }
@@ -330,24 +334,112 @@ namespace GOA.Level
                     }
 
                     // Rearranging
-                    if((Asset as MemoryPuzzleAsset).ShuffleTiles)
+                    for (int j = 0; j < numOfTiles; j++)
                     {
-                        for (int j = 0; j < numOfTiles; j++)
-                        {
 
-                            // Get the new position where you want to move the tile at index j
-                            int newIndex = indices[Random.Range(0, indices.Count)];
-                            indices.Remove(newIndex);
-                            tileGroup.GetChild(j).position = positions[newIndex];
-                            tileGroup.GetChild(j).rotation = rotations[newIndex];
-                        }
+                        // Get the new position where you want to move the tile at index j
+                        int newIndex = indices[Random.Range(0, indices.Count)];
+                        indices.Remove(newIndex);
+                        tileGroup.GetChild(j).position = positions[newIndex];
+                        tileGroup.GetChild(j).rotation = rotations[newIndex];
                     }
+                    
                     
                 }
                 
             }
 
             
+        }
+
+        public class ArrowPuzzle : Puzzle
+        {
+            class ArrowGroup
+            {
+                int[] directions;
+
+                public ArrowGroup(int size)
+                {
+                    directions = new int[size];
+                }
+
+                public void SetDirection(int id, int direction)
+                {
+                    directions[id] = direction;
+                }
+
+                public int GetDirection(int id)
+                {
+                    return directions[id];
+                }
+            }
+
+            List<int> frameIds = new List<int>();
+            public IList<int> FrameIds
+            {
+                get { return frameIds.AsReadOnly(); }
+            }
+
+            List<ArrowGroup> arrowsGroups = new List<ArrowGroup>();
+            
+            public int GetDirection(int frameId, int tileId)
+            {
+                return arrowsGroups[frameId].GetDirection(tileId);
+            }
+
+            public int TileCount
+            {
+                get { return int.Parse((Asset as ArrowPuzzleAsset).Frame.name.Substring((Asset as ArrowPuzzleAsset).Frame.name.LastIndexOf("_") + 1)); }
+            }
+
+            public ArrowPuzzle(LevelBuilder builder, PuzzleAsset asset, int sectorId) : base(builder, asset, sectorId)
+            {
+                // Add custom objects to the builder
+                ArrowPuzzleAsset mpa = asset as ArrowPuzzleAsset;
+                for (int i = 0; i < mpa.FrameCount; i++)
+                {
+
+                    // Create the frame custom object
+                    CustomObject co = new CustomObject(builder, mpa.Frame);
+                    builder.customObjects.Add(co);
+                    frameIds.Add(builder.CustomObjects.Count - 1);
+                    co.AttachRandomly(sectorId, emptyTilesOnly: true);
+
+
+                }
+
+            }
+
+            public override void CreateSceneObjects()
+            {
+                foreach (int frameId in frameIds)
+                {
+                    builder.CustomObjects[frameId].CreateSceneObject();
+
+                    // Get the scene object
+                    GameObject sceneObject = builder.customObjects[frameId].SceneObject;
+
+                    // Get the tile container
+                    Transform tileGroup = sceneObject.transform.GetChild(0).GetChild(0);
+
+                    // Rearrange 
+                    arrowsGroups.Add(new ArrowGroup(TileCount));
+                    ArrowPuzzleHelper helper = new ArrowPuzzleHelper(TileCount);
+                    int[] directions = helper.Shuffle();
+
+                    for(int i=0; i<directions.Length; i++)
+                    {
+                        arrowsGroups[arrowsGroups.Count - 1].SetDirection(i, directions[i]);
+                        tileGroup.GetChild(i).localEulerAngles = Vector3.back * 90f * directions[i];
+                    }
+
+                  
+
+                }
+
+            }
+
+
         }
 
         public class HandlesPuzzle: Puzzle

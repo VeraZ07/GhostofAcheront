@@ -200,6 +200,27 @@ namespace GOA.Editor
             Selection.activeObject = asset;
         }
 
+        [MenuItem("Assets/Create/GOA/Puzzles/ArrowPuzzleAsset")]
+        public static void CreateArrowPuzzleAsset()
+        {
+            ArrowPuzzleAsset asset = ScriptableObject.CreateInstance<ArrowPuzzleAsset>();
+
+            string name = "ArrowPuzzleAsset.asset";
+
+            string folder = System.IO.Path.Combine(ResourceFolder, PuzzleAsset.ResourceFolder);
+
+            if (!System.IO.Directory.Exists(folder))
+                System.IO.Directory.CreateDirectory(folder);
+
+            AssetDatabase.CreateAsset(asset, System.IO.Path.Combine(folder, name));
+
+            AssetDatabase.SaveAssets();
+
+            EditorUtility.FocusProjectWindow();
+
+            Selection.activeObject = asset;
+        }
+
         [MenuItem("Assets/Create/GOA/ItemAsset")]
         public static void CreateItemAsset()
         {

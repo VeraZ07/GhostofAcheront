@@ -63,7 +63,8 @@ namespace GOA
                 {
                     RpcSetCharacterId((byte)0);
                 }
-
+                RpcSetCharacterId((byte)1);
+                /*********************************************/
 
             }
 
