@@ -17,6 +17,13 @@ namespace GOA.Assets
         }
 
         [SerializeField]
+        string characterName;
+        public string CharacterName
+        {
+            get { return characterName; }
+        }
+
+        [SerializeField]
         Sprite avatar;
         public Sprite Avatar
         {

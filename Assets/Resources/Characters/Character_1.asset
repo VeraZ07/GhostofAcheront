@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Character_1
   m_EditorClassIdentifier: 
   characterId: 1
+  characterName: Rachel
   avatar: {fileID: 21300000, guid: b96e6c998e414284897053a4dffd23be, type: 3}
   lobbyPlaceholderPrefab: {fileID: 8859919808006590603, guid: 0c61167040b0cd94e9ffdc8c2c1df374,
     type: 3}

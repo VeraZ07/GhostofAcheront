@@ -21,7 +21,7 @@ namespace GOA
 
         [Networked(OnChanged = nameof(OnReadyChanged))] public NetworkBool Ready { get; private set; }
 
-        [Networked] public byte CharacterId { get; private set; } = 0;
+        [Networked(OnChanged = nameof(OnCharacterIdChanged))] public byte CharacterId { get; private set; } = 0;
 
         PlayerRef playerRef;
         public PlayerRef PlayerRef
@@ -59,11 +59,11 @@ namespace GOA
                 Local = this;
 
                 /****************** Test ******************/
-                if (SessionManager.Instance.Runner.IsClient)
-                {
-                    RpcSetCharacterId((byte)0);
-                }
-                RpcSetCharacterId((byte)1);
+                //if (SessionManager.Instance.Runner.IsClient)
+                //{
+                //    RpcSetCharacterId((byte)0);
+                //}
+                //RpcSetCharacterId((byte)1);
                 /*********************************************/
 
             }
@@ -106,6 +106,7 @@ namespace GOA
         [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
         public void RpcSetCharacterId(byte characterId)
         {
+            Debug.Log("CallRpc character id:" + characterId);
             CharacterId = characterId;
         }
               

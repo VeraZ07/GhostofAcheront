@@ -2,6 +2,7 @@ using Fusion;
 using GOA.Assets;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 namespace GOA
@@ -18,6 +19,9 @@ namespace GOA
 
         [SerializeField]
         Transform characterPivot;
+
+        [SerializeField]
+        TMP_Text textCharacterName;
 
         List<CharacterAsset> characterAssets;
         GameObject characterObject;
@@ -63,7 +67,7 @@ namespace GOA
         public void HandleOnPlayerSpawned(Player player)
         {
             if (player.HasInputAuthority)
-                ShowCharacter(0);
+                ShowCharacter();
         }
 
         public void HandleOnPlayerDespawned(Player player)
@@ -74,23 +78,30 @@ namespace GOA
 
         void HandleOnCharacterIdChanged(Player player) 
         {
+            Debug.Log("Character changed:" + player.CharacterId);
+
             if (player.HasInputAuthority)
-                ShowCharacter(player.CharacterId);
+                ShowCharacter();
+                
         }
 
-        void ShowCharacter(int characterId)
+        void ShowCharacter()
         {
             // Destroy the old character if any
             HideCharacter();
             // Load character assets
             characterAssets = new List<CharacterAsset>(Resources.LoadAll<CharacterAsset>(CharacterAsset.ResourceFolder));
-            characterObject = characterAssets.Find(c => c.CharacterId == Player.Local.CharacterId).LobbyPlaceholderPrefab;
+            CharacterAsset characterAsset = characterAssets.Find(c => c.CharacterId == Player.Local.CharacterId);
+            characterObject = characterAsset.LobbyPlaceholderPrefab;
             // Instantiate the new character
             characterObject = Instantiate(characterObject, characterPivot.position, characterPivot.rotation);
             characterObject.SetActive(true);
             pillarObject.SetActive(true);
             // Hide statue
             statueObject.SetActive(false);
+
+            // Set name
+            textCharacterName.text = characterAsset.CharacterName;
         }
 
         void HideCharacter()
