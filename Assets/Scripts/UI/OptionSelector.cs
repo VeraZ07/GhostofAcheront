@@ -11,6 +11,7 @@ namespace GOA.UI
         [SerializeField]
         string[] options;
 
+        
         [SerializeField]
         int defaultOptionId;
 
@@ -27,6 +28,10 @@ namespace GOA.UI
         bool serverOnlyInput = false;
 
         int currentOptionId;
+        protected string CurrentOption
+        {
+            get { return options[currentOptionId]; }
+        }
 
         protected abstract void OptionChanged(int value);
                
@@ -45,13 +50,24 @@ namespace GOA.UI
             //OptionChanged(currentOptionId);
         }
 
-        protected void Init(int optionId)
+        protected void Init(int optionId, string[] options = null, int defaultOptionId = -1)
         {
+            if (options != null)
+                this.options = options;
+
+            if (defaultOptionId >= 0)
+                this.defaultOptionId = defaultOptionId;
+
             currentOptionId = optionId;
             textValue.text = options[currentOptionId];
 
             CheckButtons();
         }
+
+        //protected void SetOptions(string[] options)
+        //{
+        //    this.options = options;
+        //}
 
         void OnNext()
         {

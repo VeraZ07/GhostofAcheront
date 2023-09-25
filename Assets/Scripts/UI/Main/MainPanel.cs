@@ -80,7 +80,7 @@ namespace GOA.UI
 
         void OpenOptionsPanel()
         {
-
+            GetComponentInParent<MainMenu>().ActivateOptionsPanel();
         }
 
         void QuitGame()
