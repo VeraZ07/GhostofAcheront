@@ -8,9 +8,27 @@ namespace GOA.UI
     public class OptionPanel : MonoBehaviour
     {
         [SerializeField]
-        Button backButton;
+        Button buttonBack;
 
+        [SerializeField]
+        Button buttonApply;
 
+        private void OnEnable()
+        {
+            buttonApply.onClick.AddListener(HandleOnApply);
+            buttonBack.onClick.AddListener(HandleOnBack);
+            buttonApply.interactable = false;
+            if(OptionManager.Instance)
+                OptionManager.Instance.OnOptionsChanged += HandleOnOptionsChanged;
+        }
+
+        private void OnDisable()
+        {
+            buttonApply.onClick.RemoveAllListeners();
+            buttonBack.onClick.RemoveAllListeners();
+            if (OptionManager.Instance)
+                OptionManager.Instance.OnOptionsChanged -= HandleOnOptionsChanged;
+        }
 
         // Start is called before the first frame update
         void Start()
@@ -22,6 +40,25 @@ namespace GOA.UI
         void Update()
         {
 
+        }
+
+        void HandleOnApply()
+        {
+            OptionManager.Instance.ApplyChanges();
+            buttonApply.interactable = false;
+        }
+
+        void HandleOnBack()
+        {
+
+        }
+
+        void HandleOnOptionsChanged(bool changed)
+        {
+            if (changed)
+                buttonApply.interactable = true;
+            else
+                buttonApply.interactable = false;
         }
     }
 

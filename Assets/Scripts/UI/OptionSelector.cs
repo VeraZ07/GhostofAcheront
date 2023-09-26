@@ -10,7 +10,7 @@ namespace GOA.UI
     {
         [SerializeField]
         string[] options;
-
+       
         
         [SerializeField]
         int defaultOptionId;
@@ -28,18 +28,13 @@ namespace GOA.UI
         bool serverOnlyInput = false;
 
         int currentOptionId;
-        protected string CurrentOption
-        {
-            get { return options[currentOptionId]; }
-        }
+       
 
         protected abstract void OptionChanged(int value);
                
 
         protected virtual void Awake()
         {
-            
-
             buttonNext.onClick.AddListener(OnNext);
             buttonPrev.onClick.AddListener(OnPrev);
         }
@@ -59,7 +54,7 @@ namespace GOA.UI
                 this.defaultOptionId = defaultOptionId;
 
             currentOptionId = optionId;
-            textValue.text = options[currentOptionId];
+            textValue.text = this.options[currentOptionId];
 
             CheckButtons();
         }
@@ -99,7 +94,10 @@ namespace GOA.UI
                 buttonNext.interactable = true;
         }
           
-        
+        protected string GetOption(int id)
+        {
+            return options[id];
+        }
     }
 
 }

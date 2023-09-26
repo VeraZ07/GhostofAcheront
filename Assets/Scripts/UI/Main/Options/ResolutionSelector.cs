@@ -6,30 +6,31 @@ namespace GOA.UI
 {
     public class ResolutionSelector : OptionSelector
     {
-        string resolutionFormatString = "{0}x{1}";
+        //string resolutionFormatString = "{0}x{1}";
         
 
         protected override void Awake()
         {
             base.Awake();
+        }
+
+        protected override void Start()
+        {
+            base.Start();
 
             // Set options in the parent class
-            string[] options = GetOptions();
+            string[] options = GetResolutions();
             int currentId = GetCurrentOptionId(options);
             Init(currentId, options);
         }
 
         protected override void OptionChanged(int value)
         {
-            Debug.Log($"New resolution selected:" + CurrentOption);
-            // Retrieve the same resolution with the highest refresh rate
-            string[] splits = CurrentOption.Split('x');
-            int width = int.Parse(splits[0]);
-            int height = int.Parse(splits[1]);
-            Screen.SetResolution(width, height, FullScreenMode.Windowed);
+            // Set the selected resolution
+            OptionManager.Instance.SetSelectedResolution(GetOption(value));
         }
 
-        string[] GetOptions()
+        string[] GetResolutions()
         {
             List<string> ret = new List<string>();
 
@@ -37,7 +38,7 @@ namespace GOA.UI
 
             foreach(Resolution resolution in Screen.resolutions)
             {
-                string resStr = string.Format(resolutionFormatString, resolution.width, resolution.height);
+                string resStr = string.Format(OptionManager.ResolutionFormatString, resolution.width, resolution.height);
                 if (!ret.Contains(resStr))
                     ret.Add(resStr);
             }
@@ -49,7 +50,7 @@ namespace GOA.UI
         int GetCurrentOptionId(string[] options)
         {
             Debug.Log("CurrentResolution:" + Screen.currentResolution);
-            string cur = string.Format(resolutionFormatString, Screen.currentResolution.width, Screen.currentResolution.height);
+            string cur = OptionManager.Instance.CurrentResolution;
             return new List<string>(options).FindIndex(s => s.Equals(cur));
         }
 
