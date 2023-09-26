@@ -24,6 +24,12 @@ namespace GOA.UI
             Init(currentId, options);
         }
 
+        private void OnEnable()
+        {
+            if (OptionManager.Instance)
+                Init(GetOptionId(OptionManager.Instance.CurrentResolution));
+        }
+
         protected override void OptionChanged(int value)
         {
             // Set the selected resolution

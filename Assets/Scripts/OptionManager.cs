@@ -7,11 +7,11 @@ namespace GOA
 {
     public class OptionManager : MonoBehaviour
     {
-        public UnityAction<bool> OnOptionsChanged;
-
-        public const string DefaultResolution = "1024x768";
+        public UnityAction<bool> OnSelectedChanged;
+        public UnityAction OnApply;
 
         public const string ResolutionFormatString = "{0}x{1}";
+        public const float MouseSensitivityDefault = 5;
 
         public static OptionManager Instance { get; private set; }
 
@@ -24,9 +24,20 @@ namespace GOA
 
 
         int currentFullScreenMode, selectedFullScreenMode;
-        
+        public int CurrentFullScreenMode
+        {
+            get { return currentFullScreenMode; }
+        }
+
+        float currentMouseSensitivity, selectedMouseSensitivity;
+        public float CurrentMouseSensitivity
+        {
+            get { return currentMouseSensitivity; }
+        }
+
         string resolutionParamName = "Resolution";
         string fullScreenModeParamName = "FullScreen";
+        string mouseSensitivityParamName = "MouseSensitivity";
 
         private void Awake()
         {
@@ -55,6 +66,7 @@ namespace GOA
         /// </summary>
         void LoadOptions()
         {
+            // Fullscreen mode
             if (PlayerPrefs.HasKey(fullScreenModeParamName))
             {
                 currentFullScreenMode = PlayerPrefs.GetInt(fullScreenModeParamName);
@@ -66,6 +78,7 @@ namespace GOA
                 selectedFullScreenMode = currentFullScreenMode;
             }
 
+            // Resolution
             if (PlayerPrefs.HasKey(resolutionParamName))
             {
                 currentResolution = PlayerPrefs.GetString(resolutionParamName);
@@ -80,6 +93,11 @@ namespace GOA
                 selectedResolution = currentResolution;
             }
 
+            // Mouse sensitivity
+            currentMouseSensitivity = PlayerPrefs.GetFloat(mouseSensitivityParamName, MouseSensitivityDefault);
+            selectedMouseSensitivity = currentMouseSensitivity;
+            
+
             Debug.Log("ActualResolution:" + currentResolution);
             Debug.Log("ActualFullScreenMode:" + currentFullScreenMode);
         }
@@ -90,21 +108,28 @@ namespace GOA
                 return true;
             if (selectedFullScreenMode != currentFullScreenMode)
                 return true;
-
+            if (selectedMouseSensitivity != currentMouseSensitivity)
+                return true;
             return false;
         }
 
         public void SetSelectedResolution(string value)
         {
             selectedResolution = value;
-            OnOptionsChanged?.Invoke(CheckOptionsChanged());
+            OnSelectedChanged?.Invoke(CheckOptionsChanged());
             
         }
 
         public void SetSelectedFullScreenMode(int value)
         {
             selectedFullScreenMode = value;
-            OnOptionsChanged?.Invoke(CheckOptionsChanged());
+            OnSelectedChanged?.Invoke(CheckOptionsChanged());
+        }
+
+        public void SetSelectedMouseSensitivity(float value)
+        {
+            selectedMouseSensitivity = value;
+            OnSelectedChanged?.Invoke(CheckOptionsChanged());
         }
 
         public void ApplyChanges()
@@ -117,6 +142,17 @@ namespace GOA
                 string[] splits = currentResolution.Split("x");
                 Screen.SetResolution(int.Parse(splits[0]), int.Parse(splits[1]), (FullScreenMode)currentFullScreenMode);
             }
+
+            currentMouseSensitivity = selectedMouseSensitivity;
+
+            OnApply?.Invoke();
+        }
+
+        public void DiscardChanges()
+        {
+            selectedFullScreenMode = currentFullScreenMode;
+            selectedResolution = currentResolution;
+            selectedMouseSensitivity = currentMouseSensitivity;
         }
     }
 

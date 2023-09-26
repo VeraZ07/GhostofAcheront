@@ -98,6 +98,11 @@ namespace GOA.UI
         {
             return options[id];
         }
+
+        protected int GetOptionId(string option)
+        {
+            return new List<string>(options).FindIndex(o => o == option);
+        }
     }
 
 }

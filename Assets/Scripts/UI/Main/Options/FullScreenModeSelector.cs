@@ -13,6 +13,12 @@ namespace GOA.UI
             Init((int)Screen.fullScreenMode);
         }
 
+        private void OnEnable()
+        {
+            if(OptionManager.Instance)
+                Init((int)OptionManager.Instance.CurrentFullScreenMode);
+        }
+
         protected override void OptionChanged(int value)
         {
             OptionManager.Instance.SetSelectedFullScreenMode(value);

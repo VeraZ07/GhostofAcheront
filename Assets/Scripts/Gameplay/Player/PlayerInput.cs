@@ -16,7 +16,8 @@ namespace GOA
         bool rightAction;
 
         PlayerController playerController;
-
+        float mouseSensMul = .2f;
+        float mouseSens;
         
         private void Awake()
         {
@@ -38,13 +39,15 @@ namespace GOA
            
         }
 
+        
+
         // Update is called once per frame
         void Update()
         {
             moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
             moveInput.Normalize();
                 
-            lookInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+            lookInput = new Vector2(Input.GetAxis("Mouse X") * mouseSens, Input.GetAxis("Mouse Y") * mouseSens);
 
             if (!playerController.InputDisabled)
                 if(playerController.State == (int)PlayerState.Alive || playerController.State == (int)PlayerState.Dead)
@@ -57,10 +60,26 @@ namespace GOA
             rightAction = Input.GetMouseButton(1);
         }
 
+        private void OnEnable()
+        {
+            OptionManager.Instance.OnApply += HandleOnOptionApply;
+            HandleOnOptionApply();
+        }
+
+        private void OnDisable()
+        {
+            OptionManager.Instance.OnApply -= HandleOnOptionApply;
+        }
+
         private void OnDestroy()
         {
             //Cursor.lockState = CursorLockMode.None;
             //Cursor.visible = true;
+        }
+
+        void HandleOnOptionApply()
+        {
+            mouseSens = OptionManager.Instance.CurrentMouseSensitivity * mouseSensMul;
         }
 
         public NetworkInputData GetInput()

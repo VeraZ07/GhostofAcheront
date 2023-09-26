@@ -19,7 +19,7 @@ namespace GOA.UI
             buttonBack.onClick.AddListener(HandleOnBack);
             buttonApply.interactable = false;
             if(OptionManager.Instance)
-                OptionManager.Instance.OnOptionsChanged += HandleOnOptionsChanged;
+                OptionManager.Instance.OnSelectedChanged += HandleOnOptionsChanged;
         }
 
         private void OnDisable()
@@ -27,7 +27,7 @@ namespace GOA.UI
             buttonApply.onClick.RemoveAllListeners();
             buttonBack.onClick.RemoveAllListeners();
             if (OptionManager.Instance)
-                OptionManager.Instance.OnOptionsChanged -= HandleOnOptionsChanged;
+                OptionManager.Instance.OnSelectedChanged -= HandleOnOptionsChanged;
         }
 
         // Start is called before the first frame update
@@ -50,7 +50,9 @@ namespace GOA.UI
 
         void HandleOnBack()
         {
-
+            OptionManager.Instance.DiscardChanges();
+            //buttonApply.interactable = false;
+            GetComponentInParent<MainMenu>().ActivateMainPanel();
         }
 
         void HandleOnOptionsChanged(bool changed)
