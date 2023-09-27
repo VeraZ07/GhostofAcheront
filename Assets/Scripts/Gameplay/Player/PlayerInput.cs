@@ -44,7 +44,7 @@ namespace GOA
         // Update is called once per frame
         void Update()
         {
-            moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+            moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
             moveInput.Normalize();
                 
             lookInput = new Vector2(Input.GetAxis("Mouse X") * mouseSens, Input.GetAxis("Mouse Y") * mouseSens);

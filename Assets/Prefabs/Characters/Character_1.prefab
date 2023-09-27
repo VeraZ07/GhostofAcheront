@@ -802,7 +802,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfa1efa2080db94458b5c87498d458a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interpolationDataSource: 0
+  _interpolationDataSource: 2
   InterpolationSpace: 0
   InterpolationTarget: {fileID: 5232603780945320150}
   InterpolateErrorCorrection: 1
@@ -866,8 +866,8 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5232603779821705800}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: a48af95f404552f4597db50027f92cf0, type: 3}
-  m_Controller: {fileID: 9100000, guid: 8b68a9c2d044c344092a83ee25ee8e50, type: 2}
+  m_Avatar: {fileID: 9000000, guid: 2d4021a382d3a7048834f9df710a7f16, type: 3}
+  m_Controller: {fileID: 22100000, guid: 8f2e8be90b87c334287166d1c79fa078, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

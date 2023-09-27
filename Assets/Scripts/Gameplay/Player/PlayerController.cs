@@ -241,6 +241,8 @@ namespace GOA
         {
             base.FixedUpdateNetwork();
 
+            
+
             switch (State)
             {
                 case (int)PlayerState.Alive:
@@ -346,6 +348,7 @@ namespace GOA
 
         void UpdateCharacter(NetworkInputData data)
         {
+            
             // 
             // Apply rotation
             //
