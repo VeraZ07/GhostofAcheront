@@ -12,7 +12,7 @@ namespace GOA
 
         public const string ResolutionFormatString = "{0}x{1}";
         public const float MouseSensitivityDefault = 5;
-
+        
         public static OptionManager Instance { get; private set; }
 
 
@@ -35,9 +35,16 @@ namespace GOA
             get { return currentMouseSensitivity; }
         }
 
+        int currentMouseVertical, selectedMouseVertical;
+        public int CurrentMouseVertical
+        {
+            get { return currentMouseVertical; }
+        }
+
         string resolutionParamName = "Resolution";
         string fullScreenModeParamName = "FullScreen";
         string mouseSensitivityParamName = "MouseSensitivity";
+        string mouseVerticalParamName = "MouseVertical";
 
         private void Awake()
         {
@@ -96,7 +103,10 @@ namespace GOA
             // Mouse sensitivity
             currentMouseSensitivity = PlayerPrefs.GetFloat(mouseSensitivityParamName, MouseSensitivityDefault);
             selectedMouseSensitivity = currentMouseSensitivity;
-            
+
+            // Mouse vertical input
+            currentMouseVertical = PlayerPrefs.GetInt(mouseVerticalParamName, 1);
+            selectedMouseVertical = currentMouseVertical;
 
             Debug.Log("ActualResolution:" + currentResolution);
             Debug.Log("ActualFullScreenMode:" + currentFullScreenMode);
@@ -109,6 +119,8 @@ namespace GOA
             if (selectedFullScreenMode != currentFullScreenMode)
                 return true;
             if (selectedMouseSensitivity != currentMouseSensitivity)
+                return true;
+            if (currentMouseVertical != selectedMouseVertical)
                 return true;
             return false;
         }
@@ -132,6 +144,12 @@ namespace GOA
             OnSelectedChanged?.Invoke(CheckOptionsChanged());
         }
 
+        public void SetSelectedMouseVertical(int value)
+        {
+            selectedMouseVertical = value;
+            OnSelectedChanged?.Invoke(CheckOptionsChanged());
+        }
+
         public void ApplyChanges()
         {
             // Resolution
@@ -144,6 +162,7 @@ namespace GOA
             }
 
             currentMouseSensitivity = selectedMouseSensitivity;
+            currentMouseVertical = selectedMouseVertical;
 
             OnApply?.Invoke();
         }
@@ -153,6 +172,7 @@ namespace GOA
             selectedFullScreenMode = currentFullScreenMode;
             selectedResolution = currentResolution;
             selectedMouseSensitivity = currentMouseSensitivity;
+            selectedMouseVertical = currentMouseVertical;
         }
     }
 
