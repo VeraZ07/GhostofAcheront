@@ -42,7 +42,7 @@ namespace GOA.UI
         // Start is called before the first frame update
         protected virtual void Start()
         {
-            //OptionChanged(currentOptionId);
+            
         }
 
         protected void Init(int optionId, string[] options = null, int defaultOptionId = -1)
@@ -59,11 +59,7 @@ namespace GOA.UI
             CheckButtons();
         }
 
-        //protected void SetOptions(string[] options)
-        //{
-        //    this.options = options;
-        //}
-
+      
         void OnNext()
         {
             currentOptionId++;

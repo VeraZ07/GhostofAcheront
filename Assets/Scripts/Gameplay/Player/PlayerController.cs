@@ -20,7 +20,7 @@ namespace GOA
         #region fields
         //public static PlayerController Local { get; private set; }
 
-        public const float InteractionMinimumDistance = 1.5f;
+        public const float InteractionMinimumDistance = 2f;
 
         [SerializeField]
         new Light light;

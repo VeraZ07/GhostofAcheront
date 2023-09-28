@@ -8,12 +8,12 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Stone
-    second: {fileID: 963798294112862009, guid: f6a3c1cf439b86848b585aadc8817055, type: 3}
+    second: {fileID: 2100000, guid: 56b8f4a288a04394b8a0cb3860325902, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Symbol
-    second: {fileID: 2100000, guid: 56b8f4a288a04394b8a0cb3860325902, type: 2}
+    second: {fileID: 963798294112862009, guid: f6a3c1cf439b86848b585aadc8817055, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0

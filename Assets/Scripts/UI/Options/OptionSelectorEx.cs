@@ -8,17 +8,15 @@ namespace GOA.UI
 {
     public abstract class OptionSelectorEx<T> : MonoBehaviour 
     {
-        [SerializeField]
-        List<Option<T>> options;
+        //[SerializeField]
+        List<Option<T>> options = null;
         protected List<Option<T>> Options
         {
             get { return options; }
             set { options = value; }
         }
 
-        [SerializeField]
-        int defaultOptionId = -1;
-
+   
         [SerializeField]
         TMP_Text textValue;
 
@@ -34,19 +32,16 @@ namespace GOA.UI
         
 
         int currentOptionId = -1;
-        
-        
+       
 
         protected abstract void OptionChanged(int newOptionId);
+        protected abstract ICollection<Option<T>> GetOptionList();
+        protected abstract int GetCurrentOptionId();
 
         protected virtual void Awake()
         {
             buttonNext.onClick.AddListener(OnNext);
             buttonPrev.onClick.AddListener(OnPrev);
-
-            if (defaultOptionId >= 0)
-                SetCurrentOptionId(defaultOptionId);
-
 
         }
 
@@ -54,6 +49,22 @@ namespace GOA.UI
         protected virtual void Start()
         {
             
+        }
+
+        protected virtual  void OnEnable()
+        {
+            if (!OptionManager.Instance)
+                return;
+
+            options = new List<Option<T>>(GetOptionList());
+            if (options != null)
+                SetCurrentOptionId(GetCurrentOptionId());
+        }
+
+        protected virtual void OnDisable()
+        {
+            options = null;
+            currentOptionId = -1;
         }
 
         void OnNext()
@@ -84,16 +95,6 @@ namespace GOA.UI
                 buttonPrev.interactable = true;
             if (currentOptionId < options.Count - 1)
                 buttonNext.interactable = true;
-        }
-
-        protected int GetOptionIdByValue(T value)
-        {
-            return new List<Option<T>>(options).FindIndex(o => o.Value.Equals(value));
-        }
-
-        protected Option<T> GetOption(int id)
-        {
-            return options[id];
         }
 
         protected void SetCurrentOptionId(int id)

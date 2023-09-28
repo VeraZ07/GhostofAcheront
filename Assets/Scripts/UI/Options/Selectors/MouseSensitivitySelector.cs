@@ -4,24 +4,23 @@ using UnityEngine;
 
 namespace GOA.UI
 {
-    public class MouseSensitivitySelector : OptionSelector
+    
+    public class MouseSensitivitySelector : OptionSelectorEx<float>
     {
-        protected override void Start()
+      
+        protected override void OptionChanged(int newOptionId)
         {
-            base.Start();
-
-            Init(GetOptionId(OptionManager.Instance.CurrentMouseSensitivity.ToString()));
+            OptionManager.Instance.SetMouseSensitivitySelectedId(newOptionId);
         }
 
-        private void OnEnable()
+        protected override ICollection<Option<float>> GetOptionList()
         {
-            if (OptionManager.Instance)
-                Init(GetOptionId(OptionManager.Instance.CurrentMouseSensitivity.ToString()));
+            return OptionCollection.MouseSensitivityOptionList;
         }
 
-        protected override void OptionChanged(int value)
+        protected override int GetCurrentOptionId()
         {
-            OptionManager.Instance.SetSelectedMouseSensitivity(float.Parse(GetOption(value)));
+            return OptionManager.Instance.MouseSensitivityCurrentId;
         }
     }
 

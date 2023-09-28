@@ -16,7 +16,6 @@ namespace GOA
         bool rightAction;
 
         PlayerController playerController;
-        float mouseSensMul = .2f;
         float mouseSens;
         
         private void Awake()
@@ -79,7 +78,7 @@ namespace GOA
 
         void HandleOnOptionApply()
         {
-            mouseSens = OptionManager.Instance.CurrentMouseSensitivity * mouseSensMul;
+            mouseSens = OptionManager.Instance.MouseSensitivity;
         }
 
         public NetworkInputData GetInput()

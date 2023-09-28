@@ -4,26 +4,30 @@ using UnityEngine;
 
 namespace GOA.UI
 {
-    public class FullScreenModeSelector : OptionSelector
+    public class FullScreenModeSelector : OptionSelectorEx<int>
     {
-        protected override void Start()
-        {
-            base.Start();
+        //protected override void Start()
+        //{
+        //    base.Start();
 
-            Init((int)Screen.fullScreenMode);
+        //    Init((int)Screen.fullScreenMode);
+        //}
+
+
+        protected override void OptionChanged(int newOptionId)
+        {
+            OptionManager.Instance.SetFullScreenModeSelectedId(newOptionId);
         }
 
-        private void OnEnable()
+        protected override ICollection<Option<int>> GetOptionList()
         {
-            if(OptionManager.Instance)
-                Init((int)OptionManager.Instance.CurrentFullScreenMode);
+            return OptionCollection.FullScreenModeOptionList;
         }
 
-        protected override void OptionChanged(int value)
+        protected override int GetCurrentOptionId()
         {
-            OptionManager.Instance.SetSelectedFullScreenMode(value);
+            return OptionManager.Instance.FullScreenModeCurrentId;
         }
-
     }
 
 }

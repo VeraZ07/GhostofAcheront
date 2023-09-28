@@ -320,7 +320,7 @@ namespace GOA.Level
 
             CreateLocalFogVolumes();
 
-            CreateFloatingLights();
+            //CreateFloatingLights();
 
             //CreateCrackLights();
         }

@@ -11,46 +11,57 @@ namespace GOA
         public UnityAction OnApply;
 
         public const string ResolutionFormatString = "{0}x{1}";
-        public const float MouseSensitivityDefault = 5;
-        
+        public const int MouseSensitivityDefaultId = 4;
+        public const int VerticalMouseDefaultId = 0;
+
         public static OptionManager Instance { get; private set; }
 
 
-        string currentResolution, selectedResolution;
-        public string CurrentResolution
+        int resolutionCurrentId, resolutionSelectedId;
+        public int ResolutionCurrentId
         {
-            get { return currentResolution; }
+            get { return resolutionCurrentId; }
         }
 
 
-        int currentFullScreenMode, selectedFullScreenMode;
-        public int CurrentFullScreenMode
+        int fullScreenModeCurrentId, fullScreenModeSelectedId;
+        public int FullScreenModeCurrentId
         {
-            get { return currentFullScreenMode; }
+            get { return fullScreenModeCurrentId; }
         }
 
-        float currentMouseSensitivity, selectedMouseSensitivity;
-        public float CurrentMouseSensitivity
+        int mouseSensitivityCurrentId, mouseSensitivitySelectedId;
+        public int MouseSensitivityCurrentId
         {
-            get { return currentMouseSensitivity; }
+            get { return mouseSensitivityCurrentId; }
+        }
+        public float MouseSensitivity
+        {
+            get { return OptionCollection.MouseSensitivityOptionList[mouseSensitivityCurrentId].Value; }
         }
 
-        int currentMouseVertical, selectedMouseVertical;
-        public int CurrentMouseVertical
+
+        int verticalMouseCurrentId, verticalMouseSelectedId;
+        public int VerticalMouseCurrentId
         {
-            get { return currentMouseVertical; }
+            get { return verticalMouseCurrentId; }
+        }
+        public int VerticalMouse
+        {
+            get { return OptionCollection.InvertedMouseOptionList[verticalMouseCurrentId].Value; }
         }
 
-        string resolutionParamName = "Resolution";
-        string fullScreenModeParamName = "FullScreen";
-        string mouseSensitivityParamName = "MouseSensitivity";
-        string mouseVerticalParamName = "MouseVertical";
+        string resolutionIdParamName = "Resolution";
+        string fullScreenModeIdParamName = "FullScreen";
+        string mouseSensitivityIdParamName = "MouseSensitivity";
+        string verticalMouseIdParamName = "VerticalMouse";
 
         private void Awake()
         {
             if (!Instance)
             {
                 Instance = this;
+                OptionCollection.Init();
                 LoadOptions();
                 DontDestroyOnLoad(gameObject);
             }
@@ -74,105 +85,120 @@ namespace GOA
         void LoadOptions()
         {
             // Fullscreen mode
-            if (PlayerPrefs.HasKey(fullScreenModeParamName))
+            if (PlayerPrefs.HasKey(fullScreenModeIdParamName))
             {
-                currentFullScreenMode = PlayerPrefs.GetInt(fullScreenModeParamName);
-                selectedFullScreenMode = currentFullScreenMode;
+                fullScreenModeCurrentId = PlayerPrefs.GetInt(fullScreenModeIdParamName);
+                fullScreenModeSelectedId = fullScreenModeCurrentId;
             }
             else
             {
-                currentFullScreenMode = (int)Screen.fullScreenMode;
-                selectedFullScreenMode = currentFullScreenMode;
+                fullScreenModeCurrentId = (int)Screen.fullScreenMode;
+                fullScreenModeSelectedId = fullScreenModeCurrentId;
             }
 
             // Resolution
-            if (PlayerPrefs.HasKey(resolutionParamName))
+            if (PlayerPrefs.HasKey(resolutionIdParamName))
             {
-                currentResolution = PlayerPrefs.GetString(resolutionParamName);
-                selectedResolution = currentResolution;
-                string[] splits = currentResolution.Split('x');
-                Screen.SetResolution(int.Parse(splits[0]), int.Parse(splits[1]), (FullScreenMode)currentFullScreenMode);
+                resolutionCurrentId = PlayerPrefs.GetInt(resolutionIdParamName);
+                resolutionSelectedId = resolutionCurrentId;
+                //string[] splits = resolutionCurrentId.Split('x');
+                Option<Vector2> opt = OptionCollection.ResolutionOptionList[resolutionCurrentId];
+                Screen.SetResolution((int)opt.Value.x, (int)opt.Value.y, (FullScreenMode)fullScreenModeCurrentId);
             }
             else
             {
-                
-                currentResolution = string.Format(ResolutionFormatString, Screen.width, Screen.height);
-                selectedResolution = currentResolution;
+                List<Option<Vector2>> resList = new List<Option<Vector2>>(OptionCollection.ResolutionOptionList);
+                resolutionCurrentId = resList.FindIndex(r=>r.Value.x == Screen.width && r.Value.y == Screen.height);
+                resolutionSelectedId = resolutionCurrentId;
             }
 
             // Mouse sensitivity
-            currentMouseSensitivity = PlayerPrefs.GetFloat(mouseSensitivityParamName, MouseSensitivityDefault);
-            selectedMouseSensitivity = currentMouseSensitivity;
+            mouseSensitivityCurrentId = PlayerPrefs.GetInt(mouseSensitivityIdParamName, MouseSensitivityDefaultId);
+            mouseSensitivitySelectedId = mouseSensitivityCurrentId;
 
             // Mouse vertical input
-            currentMouseVertical = PlayerPrefs.GetInt(mouseVerticalParamName, 1);
-            selectedMouseVertical = currentMouseVertical;
+            verticalMouseCurrentId = PlayerPrefs.GetInt(verticalMouseIdParamName, VerticalMouseDefaultId);
+            verticalMouseSelectedId = verticalMouseCurrentId;
 
-            Debug.Log("ActualResolution:" + currentResolution);
-            Debug.Log("ActualFullScreenMode:" + currentFullScreenMode);
+            Debug.Log("ActualResolution:" + resolutionCurrentId);
+            Debug.Log("ActualFullScreenMode:" + fullScreenModeCurrentId);
         }
 
         bool CheckOptionsChanged()
         {
-            if (selectedResolution != currentResolution)
+            if (resolutionSelectedId != resolutionCurrentId)
                 return true;
-            if (selectedFullScreenMode != currentFullScreenMode)
+            if (fullScreenModeSelectedId != fullScreenModeCurrentId)
                 return true;
-            if (selectedMouseSensitivity != currentMouseSensitivity)
+            if (mouseSensitivitySelectedId != mouseSensitivityCurrentId)
                 return true;
-            if (currentMouseVertical != selectedMouseVertical)
+            if (verticalMouseCurrentId != verticalMouseSelectedId)
                 return true;
             return false;
         }
 
-        public void SetSelectedResolution(string value)
+        public void SetResolutionSelectedId(int id)
         {
-            selectedResolution = value;
+            resolutionSelectedId = id;
             OnSelectedChanged?.Invoke(CheckOptionsChanged());
             
         }
 
-        public void SetSelectedFullScreenMode(int value)
+        public void SetFullScreenModeSelectedId(int id)
         {
-            selectedFullScreenMode = value;
+            fullScreenModeSelectedId = id;
             OnSelectedChanged?.Invoke(CheckOptionsChanged());
         }
 
-        public void SetSelectedMouseSensitivity(float value)
+        public void SetMouseSensitivitySelectedId(int id)
         {
-            selectedMouseSensitivity = value;
+            mouseSensitivitySelectedId = id;
             OnSelectedChanged?.Invoke(CheckOptionsChanged());
         }
 
-        public void SetSelectedMouseVertical(int value)
+        public void SetVerticalMouseSelectedId(int value)
         {
-            selectedMouseVertical = value;
+            verticalMouseSelectedId = value;
             OnSelectedChanged?.Invoke(CheckOptionsChanged());
         }
 
         public void ApplyChanges()
         {
             // Resolution
-            if(currentFullScreenMode != selectedFullScreenMode || currentResolution != selectedResolution)
+            if(fullScreenModeCurrentId != fullScreenModeSelectedId || resolutionCurrentId != resolutionSelectedId)
             {
-                currentResolution = selectedResolution;
-                currentFullScreenMode = selectedFullScreenMode;
-                string[] splits = currentResolution.Split("x");
-                Screen.SetResolution(int.Parse(splits[0]), int.Parse(splits[1]), (FullScreenMode)currentFullScreenMode);
+                resolutionCurrentId = resolutionSelectedId;
+                fullScreenModeCurrentId = fullScreenModeSelectedId;
+                Option<Vector2> opt = OptionCollection.ResolutionOptionList[resolutionCurrentId];
+                Screen.SetResolution((int)opt.Value.x, (int)opt.Value.y, (FullScreenMode)fullScreenModeCurrentId);
+                PlayerPrefs.SetInt(resolutionIdParamName, resolutionCurrentId);
+                PlayerPrefs.SetInt(fullScreenModeIdParamName, fullScreenModeCurrentId);
             }
 
-            currentMouseSensitivity = selectedMouseSensitivity;
-            currentMouseVertical = selectedMouseVertical;
+            if(mouseSensitivityCurrentId != mouseSensitivitySelectedId)
+            {
+                mouseSensitivityCurrentId = mouseSensitivitySelectedId;
+                PlayerPrefs.SetInt(mouseSensitivityIdParamName, mouseSensitivityCurrentId);
+            }
+            
+            if(verticalMouseCurrentId != verticalMouseSelectedId)
+            {
+                verticalMouseCurrentId = verticalMouseSelectedId;
+                PlayerPrefs.SetInt(verticalMouseIdParamName, verticalMouseCurrentId);
+            }
+            
+
+            PlayerPrefs.Save();
 
             OnApply?.Invoke();
         }
 
         public void DiscardChanges()
         {
-            selectedFullScreenMode = currentFullScreenMode;
-            selectedResolution = currentResolution;
-            selectedMouseSensitivity = currentMouseSensitivity;
-            selectedMouseVertical = currentMouseVertical;
+            fullScreenModeSelectedId = fullScreenModeCurrentId;
+            resolutionSelectedId = resolutionCurrentId;
+            mouseSensitivitySelectedId = mouseSensitivityCurrentId;
+            verticalMouseSelectedId = verticalMouseCurrentId;
         }
     }
 
