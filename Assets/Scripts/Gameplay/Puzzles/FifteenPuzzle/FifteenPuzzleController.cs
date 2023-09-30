@@ -45,6 +45,8 @@ namespace GOA
 
         List<Frame> frames = new List<Frame>();
 
+        bool busy = false;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -120,18 +122,8 @@ namespace GOA
         public bool TileIsSelectable(int frameId, int tileId)
         {
             
-            if (Solved || IsFrameSolved(frameId))
+            if (Solved || IsFrameSolved(frameId) || NetworkFrames[frameId].SelectedTile != -1 || busy)
                 return false;
-
-            if (NetworkFrames[frameId].SelectedTile != -1)
-                return false;
-
-            //if (NetworkFrames[frameId].SelectedTiles.Contains(tileId))
-            //    return false;
-
-            // White tile can only be selected after the black one
-            //if (!frames[frameId].Tiles[tileId].Black && NetworkFrames[frameId].SelectedTiles.Count == 0)
-            //    return false;
 
             //if(NetworkFrames[frameId].SelectedTile == -1)
             //{
@@ -160,7 +152,10 @@ namespace GOA
 
         }
 
-        void CheckPuzzle()
+        /// <summary>
+        /// Server only
+        /// </summary>
+        void ServerCheckPuzzle()
         {
             if (!Runner.IsServer)
                 return;
@@ -176,6 +171,7 @@ namespace GOA
 
         void SwitchTiles(int frameId, int whiteTileId)
         {
+            busy = true;
             Frame frame = frames[frameId];
 
             float moveDist = 0.1f;
@@ -197,6 +193,7 @@ namespace GOA
             
             seq.onComplete += () => 
             {
+                busy = false;
                 if(Runner.IsServer)
                 {
                     var nFrame = NetworkFrames[frameId];
@@ -230,7 +227,7 @@ namespace GOA
                 {
                     if(newFrame.SelectedTile < 0) // Switch completed, lets check the puzzle
                     {
-                        changed.Behaviour.CheckPuzzle();
+                        changed.Behaviour.ServerCheckPuzzle();
                     }
                     else // Switch tiles
                     {

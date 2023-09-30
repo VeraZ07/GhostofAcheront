@@ -36,7 +36,7 @@ namespace GOA
         }
         public bool IsInteractionEnabled()
         {
-            return puzzleController.TileIsSelectable(frameId, tileId);
+            return !selected && puzzleController.TileIsSelectable(frameId, tileId);
         }
 
         public void StartInteraction(PlayerController playerController)
@@ -63,8 +63,8 @@ namespace GOA
         {
             if (selected)
             {
-                //selected = false;
-                transform.DOLocalMoveZ(zDefault, moveTime, false).onComplete += () => { selected = false; };
+                
+                transform.DOLocalMoveZ(zDefault, moveTime, false).OnComplete( () => { selected = false; });
                 transform.DOLocalRotate(Vector3.zero, moveTime, RotateMode.Fast).SetEase(Ease.OutBounce);
                 
                 //transform.localEulerAngles = Vector3.zero;

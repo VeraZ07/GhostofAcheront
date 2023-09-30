@@ -42,6 +42,8 @@ namespace GOA
 
         List<Frame> frames = new List<Frame>();
 
+        bool busy = false;
+
         #region fusion initialization
         public override void Spawned()
         {
@@ -107,6 +109,7 @@ namespace GOA
 
         IEnumerator SwitchTiles(int frameId, int tileA, int tileB)
         {
+            busy = true;
             yield return new WaitForSeconds(.5f);
 
             Vector3 posA = frames[frameId].Tiles[tileA].transform.localPosition;
@@ -119,7 +122,7 @@ namespace GOA
             frames[frameId].Tiles[tileB].SwitchPosition(posA);
 
             yield return new WaitForSeconds(.5f);
-
+            busy = false;
             if (Runner.IsServer)
             {
                 NetworkFrameStruct frame = NetworkFrames[frameId];
@@ -168,7 +171,7 @@ namespace GOA
 
         public bool TileIsSelectable(int frameId, int tileId)
         {
-            return  !Solved && 
+            return  !Solved && !busy &&
                     !IsFrameSolved(frameId) &&
                     NetworkFrames[frameId].SelectedTiles.Count < maxSelectables &&
                     !NetworkFrames[frameId].SelectedTiles.Contains(tileId);

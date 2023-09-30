@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controllerPrefab: {fileID: 7366191475598060619, guid: adfdede5cc6f26143a0819de613e75b4,
     type: 3}
-  frameCount: 3
+  frameCount: 1
   frame: {fileID: 11400000, guid: 14a011f0a48fc294ea62d542b2393174, type: 2}
