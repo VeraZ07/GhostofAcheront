@@ -396,7 +396,7 @@ namespace GOA
 
             //Debug.Log("MONSTER - Checking for player...");
 #if UNITY_EDITOR
-            //return false;
+            //return true;
 #endif
 
             //if (players.Count != new List<PlayerRef>(Runner.ActivePlayers).Count)

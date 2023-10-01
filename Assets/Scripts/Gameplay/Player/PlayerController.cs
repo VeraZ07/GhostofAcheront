@@ -30,6 +30,10 @@ namespace GOA
 
         [SerializeField]
         GameObject characterObject;
+        public GameObject CharacterObject
+        {
+            get { return characterObject; }
+        }
 
         [SerializeField]
         List<Renderer> meshRenderers;
@@ -43,16 +47,13 @@ namespace GOA
 
         [SerializeField]
         GameObject headMesh;
-        //public GameObject HeadMesh
-        //{
-        //    get { return headMesh; }
-        //}
-
-        //[SerializeField]
-        //VisualEffect headBloodVfx;
+        
+      
 
         [SerializeField]
         ParticleSystem headBloodParticles;
+
+ 
 
         Animator animator;
 
@@ -110,13 +111,7 @@ namespace GOA
         // Start is called before the first frame update
         void Start()
         {
-            // Disable collisions between controller and internal ragdoll
-            //Collider coll = GetComponent<Collider>();
-            //Collider[] rc = GetComponentsInChildren<Collider>();
-            //foreach(Collider c in rc)
-            //{
-            //    Physics.IgnoreCollision(coll, c, true);
-            //}
+           
             EnableRagdollColliders(false);
         }
 
@@ -266,7 +261,7 @@ namespace GOA
         #endregion
 
         #region private methods
-       
+
 
         void EnableRagdollColliders(bool value)
         {
@@ -646,9 +641,13 @@ namespace GOA
                     break;
             }
         }
-#endregion
+        #endregion
 
-#region public methods     
+        #region public methods     
+
+        
+
+        
 
         public void SetCameraPitch(float value)
         {

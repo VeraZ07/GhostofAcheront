@@ -35,6 +35,22 @@ namespace GOA
             agent = GetComponent<NavMeshAgent>();
             animator = GetComponent<Animator>();
         }
+
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                PlayerController pc =new List<PlayerController>(FindObjectsOfType<PlayerController>()).Find(p => p.Runner.IsServer);
+                victim = pc;
+                DoBite();
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                PlayerController pc = new List<PlayerController>(FindObjectsOfType<PlayerController>()).Find(p => p.Runner.IsClient);
+                victim = pc;
+                DoBite();
+            }
+        }
         #endregion
 
         #region interface implementation
@@ -78,12 +94,12 @@ namespace GOA
                     break;
 
                 case 1: // Bite the player
-                    StartCoroutine(DoBite());
+                    DoBite();
                     break;
                 case 2:
                     // Release the player
                     
-                    bitePivots[1].GetComponent<FixedJoint>().connectedBody = null;
+                    //bitePivots[1].GetComponent<FixedJoint>().connectedBody = null;
                     break;
                 case 3: // Exit
 
@@ -100,27 +116,25 @@ namespace GOA
             
         }
 
-        IEnumerator DoBite()
+        void DoBite()
         {
-            Debug.Log("DoBite()");
-            Joint joint = bitePivots[1].GetComponent<FixedJoint>();
-            Vector3 oldPos = bitePivots[1].localPosition;
-
-            // Wait for the animation to run in order to obtain the right values for the pivots
-            yield return new WaitForEndOfFrame();
-            Vector3 dir = bitePivots[1].transform.position - victim.HeadPivot.transform.position;
-            victim.transform.position += dir;
-            
+            //victim.transform.position += Vector3.up;
+            //victim.EnableRagdollColliders(true);
+            victim.CharacterObject.transform.position += Vector3.up * .1f;
             victim.GetComponent<Animator>().enabled = false;
-            joint.connectedBody = victim.HeadPivot.transform.parent.GetComponent<Rigidbody>();
+            
+            //Rigidbody[] bones = victim.GetComponentsInChildren<Rigidbody>();
+
+            //foreach (Rigidbody bone in bones)
+            //    bone.AddForce(victim.transform.up * 10f, ForceMode.VelocityChange);
+
             
             victim.ExplodeHead();
+            
         }
-        //IEnumerator SetVictimDeadForSure(float delay)
-        //{
-        //    if (!Runner.IsServer)
-        //        yield break;
-        //}
+
+   
+
 
         #endregion
 
