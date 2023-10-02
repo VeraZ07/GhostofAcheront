@@ -38,18 +38,18 @@ namespace GOA
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                PlayerController pc =new List<PlayerController>(FindObjectsOfType<PlayerController>()).Find(p => p.Runner.IsServer);
-                victim = pc;
-                DoBite();
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                PlayerController pc = new List<PlayerController>(FindObjectsOfType<PlayerController>()).Find(p => p.Runner.IsClient);
-                victim = pc;
-                DoBite();
-            }
+            //if (Input.GetKeyDown(KeyCode.Alpha1))
+            //{
+            //    PlayerController pc =new List<PlayerController>(FindObjectsOfType<PlayerController>()).Find(p => p.Runner.IsServer);
+            //    victim = pc;
+            //    DoBite();
+            //}
+            //if (Input.GetKeyDown(KeyCode.Alpha2))
+            //{
+            //    PlayerController pc = new List<PlayerController>(FindObjectsOfType<PlayerController>()).Find(p => p.Runner.IsClient);
+            //    victim = pc;
+            //    DoBite();
+            //}
         }
         #endregion
 

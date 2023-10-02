@@ -49,6 +49,8 @@ MonoBehaviour:
   _Solved:
     _value: 0
   _PuzzleIndex: 0
+  _NetworkFrames: []
+  frames: []
 --- !u!114 &5239240042662556488
 MonoBehaviour:
   m_ObjectHideFlags: 0

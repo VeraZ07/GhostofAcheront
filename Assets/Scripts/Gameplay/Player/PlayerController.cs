@@ -139,24 +139,7 @@ namespace GOA
 #if UNITY_EDITOR
             //if (Input.GetKeyDown(KeyCode.P))
             //    RiseAgain();
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                //Inventory inv = new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.Object.HasInputAuthority);
-                //Debug.Log("Found local inventory:" + inv);
-                //if(inv.Items.Count > 0)
-                //{
-                //    Level.LevelBuilder builder = FindObjectOfType<Level.LevelBuilder>();
-
-                //    Picker picker = new List<Picker>(FindObjectsOfType<Picker>()).Find(p => p.ItemAssetName == inv.Items[0].ToString() && p.Empty && builder.GetCurrentPlayingSector() == builder.GetSector(builder.GetTile(builder.CustomObjects[p.CustomObjectId].TileId).sectorIndex));
-                //    Debug.Log("Found empty picker:" + picker.name);
-                //    inv.RemoveItem(inv.Items[0].ToString());
-                //    picker.Reactivate();
-                //}
-                //if (Runner.IsServer)
-                //    State = (int)PlayerState.Dead;
-
-                
-            }
+          
 #endif
         }
 
@@ -580,17 +563,22 @@ namespace GOA
 
             ghostTime = 2f;
 
-            if(Runner.IsServer)
-                FindObjectOfType<GameManager>().PlayerHasDead(this);
-
-            if (Runner.IsServer && !Runner.IsSinglePlayer)
+            if (Runner.IsServer)
             {
-                Inventory inv = new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.Object.InputAuthority == this.Object.InputAuthority);
-                inv.RespawnAllItems();
-#if USE_HOST_MIGRATION
-                SessionManager.Instance.PushSnapshot();
-#endif
+                FindObjectOfType<GameManager>().PlayerHasDead(this);
+                // Spawn the resurrection item anyway
+                //FindObjectOfType<LevelBuilder>().SpawnResurrectionItem(this);
             }
+                
+
+//            if (Runner.IsServer && !Runner.IsSinglePlayer)
+//            {
+//                Inventory inv = new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.Object.InputAuthority == this.Object.InputAuthority);
+//                inv.RespawnAllItems();
+//#if USE_HOST_MIGRATION
+//                SessionManager.Instance.PushSnapshot();
+//#endif
+//            }
 
             
 

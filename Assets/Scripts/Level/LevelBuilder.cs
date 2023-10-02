@@ -1645,16 +1645,83 @@ namespace GOA.Level
             return puzzles.IndexOf(puzzle);
         }
 
-    
+        //public Tile GetTileByPosition(Vector3 position)
+        //{
+        //    float h = position.x / TileSize;
+        //    float v = position.z / TileSize;
+
+        //    return tiles[(int)h * (int)v];
+        //}
 
         public Tile GetTile(int tileId)
         {
             return tiles[tileId];
         }
 
+        public bool TryGetTileIdByWorldPosition(Vector3 position, out int tileId)
+        {
+            tileId = -1;
+            int sizeSqrt = (int)Mathf.Sqrt(tiles.Length);
+            if (position.x > 0f && position.x < TileSize * sizeSqrt && position.z < 0f && position.z > -TileSize * sizeSqrt)
+            {
+                // Get the tile id
+                int h = (int)(position.x / TileSize);
+                int v = (int)(-position.z / TileSize);
+                tileId = h + v * sizeSqrt;
+                return true;
+            }
+
+            return false;
+        }
+       
+        /// <summary>
+        /// Return the closest tile to the given position; is the position falls into the enter or exit room then the 
+        /// corresponding enter or exit tile is returned ( in the boundaries ).
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        public int GetTheClosestTileId(Vector3 position)
+        {
+            int tileId = -1;
+            if (TryGetTileIdByWorldPosition(position, out tileId))
+            {
+                Debug.Log($"Player died inside the labirinth - tile:{tileId}");
+            }
+            else
+            {
+                // Get the closest between the enter and exit tiles   
+                int enterTileId = connections.Find(c => c.IsInitialConnection()).TargetTileId;
+                int exitTileId = connections.Find(c => c.IsFinalConnection()).SourceTileId;
+                Tile enterTile = tiles[enterTileId];
+                Tile exitTile = tiles[exitTileId];
+                if (Vector3.Distance(position, enterTile.GetPosition()) < Vector3.Distance(position, exitTile.GetPosition()))
+                {
+                    // Enter is closer
+                    Debug.Log($"Player died near the entrance");
+                    tileId = enterTileId;
+                }
+                else
+                {
+                    // Exit is closer
+                    Debug.Log($"Player died near the exit");
+                    tileId = exitTileId;
+                }
+            }
+            return tileId;
+        }
+       
         public Sector GetSector(int id)
         {
             return sectors[id];
+        }
+
+        public void SpawnResurrectionItem(PlayerController playerController)
+        {
+            Debug.Log($"Spawning resurrection item for playerId {playerController.PlayerId}");
+            // Get the tile the player died in
+            int tileId = GetTheClosestTileId(playerController.transform.position);
+            
+
         }
 
         //public Sector GetSectorByPuzzle()
