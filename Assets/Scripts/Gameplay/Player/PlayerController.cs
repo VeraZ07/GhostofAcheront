@@ -36,6 +36,10 @@ namespace GOA
         }
 
         [SerializeField]
+        GameObject spiritPrefab;
+
+
+        [SerializeField]
         List<Renderer> meshRenderers;
 
         [SerializeField]
@@ -566,8 +570,9 @@ namespace GOA
             if (Runner.IsServer)
             {
                 FindObjectOfType<GameManager>().PlayerHasDead(this);
-                // Spawn the resurrection item anyway
-                //FindObjectOfType<LevelBuilder>().SpawnResurrectionItem(this);
+                // Spawn the player spirit
+                Runner.Spawn(spiritPrefab, transform.position, Quaternion.identity, Runner.LocalPlayer, 
+                    (r, o) => { o.GetComponent<PlayerSpirit>().Init(Runner.LocalPlayer.PlayerId); });
             }
                 
 

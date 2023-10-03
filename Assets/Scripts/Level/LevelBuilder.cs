@@ -1,4 +1,4 @@
-//#define TEST_PUZZLE
+#define TEST_PUZZLE
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -168,7 +168,7 @@ namespace GOA.Level
 
             CheckForUnreachableTiles();
 
-#if !TEST_PUZZLE || !UNITY_EDITOR
+#if !TEST_PUZZLE// || !UNITY_EDITOR
             //
             // Create puzzles
             //
@@ -178,9 +178,9 @@ namespace GOA.Level
             // Test puzzle
             //
             //TestPuzzle("PicturePuzzleAsset", 0);
-            //TestPuzzle("PictureHandlePuzzleAsset", 0);
+            TestPuzzle("PictureHandlePuzzleAsset", 0);
             //TestPuzzle("SkeletonPuzzleAsset", 0);
-            TestPuzzle("JigSawPuzzleAsset", 0);
+            //TestPuzzle("JigSawPuzzleAsset", 0);
             //TestPuzzle("MemoryPuzzleAsset", 0);
             //TestPuzzle("FifteenPuzzleAsset", 0);
             //TestPuzzle("ArrowPuzzleAsset", 0);
@@ -1309,8 +1309,8 @@ namespace GOA.Level
             int tileId = startConnection.TargetTileId;
 
 #if UNITY_EDITOR
-            //monsterStartingTileId = tileId;
-            //return;
+            monsterStartingTileId = tileId;
+            return;
 #endif
 
             // Get the initial sector
@@ -1715,14 +1715,7 @@ namespace GOA.Level
             return sectors[id];
         }
 
-        public void SpawnResurrectionItem(PlayerController playerController)
-        {
-            Debug.Log($"Spawning resurrection item for playerId {playerController.PlayerId}");
-            // Get the tile the player died in
-            int tileId = GetTheClosestTileId(playerController.transform.position);
-            
-
-        }
+   
 
         //public Sector GetSectorByPuzzle()
         //{

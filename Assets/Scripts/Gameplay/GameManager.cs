@@ -183,7 +183,11 @@ namespace GOA
 
             if (SessionManager.Instance.Runner.IsSinglePlayer)
             {
+#if UNITY_EDITOR
+                return;
+#endif 
                 YouLose();
+
             }
             else
             {
