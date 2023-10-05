@@ -72,7 +72,7 @@ namespace GOA
                 }
 
                 // If there is more than one tile selected we need to check if they can pair with each other
-                if (Runner.IsServer)
+                if (Runner.IsServer || Runner.IsSharedModeMasterClient)
                 {
                     if (NetworkFrames[i].SelectedTiles.Count == maxSelectables)
                     {
@@ -123,7 +123,7 @@ namespace GOA
 
             yield return new WaitForSeconds(.5f);
             busy = false;
-            if (Runner.IsServer)
+            if (Runner.IsServer || Runner.IsSharedModeMasterClient)
             {
                 NetworkFrameStruct frame = NetworkFrames[frameId];
                 frame.SelectedTiles.Clear();

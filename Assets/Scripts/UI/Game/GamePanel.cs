@@ -36,7 +36,7 @@ namespace GOA.UI
             // Get the player camera in order to destroy it on session quit
             Camera.main.transform.parent = null;
 
-            if (SessionManager.Instance.Runner.IsServer && !SessionManager.Instance.Runner.IsSinglePlayer)
+            if ((SessionManager.Instance.Runner.IsServer || SessionManager.Instance.Runner.IsSharedModeMasterClient) && !SessionManager.Instance.Runner.IsSinglePlayer)
             {
 #if USE_HOST_MIGRATION
                 StartCoroutine(

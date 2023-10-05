@@ -222,7 +222,8 @@ namespace GOA.Level
             // Spawn monster ( server only )
             //
 #if !TEST_PUZZLE
-            SpawnMonster();
+            if(SessionManager.Instance.Runner.IsServer || SessionManager.Instance.Runner.IsSharedModeMasterClient)
+                SpawnMonster();
 #endif
 
             Debug.LogFormat("LevelBuilder - Level built in {0} seconds.", (System.DateTime.Now-startTime).TotalSeconds);
@@ -259,6 +260,7 @@ namespace GOA.Level
             MonsterAsset ma = assets[Random.Range(0, assets.Count)];
             Vector3 position = tiles[monsterStartingTileId].GetPosition() + 2f * ( Vector3.right + Vector3.back );
 
+           
             SessionManager.Instance.Runner.Spawn(ma.Prefab, position, Quaternion.identity, null, 
                 (r,o) => 
                 {
@@ -594,9 +596,9 @@ namespace GOA.Level
                 puzzle.CreateSceneObjects();
             }
 
-           
+
             // Create all the objects that must be spawned
-            if (SessionManager.Instance.Runner.IsServer)
+            if (SessionManager.Instance.Runner.IsServer || SessionManager.Instance.Runner.IsSharedModeMasterClient)
             {
                 //
                 // Create puzzle controllers

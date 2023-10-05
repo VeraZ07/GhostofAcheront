@@ -151,7 +151,7 @@ namespace GOA
          
            
             // Just wait a little more on the server to give every client the time to quit
-            StartCoroutine(QuitGameDelayed(Runner.IsServer ? 5f : 4f));
+            StartCoroutine(QuitGameDelayed((Runner.IsServer || Runner.IsSharedModeMasterClient) ? 5f : 4f));
         }
 
         public void YouLose()

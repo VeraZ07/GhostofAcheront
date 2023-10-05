@@ -80,7 +80,7 @@ namespace GOA
                 }
 
                 // If there is more than one tile selected we need to check if they can pair with each other
-                if (Runner.IsServer)
+                if (Runner.IsServer || Runner.IsSharedModeMasterClient)
                 {
                     // Check for selection
                     
@@ -180,7 +180,7 @@ namespace GOA
 
         void ServerCheckForSetTileFree(int frameId, int tileId)
         {
-            if (!Runner.IsServer)
+            if (!Runner.IsServer && !Runner.IsSharedModeMasterClient)
                 return;
 
             StartCoroutine(ServerCheckForSetTileFreeDelayed(frameId, tileId));
@@ -193,7 +193,7 @@ namespace GOA
 
         void ServerCheckForPuzzleSolved()
         {
-            if (!Runner.IsServer)
+            if (!Runner.IsServer && !Runner.IsSharedModeMasterClient)
                 return;
 
             for(int i=0; i<NetworkFrames.Count; i++)

@@ -569,6 +569,7 @@ MonoBehaviour:
   headBloodParticles: {fileID: 6500195222264135744}
   _PlayerId: 0
   _State: 1
+  test: {fileID: 6108365177509124702, guid: a76e3988c38e03d4ca417332b043accf, type: 3}
 --- !u!114 &-6228978730575802151
 MonoBehaviour:
   m_ObjectHideFlags: 0

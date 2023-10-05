@@ -44,7 +44,7 @@ namespace GOA.Audio
         {
             base.FixedUpdateNetwork();
 
-            if(Runner.IsServer)
+            if(Runner.IsServer || Runner.IsSharedModeMasterClient)
                 LoopState();
         }
 

@@ -54,18 +54,7 @@ namespace GOA
             
             if (HasInputAuthority)
             {
-                Name = string.Format("Player_{0}", Object.InputAuthority.PlayerId);
-                RpcSetName(string.Format("Player_{0}", Object.InputAuthority.PlayerId));
                 Local = this;
-
-                /****************** Test ******************/
-                //if (SessionManager.Instance.Runner.IsClient)
-                //{
-                //    RpcSetCharacterId((byte)0);
-                //}
-                //RpcSetCharacterId((byte)1);
-                /*********************************************/
-
             }
 
             OnSpawned?.Invoke(this);
@@ -82,6 +71,11 @@ namespace GOA
             base.Despawned(runner, hasState);
           
             OnDespawned?.Invoke(this);
+        }
+
+        public void Init(PlayerRef player)
+        {
+            Name = string.Format("Player_{0}", player.PlayerId);
         }
 
         public override string ToString()

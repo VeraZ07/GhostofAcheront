@@ -157,7 +157,7 @@ namespace GOA
         /// </summary>
         void ServerCheckPuzzle()
         {
-            if (!Runner.IsServer)
+            if (!Runner.IsServer && !Runner.IsSharedModeMasterClient)
                 return;
 
             for(int i=0; i<frames.Count; i++)
@@ -194,7 +194,7 @@ namespace GOA
             seq.onComplete += () => 
             {
                 busy = false;
-                if(Runner.IsServer)
+                if(Runner.IsServer || Runner.IsSharedModeMasterClient)
                 {
                     var nFrame = NetworkFrames[frameId];
                     nFrame.SelectedTile = -1;

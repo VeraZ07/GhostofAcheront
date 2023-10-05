@@ -23,6 +23,8 @@ namespace GOA
         public static UnityAction<SessionLobby> OnLobbyJoint;
         public static UnityAction<SessionLobby, string> OnLobbyJoinFailed;
         
+
+
         [SerializeField]
         NetworkObject playerPrefab;
 
@@ -40,6 +42,9 @@ namespace GOA
 
 
         NetworkRunner runner;
+
+        bool sharedMode = true;
+
         public NetworkRunner Runner
         {
             get 
@@ -83,7 +88,7 @@ namespace GOA
         private void LateUpdate()
         {
             // Check for the match to start
-            if (runner != null && runner.IsServer && (runner.SessionInfo.IsValid || runner.GameMode == GameMode.Single ) && !loading)
+            if (runner != null && (runner.IsServer || runner.IsSharedModeMasterClient) && (runner.SessionInfo.IsValid || runner.GameMode == GameMode.Single ) && !loading)
             {
                 // Is the room full?
                 if (ReadyToPlay())
@@ -100,9 +105,7 @@ namespace GOA
         IEnumerator StartMatch()
         {
             //MatchManager.Instance.MatchSeed = (int)UnityEngine.Random.Range(-Mathf.Infinity, Mathf.Infinity);
-            
-            
-            
+                        
             loading = true;
             float delay = 2f;
             yield return new WaitForSeconds(delay);
@@ -148,7 +151,7 @@ namespace GOA
             Debug.LogFormat("[Session - Name:{0}, IsOpen:{1}, IsVisible:{2}, MaxPlayers:{3}, Region:{4}]", si.Name, si.IsOpen, si.IsVisible, si.MaxPlayers, si.Region);
         }
 
-        #region INetworkRunnerCallbacks implementation
+#region INetworkRunnerCallbacks implementation
         public void OnConnectedToServer(NetworkRunner runner)
         {
             Debug.LogFormat("SessionManager - OnConnectedToServer.");
@@ -235,16 +238,23 @@ namespace GOA
             if (!resumingFromHostMigration)
             {
 #endif
-                // The server spawns the new player
-                if (runner.IsServer)
-                {
-                    NetworkObject playerObj = runner.Spawn(playerPrefab, Vector3.zero, Quaternion.identity, player);
+            // The server spawns the new player
+            //if (runner.IsServer)
+
+            if (runner.IsServer || runner.IsSharedModeMasterClient)
+
+            {
+                    NetworkObject playerObj = runner.Spawn(playerPrefab, Vector3.zero, Quaternion.identity, player,
+                        (r,o) => 
+                        {
+                            o.GetComponent<Player>().Init(player);
+                        });
 
                     // Create the game manager
                     GameManager gm = FindObjectOfType<GameManager>();
                     if (!gm)
                         runner.Spawn(gameManagerPrefab, Vector3.zero, Quaternion.identity, player);
-                }
+            }
 
                 OnPlayerJoinedCallback?.Invoke(runner, player);
 #if USE_HOST_MIGRATION
@@ -515,7 +525,7 @@ namespace GOA
             Debug.LogFormat("SessionManager - OnPlayerLeft: {0}", playerRef);
 
             // The server despawns the player
-            if (runner.IsServer)
+            if (runner.IsServer || runner.IsSharedModeMasterClient)
             {
                 // Desapwn controller
                 PlayerController playerController = new List<PlayerController>(FindObjectsOfType<PlayerController>()).Find(p => p.Object.InputAuthority == playerRef);
@@ -553,7 +563,7 @@ namespace GOA
 
             Debug.LogFormat("Check for dead or alive after despawning player");
 
-            if (SessionManager.Instance.Runner.IsServer)
+            if (SessionManager.Instance.Runner.IsServer || SessionManager.Instance.Runner.IsSharedModeMasterClient)
                 FindObjectOfType<GameManager>().CheckForEscaped();
         }
 
@@ -570,7 +580,7 @@ namespace GOA
                 FindObjectOfType<LevelBuilder>().Build(FindObjectOfType<GameManager>().GameSeed);
                 InteractableManager.Instance.Init();
 
-                if (runner.IsServer)
+                if (runner.IsServer || runner.IsSharedModeMasterClient)
                 {
 
                     //GameObject.FindObjectOfType<Level.LevelBuilder>().Build(runner);
@@ -703,7 +713,8 @@ namespace GOA
         {
             StartGameArgs args = new StartGameArgs()
             {
-                GameMode = GameMode.Host,
+
+                GameMode = sharedMode ? GameMode.Shared : GameMode.Host,
                 //SessionName = "",
                 MatchmakingMode = Fusion.Photon.Realtime.MatchmakingMode.FillRoom,
                 PlayerCount = MaxPlayers,
@@ -719,7 +730,8 @@ namespace GOA
         {
             StartGameArgs args = new StartGameArgs()
             {
-                GameMode = GameMode.Client,
+
+                GameMode = sharedMode ? GameMode.Shared : GameMode.Client,
                 SessionName = sessionName,
                 //MatchmakingMode = Fusion.Photon.Realtime.MatchmakingMode.FillRoom,
                 //PlayerCount = 1,

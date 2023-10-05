@@ -113,7 +113,7 @@ namespace GOA
             base.Spawned();
 
             
-            if (Runner.IsServer)
+            if (Runner.IsServer || Runner.IsSharedModeMasterClient)
             {
                 GetComponent<NavMeshAgent>().enabled = true;
                 
@@ -131,7 +131,7 @@ namespace GOA
         {
             base.FixedUpdateNetwork();
 
-            if (Runner.IsServer && !patching)
+            if ((Runner.IsServer || Runner.IsSharedModeMasterClient) && !patching)
             {
                 //agent.enabled = false; // TO REMOVE *******************************************
 
@@ -177,7 +177,7 @@ namespace GOA
         #region state management
         void SetState(int state)
         {
-            if (Runner.IsServer)
+            if (Runner.IsServer || Runner.IsSharedModeMasterClient)
             {
                 if (State == state)
                     return;

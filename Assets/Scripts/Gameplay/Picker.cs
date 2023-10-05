@@ -126,7 +126,7 @@ namespace GOA
 
            
 
-            if (Runner.IsServer)
+            if (Runner.IsServer || Runner.IsSharedModeMasterClient)
             {
 #if USE_HOST_MIGRATION
                 SessionManager.Instance.PushSnapshot();

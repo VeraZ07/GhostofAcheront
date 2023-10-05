@@ -77,7 +77,7 @@ namespace GOA
                 }
 
                 // If there is more than one tile selected we need to check if they can pair with each other
-                if (Runner.IsServer)
+                if (Runner.IsServer || Runner.IsSharedModeMasterClient)
                 {
                     if(NetworkFrames[i].SelectedTiles.Count == maxSelectables)
                     {
@@ -138,7 +138,7 @@ namespace GOA
 
         void ServerCheckForPuzzleSolved()
         {
-            if (!Runner.IsServer)
+            if (!Runner.IsServer && !Runner.IsSharedModeMasterClient)
                 return;
 
             // Check if the puzzle has been solved

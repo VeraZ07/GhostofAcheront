@@ -99,6 +99,8 @@ namespace GOA
         int deadType = 0;
         Transform characterRoot;
         float ghostTime = 0f;
+
+      
         #endregion
 
         #region native methods
@@ -117,6 +119,7 @@ namespace GOA
         {
            
             EnableRagdollColliders(false);
+
         }
 
         // Update is called once per frame
@@ -153,6 +156,23 @@ namespace GOA
             {
                 gameObject.AddComponent<PlayerInput>();
             }
+
+
+            if (Runner.GameMode == GameMode.Shared)
+            {
+                if (Runner.IsSharedModeMasterClient)
+                {
+                    if (!HasInputAuthority)
+                        Object.ReleaseStateAuthority();
+                }
+                else
+                {
+                    if (HasInputAuthority)
+                        Object.RequestStateAuthority();
+                }
+                
+            }
+            
 
             cam = GetComponentInChildren<Camera>().gameObject;
             camParent = cam.transform.parent;
@@ -236,9 +256,9 @@ namespace GOA
         }
 
 
-        #endregion
+#endregion
 
-        #region private methods
+#region private methods
         void UpdateAnimations()
         {
             float speed = cc.Velocity.magnitude * (Vector3.Angle(cc.Velocity, transform.forward) < 93f ? 1f : -1f);
@@ -523,9 +543,9 @@ namespace GOA
             foreach (Renderer rend in meshRenderers)
                 rend.gameObject.layer = layer;
         }
-        #endregion
+#endregion
 
-        #region state management
+#region state management
 
         void LoopAliveState()
         {
@@ -676,9 +696,9 @@ namespace GOA
                     break;
             }
         }
-        #endregion
+#endregion
 
-        #region public methods     
+#region public methods     
 
         
 

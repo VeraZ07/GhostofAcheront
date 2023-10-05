@@ -53,7 +53,7 @@ namespace GOA
             }
 
 
-            if (SessionManager.Instance.Runner.IsServer)
+            if (SessionManager.Instance.Runner.IsServer || SessionManager.Instance.Runner.IsSharedModeMasterClient)
             {
                 
                 // Do some logic here

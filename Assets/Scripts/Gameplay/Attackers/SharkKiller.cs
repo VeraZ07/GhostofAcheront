@@ -57,7 +57,7 @@ namespace GOA
         
         public void Kill(PlayerController victim, int attackId)
         {
-            if (!Runner.IsServer)
+            if (!Runner.IsServer && !Runner.IsSharedModeMasterClient)
                 return;
 
             this.victim = victim;
@@ -103,7 +103,7 @@ namespace GOA
                     break;
                 case 3: // Exit
 
-                    if (Runner.IsServer)
+                    if (Runner.IsServer || Runner.IsSharedModeMasterClient)
                     {
                         Debug.Log("DEAD SET");
                         victim.SetDeadState();

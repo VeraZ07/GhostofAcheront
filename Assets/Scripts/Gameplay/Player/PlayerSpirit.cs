@@ -57,7 +57,7 @@ namespace GOA
 
             spawnPosition = transform.position;
 
-            if (Runner.IsServer)
+            if (Runner.IsServer || Runner.IsSharedModeMasterClient)
             {
                 agent.enabled = true;
                 players = new List<PlayerController>(FindObjectsOfType<PlayerController>()).FindAll(p => p.PlayerId != PlayerId);
