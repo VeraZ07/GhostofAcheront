@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace GOA
 {
-    public class ArrowTileInteractor : MonoBehaviour, IInteractable
+    public class ArrowTileInteractor : Interactable
     {
         ArrowPuzzleController puzzleController;
         int frameId;
@@ -18,11 +18,6 @@ namespace GOA
         float zDefault;
         bool selected = false;
         float frameHalfSize = 1.2f; 
-
-        private void Awake()
-        {
-            
-        }
 
         // Start is called before the first frame update
         void Start()
@@ -36,12 +31,12 @@ namespace GOA
 
         }
 
-        public bool IsInteractionEnabled()
+        public override bool IsInteractionEnabled()
         {
             return !selected && puzzleController.TileIsSelectable(frameId, tileId);
         }
 
-        public void StartInteraction(PlayerController playerController)
+        public override void StartInteraction(PlayerController playerController)
         {
 
             if (!IsInteractionEnabled())
@@ -78,7 +73,7 @@ namespace GOA
             }
 
             Sequence seq = DOTween.Sequence();
-            seq.Append(transform.DOLocalMoveZ(-zDisp, zTime, false));
+            //seq.Append(transform.DOLocalMoveZ(-zDisp, zTime, false));
             seq.Append(transform.DOLocalMove(target, zTime, false));
             seq.Insert(0, transform.DOShakeRotation(seq.Duration(), 50));
             seq.OnComplete(()=> { selected = false; gameObject.SetActive(false); });
@@ -88,18 +83,18 @@ namespace GOA
 
         public void Select()
         {
-            Debug.Log($"Selected frameId:{frameId}, tileId:{tileId}");
-            //transform.DOLocalMoveZ(-zDisp, zTime, true);
+            selected = true;
+            Sequence seq = DOTween.Sequence();
+            seq.Append(transform.DOLocalMoveZ(-zDisp, zTime, false));
+            seq.Join(transform.DOShakeRotation(seq.Duration(), 50));
         }
 
         public void Unselect()
         {
-            Debug.Log($"Unselected frameId:{frameId}, tileId:{tileId}");
-
             Sequence seq = DOTween.Sequence();
-            seq.Append(transform.DOLocalMoveZ(-zDisp, zTime, false));
+            //seq.Append(transform.DOLocalMoveZ(-zDisp, zTime, false));
             seq.Append(transform.DOLocalMoveZ(zDefault, zTime, false));
-            seq.Insert(0, transform.DOShakeRotation(seq.Duration(), 50));
+            //seq.Insert(0, transform.DOShakeRotation(seq.Duration(), 50));
             seq.OnComplete(() => { selected = false; });
 
         }

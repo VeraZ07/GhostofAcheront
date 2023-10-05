@@ -41,6 +41,7 @@ namespace GOA
             while(tmpIds.Count > 0)
             {
                 int nextId = tmpIds[Random.Range(0, tmpIds.Count)];
+                Debug.Log($"RND - {nextId}");
                 Check(nextId, currentIds);
                 tmpIds.RemoveAll(id=>values[id] >= 0);
             }
@@ -125,10 +126,12 @@ namespace GOA
             if (choices.Count == 0)
             {
                 candidateValue = Random.Range(0, 4);
+                Debug.Log($"RND A - {candidateValue}");
             }
             else
             {
                 candidateValue = choices[Random.Range(0, choices.Count)];
+                Debug.Log($"RND B - {candidateValue}");
                 choices.Remove(candidateValue);
             }
                 
@@ -155,8 +158,10 @@ namespace GOA
                 int candidateId = -1;
                 if(allowedIds.Count > 0)
                     candidateId = allowedIds[Random.Range(0, allowedIds.Count)];
-                
-                if(candidateId >= 0)
+
+                Debug.Log($"RND C - {candidateId}");
+
+                if (candidateId >= 0)
                     Check(candidateId, currentIds);
 
             }

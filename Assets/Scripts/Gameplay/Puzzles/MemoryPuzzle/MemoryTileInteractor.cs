@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace GOA
 {
-    public class MemoryTileInteractor : MonoBehaviour, IInteractable
+    public class MemoryTileInteractor : Interactable
     {
         MemoryPuzzleController puzzleController;
         int frameId;
@@ -18,28 +18,18 @@ namespace GOA
         float moveTime = 0.25f;
         float moveDist = .05f;
 
-        private void Awake()
+        protected override void Awake()
         {
             zDefault = transform.localPosition.z;
         }
 
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-        public bool IsInteractionEnabled()
+    
+        public override bool IsInteractionEnabled()
         {
             return !selected && puzzleController.TileIsSelectable(frameId, tileId);
         }
 
-        public void StartInteraction(PlayerController playerController)
+        public override void StartInteraction(PlayerController playerController)
         {
      
             if (!IsInteractionEnabled())

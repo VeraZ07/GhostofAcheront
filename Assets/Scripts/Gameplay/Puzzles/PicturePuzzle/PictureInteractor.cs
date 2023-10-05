@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace GOA
 {
-    public class PictureInteractor : MonoBehaviour, IInteractable
+    public class PictureInteractor : Interactable
     {
         #region fields
         [SerializeField]
@@ -20,17 +20,7 @@ namespace GOA
         #endregion
 
         #region native methods
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
+      
         #endregion
 
         #region private methods
@@ -77,12 +67,12 @@ namespace GOA
 
         #region iinteractable implementation
 
-        public bool IsInteractionEnabled()
+        public override bool IsInteractionEnabled()
         {
             return !puzzleController.Solved && !puzzleController.Busy;
         }
 
-        public void StartInteraction(PlayerController playerController)
+        public override void StartInteraction(PlayerController playerController)
         {
             StartCoroutine(DoStartInteraction(playerController));
         }

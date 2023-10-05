@@ -127,15 +127,7 @@ namespace GOA
             switch (State)
             {
                 case (int)PlayerState.Alive:
-                    float speed = cc.Velocity.magnitude * (Vector3.Angle(cc.Velocity, transform.forward) < 93f ? 1f : -1f);
-                    float angle = Vector3.SignedAngle(cc.Velocity.normalized, Mathf.Sign(speed) * transform.forward, Vector3.up);
-
-                    animSpeed = Mathf.MoveTowards(animSpeed, speed, Time.deltaTime * 10f);
-                    animAngle = Mathf.MoveTowardsAngle(animAngle, angle, Time.deltaTime * 360f);
-                    //if ( Mathf.Abs(speed) < 0.1f)
-                    //    speed = Mathf.Abs(speed);
-                    animator.SetFloat(animParamSpeed, animSpeed / (defaultSpeed * runMultiplier));
-                    animator.SetFloat(animParamAngle, -animAngle / 180f);
+                    UpdateAnimations();
                     break;
             }
 
@@ -147,7 +139,7 @@ namespace GOA
 #endif
         }
 
-       
+        
         #endregion
 
 
@@ -207,7 +199,6 @@ namespace GOA
         {
             base.Despawned(runner, hasState);
 
-            Debug.LogFormat("Despawned player " + this.Object.InputAuthority);
 
             if (HasInputAuthority)
             {
@@ -248,7 +239,18 @@ namespace GOA
         #endregion
 
         #region private methods
+        void UpdateAnimations()
+        {
+            float speed = cc.Velocity.magnitude * (Vector3.Angle(cc.Velocity, transform.forward) < 93f ? 1f : -1f);
+            float angle = Vector3.SignedAngle(cc.Velocity.normalized, Mathf.Sign(speed) * transform.forward, Vector3.up);
 
+            animSpeed = Mathf.MoveTowards(animSpeed, speed, Time.deltaTime * 10f);
+            animAngle = Mathf.MoveTowardsAngle(animAngle, angle, Time.deltaTime * 360f);
+            //if ( Mathf.Abs(speed) < 0.1f)
+            //    speed = Mathf.Abs(speed);
+            animator.SetFloat(animParamSpeed, animSpeed / (defaultSpeed * runMultiplier));
+            animator.SetFloat(animParamAngle, -animAngle / 180f);
+        }
 
         void EnableRagdollColliders(bool value)
         {
@@ -266,8 +268,6 @@ namespace GOA
         /// <returns></returns>
         void CheckForInteraction(NetworkInputData data)
         {
-            
-
             // Check if we are closed to any interactable
             IInteractable interactable = null;
             if (Physics.OverlapSphere(cam.transform.position, InteractionMinimumDistance, LayerMask.GetMask(Layers.Interactable)) != null)
@@ -285,20 +285,22 @@ namespace GOA
 
             if (interactable != null && interactable.IsInteractionEnabled()/* && !interactable.IsBusy()*/)
             {
-                // Set the cursor 
-                if(HasInputAuthority)
+                
+                // Everyone can start check for interaction
+                if (HasInputAuthority)
+                {
+                    // Set the cursor 
                     CursorManager.Instance.StartGameCursorEffect();
 
-                // Only the server can start an interaction
-                if (Runner.IsServer)
-                {
                     
                     if (interactable != null)
                     {
+                        //Debug.Log("TESTINT - Name:" + (interactable as MonoBehaviour).
                         if (interactable.IsInteractionEnabled()/* && !interactable.IsBusy()*/)
                         {
                             if (data.leftAction)
                             {
+
                                 if (!leftInputDown)
                                 {
                                     leftInputDown = true;
@@ -309,15 +311,48 @@ namespace GOA
                                 if (leftInputDown)
                                 {
                                     leftInputDown = false;
-                                    lockedInteractable = interactable;
-                                    interactable.StartInteraction(this);
+                                    //lockedInteractable = interactable;
+                                    //interactable.StartInteraction(this);
+
+                                    RpcInteract(InteractableManager.Instance.GetInteractableId(interactable));
                                 }
                             }
-                            
-                            
+
+
                         }
-                    }   
+                    }
                 }
+       
+
+                // Only the server can start an interaction
+                //if (Runner.IsServer)
+                //{
+
+                //    if (interactable != null)
+                //    {
+                //        if (interactable.IsInteractionEnabled()/* && !interactable.IsBusy()*/)
+                //        {
+                //            if (data.leftAction)
+                //            {
+                //                if (!leftInputDown)
+                //                {
+                //                    leftInputDown = true;
+                //                }
+                //            }
+                //            else
+                //            {
+                //                if (leftInputDown)
+                //                {
+                //                    leftInputDown = false;
+                //                    lockedInteractable = interactable;
+                //                    interactable.StartInteraction(this);
+                //                }
+                //            }
+
+
+                //        }
+                //    }   
+                //}
             }
             else
             {
@@ -326,6 +361,14 @@ namespace GOA
                     CursorManager.Instance.StopGameCursorEffect();
             }
    
+        }
+
+        [Rpc(sources:RpcSources.All, targets:RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+        public void RpcInteract(int interactableId)
+        {
+            IInteractable interactable = InteractableManager.Instance.GetInteractable(interactableId);
+            lockedInteractable = interactable;
+            interactable.StartInteraction(this);
         }
 
         void UpdateCharacter(NetworkInputData data)
@@ -571,8 +614,8 @@ namespace GOA
             {
                 FindObjectOfType<GameManager>().PlayerHasDead(this);
                 // Spawn the player spirit
-                Runner.Spawn(spiritPrefab, transform.position, Quaternion.identity, Runner.LocalPlayer, 
-                    (r, o) => { o.GetComponent<PlayerSpirit>().Init(Runner.LocalPlayer.PlayerId); });
+                //Runner.Spawn(spiritPrefab, transform.position, Quaternion.identity, Runner.LocalPlayer, 
+                //    (r, o) => { o.GetComponent<PlayerSpirit>().Init(Runner.LocalPlayer.PlayerId); });
             }
                 
 
@@ -610,7 +653,6 @@ namespace GOA
 
         public static void OnStateChanged(Changed<PlayerController> changed)
         {
-            Debug.LogFormat("Setting new state: {0}", (PlayerState)changed.Behaviour.State);
            
             switch (changed.Behaviour.State)
             {
@@ -691,7 +733,6 @@ namespace GOA
 
         public void LookAtYouDying()
         {
-            Debug.Log("KILL - LookAtYouDying()");
             if (this.HasInputAuthority)
             {
                 StartCoroutine(DoLookAtYouDying());
@@ -713,7 +754,6 @@ namespace GOA
 
         public void SetSacrificedState()
         {
-            Debug.Log("Sacrificed:" + gameObject.name);
             State = (int)PlayerState.Sacrificed;
         }
 

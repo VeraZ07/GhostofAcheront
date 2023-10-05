@@ -1,4 +1,4 @@
-#define TEST_PUZZLE
+//#define TEST_PUZZLE
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -177,13 +177,16 @@ namespace GOA.Level
             //
             // Test puzzle
             //
+
+
+            //TestPuzzle("ColorHandlePuzzleAsset", 0);
             //TestPuzzle("PicturePuzzleAsset", 0);
-            TestPuzzle("PictureHandlePuzzleAsset", 0);
+            //TestPuzzle("PictureHandlePuzzleAsset", 0);
             //TestPuzzle("SkeletonPuzzleAsset", 0);
             //TestPuzzle("JigSawPuzzleAsset", 0);
             //TestPuzzle("MemoryPuzzleAsset", 0);
             //TestPuzzle("FifteenPuzzleAsset", 0);
-            //TestPuzzle("ArrowPuzzleAsset", 0);
+            TestPuzzle("ArrowPuzzleAsset", 0);
 #endif
 
             CreateUniqueObjects();
@@ -1309,8 +1312,8 @@ namespace GOA.Level
             int tileId = startConnection.TargetTileId;
 
 #if UNITY_EDITOR
-            monsterStartingTileId = tileId;
-            return;
+            //monsterStartingTileId = tileId;
+            //return;
 #endif
 
             // Get the initial sector
@@ -1550,6 +1553,8 @@ namespace GOA.Level
             Random.InitState(seed);
 
             Debug.LogFormat("Building level using seed: {0}", seed);
+
+            
 
             Create();
 

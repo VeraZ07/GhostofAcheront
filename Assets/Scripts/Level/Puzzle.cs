@@ -405,13 +405,18 @@ namespace GOA.Level
                     frameIds.Add(builder.CustomObjects.Count - 1);
                     co.AttachRandomly(sectorId, emptyTilesOnly: true);
 
-
+                    
                 }
-
+                
             }
 
             public override void CreateSceneObjects()
             {
+                for (int i = 0; i < 50; i++)
+                {
+                    Debug.Log($"RNDDDDDD:{Random.Range(0, 100)}");
+                }
+
                 foreach (int frameId in frameIds)
                 {
                     builder.CustomObjects[frameId].CreateSceneObject();
@@ -425,6 +430,7 @@ namespace GOA.Level
                     // Rearrange 
                     arrowsGroups.Add(new ArrowGroup(TileCount));
                     ArrowPuzzleHelper helper = new ArrowPuzzleHelper(TileCount);
+                    
                     int[] directions = helper.Shuffle();
 
                     for(int i=0; i<directions.Length; i++)

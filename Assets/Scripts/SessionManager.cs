@@ -568,6 +568,7 @@ namespace GOA
             {
                 // Build both on clients and server
                 FindObjectOfType<LevelBuilder>().Build(FindObjectOfType<GameManager>().GameSeed);
+                InteractableManager.Instance.Init();
 
                 if (runner.IsServer)
                 {

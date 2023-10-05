@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class JigSawTileInteractor : MonoBehaviour, IInteractable
+public class JigSawTileInteractor : Interactable
 {
     JigSawPuzzleController puzzleController;
     int frameId;
@@ -17,17 +17,8 @@ public class JigSawTileInteractor : MonoBehaviour, IInteractable
     float moveTime = 0.25f;
     float moveDist = .05f;
 
-    //public Vector3 PositionDefault
-    //{
-    //    get { return positionDefault; }
-    //}
 
-    //private void Awake()
-    //{
-    //    positionDefault = transform.position;
-    //}
-
-    public bool IsInteractionEnabled()
+    public override bool IsInteractionEnabled()
     {
         if (puzzleController.TileIsSelectable(frameId, tileId))
             return true;
@@ -35,24 +26,13 @@ public class JigSawTileInteractor : MonoBehaviour, IInteractable
             return false;
     }
 
-    public void StartInteraction(PlayerController playerController)
+    public override void StartInteraction(PlayerController playerController)
     {
         if (IsInteractionEnabled())
             puzzleController.SelectTile(frameId, tileId);
         
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void Select()
     {

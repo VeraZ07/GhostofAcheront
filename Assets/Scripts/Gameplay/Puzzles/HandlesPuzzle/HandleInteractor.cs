@@ -8,7 +8,7 @@ using static GOA.Level.LevelBuilder;
 
 namespace GOA
 {
-    public abstract class HandleInteractor : MonoBehaviour, IHandle, IInteractable
+    public abstract class HandleInteractor : Interactable, IHandle
     {
         #region fields
         
@@ -73,12 +73,12 @@ namespace GOA
 
         #region iinteractable implementation
 
-        public bool IsInteractionEnabled()
+        public override bool IsInteractionEnabled()
         {
             return !puzzleController.Solved && !handleManager.IsHandleBusy(handleId) && (handleManager.GetHandleState(handleId) != finalState || !stopOnFinalState);
         }
 
-        public void StartInteraction(PlayerController playerController)
+        public override void StartInteraction(PlayerController playerController)
         {
             int currentState = handleManager.GetHandleState(handleId);
             currentState++;

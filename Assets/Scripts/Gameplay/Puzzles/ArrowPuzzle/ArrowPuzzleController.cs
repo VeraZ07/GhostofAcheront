@@ -42,7 +42,6 @@ namespace GOA
             public Frame(List<ArrowTileInteractor> tiles)
             {
                 this.tiles = tiles;
-                Debug.Log("Tiles.Count:" + tiles.Count);
             }
 
             public void AddDirection(int direction)
@@ -127,21 +126,19 @@ namespace GOA
             NetworkFrames.Set(frameId, f);
         }
 
-        void ServerCheckForSetTileFree(int frameId, int tileId)
+        IEnumerator ServerCheckForSetTileFreeDelayed(int frameId, int tileId)
         {
-            if (!Runner.IsServer)
-                return;
+            yield return new WaitForSeconds(.5f);
 
-            int direction =  GetTileDirection(frameId, tileId);
-            Debug.Log("Direction:" + direction);
-            
+            int direction = GetTileDirection(frameId, tileId);
+
             int size = frames[frameId].Tiles.Count;
             int sizeSqrt = (int)Mathf.Sqrt(size);
             bool ret = true;
             switch (direction)
             {
                 case 0:
-                    for(int i=0; i<size; i++)
+                    for (int i = 0; i < size; i++)
                     {
                         if (tileId > i && tileId % sizeSqrt == i % sizeSqrt && !NetworkFrames[frameId].SolvedTiles.Contains(i))
                             ret = false;
@@ -162,7 +159,7 @@ namespace GOA
                     }
                     break;
                 case 3:
-                
+
                     for (int i = 0; i < size; i++)
                     {
                         if (tileId > i && tileId / sizeSqrt == i / sizeSqrt && !NetworkFrames[frameId].SolvedTiles.Contains(i))
@@ -173,12 +170,20 @@ namespace GOA
 
             NetworkFrameStruct f = NetworkFrames[frameId];
 
-            
+
             if (ret)
                 f.SolvedTiles.Add(tileId);
-            
+
             f.SelectedTile = -1;
             NetworkFrames.Set(frameId, f);
+        }
+
+        void ServerCheckForSetTileFree(int frameId, int tileId)
+        {
+            if (!Runner.IsServer)
+                return;
+
+            StartCoroutine(ServerCheckForSetTileFreeDelayed(frameId, tileId));
         }
 
         public int GetTileDirection(int frameId, int tileId)
@@ -202,8 +207,7 @@ namespace GOA
 
         public static void OnNetworkFramesChanged(Changed<ArrowPuzzleController> changed)
         {
-            Debug.Log("networkframes changed");
-
+            
             // Show and hide tiles
             int frameCount = changed.Behaviour.NetworkFrames.Count;
             for (int i = 0; i < frameCount; i++)
@@ -214,8 +218,8 @@ namespace GOA
                 var oldFrame = changed.Behaviour.NetworkFrames[i];
                 changed.LoadNew();
                 var newFrame = changed.Behaviour.NetworkFrames[i];
-
-                if(newFrame.SelectedTile < 0)
+                
+                if (newFrame.SelectedTile < 0)
                 {
                     if(oldFrame.SelectedTile >= 0)
                     {

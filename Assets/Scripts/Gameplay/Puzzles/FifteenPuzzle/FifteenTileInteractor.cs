@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace GOA
 {
-    public class FifteenTileInteractor : MonoBehaviour, IInteractable
+    public class FifteenTileInteractor : Interactable
     {
         //[SerializeField]
         //bool black;
@@ -24,25 +24,13 @@ namespace GOA
         float moveTime = 0.25f;
         float moveDist = .1f;
 
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-
-
-        public bool IsInteractionEnabled()
+      
+        public override bool IsInteractionEnabled()
         {
             return puzzleController.TileIsSelectable(frameId, tileId);
         }
 
-        public void StartInteraction(PlayerController playerController)
+        public override void StartInteraction(PlayerController playerController)
         {
             if (IsInteractionEnabled())
                 puzzleController.SelectTile(frameId, tileId);

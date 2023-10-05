@@ -13,6 +13,10 @@ namespace GOA
         Vector2 lookInput;
         bool run;
         bool leftAction;
+        //public bool LeftAction
+        //{
+        //    get { return leftAction; }
+        //}
         bool rightAction;
 
         PlayerController playerController;
@@ -53,10 +57,10 @@ namespace GOA
                     playerController.SetCameraPitch(lookInput.y);
                 
 
-            run = Input.GetAxisRaw("Fire3") == 1f;
+            run = Input.GetButton("Fire3");
 
-            leftAction = Input.GetMouseButton(0);
-            rightAction = Input.GetMouseButton(1);
+            leftAction = Input.GetButton("Fire1");
+            rightAction = Input.GetButton("Fire2");
         }
 
         private void OnEnable()
