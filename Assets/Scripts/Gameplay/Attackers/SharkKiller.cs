@@ -64,7 +64,8 @@ namespace GOA
             VictimId = victim.Object.InputAuthority.PlayerId;
             agent.velocity = Vector3.zero;
             agent.isStopped = true;
-            victim.SetDyingState();
+            //victim.SetDyingState(); // Send an rpc to tell the client to set the sying state
+            victim.RpcSetDyingState();
 
             animator.SetFloat(IKiller.ParamAttackId, attackId);
             animator.SetTrigger(IKiller.ParamAttackTrigger);

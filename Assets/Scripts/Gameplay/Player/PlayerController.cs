@@ -722,7 +722,8 @@ namespace GOA
         /// </summary>
         public void SetDyingState()
         {
-            if (Runner.IsServer)
+            //if (Runner.IsServer)
+            if (HasStateAuthority)
             {
                 State = (int)PlayerState.Dying;
             }
@@ -740,6 +741,12 @@ namespace GOA
 
 
             }
+        }
+
+        [Rpc(sources: RpcSources.All,targets:RpcTargets.StateAuthority, Channel = RpcChannel.Reliable, InvokeLocal = false )]
+        public void RpcSetDyingState(RpcInfo info = default)
+        {
+            SetDyingState();
         }
 
         public void ExplodeHead()
