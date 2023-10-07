@@ -81,7 +81,7 @@ namespace GOA
         IEnumerator SetSacrificedStateDelayed(PlayerController player, float delay)
         {
             yield return new WaitForSeconds(delay);
-            player.SetSacrificedState();
+            player.RpcSetSacrificedState();
         }
 
         IEnumerator SetEscapedStateDelayed(PlayerController player, float delay)
@@ -90,6 +90,10 @@ namespace GOA
             player.SetEscapedState();
         }
 
+        /// <summary>
+        /// Server only
+        /// </summary>
+        /// <returns></returns>
         IEnumerator CheckForDeadAndAlive()
         {
             yield return new WaitForSeconds(1f);
@@ -118,7 +122,8 @@ namespace GOA
                     if (p.HasInputAuthority)
                         StartCoroutine(SetSacrificedStateDelayed(p, 1.5f));
                     else
-                        p.SetSacrificedState();
+                        p.RpcSetSacrificedState();
+                        //p.SetSacrificedState();
                 }
             }
             else // Someone is still alive, check where they are: are they in the escape trigger?
@@ -220,7 +225,8 @@ namespace GOA
                 if (p.HasInputAuthority)
                     StartCoroutine(SetEscapedStateDelayed(p, 1.5f));
                 else
-                    p.SetEscapedState();
+                    p.RpcSetEscapedState();
+                    //p.SetEscapedState();
             }
 
             Debug.Log("DeadOrAlive:3");
@@ -232,7 +238,8 @@ namespace GOA
                 if (p.HasInputAuthority)
                     StartCoroutine(SetSacrificedStateDelayed(p, 1.5f));
                 else
-                    p.SetSacrificedState();
+                    p.RpcSetSacrificedState();
+                    //p.SetSacrificedState();
             }
 
         }

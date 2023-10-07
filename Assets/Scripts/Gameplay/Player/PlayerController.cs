@@ -563,6 +563,8 @@ namespace GOA
             
         }
 
+
+
         void LoopDeadState()
         {
             if (ghostTime > 0)
@@ -608,9 +610,19 @@ namespace GOA
         void SetDyingState()
         {
             if (HasStateAuthority)
-            {
                 State = (int)PlayerState.Dying;
-            }
+        }
+
+        void SetSacrificedState()
+        {
+            if(HasStateAuthority)
+                State = (int)PlayerState.Sacrificed;
+        }
+
+        public void SetEscapedState()
+        {
+            if(HasStateAuthority)
+                State = (int)PlayerState.Escaped;
         }
 
         void EnterDyingState()
@@ -775,15 +787,20 @@ namespace GOA
             }
         }
 
-        public void SetEscapedState()
+
+        [Rpc(sources: RpcSources.All, targets: RpcTargets.StateAuthority, Channel = RpcChannel.Reliable, InvokeLocal = true)]
+        public void RpcSetEscapedState()
         {
-            State = (int)PlayerState.Escaped;
+            SetEscapedState();
         }
 
-        public void SetSacrificedState()
+        [Rpc(sources:RpcSources.All, targets:RpcTargets.StateAuthority, Channel = RpcChannel.Reliable, InvokeLocal = true)]
+        public void RpcSetSacrificedState()
         {
-            State = (int)PlayerState.Sacrificed;
+            SetSacrificedState();
         }
+
+        
 
 #endregion
     }

@@ -1313,7 +1313,7 @@ namespace GOA.Level
             Connection startConnection = connections.Find(c => c.IsInitialConnection());
             int tileId = startConnection.TargetTileId;
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR 
             //monsterStartingTileId = tileId;
             //return;
 #endif
