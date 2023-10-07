@@ -569,7 +569,6 @@ MonoBehaviour:
   headBloodParticles: {fileID: 6500195222264135744}
   _PlayerId: 0
   _State: 1
-  test: {fileID: 6108365177509124702, guid: a76e3988c38e03d4ca417332b043accf, type: 3}
 --- !u!114 &-6228978730575802151
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -582,7 +581,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfa1efa2080db94458b5c87498d458a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interpolationDataSource: 2
+  _interpolationDataSource: 0
   InterpolationSpace: 0
   InterpolationTarget: {fileID: 5232603780945320150}
   InterpolateErrorCorrection: 1

@@ -782,6 +782,7 @@ MonoBehaviour:
   light: {fileID: 4483808968645272673}
   dustParticle: {fileID: 6445270502224490385}
   characterObject: {fileID: 2911037293451439525}
+  spiritPrefab: {fileID: 0}
   meshRenderers:
   - {fileID: 287653771247488936}
   - {fileID: 8592247464705170156}
@@ -802,7 +803,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfa1efa2080db94458b5c87498d458a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interpolationDataSource: 2
+  _interpolationDataSource: 0
   InterpolationSpace: 0
   InterpolationTarget: {fileID: 5232603780945320150}
   InterpolateErrorCorrection: 1

@@ -104,6 +104,12 @@ namespace GOA
             
         }
 
+        //private void Update()
+        //{
+        //    if (Input.GetKeyDown(KeyCode.P))
+        //        gameObject.SetActive(false);
+        //}
+
         #endregion
 
         #region fusion overrides

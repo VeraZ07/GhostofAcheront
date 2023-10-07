@@ -15,7 +15,10 @@ namespace GOA
         [SerializeField]
         float avoidingDistance = 5f;
 
-        [UnitySerializeField] [Networked] public int PlayerId { get; private set; }
+        [SerializeField]
+        float reviveDistance = 1f;
+
+        //[UnitySerializeField] [Networked] public int PlayerId { get; private set; }
 
         Vector3 spawnPosition;
 
@@ -26,6 +29,7 @@ namespace GOA
         NavMeshAgent agent;
         Vector3 currentDirection;
         Vector3 velocity = Vector3.zero;
+        bool reviving = false;
 
         private void Awake()
         {
@@ -42,25 +46,29 @@ namespace GOA
         // Update is called once per frame
         void Update()
         {
-            //GetComponentInChildren<SpriteRenderer>().transform.LookAt(Camera.main.transform);
+            if (!HasStateAuthority || reviving)
+                return;
+
             CheckTargetsToAvoid();
 
             if (avoidingTargets.Count > 0)
                 TryToAvoidTargets();
             else
                 MoveBackToTheDeadBody();
+
+            CheckReviving();
         }
 
         public override void Spawned()
         {
             base.Spawned();
 
-            spawnPosition = transform.position;
-
-            if (Runner.IsServer || Runner.IsSharedModeMasterClient)
+            //if (Runner.IsServer || Runner.IsSharedModeMasterClient)
+            if(HasStateAuthority)
             {
+                spawnPosition = transform.position;
                 agent.enabled = true;
-                players = new List<PlayerController>(FindObjectsOfType<PlayerController>()).FindAll(p => p.PlayerId != PlayerId);
+                players = new List<PlayerController>(FindObjectsOfType<PlayerController>()).FindAll(p => !p.HasStateAuthority);
             }
         }
 
@@ -68,9 +76,24 @@ namespace GOA
         /// Server only
         /// </summary>
         /// <param name="playerId"></param>
-        public void Init(int playerId)
+        //public void Init(int playerId)
+        //{
+        //    PlayerId = playerId;
+        //}
+
+        void CheckReviving()
         {
-            PlayerId = playerId;
+            foreach(PlayerController player in players)
+            {
+                if (player.State != (int)PlayerState.Alive || Vector3.Distance(player.transform.position, transform.position) > reviveDistance)
+                    continue;
+
+                reviving = true;
+
+                PlayerController local = new List<PlayerController>(FindObjectsOfType<PlayerController>()).Find(p => p.HasStateAuthority);
+                local.SetRisingAgainState();
+
+            }
         }
 
         void CheckTargetsToAvoid()
@@ -94,14 +117,14 @@ namespace GOA
 
             if(avoidingTargets.Count > 0)
             {
-                if (agent.enabled)
-                    agent.enabled = false;
+                //if (agent.enabled)
+                //    agent.enabled = false;
             }
             else
             {
-                if (!agent.enabled)
-                    agent.enabled = true;
-                velocity = Vector3.zero;
+                //if (!agent.enabled)
+                //    agent.enabled = true;
+                //velocity = Vector3.zero;
                 currentDirection = Vector3.zero;
             }
         }

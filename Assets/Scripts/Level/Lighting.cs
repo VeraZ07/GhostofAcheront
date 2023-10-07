@@ -13,7 +13,7 @@ namespace GOA.Level
 
         [SerializeField]
         VolumeProfile ghostProfile;
-        public VolumeProfile GhostProfile
+        public VolumeProfile GlobalVolumeGhostProfile
         {
             get { return ghostProfile; }
         }
@@ -41,6 +41,12 @@ namespace GOA.Level
 
         int lightDistanceTileRange = 3;
 
+        VolumeProfile defaultProfile;
+        public VolumeProfile GlobalVolumeDefaultProfile
+        {
+            get { return defaultProfile; }
+        }
+
         // Start is called before the first frame update
         //void Start()
         //{
@@ -58,6 +64,7 @@ namespace GOA.Level
             globalVolume = GameObject.Instantiate(globalVolumePrefab, lightingRoot);
             globalVolume.transform.localPosition = Vector3.zero;
             globalVolume.transform.localRotation = Quaternion.identity;
+            defaultProfile = globalVolume.GetComponent<UnityEngine.Rendering.Volume>().profile;
         }
 
         void CreateRootTransform()

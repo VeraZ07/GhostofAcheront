@@ -99,7 +99,7 @@ namespace GOA
         int deadType = 0;
         Transform characterRoot;
         float ghostTime = 0f;
-
+        NetworkObject spirit; // Only local player sets this field
       
         #endregion
 
@@ -479,7 +479,7 @@ namespace GOA
 
             // Switch the post processing 
             UnityEngine.Rendering.Volume volume = FindObjectOfType<UnityEngine.Rendering.Volume>();
-            volume.profile = FindObjectOfType<LevelBuilder>().GhostProfile;
+            volume.profile = FindObjectOfType<LevelBuilder>().GlobalVolumeGhostProfile;
 
             // Check a safe position for the player to move
             transform.position += Vector3.up * 3f + Vector3.right * 3f - Vector3.forward * 3f;
@@ -526,7 +526,7 @@ namespace GOA
             Camera.main.transform.LookAt(HeadPivot.transform);
             // Switch the post processing 
             UnityEngine.Rendering.Volume volume = FindObjectOfType<UnityEngine.Rendering.Volume>();
-            volume.profile = FindObjectOfType<LevelBuilder>().GhostProfile;
+            volume.profile = FindObjectOfType<LevelBuilder>().GlobalVolumeGhostProfile;
             SetRenderingLayer(LayerMask.NameToLayer(Layers.Default));
             yield return EyesEffect.Instance.OpenEyes();
         }
@@ -661,39 +661,52 @@ namespace GOA
                 //Runner.Spawn(spiritPrefab, transform.position, Quaternion.identity, Runner.LocalPlayer, 
                 //    (r, o) => { o.GetComponent<PlayerSpirit>().Init(Runner.LocalPlayer.PlayerId); });
             }
-                
 
-//            if (Runner.IsServer && !Runner.IsSinglePlayer)
-//            {
-//                Inventory inv = new List<Inventory>(FindObjectsOfType<Inventory>()).Find(i => i.Object.InputAuthority == this.Object.InputAuthority);
-//                inv.RespawnAllItems();
-//#if USE_HOST_MIGRATION
-//                SessionManager.Instance.PushSnapshot();
-//#endif
-//            }
+            if (HasStateAuthority)
+            {
+                // Spawn the player spirit
+                spirit = Runner.Spawn(spiritPrefab, transform.position, Quaternion.identity);
+            }
 
-            
+         
+
 
         }
 
         void EnterRisingAgainState()
         {
+            StartCoroutine(DoRiseAgain());
+
+            
+        }
+
+        IEnumerator DoRiseAgain()
+        {
+            if (HasStateAuthority)
+            {
+                Runner.Despawn(spirit);
+                cam.transform.localPosition = cameraLocalPositionDefault;
+                cam.transform.localRotation = cameraLocalRotationDefault;
+                UnityEngine.Rendering.Volume volume = FindObjectOfType<UnityEngine.Rendering.Volume>();
+                volume.profile = FindObjectOfType<LevelBuilder>().GlobalVolumeDefaultProfile;
+                SetRenderingLayer(LayerMask.NameToLayer(Layers.LocalCharacter));
+                
+            }
+
+            // On both client and server
             EnableRagdollColliders(false);
-            // Both on client and server
             characterObject.transform.parent = characterRoot;
             characterObject.transform.localPosition = Vector3.zero;
             characterObject.transform.localRotation = Quaternion.identity;
             animator.enabled = true;
             pitch = 0f;
-            cam.transform.localPosition = cameraLocalPositionDefault;
-            cam.transform.localRotation = cameraLocalRotationDefault;
             ResetAnimator();
             headMesh.SetActive(true);
-            SetRenderingLayer(LayerMask.NameToLayer(Layers.LocalCharacter));
-            State = (int)PlayerState.Alive;
-        }
 
-        
+            yield return new WaitForSeconds(1f);
+            if(HasStateAuthority)
+                State = (int)PlayerState.Alive;
+        }
 
         public static void OnStateChanged(Changed<PlayerController> changed)
         {
@@ -779,9 +792,9 @@ namespace GOA
             }
         }
 
-        public void RiseAgain()
+        public void SetRisingAgainState()
         {
-            if (Runner.IsServer)
+            if (HasStateAuthority)
             {
                 State = (int)PlayerState.RisingAgain;
             }
