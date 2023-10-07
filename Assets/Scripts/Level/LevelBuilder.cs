@@ -168,7 +168,7 @@ namespace GOA.Level
 
             CheckForUnreachableTiles();
 
-#if !TEST_PUZZLE// || !UNITY_EDITOR
+#if !TEST_PUZZLE || !UNITY_EDITOR
             //
             // Create puzzles
             //
@@ -183,10 +183,10 @@ namespace GOA.Level
             //TestPuzzle("PicturePuzzleAsset", 0);
             //TestPuzzle("PictureHandlePuzzleAsset", 0);
             //TestPuzzle("SkeletonPuzzleAsset", 0);
-            //TestPuzzle("JigSawPuzzleAsset", 0);
+            TestPuzzle("JigSawPuzzleAsset", 0);
             //TestPuzzle("MemoryPuzzleAsset", 0);
             //TestPuzzle("FifteenPuzzleAsset", 0);
-            TestPuzzle("ArrowPuzzleAsset", 0);
+            //TestPuzzle("ArrowPuzzleAsset", 0);
 #endif
 
             CreateUniqueObjects();
@@ -1551,7 +1551,9 @@ namespace GOA.Level
         {
 #if UNITY_EDITOR
             //seed = 1481849213;
+            //seed = -440185720;
 #endif
+
             Random.InitState(seed);
 
             Debug.LogFormat("Building level using seed: {0}", seed);

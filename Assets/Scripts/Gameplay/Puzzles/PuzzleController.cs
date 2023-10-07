@@ -34,7 +34,7 @@ namespace GOA
 
         public static void OnSolvedChanged(Changed<PuzzleController> changed)
         {
-            Debug.LogFormat("OnSolvedChanged:{0}", changed.Behaviour.Solved);
+           
             OnSolvedChangedCallback?.Invoke(changed.Behaviour);
 
             // Try to save the current snapshot

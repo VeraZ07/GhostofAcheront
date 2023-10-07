@@ -561,8 +561,6 @@ namespace GOA
         {
             yield return new WaitForEndOfFrame();
 
-            Debug.LogFormat("Check for dead or alive after despawning player");
-
             if (SessionManager.Instance.Runner.IsServer || SessionManager.Instance.Runner.IsSharedModeMasterClient)
                 FindObjectOfType<GameManager>().CheckForEscaped();
         }

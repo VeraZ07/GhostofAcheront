@@ -10,12 +10,16 @@ namespace GOA.Audio
         AudioSource solvedAudioSource;
 
         
-        void Awake()
+        void OnEnable()
         {
             PuzzleController.OnSolvedChangedCallback += PlaySolvedAudioSource;
         }
 
-   
+        void OnDisable()
+        {
+            PuzzleController.OnSolvedChangedCallback -= PlaySolvedAudioSource;
+        }
+
 
         void PlaySolvedAudioSource(PuzzleController puzzleController)
         {

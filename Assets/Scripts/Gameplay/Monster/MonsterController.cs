@@ -104,13 +104,15 @@ namespace GOA
             
         }
 
-        //private void Update()
-        //{
-        //    if (Input.GetKeyDown(KeyCode.P))
-        //        gameObject.SetActive(false);
-        //}
-
-        #endregion
+#if UNITY_EDITOR
+        bool _testNoMonster = false;
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.P))
+                _testNoMonster = true;
+        }
+#endif
+#endregion
 
         #region fusion overrides
 
@@ -136,6 +138,11 @@ namespace GOA
         public override void FixedUpdateNetwork()
         {
             base.FixedUpdateNetwork();
+
+#if UNITY_EDITOR
+            if (_testNoMonster)
+                return;
+#endif
 
             if ((Runner.IsServer || Runner.IsSharedModeMasterClient) && !patching)
             {
@@ -251,9 +258,6 @@ namespace GOA
         {
             //agent.enabled = true;
             agent.speed = walkSpeed;
-
-            Debug.Log("MONSTER - agent.hasPath:" + agent.hasPath);
-            Debug.Log("MONSTER - agent.pathPending:" + agent.pathPending);
 
             if (!agent.hasPath && !agent.pathPending)
                 agent.SetDestination(GetDestination());
@@ -400,7 +404,7 @@ namespace GOA
         {
            
 
-            //Debug.Log("MONSTER - Checking for player...");
+       
 #if UNITY_EDITOR
             //return true;
 #endif

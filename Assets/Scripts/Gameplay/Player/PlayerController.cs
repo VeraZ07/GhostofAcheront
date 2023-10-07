@@ -292,13 +292,12 @@ namespace GOA
             IInteractable interactable = null;
             if (Physics.OverlapSphere(cam.transform.position, InteractionMinimumDistance, LayerMask.GetMask(Layers.Interactable)) != null)
             {
-                //Debug.LogFormat("Closed to some interactable");
-
+             
                 // Check if we are looking at any interactor
                 RaycastHit info;
                 if (Physics.Raycast(cam.transform.position, cam.transform.forward, out info, InteractionMinimumDistance))
                 {
-                    //Debug.LogFormat("Looking at {0}", info.collider.gameObject);
+                  
                     interactable = info.collider.GetComponent<IInteractable>();
                 }
             }
@@ -315,7 +314,6 @@ namespace GOA
                     
                     if (interactable != null)
                     {
-                        //Debug.Log("TESTINT - Name:" + (interactable as MonoBehaviour).
                         if (interactable.IsInteractionEnabled()/* && !interactable.IsBusy()*/)
                         {
                             if (data.leftAction)
@@ -383,9 +381,11 @@ namespace GOA
    
         }
 
-        [Rpc(sources:RpcSources.All, targets:RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+        [Rpc(sources:RpcSources.StateAuthority, targets:RpcTargets.All, Channel = RpcChannel.Reliable)]
         public void RpcInteract(int interactableId)
         {
+            if (!Runner.IsServer && !Runner.IsSharedModeMasterClient)
+                return;
             IInteractable interactable = InteractableManager.Instance.GetInteractable(interactableId);
             lockedInteractable = interactable;
             interactable.StartInteraction(this);
@@ -490,7 +490,7 @@ namespace GOA
 
         IEnumerator DoLookAtYouDying()
         {
-            Debug.Log("Looking at you dying...");
+          
             MonsterController monster = FindObjectOfType<MonsterController>();
             yield return EyesEffect.Instance.CloseEyes();
 

@@ -104,7 +104,7 @@ namespace GOA
         {
             if (Runner.IsServer || Runner.IsSharedModeMasterClient)
             {
-                Debug.Log("DEAD SET");
+            
                 agent.isStopped = false;
                 monster.SetIdleState();
             }

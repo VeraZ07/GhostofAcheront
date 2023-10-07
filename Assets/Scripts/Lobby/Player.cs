@@ -100,7 +100,7 @@ namespace GOA
         [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
         public void RpcSetCharacterId(byte characterId)
         {
-            Debug.Log("CallRpc character id:" + characterId);
+            
             CharacterId = characterId;
         }
               

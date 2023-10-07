@@ -9,7 +9,10 @@ namespace GOA.Audio
     {
 
         [SerializeField]
-        AudioSource mainSource;
+        AudioSource breathSource;
+
+        [SerializeField]
+        AudioSource chaseSource;
 
         [SerializeField]
         List<AudioClip> breathClips;
@@ -22,11 +25,11 @@ namespace GOA.Audio
         MonsterController monsterController;
 
         float time = 0;
-        float minBreathTime = 4f;
-        float maxBreathTime = 5f;
+        float minBreathTime = 1f;
+        float maxBreathTime = 2f;
 
-        float minGrowlTime = 3f;
-        float maxGrowlTime = 4f;
+        float minGrowlTime = 1f;
+        float maxGrowlTime = 2f;
 
         private void Awake()
         {
@@ -121,21 +124,23 @@ namespace GOA.Audio
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
         void RpcBreath()
         {
-          
+            if (breathSource.isPlaying)
+                return;
             // Breath
             AudioClip clip = breathClips[Random.Range(0, breathClips.Count)];
-            mainSource.clip = clip;
-            mainSource.Play();
+            breathSource.clip = clip;
+            breathSource.Play();
         }
 
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
         void RpcGrowl()
         {
-           
+            if (chaseSource.isPlaying)
+                return;
             // Breath
             AudioClip clip = growlClips[Random.Range(0, growlClips.Count)];
-            mainSource.clip = clip;
-            mainSource.Play();
+            chaseSource.clip = clip;
+            chaseSource.Play();
         }
     }
 

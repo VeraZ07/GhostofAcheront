@@ -277,7 +277,7 @@ namespace GOA.Level
                     {
                         int c = j - (count - 1) / 2;
                         availableTilesForLights.Remove(id + r + c);
-                        //Debug.Log("Removing id:" + (id + r + c));
+                     
                     }
                 }
                      

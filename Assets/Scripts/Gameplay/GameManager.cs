@@ -98,10 +98,10 @@ namespace GOA
         {
             yield return new WaitForSeconds(1f);
 
-            Debug.Log("GameManager - PlayerDead() - multiplayer");
+         
             // We first check if all the players are dead
             List<PlayerController> all = new List<PlayerController>(FindObjectsOfType<PlayerController>());
-            Debug.Log("GameManager - PlayerDead() - number of players:" + all.Count);
+          
             bool allDead = true;
             foreach (PlayerController p in all)
             {
@@ -112,13 +112,13 @@ namespace GOA
                 }
             }
 
-            Debug.Log("GameManager - PlayerDead() - allDead:" + allDead);
+         
 
             if (allDead) // No one is alive
             {
                 foreach (PlayerController p in all)
                 {
-                    Debug.Log("GameManager - PlayerDead() - player:" + p.name);
+                  
                     if (p.HasInputAuthority)
                         StartCoroutine(SetSacrificedStateDelayed(p, 1.5f));
                     else
@@ -184,8 +184,7 @@ namespace GOA
   
         public void PlayerHasDead(PlayerController player)
         {
-            Debug.Log("GameManager - PlayerDead()");
-
+        
             if (SessionManager.Instance.Runner.IsSinglePlayer)
             {
 #if UNITY_EDITOR
@@ -205,14 +204,14 @@ namespace GOA
 
         public void CheckForEscaped()
         {
-            Debug.Log("DeadOrAlive:1");
+     
 
             // Check if there is at least a player alive outside this trigger
             PlayerController outside = new List<PlayerController>(FindObjectsOfType<PlayerController>()).Find(p => !EscapeTrigger.Instance.IsPlayerInside(p) && p.State == (int)PlayerState.Alive);
             if (outside) // Yes there is, do nothing
                 return;
 
-            Debug.Log("DeadOrAlive:2");
+           
 
             // There is no one still alive outside the trigger ( maybe they are all dead ). All the players inside the trigger
             // are finally free to escape.
@@ -229,10 +228,10 @@ namespace GOA
                     //p.SetEscapedState();
             }
 
-            Debug.Log("DeadOrAlive:3");
+       
             // Sacrifice all the players already in the dead state: dying players will be sacrificed when moving to the dead state too. 
             List<PlayerController> deadAll = new List<PlayerController>(FindObjectsOfType<PlayerController>()).FindAll(p => p.State == (int)PlayerState.Dead);
-            Debug.Log("DeadAll.Count:" + deadAll.Count);
+         
             foreach (PlayerController p in deadAll)
             {
                 if (p.HasInputAuthority)

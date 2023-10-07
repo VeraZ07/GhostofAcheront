@@ -43,7 +43,7 @@ namespace GOA.UI
             if (!SessionManager.Instance || !SessionManager.Instance.Runner)
                 return;
 
-            if (!clientOnly || SessionManager.Instance.Runner.IsClient)
+            if (!clientOnly || (SessionManager.Instance.Runner.IsClient && !SessionManager.Instance.Runner.IsSharedModeMasterClient))
             {
                 GetComponent<Image>().raycastTarget = true;
             }

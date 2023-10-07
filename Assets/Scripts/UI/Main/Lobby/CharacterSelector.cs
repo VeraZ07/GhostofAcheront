@@ -56,8 +56,6 @@ namespace GOA.UI
         {
             selectedId--;
             CheckButtonsInteraction();
-            Debug.Log("LocalPlayer:" + Player.Local);
-            Debug.Log("LocalPlayer.HasInputAuthority:" + Player.Local.HasInputAuthority);
             Player.Local.RpcSetCharacterId((byte)selectedId);
         }
 
@@ -65,8 +63,6 @@ namespace GOA.UI
         {
             selectedId++;
             CheckButtonsInteraction();
-            Debug.Log("LocalPlayer:" + Player.Local);
-            Debug.Log("LocalPlayer.HasInputAuthority:" + Player.Local.HasInputAuthority);
             Player.Local.RpcSetCharacterId((byte)selectedId);
         }
 

@@ -38,7 +38,7 @@ namespace GOA
             public Frame(List<MemoryTileInteractor> tiles)
             {
                 this.tiles = tiles;
-                Debug.Log("Tiles.Count:" + tiles.Count);
+            
             }
 
         }
@@ -123,7 +123,7 @@ namespace GOA
 
             var newFrame = NetworkFrames[frameId];
             newFrame.SelectedTiles.Clear();
-            Debug.LogFormat("Check for tiles as pair - {0}, {1}", tile1Id, tile2Id);
+        
             if (TilesCanPairEachOther(frameId, tile1Id, tile2Id))
             {
                 newFrame.SolvedTiles.Add(tile1Id);
@@ -209,7 +209,7 @@ namespace GOA
 
         public static void OnNetworkFramesChanged(Changed<MemoryPuzzleController> changed)
         {
-            Debug.Log("networkframes changed");
+     
 
             // Show and hide tiles
             int frameCount = changed.Behaviour.NetworkFrames.Count;

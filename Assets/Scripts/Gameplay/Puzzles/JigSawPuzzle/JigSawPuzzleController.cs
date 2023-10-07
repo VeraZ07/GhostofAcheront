@@ -139,7 +139,7 @@ namespace GOA
 
         void CheckTilesOrder()
         {
-            Debug.Log("Checking tiles");
+          
             //foreach(NetworkFrameStruct netFrame in NetworkFrames)
             for (int i = 0; i < NetworkFrames.Count; i++)
             {
@@ -152,7 +152,7 @@ namespace GOA
                 if (!IsFrameSolved(i))
                     return;
             }
-            Debug.Log("Checking tiles: solved");
+         
             Solved = true;
         }
 
@@ -204,7 +204,7 @@ namespace GOA
 
         public static void OnNetworkFramesChanged(Changed<JigSawPuzzleController> changed)
         {
-            Debug.Log("networkframes changed");
+            
 
             int frameCount = changed.Behaviour.NetworkFrames.Count;
             for (int i = 0; i < frameCount; i++)
