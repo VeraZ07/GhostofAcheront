@@ -135,13 +135,6 @@ ModelImporter:
         floatParameter: 0
         intParameter: 1
         messageOptions: 0
-      - time: 0.73547095
-        functionName: OnBite
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 2
-        messageOptions: 0
       - time: 0.93765587
         functionName: OnBite
         data: 

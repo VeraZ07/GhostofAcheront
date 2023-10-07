@@ -66,61 +66,61 @@ namespace GOA
             agent.isStopped = true;
             //victim.SetDyingState(); // Send an rpc to tell the client to set the sying state
             victim.RpcSetDyingState();
+            RpcStartKilling();
 
             animator.SetFloat(IKiller.ParamAttackId, attackId);
             animator.SetTrigger(IKiller.ParamAttackTrigger);
 
-            //StartCoroutine(SetVictimDeadForSure(5f));
-
-            //StartCoroutine(Bite(victim));
         }
         #endregion
 
-
-        #region animation events
-      
-
-        public void OnBite(int id)
+        #region private
+        [Rpc(sources:RpcSources.StateAuthority, targets:RpcTargets.All, Channel = RpcChannel.Reliable, InvokeLocal = true)]
+        void RpcStartKilling()
         {
-            Debug.Log("Bite:" + id);
-            switch (id)
-            {
-                case 0: // Adjust monster position
-                    transform.DORotateQuaternion(Quaternion.LookRotation((victim.transform.position - transform.position).normalized, Vector3.up), 0.2f); 
-
-                    break;
-
-                case 4: // Blind the player and move the camera outside
-                    victim.LookAtYouDying();
-                    break;
-
-                case 1: // Bite the player
-                    DoBite();
-                    break;
-                case 2:
-                    // Release the player
-                    
-                    //bitePivots[1].GetComponent<FixedJoint>().connectedBody = null;
-                    break;
-                case 3: // Exit
-
-                    if (Runner.IsServer || Runner.IsSharedModeMasterClient)
-                    {
-                        Debug.Log("DEAD SET");
-                        victim.SetDeadState();
-                        agent.isStopped = false;
-                        monster.SetIdleState();
-                    }
-                    break;
-            }
-
-            
+            StartCoroutine(DoKilling());
         }
 
-        void DoBite()
+        IEnumerator DoKilling()
         {
-            //victim.transform.position += Vector3.up;
-            //victim.EnableRagdollColliders(true);
+            float length = 2.5f;
+            yield return new WaitForSeconds(length * .34f);
+            AdjustMonsterPosition();
+            yield return new WaitForSeconds(length * (.41f - .34f));
+            victim.LookAtYouDying();
+            yield return new WaitForSeconds(length * (.51f - .41f));
+            Bite();
+            yield return new WaitForSeconds(length * (0.94f - .51f));
+            FinalizeDeath();
+        }
+        #endregion
+
+        #region animation events
+
+
+       
+
+        void FinalizeDeath()
+        {
+            if (Runner.IsServer || Runner.IsSharedModeMasterClient)
+            {
+                Debug.Log("DEAD SET");
+                agent.isStopped = false;
+                monster.SetIdleState();
+            }
+
+            if (victim.HasStateAuthority)
+                victim.SetDeadState();
+        }
+
+        void AdjustMonsterPosition()
+        {
+            transform.DORotateQuaternion(Quaternion.LookRotation((victim.transform.position - transform.position).normalized, Vector3.up), 0.2f);
+        }
+
+        void Bite()
+        {
+           
             victim.CharacterObject.transform.position += Vector3.up * .1f;
             victim.GetComponent<Animator>().enabled = false;
             
@@ -129,7 +129,6 @@ namespace GOA
             //foreach (Rigidbody bone in bones)
             //    bone.AddForce(victim.transform.up * 10f, ForceMode.VelocityChange);
 
-            
             victim.ExplodeHead();
             
         }

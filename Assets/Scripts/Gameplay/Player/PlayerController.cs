@@ -490,7 +490,7 @@ namespace GOA
 
         IEnumerator DoLookAtYouDying()
         {
-           
+            Debug.Log("Looking at you dying...");
             MonsterController monster = FindObjectOfType<MonsterController>();
             yield return EyesEffect.Instance.CloseEyes();
 
@@ -605,13 +605,25 @@ namespace GOA
 
         }
 
+        void SetDyingState()
+        {
+            if (HasStateAuthority)
+            {
+                State = (int)PlayerState.Dying;
+            }
+        }
+
         void EnterDyingState()
         {
             cc.enabled = false;
             cc.Velocity = Vector3.zero;
             ResetAnimator();
             EnableRagdollColliders(true);
+
+            
         }
+
+       
 
         void EnterDeadState()
         {
@@ -630,7 +642,7 @@ namespace GOA
 
             ghostTime = 2f;
 
-            if (Runner.IsServer)
+            if (Runner.IsServer || Runner.IsSharedModeMasterClient)
             {
                 FindObjectOfType<GameManager>().PlayerHasDead(this);
                 // Spawn the player spirit
@@ -717,33 +729,22 @@ namespace GOA
             PlayerId = playerId;
         }
 
-        /// <summary>
-        /// This method is called by the monster server side
-        /// </summary>
-        public void SetDyingState()
-        {
-            //if (Runner.IsServer)
-            if (HasStateAuthority)
-            {
-                State = (int)PlayerState.Dying;
-            }
-        }
 
-        /// <summary>
-        /// This method is called by the monster server side
-        /// </summary>
+        //[Rpc(sources: RpcSources.All, targets: RpcTargets.StateAuthority, Channel = RpcChannel.Reliable, InvokeLocal = false)]
+        //public void RpcSetDeadState(RpcInfo info = default)
+        //{
+        //    SetDeadState();
+        //}
         public void SetDeadState()
         {
-            if (Runner.IsServer)
+            if (HasStateAuthority)
             {
                 State = (int)PlayerState.Dead;
-                //this.deadType = deadType;
-
 
             }
         }
 
-        [Rpc(sources: RpcSources.All,targets:RpcTargets.StateAuthority, Channel = RpcChannel.Reliable, InvokeLocal = false )]
+        [Rpc(sources: RpcSources.All,targets:RpcTargets.StateAuthority, Channel = RpcChannel.Reliable, InvokeLocal = true )]
         public void RpcSetDyingState(RpcInfo info = default)
         {
             SetDyingState();
