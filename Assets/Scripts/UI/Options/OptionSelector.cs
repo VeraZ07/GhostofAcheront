@@ -81,7 +81,7 @@ namespace GOA.UI
             buttonNext.interactable = false;
             buttonPrev.interactable = false;
 
-            if (serverOnlyInput && SessionManager.Instance.Runner.IsClient)
+            if (serverOnlyInput && SessionManager.Instance.Runner.IsClient && !SessionManager.Instance.Runner.IsSharedModeMasterClient)
                 return;
 
             if (currentOptionId > 0)

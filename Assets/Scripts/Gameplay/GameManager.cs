@@ -135,7 +135,8 @@ namespace GOA
         public override void Spawned()
         {
             base.Spawned();
-            LevelSize = 0;
+
+            //LevelSize = 0;
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)

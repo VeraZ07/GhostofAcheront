@@ -141,7 +141,7 @@ namespace GOA
         #region fusion callbacks
         public static void OnVictimIdChanged(Changed<SharkKiller> changed)
         {
-            if (changed.Behaviour.Runner.IsClient)
+            if (changed.Behaviour.Runner.IsClient && !changed.Behaviour.Runner.IsSharedModeMasterClient)
             {
                 // Find player controller by player id
                 changed.Behaviour.victim = new List<PlayerController>(FindObjectsOfType<PlayerController>()).Find(p => p.Object.InputAuthority.PlayerId == changed.Behaviour.VictimId);

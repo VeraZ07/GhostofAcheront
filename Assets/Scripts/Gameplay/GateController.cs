@@ -50,6 +50,16 @@ namespace GOA
 
         }
 
+        private void OnEnable()
+        {
+            PuzzleController.OnSolvedChangedCallback += HandleOnPuzzleSolved;
+        }
+
+        private void OnDisable()
+        {
+            PuzzleController.OnSolvedChangedCallback -= HandleOnPuzzleSolved;
+        }
+
         void HandleOnPuzzleSolved(PuzzleController puzzleController)
         {
             if (this.puzzleController != puzzleController)
@@ -114,8 +124,7 @@ namespace GOA
         public void Init(PuzzleController puzzleController)
         {
             this.puzzleController = puzzleController;
-            PuzzleController.OnSolvedChangedCallback += HandleOnPuzzleSolved;
-
+           
             // Check if the puzzle has been solved ( it may happen on host migration ??? )
             if (puzzleController.Solved)
                 DisableCollisionAndDestroy();
