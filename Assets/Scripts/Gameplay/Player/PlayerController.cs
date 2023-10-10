@@ -657,16 +657,15 @@ namespace GOA
             if (Runner.IsServer || Runner.IsSharedModeMasterClient)
             {
                 FindObjectOfType<GameManager>().PlayerHasDead(this);
-                // Spawn the player spirit
-                //Runner.Spawn(spiritPrefab, transform.position, Quaternion.identity, Runner.LocalPlayer, 
-                //    (r, o) => { o.GetComponent<PlayerSpirit>().Init(Runner.LocalPlayer.PlayerId); });
             }
 
-            if (HasStateAuthority)
-            {
-                // Spawn the player spirit
-                spirit = Runner.Spawn(spiritPrefab, transform.position, Quaternion.identity);
-            }
+            // UNCOMMENT WHEN READY
+            //if (HasStateAuthority)
+            //{
+            //    Debug.Log("Create spirit:" + gameObject.name);
+            //    // Spawn the player spirit
+            //    spirit = Runner.Spawn(spiritPrefab, transform.position, Quaternion.identity);
+            //}
 
          
 
