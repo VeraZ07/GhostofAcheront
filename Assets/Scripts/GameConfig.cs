@@ -7,6 +7,8 @@ namespace GOA
     public class GameConfig
     {
         public const float InteractionCooldown = .5f;
+        public const float MainSceneId = 0;
+        public const float GameSceneId = 1;
     }
 
 

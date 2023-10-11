@@ -1,4 +1,5 @@
 using Fusion;
+using GOA.Settings;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,6 +22,7 @@ namespace GOA
 
         PlayerController playerController;
         float mouseSens;
+        float mouseVertical;
         
         private void Awake()
         {
@@ -50,7 +52,8 @@ namespace GOA
             moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
             moveInput.Normalize();
                 
-            lookInput = new Vector2(Input.GetAxis("Mouse X") * mouseSens, Input.GetAxis("Mouse Y") * mouseSens);
+            lookInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y") * mouseVertical) * mouseSens;
+            
 
             if (!playerController.InputDisabled)
                 if(playerController.State == (int)PlayerState.Alive || playerController.State == (int)PlayerState.Dead)
@@ -65,13 +68,13 @@ namespace GOA
 
         private void OnEnable()
         {
-            OptionManager.Instance.OnApply += HandleOnOptionApply;
+            OptionManager.OnApply += HandleOnOptionApply;
             HandleOnOptionApply();
         }
 
         private void OnDisable()
         {
-            OptionManager.Instance.OnApply -= HandleOnOptionApply;
+            OptionManager.OnApply -= HandleOnOptionApply;
         }
 
         private void OnDestroy()
@@ -82,7 +85,8 @@ namespace GOA
 
         void HandleOnOptionApply()
         {
-            mouseSens = OptionManager.Instance.MouseSensitivity;
+            mouseSens = OptionCollection.MouseSensitivityOptionList[OptionManager.Instance.MouseSensitivityCurrentId].Value;
+            mouseVertical = OptionCollection.InvertedMouseOptionList[OptionManager.Instance.VerticalMouseCurrentId].Value;
         }
 
         public NetworkInputData GetInput()

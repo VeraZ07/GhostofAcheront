@@ -280,7 +280,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   active: 1
   quality:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 1
   enabled:
     m_OverrideState: 1
@@ -337,7 +337,7 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: 0.75
   m_FogControlMode:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0
   screenResolutionPercentage:
     m_OverrideState: 0
@@ -346,10 +346,10 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: 64
   m_VolumetricFogBudget:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0.5
   m_ResolutionDepthRatio:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0.5
   directionalLightsOnly:
     m_OverrideState: 0
@@ -569,7 +569,7 @@ MonoBehaviour:
     m_Value: 0
   limitMin:
     m_OverrideState: 1
-    m_Value: -1.1320002
+    m_Value: -0.83408546
   limitMax:
     m_OverrideState: 0
     m_Value: 14
@@ -705,7 +705,7 @@ MonoBehaviour:
   active: 1
   quality:
     m_OverrideState: 1
-    m_Value: 2
+    m_Value: 1
   focusMode:
     m_OverrideState: 1
     m_Value: 1
@@ -729,19 +729,19 @@ MonoBehaviour:
     m_Value: 50
   m_NearSampleCount:
     m_OverrideState: 1
-    m_Value: 8
+    m_Value: 5
   m_NearMaxBlur:
     m_OverrideState: 1
-    m_Value: 7
+    m_Value: 4
   m_FarSampleCount:
     m_OverrideState: 1
-    m_Value: 14
+    m_Value: 7
   m_FarMaxBlur:
     m_OverrideState: 1
-    m_Value: 13
+    m_Value: 8
   m_Resolution:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 2
   m_HighQualityFiltering:
     m_OverrideState: 1
     m_Value: 1

@@ -1,6 +1,8 @@
+using GOA.Settings;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace GOA.UI
@@ -18,16 +20,15 @@ namespace GOA.UI
             buttonApply.onClick.AddListener(HandleOnApply);
             buttonBack.onClick.AddListener(HandleOnBack);
             buttonApply.interactable = false;
-            if(OptionManager.Instance)
-                OptionManager.Instance.OnSelectedChanged += HandleOnOptionsChanged;
+            
+            OptionManager.OnSelectedChanged += HandleOnOptionsChanged;
         }
 
         private void OnDisable()
         {
             buttonApply.onClick.RemoveAllListeners();
             buttonBack.onClick.RemoveAllListeners();
-            if (OptionManager.Instance)
-                OptionManager.Instance.OnSelectedChanged -= HandleOnOptionsChanged;
+            OptionManager.OnSelectedChanged -= HandleOnOptionsChanged;
         }
 
         // Start is called before the first frame update
@@ -51,8 +52,10 @@ namespace GOA.UI
         void HandleOnBack()
         {
             OptionManager.Instance.DiscardChanges();
-            //buttonApply.interactable = false;
-            GetComponentInParent<MainMenu>().ActivateMainPanel();
+            if(SceneManager.GetActiveScene().buildIndex == GameConfig.MainSceneId)
+                GetComponentInParent<MainMenu>().ActivateMainPanel();
+            else
+                GetComponentInParent<GameMenu>().ActivateGamePanel();
         }
 
         void HandleOnOptionsChanged(bool changed)
