@@ -1673,7 +1673,8 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 12
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5866666021909216657, guid: 2d4021a382d3a7048834f9df710a7f16, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 2d4021a382d3a7048834f9df710a7f16, type: 3}
 --- !u!137 &287653771247488936 stripped
 SkinnedMeshRenderer:

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b4defc6b9371d04aba9a8b99a236014, type: 3}
+  m_Name: Character_2
+  m_EditorClassIdentifier: 
+  characterId: 2
+  characterName: Kevin
+  avatar: {fileID: 21300000, guid: b96e6c998e414284897053a4dffd23be, type: 3}
+  lobbyPlaceholderPrefab: {fileID: 8859919808006590603, guid: f60b0fd0b4d6c8f4697994c93d68cf5a,
+    type: 3}
+  characterPrefab: {fileID: -8947063351862739996, guid: 9aa218959813ed34d836578612f2b385,
+    type: 3}
