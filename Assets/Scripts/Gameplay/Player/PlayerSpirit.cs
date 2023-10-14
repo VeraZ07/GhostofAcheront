@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Fusion;
 using GOA.Level;
 using System.Collections;
@@ -18,6 +19,9 @@ namespace GOA
         [SerializeField]
         float reviveDistance = 1f;
 
+        [SerializeField]
+        GameObject orb;
+
         //[UnitySerializeField] [Networked] public int PlayerId { get; private set; }
 
         Vector3 spawnPosition;
@@ -30,6 +34,10 @@ namespace GOA
         Vector3 currentDirection;
         Vector3 velocity = Vector3.zero;
         bool reviving = false;
+        PlayerController owner;
+        string spineName = "mixamorig:Spine1";
+        Transform spine;
+        bool ready = false;
 
         private void Awake()
         {
@@ -46,7 +54,7 @@ namespace GOA
         // Update is called once per frame
         void Update()
         {
-            if (!HasStateAuthority || reviving)
+            if (!HasStateAuthority || reviving || !ready)
                 return;
 
             CheckTargetsToAvoid();
@@ -63,13 +71,23 @@ namespace GOA
         {
             base.Spawned();
 
-            //if (Runner.IsServer || Runner.IsSharedModeMasterClient)
             if(HasStateAuthority)
             {
                 spawnPosition = transform.position;
                 agent.enabled = true;
                 players = new List<PlayerController>(FindObjectsOfType<PlayerController>()).FindAll(p => !p.HasStateAuthority);
             }
+
+            // For all clients, we make the horb exit from the chest
+            // The spirit and the dead player share the same playerId
+            owner = new List<PlayerController>(FindObjectsOfType<PlayerController>()).Find(p => p.Object.StateAuthority == Object.StateAuthority);
+            spine = new List<Transform>(owner.CharacterObject.GetComponentsInChildren<Transform>()).Find(t=> spineName.ToLower().Equals(t.gameObject.name.ToLower()));
+            Vector3 positionDefault = orb.transform.position;
+            Transform parentDefault = orb.transform.parent;
+            orb.transform.parent = spine;
+            orb.transform.localPosition = Vector3.zero;
+            orb.transform.DOMove(positionDefault, 1f).SetDelay(1f).OnComplete(()=> { orb.transform.parent = parentDefault; ready = true; });
+
         }
 
         /// <summary>

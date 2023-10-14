@@ -341,36 +341,6 @@ namespace GOA
                     }
                 }
        
-
-                // Only the server can start an interaction
-                //if (Runner.IsServer)
-                //{
-
-                //    if (interactable != null)
-                //    {
-                //        if (interactable.IsInteractionEnabled()/* && !interactable.IsBusy()*/)
-                //        {
-                //            if (data.leftAction)
-                //            {
-                //                if (!leftInputDown)
-                //                {
-                //                    leftInputDown = true;
-                //                }
-                //            }
-                //            else
-                //            {
-                //                if (leftInputDown)
-                //                {
-                //                    leftInputDown = false;
-                //                    lockedInteractable = interactable;
-                //                    interactable.StartInteraction(this);
-                //                }
-                //            }
-
-
-                //        }
-                //    }   
-                //}
             }
             else
             {
@@ -660,14 +630,14 @@ namespace GOA
             }
 
             // UNCOMMENT WHEN READY
-            //if (HasStateAuthority)
-            //{
-            //    Debug.Log("Create spirit:" + gameObject.name);
-            //    // Spawn the player spirit
-            //    spirit = Runner.Spawn(spiritPrefab, transform.position, Quaternion.identity);
-            //}
+            if (HasStateAuthority)
+            {
+                Debug.Log("Create spirit:" + gameObject.name);
+                // Spawn the player spirit
+                spirit = Runner.Spawn(spiritPrefab, transform.position, Quaternion.identity);
+            }
 
-         
+
 
 
         }
