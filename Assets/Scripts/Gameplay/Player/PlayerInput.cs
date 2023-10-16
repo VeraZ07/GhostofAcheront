@@ -56,7 +56,7 @@ namespace GOA
             
 
             if (!playerController.InputDisabled)
-                if(playerController.State == (int)PlayerState.Alive || playerController.State == (int)PlayerState.Dead)
+                if(playerController.State == (int)PlayerState.Alive || playerController.State == (int)PlayerState.Dead || playerController.State == (int)PlayerState.Dying)
                     playerController.SetCameraPitch(lookInput.y);
                 
 

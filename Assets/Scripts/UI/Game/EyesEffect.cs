@@ -16,7 +16,7 @@ namespace GOA.UI
 
         Image image;
 
-        float duration = 0.25f;
+        float duration = 0.1f;
 
         private void Awake()
         {

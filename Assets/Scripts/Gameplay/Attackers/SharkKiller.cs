@@ -83,14 +83,11 @@ namespace GOA
 
         IEnumerator DoKilling()
         {
-            float length = 2.5f;
-            yield return new WaitForSeconds(length * .34f);
             AdjustMonsterPosition();
-            yield return new WaitForSeconds(length * (.41f - .34f));
             victim.LookAtYouDying();
-            yield return new WaitForSeconds(length * (.51f - .41f));
+            yield return new WaitForSeconds(.2f);
             Bite();
-            yield return new WaitForSeconds(length * (0.94f - .51f));
+            yield return new WaitForSeconds(.4f);
             FinalizeDeath();
         }
         #endregion

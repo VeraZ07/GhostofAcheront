@@ -52,6 +52,7 @@ MonoBehaviour:
   avoidingDistance: 5
   reviveDistance: 1
   orb: {fileID: 5987016993129852064}
+  orbLight: {fileID: 3277002009572047908}
   avoidingTargets: []
 --- !u!114 &3607668436955627195
 MonoBehaviour:
@@ -167,6 +168,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3607668437251501685}
     m_Modifications:
+    - target: {fileID: 8230721416440852352, guid: 11117ae5cf0df1a4c81831e13f086616,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8830523265998273949, guid: 11117ae5cf0df1a4c81831e13f086616,
         type: 3}
       propertyPath: m_RootOrder
@@ -229,6 +235,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 11117ae5cf0df1a4c81831e13f086616, type: 3}
+--- !u!108 &3277002009572047908 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 351357551626235623, guid: 11117ae5cf0df1a4c81831e13f086616,
+    type: 3}
+  m_PrefabInstance: {fileID: 2997842795950854851}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &5987016993129852064 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8830523265998274147, guid: 11117ae5cf0df1a4c81831e13f086616,

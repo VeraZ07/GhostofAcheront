@@ -75,6 +75,7 @@ namespace GOA
         Transform camParent;
         Vector3 cameraLocalPositionDefault;
         Quaternion cameraLocalRotationDefault;
+        
 
         public bool LeftAction { get; private set; }
         public bool RightAction { get; private set; }
@@ -98,9 +99,8 @@ namespace GOA
 
         int deadType = 0;
         Transform characterRoot;
-        float ghostTime = 0f;
         NetworkObject spirit; // Only local player sets this field
-      
+        Vector3 deadPosition;
         #endregion
 
         #region native methods
@@ -403,97 +403,20 @@ namespace GOA
             }
         }
 
-        void UpdateGhost(NetworkInputData data)
-        {
-            // 
-            // Apply rotation
-            //
-            cc.Rotate(data.yaw);
-
-            //
-            // Apply movement
-            //
-            Vector3 move;
-
-            move = transform.forward * data.move.y + transform.right * data.move.x;
-            cc.maxSpeed = defaultSpeed;
-
-            move.Normalize();
-
-            
-            cc.Move(move);
-
-            //
-            // Actions
-            //
-            //LeftAction = data.leftAction;
-            //RightAction = data.rightAction;
-
-            // Set the camera pitch for the other players
-            if (!HasInputAuthority)
-            {
-                SetCameraPitch(data.pitch);
-            }
-        }
-
+      
         void ResetAnimator()
         {
             animator.SetFloat(animParamSpeed, 0);
             animator.SetFloat(animParamAngle, 0);
         }
 
-        IEnumerator DoSwitchToGhostMode()
-        {
-            yield return EyesEffect.Instance.CloseEyes();
-            characterObject.transform.parent = null;
-
-            // Switch the post processing 
-            UnityEngine.Rendering.Volume volume = FindObjectOfType<UnityEngine.Rendering.Volume>();
-            volume.profile = FindObjectOfType<LevelBuilder>().GlobalVolumeGhostProfile;
-
-            // Check a safe position for the player to move
-            transform.position += Vector3.up * 3f + Vector3.right * 3f - Vector3.forward * 3f;
-            Camera.main.transform.LookAt(transform);
-            SetRenderingLayer(LayerMask.NameToLayer(Layers.Default)); 
-            yield return EyesEffect.Instance.OpenEyes();
-        }
-
         IEnumerator DoLookAtYouDying()
         {
-          
             MonsterController monster = FindObjectOfType<MonsterController>();
             yield return EyesEffect.Instance.CloseEyes();
 
-            
-
-            //characterObject.transform.parent = null;
-            Camera.main.transform.parent = null;
-            // Check a safe position for the camera to move
-            List<int> coords = new List<int>(new int[] { 0, 1, 2, 3});
-            bool found = false;
-            int coord = coords[0]; // We always try moving the camera forward
-            coords.Remove(coord);
-            Vector3 dir = Vector3.zero;
-            float dist = Level.LevelBuilder.TileSize * .4f;
-            while (!found && coords.Count>0)
-            {
-                Vector3 tmpDir = Quaternion.AngleAxis(90f * coord, Vector3.up) * monster.transform.forward;
-                
-                Vector3 origin = transform.position + Vector3.up * 3f;
-                LayerMask mask = LayerMask.GetMask(new string[] { Layers.Wall });
-                if (!Physics.Raycast(origin, tmpDir.normalized, dist, mask))
-                {
-                    dir = tmpDir;
-                    found = true;
-                }
-                else
-                {
-                    coord = coords[Random.Range(0, coords.Count)];
-                }
-                    
-            }
-            Camera.main.transform.position = transform.position + Vector3.up * Level.LevelBuilder.TileHeight * .8f + dir.normalized * dist;
-            Camera.main.transform.LookAt(HeadPivot.transform);
+            // Move the camera vertically
+            Camera.main.transform.position = transform.position + Vector3.up * Level.LevelBuilder.TileHeight * .8f;// + dir.normalized * dist;
             // Switch the post processing 
             UnityEngine.Rendering.Volume volume = FindObjectOfType<UnityEngine.Rendering.Volume>();
             volume.profile = FindObjectOfType<LevelBuilder>().GlobalVolumeGhostProfile;
@@ -530,19 +453,17 @@ namespace GOA
 
         void LoopDyingState()
         {
-            
+            if (!InputDisabled && GetInput(out NetworkInputData data))
+            {
+                UpdateCharacter(data);
+
+            }
         }
 
 
 
         void LoopDeadState()
         {
-            if (ghostTime > 0)
-            {
-                ghostTime -= Runner.DeltaTime;
-                return;
-            }
-
             if (!InputDisabled && GetInput(out NetworkInputData data))
             {
                 UpdateCharacter(data);
@@ -602,28 +523,17 @@ namespace GOA
             ResetAnimator();
             EnableRagdollColliders(true);
 
-            
+            // Store the dead position
+            deadPosition = transform.position;
+            // Move the character out of the controller
+            characterObject.transform.parent = null;
         }
 
        
 
         void EnterDeadState()
         {
-            
-            // Both on client and server
-            // Move the character out of the controller
-            characterObject.transform.parent = null;
-            // Move the controller back to the camera
-            Vector3 pos = cam.transform.position;
-            
-            pos.y = 0.1f;
-            transform.position = pos;
-            cam.transform.parent = camParent;
-            cc.enabled = true;
-            cc.Velocity = Vector3.zero;
-
-            ghostTime = 2f;
-
+          
             if (Runner.IsServer || Runner.IsSharedModeMasterClient)
             {
                 FindObjectOfType<GameManager>().PlayerHasDead(this);
@@ -651,15 +561,20 @@ namespace GOA
 
         IEnumerator DoRiseAgain()
         {
+            PlayerSpirit pSpirit = spirit.GetComponent<PlayerSpirit>();
             if (HasStateAuthority)
             {
-                Runner.Despawn(spirit);
+                yield return pSpirit.ExplodeLight();
+                yield return EyesEffect.Instance.CloseEyes();
                 cam.transform.localPosition = cameraLocalPositionDefault;
                 cam.transform.localRotation = cameraLocalRotationDefault;
+                transform.position = deadPosition;
                 UnityEngine.Rendering.Volume volume = FindObjectOfType<UnityEngine.Rendering.Volume>();
                 volume.profile = FindObjectOfType<LevelBuilder>().GlobalVolumeDefaultProfile;
                 SetRenderingLayer(LayerMask.NameToLayer(Layers.LocalCharacter));
-                
+                yield return new WaitForSeconds(.5f);
+                yield return pSpirit.DimLight();
+                yield return EyesEffect.Instance.OpenEyes();
             }
 
             // On both client and server
@@ -673,8 +588,14 @@ namespace GOA
             headMesh.SetActive(true);
 
             yield return new WaitForSeconds(1f);
-            if(HasStateAuthority)
+            if (HasStateAuthority)
+            {
                 State = (int)PlayerState.Alive;
+                yield return new WaitForSeconds(1f);
+                Runner.Despawn(spirit);
+            }
+                
+            
         }
 
         public static void OnStateChanged(Changed<PlayerController> changed)

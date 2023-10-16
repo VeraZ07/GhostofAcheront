@@ -125,14 +125,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   active: 1
   quality:
-    m_OverrideState: 0
-    m_Value: 3
+    m_OverrideState: 1
+    m_Value: 1
   focusMode:
     m_OverrideState: 1
-    m_Value: 2
+    m_Value: 1
   focusDistance:
     m_OverrideState: 1
-    m_Value: 3.93
+    m_Value: 11
   focusDistanceMode:
     m_OverrideState: 1
     m_Value: 0
@@ -149,25 +149,25 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: 20
   m_NearSampleCount:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 5
   m_NearMaxBlur:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 4
   m_FarSampleCount:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 7
   m_FarMaxBlur:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 8
   m_Resolution:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 2
   m_HighQualityFiltering:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 1
   m_PhysicallyBased:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0
 --- !u!114 &-3184971612593888004
 MonoBehaviour:

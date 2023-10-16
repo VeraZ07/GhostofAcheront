@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Rendering.HighDefinition;
 
 namespace GOA
 {
@@ -22,6 +23,9 @@ namespace GOA
         [SerializeField]
         GameObject orb;
 
+        [SerializeField]
+        Light orbLight;
+
         //[UnitySerializeField] [Networked] public int PlayerId { get; private set; }
 
         Vector3 spawnPosition;
@@ -38,6 +42,7 @@ namespace GOA
         string spineName = "mixamorig:Spine1";
         Transform spine;
         bool ready = false;
+        bool reunion = false;
 
         private void Awake()
         {
@@ -54,17 +59,32 @@ namespace GOA
         // Update is called once per frame
         void Update()
         {
+            if (Input.GetKeyDown(KeyCode.R))
+                reunion = true;
+
             if (!HasStateAuthority || reviving || !ready)
                 return;
 
-            CheckTargetsToAvoid();
+            if (!reunion)
+            {
+                CheckTargetsToAvoid();
 
-            if (avoidingTargets.Count > 0)
-                TryToAvoidTargets();
+                if (avoidingTargets.Count > 0)
+                    TryToAvoidTargets();
+                else
+                    MoveBackToTheDeadBody();
+
+                CheckForResurrection();
+            }
             else
-                MoveBackToTheDeadBody();
-
-            CheckReviving();
+            {
+                // If the orb is closed to the player it can move inside the chest
+                if(Vector3.Distance(transform.position, spawnPosition) < 1f)
+                {
+                    reunion = false;
+                    EnterIntoThePlayer();
+                }
+            }
         }
 
         public override void Spawned()
@@ -80,14 +100,7 @@ namespace GOA
 
             // For all clients, we make the horb exit from the chest
             // The spirit and the dead player share the same playerId
-            owner = new List<PlayerController>(FindObjectsOfType<PlayerController>()).Find(p => p.Object.StateAuthority == Object.StateAuthority);
-            spine = new List<Transform>(owner.CharacterObject.GetComponentsInChildren<Transform>()).Find(t=> spineName.ToLower().Equals(t.gameObject.name.ToLower()));
-            Vector3 positionDefault = orb.transform.position;
-            Transform parentDefault = orb.transform.parent;
-            orb.transform.parent = spine;
-            orb.transform.localPosition = Vector3.zero;
-            orb.transform.DOMove(positionDefault, 1f).SetDelay(1f).OnComplete(()=> { orb.transform.parent = parentDefault; ready = true; });
-
+            ExitFromThePlayer();
         }
 
         /// <summary>
@@ -99,18 +112,66 @@ namespace GOA
         //    PlayerId = playerId;
         //}
 
-        void CheckReviving()
+        void ExitFromThePlayer()
+        {
+            owner = new List<PlayerController>(FindObjectsOfType<PlayerController>()).Find(p => p.Object.StateAuthority == Object.StateAuthority);
+            spine = new List<Transform>(owner.CharacterObject.GetComponentsInChildren<Transform>()).Find(t => spineName.ToLower().Equals(t.gameObject.name.ToLower()));
+            Vector3 positionDefault = orb.transform.position;
+            Transform parentDefault = orb.transform.parent;
+            orb.transform.parent = spine;
+            orb.transform.localPosition = Vector3.zero;
+            orb.transform.DOMove(positionDefault, 1f).SetDelay(1f).OnComplete(() => { orb.transform.parent = parentDefault; ready = true; });
+            orbLight.GetComponent<HDAdditionalLightData>().intensity = 1f;
+        }
+
+        void EnterIntoThePlayer()
+        {
+            reviving = true;
+            owner.SetRisingAgainState();
+            
+            //reviving = true;
+            //var lightData = orbLight.GetComponent<HDAdditionalLightData>();
+            //DOTween.To(() => lightData.intensity, x => lightData.intensity = x, 72000f, 1f).OnComplete(() =>
+            // {
+            //     DOTween.To(() => lightData.intensity, x => lightData.intensity = x, 0f, .1f).SetDelay(0.4f);
+            //    // Put the light outside
+            //    orbLight.transform.parent = orbLight.transform.parent.parent;
+            //     orb.SetActive(false);
+            //     owner.SetRisingAgainState();
+            // });
+
+        }
+
+        public IEnumerator ExplodeLight()
+        {
+            var lightData = orbLight.GetComponent<HDAdditionalLightData>();
+            yield return DOTween.To(() => lightData.intensity, x => lightData.intensity = x, 72000f, 1f).WaitForCompletion();
+            
+            // Put the light outside
+            orbLight.transform.parent = orbLight.transform.parent.parent;
+            orb.SetActive(false);
+            
+        }
+
+        public IEnumerator DimLight()
+        {
+            var lightData = orbLight.GetComponent<HDAdditionalLightData>();
+            yield return DOTween.To(() => lightData.intensity, x => lightData.intensity = x, 0f, .1f).WaitForCompletion();
+        }
+
+        void CheckForResurrection()
         {
             foreach(PlayerController player in players)
             {
                 if (player.State != (int)PlayerState.Alive || Vector3.Distance(player.transform.position, transform.position) > reviveDistance)
                     continue;
 
-                reviving = true;
+                //reviving = true;
+                //PlayerController local = new List<PlayerController>(FindObjectsOfType<PlayerController>()).Find(p => p.HasStateAuthority);
+                //local.SetRisingAgainState();
 
-                PlayerController local = new List<PlayerController>(FindObjectsOfType<PlayerController>()).Find(p => p.HasStateAuthority);
-                local.SetRisingAgainState();
-
+                reunion = true;
+                agent.SetDestination(spawnPosition);
             }
         }
 

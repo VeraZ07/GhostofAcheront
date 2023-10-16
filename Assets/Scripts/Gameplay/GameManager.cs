@@ -96,6 +96,7 @@ namespace GOA
         /// <returns></returns>
         IEnumerator CheckForDeadAndAlive()
         {
+
             yield return new WaitForSeconds(1f);
 
          
@@ -189,7 +190,7 @@ namespace GOA
             if (SessionManager.Instance.Runner.IsSinglePlayer)
             {
 #if UNITY_EDITOR
-                //return;
+                return;
 #endif 
                 YouLose();
 
