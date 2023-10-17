@@ -18,7 +18,7 @@ namespace GOA
         float avoidingDistance = 5f;
 
         [SerializeField]
-        float reviveDistance = 1f;
+        float reviveDistance = 3f;
 
         [SerializeField]
         GameObject orb;

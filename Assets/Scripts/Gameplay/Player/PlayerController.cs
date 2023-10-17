@@ -418,8 +418,9 @@ namespace GOA
             // Move the camera vertically
             Camera.main.transform.position = transform.position + Vector3.up * Level.LevelBuilder.TileHeight * .8f;// + dir.normalized * dist;
             // Switch the post processing 
-            UnityEngine.Rendering.Volume volume = FindObjectOfType<UnityEngine.Rendering.Volume>();
-            volume.profile = FindObjectOfType<LevelBuilder>().GlobalVolumeGhostProfile;
+            //UnityEngine.Rendering.Volume volume = FindObjectOfType<UnityEngine.Rendering.Volume>();
+            //volume.profile = FindObjectOfType<LevelBuilder>().GlobalVolumeGhostProfile;
+            VolumeUtility.SetProfile(FindObjectOfType<LevelBuilder>().GlobalVolumeGhostProfile);
             SetRenderingLayer(LayerMask.NameToLayer(Layers.Default));
             yield return EyesEffect.Instance.OpenEyes();
         }
@@ -518,8 +519,8 @@ namespace GOA
 
         void EnterDyingState()
         {
-            cc.enabled = false;
-            cc.Velocity = Vector3.zero;
+            //cc.enabled = false;
+            //cc.Velocity = Vector3.zero;
             ResetAnimator();
             EnableRagdollColliders(true);
 
@@ -561,21 +562,26 @@ namespace GOA
 
         IEnumerator DoRiseAgain()
         {
-            PlayerSpirit pSpirit = spirit.GetComponent<PlayerSpirit>();
+            PlayerSpirit pSpirit = GetSpirit().GetComponent<PlayerSpirit>();
+            yield return pSpirit.ExplodeLight();
             if (HasStateAuthority)
             {
-                yield return pSpirit.ExplodeLight();
                 yield return EyesEffect.Instance.CloseEyes();
                 cam.transform.localPosition = cameraLocalPositionDefault;
                 cam.transform.localRotation = cameraLocalRotationDefault;
-                transform.position = deadPosition;
-                UnityEngine.Rendering.Volume volume = FindObjectOfType<UnityEngine.Rendering.Volume>();
-                volume.profile = FindObjectOfType<LevelBuilder>().GlobalVolumeDefaultProfile;
+
+                //cc.TeleportToPosition(deadPosition);
+                cc.WritePosition(deadPosition);
+                VolumeUtility.SetProfile(FindObjectOfType<LevelBuilder>().GlobalVolumeDefaultProfile);
                 SetRenderingLayer(LayerMask.NameToLayer(Layers.LocalCharacter));
                 yield return new WaitForSeconds(.5f);
-                yield return pSpirit.DimLight();
-                yield return EyesEffect.Instance.OpenEyes();
+            
             }
+
+            yield return pSpirit.DimLight();
+
+            if(HasInputAuthority)
+                yield return EyesEffect.Instance.OpenEyes();
 
             // On both client and server
             EnableRagdollColliders(false);
@@ -628,7 +634,13 @@ namespace GOA
 #region public methods     
 
         
+        public NetworkObject GetSpirit()
+        {
+            if (!spirit)
+                spirit = new List<PlayerSpirit>(FindObjectsOfType<PlayerSpirit>()).Find(p => p.Object.StateAuthority == Object.StateAuthority).Object;
 
+            return spirit;
+        }
         
 
         public void SetCameraPitch(float value)

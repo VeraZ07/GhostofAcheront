@@ -69,7 +69,7 @@ namespace GOA
         float huntingTime = .5f;
         System.DateTime lastHuntingDT;
         NavMeshPath huntingPath;
-        float attackRange = .8f * 1.1f;
+        float attackRange = .5f;// * 1.1f;
         int monsterNoTrackMax = 4;
 
         [SerializeField]

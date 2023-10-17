@@ -17,16 +17,15 @@ namespace GOA.Settings
 
         private void Awake()
         {
-            volume = GetComponent<Volume>();
-            volume.profile.TryGet(out depthOfField);
-            volume.profile.TryGet(out fog);
-            currentProfile = volume.profile;
+            //volume = GetComponent<Volume>();
+            InitData(GetComponent<Volume>());
         }
 
         // Start is called before the first frame update
         void Start()
         {
             OptionManager.OnApply += HandleOnOptionsApplied;
+            VolumeUtility.OnProfileChanged += HandleOnProfileChanged;
             Debug.Log("DOF value:" + depthOfField.quality.GetValue<int>());
             UpdateQuality();
         }
@@ -43,10 +42,26 @@ namespace GOA.Settings
         private void OnDestroy()
         {
             OptionManager.OnApply -= HandleOnOptionsApplied;
+            VolumeUtility.OnProfileChanged -= HandleOnProfileChanged;
+        }
+
+        void InitData(Volume volume)
+        {
+            this.volume = volume;
+            volume.profile.TryGet(out depthOfField);
+            volume.profile.TryGet(out fog);
+            currentProfile = volume.profile;
         }
 
         void HandleOnOptionsApplied()
         {
+            UpdateQuality();
+        }
+
+        void HandleOnProfileChanged(Volume volume)
+        {
+            Debug.Log("HandleOnProfileChanged -  UpdateQuality");
+            InitData(volume);
             UpdateQuality();
         }
 
@@ -58,33 +73,11 @@ namespace GOA.Settings
 
         void UpdateDepthOfField()
         {
-            //VolumeParameter<int> vp = new VolumeParameter<int>();
-            //vp.value = OptionCollection.DepthOfFieldOptionList[OptionManager.Instance.DepthOfFieldCurrentId].Value;
-            //if (vp.value < 0)
-            //    depthOfField.active = false;
-            //else
-            //{
-            //    //depthOfField.quality =                    
-            //    depthOfField.quality.SetValue(vp);
-            //    if (!depthOfField.active)
-            //        depthOfField.active = true;
-            //}
             UpdateVolumeComponentQuality(depthOfField, OptionCollection.DepthOfFieldOptionList[OptionManager.Instance.DepthOfFieldCurrentId].Value);    
         }
 
         void UpdateFog()
         {
-            //VolumeParameter<int> vp = new VolumeParameter<int>();
-            //vp.value = OptionCollection.FogOptionList[OptionManager.Instance.FogCurrentId].Value;
-            //if (vp.value < 0)
-            //    fog.active = false;
-            //else
-            //{
-            //    //depthOfField.quality =                    
-            //    fog.quality.SetValue(vp);
-            //    if (!fog.active)
-            //        fog.active = true;
-            //}
             UpdateVolumeComponentQuality(fog, OptionCollection.FogOptionList[OptionManager.Instance.FogCurrentId].Value);
         }
 
@@ -101,6 +94,12 @@ namespace GOA.Settings
                 if (!component.active)
                     component.active = true;
             }
+        }
+
+        public void SetProfile(VolumeProfile profile)
+        {
+            volume.profile = profile;
+            UpdateQuality();
         }
     }
 
