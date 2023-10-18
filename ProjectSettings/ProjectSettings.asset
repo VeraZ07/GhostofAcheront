@@ -824,7 +824,7 @@ PlayerSettings:
   webGLDecompressionFallback: 0
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Standalone: FUSION_WEAVER;__USE_HOST_MIGRATION
+    Standalone: FUSION_WEAVER;__USE_HOST_MIGRATION;__TEST
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

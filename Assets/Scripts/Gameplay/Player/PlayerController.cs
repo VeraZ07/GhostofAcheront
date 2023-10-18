@@ -363,7 +363,12 @@ namespace GOA
 
         void UpdateCharacter(NetworkInputData data)
         {
-            
+
+            if (Input.GetKeyDown(KeyCode.O))
+            {
+                cc.Transform.position = cc.Transform.position + cc.Transform.forward * 3f;
+            }
+
             // 
             // Apply rotation
             //
@@ -571,7 +576,8 @@ namespace GOA
                 cam.transform.localRotation = cameraLocalRotationDefault;
 
                 //cc.TeleportToPosition(deadPosition);
-                cc.WritePosition(deadPosition);
+                cc.Transform.position = deadPosition;
+                //cc.WritePosition(deadPosition);
                 VolumeUtility.SetProfile(FindObjectOfType<LevelBuilder>().GlobalVolumeDefaultProfile);
                 SetRenderingLayer(LayerMask.NameToLayer(Layers.LocalCharacter));
                 yield return new WaitForSeconds(.5f);
@@ -580,8 +586,7 @@ namespace GOA
 
             yield return pSpirit.DimLight();
 
-            if(HasInputAuthority)
-                yield return EyesEffect.Instance.OpenEyes();
+            
 
             // On both client and server
             EnableRagdollColliders(false);
@@ -593,12 +598,21 @@ namespace GOA
             ResetAnimator();
             headMesh.SetActive(true);
 
+            if (HasInputAuthority)
+            {
+                cc.Transform.position = deadPosition;
+                yield return EyesEffect.Instance.OpenEyes();
+            }
+                
+
             yield return new WaitForSeconds(1f);
             if (HasStateAuthority)
             {
                 State = (int)PlayerState.Alive;
+                //cc.Transform.position = deadPosition;
                 yield return new WaitForSeconds(1f);
                 Runner.Despawn(spirit);
+                
             }
                 
             

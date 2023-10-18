@@ -104,12 +104,13 @@ namespace GOA
             
         }
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR || TEST
         bool _testNoMonster = false;
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.P))
-                _testNoMonster = true;
+                _testNoMonster = !_testNoMonster;
+
         }
 #endif
 #endregion
@@ -139,7 +140,7 @@ namespace GOA
         {
             base.FixedUpdateNetwork();
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR || TEST
             if (_testNoMonster)
                 return;
 #endif
