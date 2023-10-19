@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering.HighDefinition;
+using UnityEngine.VFX;
 
 namespace GOA
 {
@@ -26,7 +27,20 @@ namespace GOA
         [SerializeField]
         Light orbLight;
 
-        //[UnitySerializeField] [Networked] public int PlayerId { get; private set; }
+        [SerializeField]
+        Color unrescuedColor;
+
+        [SerializeField]
+        Color rescuedColor;
+
+        [SerializeField]
+        VisualEffect baseOrbVfx;
+
+        [SerializeField]
+        ParticleSystem rescuedTrailVfx, unrescuedTrailVfx;
+
+
+        [UnitySerializeField] [Networked(OnChanged = nameof(OnRescuedChanged))] public bool Rescued { get; private set; } = false;
 
         Vector3 spawnPosition;
 
@@ -42,7 +56,7 @@ namespace GOA
         string spineName = "mixamorig:Spine1";
         Transform spine;
         bool ready = false;
-        bool reunion = false;
+        //bool reunion = false;
 
         private void Awake()
         {
@@ -59,13 +73,13 @@ namespace GOA
         // Update is called once per frame
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.R))
-                reunion = true;
+            //if (Input.GetKeyDown(KeyCode.R))
+            //    reunion = true;
 
             if (!HasStateAuthority || reviving || !ready)
                 return;
 
-            if (!reunion)
+            if (!Rescued)
             {
                 CheckTargetsToAvoid();
 
@@ -81,7 +95,6 @@ namespace GOA
                 // If the orb is closed to the player it can move inside the chest
                 if(Vector3.Distance(transform.position, spawnPosition) < 1f)
                 {
-                    reunion = false;
                     EnterIntoThePlayer();
                 }
             }
@@ -98,6 +111,12 @@ namespace GOA
                 players = new List<PlayerController>(FindObjectsOfType<PlayerController>()).FindAll(p => !p.HasStateAuthority);
             }
 
+            // We set the unrescued color
+            //baseOrbVfx.GetVector4("Color");
+            //baseOrbVfx.GetVector4("Color");
+            baseOrbVfx.SetVector4("Color", unrescuedColor);
+            baseOrbVfx.SetVector4("Particles Color", unrescuedColor);
+            unrescuedTrailVfx.Play();
             // For all clients, we make the horb exit from the chest
             // The spirit and the dead player share the same playerId
             ExitFromThePlayer();
@@ -170,8 +189,12 @@ namespace GOA
                 //PlayerController local = new List<PlayerController>(FindObjectsOfType<PlayerController>()).Find(p => p.HasStateAuthority);
                 //local.SetRisingAgainState();
 
-                reunion = true;
+                //reunion = true;
+                Rescued = true;
                 agent.SetDestination(spawnPosition);
+
+                
+
             }
         }
 
@@ -273,6 +296,18 @@ namespace GOA
                 agent.SetDestination(destination);
             }
             
+        }
+
+        public static void OnRescuedChanged(Changed<PlayerSpirit> changed)
+        {
+            if (changed.Behaviour.Rescued)
+            {
+                // Change vfx color
+                DOTween.To(() => changed.Behaviour.baseOrbVfx.GetVector4("Color"), x => changed.Behaviour.baseOrbVfx.SetVector4("Color", x), (Vector4)changed.Behaviour.rescuedColor, 0.5f);
+                DOTween.To(() => changed.Behaviour.baseOrbVfx.GetVector4("Particles Color"), x => changed.Behaviour.baseOrbVfx.SetVector4("Particles Color", x), (Vector4)changed.Behaviour.rescuedColor, 0.5f);
+                changed.Behaviour.unrescuedTrailVfx.Stop();
+                changed.Behaviour.rescuedTrailVfx.Play();
+            }
         }
     }
 

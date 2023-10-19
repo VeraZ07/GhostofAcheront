@@ -782,7 +782,7 @@ MonoBehaviour:
   light: {fileID: 4483808968645272673}
   dustParticle: {fileID: 6445270502224490385}
   characterObject: {fileID: 2911037293451439525}
-  spiritPrefab: {fileID: 3607668436955627194, guid: bfec1cee47cb720429c7015c99c350ee,
+  spiritPrefab: {fileID: 3607668436955627194, guid: 08ff728395381044eb1dc98b5fa58bac,
     type: 3}
   meshRenderers:
   - {fileID: 287653771247488936}
