@@ -58,6 +58,7 @@ MonoBehaviour:
   baseOrbVfx: {fileID: 323491487933562246}
   rescuedTrailVfx: {fileID: 4697254874819931270}
   unrescuedTrailVfx: {fileID: 4914043710516411361}
+  _Rescued: 0
   avoidingTargets: []
 --- !u!114 &3607668436955627195
 MonoBehaviour:
@@ -186,7 +187,7 @@ PrefabInstance:
     - target: {fileID: 8830523265998273949, guid: 11117ae5cf0df1a4c81831e13f086616,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.493
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 8830523265998273949, guid: 11117ae5cf0df1a4c81831e13f086616,
         type: 3}

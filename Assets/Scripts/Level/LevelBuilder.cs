@@ -183,10 +183,10 @@ namespace GOA.Level
             //TestPuzzle("PicturePuzzleAsset", 0);
             //TestPuzzle("PictureHandlePuzzleAsset", 0);
             //TestPuzzle("SkeletonPuzzleAsset", 0);
-            TestPuzzle("JigSawPuzzleAsset", 0);
+            //TestPuzzle("JigSawPuzzleAsset", 0);
             //TestPuzzle("MemoryPuzzleAsset", 0);
             //TestPuzzle("FifteenPuzzleAsset", 0);
-            //TestPuzzle("ArrowPuzzleAsset", 0);
+            TestPuzzle("ArrowPuzzleAsset", 0);
 #endif
 
             CreateUniqueObjects();

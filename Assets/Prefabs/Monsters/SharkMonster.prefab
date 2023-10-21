@@ -312,9 +312,9 @@ MonoBehaviour:
   m_Script: {fileID: 506319458, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interpolationDataSource: 0
+  _interpolationDataSource: 2
   Animator: {fileID: 4422084046540371764}
-  TotalWords: 6
+  TotalWords: 5
   SyncSettings: -1
   FloatAccuracy:
     _value: 0
@@ -366,7 +366,6 @@ MonoBehaviour:
   bitePivots:
   - {fileID: 8710266255205388137}
   - {fileID: 2224379871934155418}
-  _VictimId: -1
 --- !u!114 &551653469021792624
 MonoBehaviour:
   m_ObjectHideFlags: 0
