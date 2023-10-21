@@ -86,7 +86,9 @@ namespace GOA
 
         public bool InputDisabled { get; set; }
 
-        IInteractable lockedInteractable;
+        //IInteractable lockedInteractable;
+        IInteractable pressedInteractable;
+
         bool leftInputDown = false;
 
         string animParamSpeed = "Speed";
@@ -297,68 +299,87 @@ namespace GOA
                 RaycastHit info;
                 if (Physics.Raycast(cam.transform.position, cam.transform.forward, out info, InteractionMinimumDistance))
                 {
-                  
                     interactable = info.collider.GetComponent<IInteractable>();
                 }
             }
 
-            if (interactable != null && interactable.IsInteractionEnabled()/* && !interactable.IsBusy()*/)
+            if (HasInputAuthority)
             {
-                
-                // Everyone can start check for interaction
-                if (HasInputAuthority)
+                if (interactable != null)
                 {
-                    // Set the cursor 
-                    CursorManager.Instance.StartGameCursorEffect();
-
-                    
-                    if (interactable != null)
+                    if (interactable.IsInteractionEnabled()) 
                     {
-                        if (interactable.IsInteractionEnabled()/* && !interactable.IsBusy()*/)
+                        // Set the cursor 
+                        CursorManager.Instance.StartGameCursorEffect();
+                        // Since the interaction is allowed we take into account both press and release
+                        if (data.leftAction)
                         {
-                            if (data.leftAction)
+
+                            if (!leftInputDown)
                             {
-
-                                if (!leftInputDown)
-                                {
-                                    leftInputDown = true;
-                                }
+                                leftInputDown = true;
+                                if (interactable.KeepPressed())
+                                    pressedInteractable = interactable;
+                                RpcInteract(InteractableManager.Instance.GetInteractableId(interactable), true);
                             }
-                            else
+                        }
+                        else
+                        {
+                            if (leftInputDown)
                             {
-                                if (leftInputDown)
-                                {
-                                    leftInputDown = false;
-                                    //lockedInteractable = interactable;
-                                    //interactable.StartInteraction(this);
-
-                                    RpcInteract(InteractableManager.Instance.GetInteractableId(interactable));
-                                }
+                                leftInputDown = false;
+                                ReleasePressedInteractable();
                             }
-
-
                         }
                     }
+                    else 
+                    {
+                        // Since interaction in not allowed we only take into account release    
+                        if (!data.leftAction)
+                        {
+                            leftInputDown = false;
+                            ReleasePressedInteractable();
+                        }
+
+                    }
                 }
-       
-            }
-            else
-            {
-                // Reset the cursor
-                if (HasInputAuthority)
+                else // Interactor is null
+                {
+                    // Release cursor
                     CursorManager.Instance.StopGameCursorEffect();
+                    // We eventually release the interactor we were keeping
+                    ReleasePressedInteractable();
+                    
+                }
             }
-   
+
+            
+
+           
+        }
+
+        public void ReleasePressedInteractable()
+        {
+            if (pressedInteractable == null)
+                return;
+            
+            RpcInteract(InteractableManager.Instance.GetInteractableId(pressedInteractable), false);
+            pressedInteractable = null;
+            
         }
 
         [Rpc(sources:RpcSources.StateAuthority, targets:RpcTargets.All, Channel = RpcChannel.Reliable)]
-        public void RpcInteract(int interactableId)
+        public void RpcInteract(int interactableId, NetworkBool value)
         {
             if (!Runner.IsServer && !Runner.IsSharedModeMasterClient)
                 return;
+
+            Debug.Log($"RPCInteract - target:{interactableId}, value:{value}");
             IInteractable interactable = InteractableManager.Instance.GetInteractable(interactableId);
-            lockedInteractable = interactable;
-            interactable.StartInteraction(this);
+            if (value)
+                interactable.StartInteraction(this);
+            else
+                interactable.StopInteraction(this);
         }
 
         void UpdateCharacter(NetworkInputData data)

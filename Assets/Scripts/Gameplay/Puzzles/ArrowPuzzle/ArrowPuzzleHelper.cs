@@ -133,6 +133,7 @@ namespace GOA
         bool CheckPathStartingFromNorth(int id)
         {
             // Get the first id moving rom north to east
+            int startingId = id;
             bool found = false;
             bool stop = false;
             id -= sizeSqrt;
@@ -185,9 +186,9 @@ namespace GOA
                         id++;
                         while (id % sizeSqrt > 0 && !found && !stop)
                         {
-                            if (values[id] == 2 || values[id] < 0)
+                            if (values[id] == 2/* || values[id] < 0*/)
                                 stop = true;
-                            else if (values[id] == 0)
+                            else if (id == startingId)
                                 found = true;
                             else
                                 id++;
@@ -203,7 +204,10 @@ namespace GOA
 
         bool CheckPathStartingFromWest(int id)
         {
+            Debug.Log($"PUZZLE - id:{id}");
+
             // Get the first id moving rom west to north
+            int startingId = id;
             bool found = false;
             bool stop = false;
             id--;
@@ -219,6 +223,7 @@ namespace GOA
 
             if (found)
             {
+                Debug.Log($"PUZZLE - found tile to north:{id}");
                 // Check from north to east
                 found = false;
                 stop = false;
@@ -235,6 +240,7 @@ namespace GOA
 
                 if (found)
                 {
+                    Debug.Log($"PUZZLE - found tile to east:{id}");
                     // Check from west to south
                     found = false;
                     stop = false;
@@ -250,21 +256,26 @@ namespace GOA
                     }
                     if (found)
                     {
+                        Debug.Log($"PUZZLE - found tile to south:{id}");
                         // Check from south to west
                         found = false;
                         stop = false;
                         id += sizeSqrt;
                         while (id < values.Length && !found && !stop)
                         {
-                            if (values[id] == 1 || values[id] < 0)
+                            if (values[id] == 1/* || values[id] < 0*/)
                                 stop = true;
-                            else if (values[id] == 3)
+                            else if (id == startingId)
                                 found = true;
                             else
                                 id++;
                         }
                         if (found)
+                        {
+                            Debug.Log($"PUZZLE - found closed tile:{id}");
                             return true;
+                        }
+                            
                     }
                 }
             }

@@ -37,6 +37,10 @@ namespace GOA.Level
                 {
                     return new ArrowPuzzle(builder, asset, sectorIndex);
                 }
+                if (asset.GetType() == typeof(GlobeCoopPuzzleAsset))
+                {
+                    return new GlobeCoopPuzzle(builder, asset, sectorIndex);
+                }
                 //return puzzle;
                 throw new System.Exception(string.Format("PuzzleFactory - Puzzle '{0}' not found.", asset.name));
             }

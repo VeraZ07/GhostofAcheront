@@ -1,4 +1,4 @@
-//#define TEST_PUZZLE
+#define TEST_PUZZLE
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -187,6 +187,7 @@ namespace GOA.Level
             //TestPuzzle("MemoryPuzzleAsset", 0);
             //TestPuzzle("FifteenPuzzleAsset", 0);
             TestPuzzle("ArrowPuzzleAsset", 0);
+            //TestPuzzle("GlobeCoopPuzzleAsset", 0);
 #endif
 
             CreateUniqueObjects();
@@ -1521,7 +1522,11 @@ namespace GOA.Level
         {
             
             List<PuzzleAsset> puzzleCollection = new List<PuzzleAsset>(Resources.LoadAll<PuzzleAsset>(System.IO.Path.Combine(PuzzleAsset.ResourceFolder, theme.ToString()))).FindAll(p=>!p.name.ToLower().StartsWith("_"));
-
+            if (SessionManager.Instance.Runner.IsSinglePlayer)
+            {
+                // Remove coop only puzzles if we are playing in singleplayer
+                puzzleCollection.RemoveAll(p => p.CoopOnly);
+            }
            
             // Get all gates
             List<CustomObject> gates = customObjects.FindAll(g => g.GetType() == typeof(Gate));
@@ -1552,6 +1557,7 @@ namespace GOA.Level
 #if UNITY_EDITOR
             //seed = 1481849213;
             //seed = -440185720;
+            seed = -511521315;
 #endif
 
             Random.InitState(seed);

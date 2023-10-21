@@ -221,6 +221,27 @@ namespace GOA.Editor
             Selection.activeObject = asset;
         }
 
+        [MenuItem("Assets/Create/GOA/Puzzles/GlobeCoopPuzzleAsset")]
+        public static void CreateGlobeCoopPuzzleAsset()
+        {
+            GlobeCoopPuzzleAsset asset = ScriptableObject.CreateInstance<GlobeCoopPuzzleAsset>();
+
+            string name = "GlobeCoopPuzzleAsset.asset";
+
+            string folder = System.IO.Path.Combine(ResourceFolder, PuzzleAsset.ResourceFolder);
+
+            if (!System.IO.Directory.Exists(folder))
+                System.IO.Directory.CreateDirectory(folder);
+
+            AssetDatabase.CreateAsset(asset, System.IO.Path.Combine(folder, name));
+
+            AssetDatabase.SaveAssets();
+
+            EditorUtility.FocusProjectWindow();
+
+            Selection.activeObject = asset;
+        }
+
         [MenuItem("Assets/Create/GOA/ItemAsset")]
         public static void CreateItemAsset()
         {

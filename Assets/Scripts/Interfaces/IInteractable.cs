@@ -9,15 +9,11 @@ namespace GOA.Interfaces
         
         void StartInteraction(PlayerController playerController);
 
-        //void StopInteraction(PlayerController playerController);
+        void StopInteraction(PlayerController playerController);
 
         bool IsInteractionEnabled();
 
-        //bool IsBusy();
-
-        //void SetInteractionEnabled(bool value);
-
-        //bool TryUseItem(string itemName);
+        bool KeepPressed();
     }
 
 }

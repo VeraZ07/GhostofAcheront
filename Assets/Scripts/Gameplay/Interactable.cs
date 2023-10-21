@@ -7,14 +7,16 @@ namespace GOA
 {
     public abstract class Interactable : MonoBehaviour, IInteractable
     {
-        public abstract bool IsInteractionEnabled();
+       
+        protected virtual void Awake(){}
 
-        public abstract void StartInteraction(PlayerController playerController);
+        public virtual void StopInteraction(PlayerController playerController) { }
 
-        protected virtual void Awake()
-        {
-            //InteractableManager.Instac.Register(this);
-        }
+        public virtual bool IsInteractionEnabled() { return false; }
+
+        public virtual void StartInteraction(PlayerController playerController) { }
+
+        public virtual bool KeepPressed() { return false; }
     }
 
 }

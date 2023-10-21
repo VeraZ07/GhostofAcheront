@@ -14,6 +14,27 @@ namespace GOA.Assets
         //int minimumPlayers = 1;
 
         [SerializeField]
+        bool coopOnly = false;
+        public bool CoopOnly
+        {
+            get { return coopOnly; }
+        }
+
+        //[SerializeField]
+        //bool threePlayersNeeded = false;
+        //public bool ThreePlayerNeeded
+        //{
+        //    get { return threePlayersNeeded; }
+        //}
+
+        //[SerializeField]
+        //bool fourPlayersNeeded = false;
+        //public bool FourPlayerNeeded
+        //{
+        //    get { return fourPlayersNeeded; }
+        //}
+
+        [SerializeField]
         GameObject controllerPrefab; // The scene object prefab
 
         public GameObject ControllerPrefab
@@ -21,7 +42,10 @@ namespace GOA.Assets
             get { return controllerPrefab; }
         }
 
-   
+        //public bool IsCoop()
+        //{
+        //    return twoPlayersNeeded || threePlayersNeeded || fourPlayersNeeded;
+        //}
     }
 
 

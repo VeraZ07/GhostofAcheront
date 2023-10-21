@@ -17,8 +17,9 @@ namespace GOA
         [SerializeField]
         float emissiveIntensity = 10f;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             Material mat = new Material(colorRenderer.material);
             colorRenderer.material = mat;
         }

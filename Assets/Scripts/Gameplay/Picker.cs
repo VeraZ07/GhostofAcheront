@@ -89,6 +89,10 @@ namespace GOA
                 
         }
 
+        public void StopInteraction(PlayerController playerController) { }
+
+        public bool KeepPressed() { return false; }
+
         public bool IsInteractionEnabled()
         {
             return !Empty;
