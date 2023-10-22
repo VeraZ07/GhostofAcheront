@@ -9,7 +9,9 @@ namespace GOA
     {
         public Vector2 move;
         public float yaw;
+#if SYNCH_PITCH
         public float pitch;
+#endif
         public NetworkBool run;
         public bool leftAction;
         public bool rightAction;

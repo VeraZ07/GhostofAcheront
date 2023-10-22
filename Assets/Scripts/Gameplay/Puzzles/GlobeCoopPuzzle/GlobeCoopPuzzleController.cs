@@ -10,7 +10,7 @@ namespace GOA
     {
 
         [UnitySerializeField]
-        [Networked(OnChanged = nameof(OnActiveGlobesChanged))] [Capacity(SessionManager.MaxPlayers)] public NetworkLinkedList<NetworkBool> ActiveGlobes { get; } = default;
+        [Networked(OnChanged = nameof(OnActiveGlobesChanged))] [Capacity(SessionManager.MaxPlayers)] public NetworkLinkedList<NetworkBool> ActiveGlobes { get; }
 
         List<GlobeInteractor> globes = new List<GlobeInteractor>();
 
@@ -36,8 +36,13 @@ namespace GOA
                 comp.Init(this);
                 // Add the component to the globe list
                 globes.Add(comp);
-                // Add a new entry in the synch list
-                ActiveGlobes.Add(false);
+
+                if(Runner.IsServer || Runner.IsSharedModeMasterClient)
+                {
+                    // Add a new entry in the synch list
+                    ActiveGlobes.Add(false);
+                }
+                
             }
         }
 
@@ -60,7 +65,7 @@ namespace GOA
 
         public void DeactivateGlobe(GlobeInteractor globe)
         {
-            if (GlobeIsInteractable(globe))
+            if (GlobeIsInteractable(globe) || Solved)
                 return;
             // Deactivate the globe
             ActiveGlobes.Set(GetGlobeIndex(globe), false);

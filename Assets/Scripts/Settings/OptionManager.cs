@@ -95,14 +95,6 @@ namespace GOA.Settings
             }
         }
 
-        
-
-        // Update is called once per frame
-        void Update()
-        {
-            //Debug.Log(Screen.currentResolution);
-        }
-
         /// <summary>
         /// Load options stored in the player prefs
         /// </summary>
@@ -156,8 +148,6 @@ namespace GOA.Settings
             vSyncCurrentId = PlayerPrefs.GetInt(vSyncIdParamName, VSyncDefaultId);
             vSyncSelectedId = vSyncCurrentId;
 
-            Debug.Log("ActualResolution:" + resolutionCurrentId);
-            Debug.Log("ActualFullScreenMode:" + fullScreenModeCurrentId);
         }
 
         bool CheckOptionsChanged()
@@ -228,8 +218,6 @@ namespace GOA.Settings
             {
                 resolutionCurrentId = resolutionSelectedId;
                 fullScreenModeCurrentId = fullScreenModeSelectedId;
-                //Option<Vector2> opt = OptionCollection.ResolutionOptionList[resolutionCurrentId];
-                //Screen.SetResolution((int)opt.Value.x, (int)opt.Value.y, (FullScreenMode)fullScreenModeCurrentId);
                 PlayerPrefs.SetInt(resolutionIdParamName, resolutionCurrentId);
                 PlayerPrefs.SetInt(fullScreenModeIdParamName, fullScreenModeCurrentId);
             }

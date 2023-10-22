@@ -90,7 +90,7 @@ Material:
     - _CullMode: 2
     - _CullModeForward: 2
     - _DepthOffsetEnable: 0
-    - _DissolveAmount: 1.002807
+    - _DissolveAmount: 1.0028833
     - _DissolveScale: 40
     - _DissolveWidth: 0
     - _DoubleSidedEnable: 0

@@ -23,6 +23,8 @@ namespace GOA
         PlayerController playerController;
         float mouseSens;
         float mouseVertical;
+
+        public bool Disabled { get; set; }
         
         private void Awake()
         {
@@ -49,15 +51,24 @@ namespace GOA
         // Update is called once per frame
         void Update()
         {
+            if (Disabled)
+            {
+                moveInput = Vector2.zero;
+                run = false;
+                lookInput = Vector2.zero;
+                return;
+            }
+                
+
             moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
             moveInput.Normalize();
                 
             lookInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y") * mouseVertical) * mouseSens;
             
 
-            if (!playerController.InputDisabled)
-                if(playerController.State == (int)PlayerState.Alive || playerController.State == (int)PlayerState.Dead || playerController.State == (int)PlayerState.Dying)
-                    playerController.SetCameraPitch(lookInput.y);
+            //if (!playerController.InputDisabled)
+            if(playerController.State == (int)PlayerState.Alive || playerController.State == (int)PlayerState.Dead || playerController.State == (int)PlayerState.Dying)
+                playerController.SetCameraPitch(lookInput.y);
                 
 
             run = Input.GetButton("Fire3");
@@ -95,8 +106,9 @@ namespace GOA
             data.move = moveInput;
 
             data.yaw = lookInput.x;
+#if SYNCH_PITCH
             data.pitch = lookInput.y;
-
+#endif
             data.run = run;
             data.leftAction = leftAction;
             data.rightAction = rightAction;

@@ -14,6 +14,8 @@ namespace GOA.UI
 
         bool visible = false;
 
+        PlayerInput playerInput;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -49,6 +51,15 @@ namespace GOA.UI
             optionsPanel.SetActive(false);
           
         }
+
+        void EnablePlayerInput(bool value)
+        {
+            if (!playerInput)
+                playerInput = FindObjectOfType<PlayerInput>();
+            if (!playerInput)
+                return;
+            playerInput.Disabled = !value;
+        }
         #endregion
 
         #region public methods
@@ -69,6 +80,7 @@ namespace GOA.UI
             visible = true;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+            EnablePlayerInput(false);
             ActivateGamePanel();
         }
 
@@ -77,9 +89,11 @@ namespace GOA.UI
             DeactivateAllPanels();
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-
+            EnablePlayerInput(true);
             visible = false;
         }
+
+        
 
         #endregion
     }

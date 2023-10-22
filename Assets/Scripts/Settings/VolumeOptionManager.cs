@@ -26,7 +26,6 @@ namespace GOA.Settings
         {
             OptionManager.OnApply += HandleOnOptionsApplied;
             VolumeUtility.OnProfileChanged += HandleOnProfileChanged;
-            Debug.Log("DOF value:" + depthOfField.quality.GetValue<int>());
             UpdateQuality();
         }
 
@@ -60,7 +59,6 @@ namespace GOA.Settings
 
         void HandleOnProfileChanged(Volume volume)
         {
-            Debug.Log("HandleOnProfileChanged -  UpdateQuality");
             InitData(volume);
             UpdateQuality();
         }

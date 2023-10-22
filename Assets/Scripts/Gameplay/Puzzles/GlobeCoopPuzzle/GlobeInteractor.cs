@@ -14,7 +14,7 @@ namespace GOA
         [SerializeField]
         Color baseColor;
 
-        float[] emissiveSteps = new float[] { .5f, 6f, 12f };
+        float[] emissiveSteps = new float[] { .5f, 3f, 12f };
 
         GlobeCoopPuzzleController puzzleController;
 

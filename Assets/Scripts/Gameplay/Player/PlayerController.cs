@@ -84,7 +84,7 @@ namespace GOA
         [UnitySerializeField]
         public int PlayerId { get; private set; }
 
-        public bool InputDisabled { get; set; }
+        //public bool InputDisabled { get; set; }
 
         //IInteractable lockedInteractable;
         IInteractable pressedInteractable;
@@ -127,8 +127,6 @@ namespace GOA
         // Update is called once per frame
         void Update()
         {
-           
-
             switch (State)
             {
                 case (int)PlayerState.Alive:
@@ -136,12 +134,6 @@ namespace GOA
                     break;
             }
 
-
-#if UNITY_EDITOR
-            //if (Input.GetKeyDown(KeyCode.P))
-            //    RiseAgain();
-          
-#endif
         }
 
         
@@ -384,12 +376,6 @@ namespace GOA
 
         void UpdateCharacter(NetworkInputData data)
         {
-
-            if (Input.GetKeyDown(KeyCode.O))
-            {
-                cc.Transform.position = cc.Transform.position + cc.Transform.forward * 3f;
-            }
-
             // 
             // Apply rotation
             //
@@ -423,10 +409,12 @@ namespace GOA
             RightAction = data.rightAction;
 
             // Set the camera pitch for the other players
+#if SYNCH_PITCH
             if (!HasInputAuthority)
             {
                 SetCameraPitch(data.pitch);
             }
+#endif
         }
 
       
@@ -469,7 +457,7 @@ namespace GOA
 
         void LoopAliveState()
         {
-            if (!InputDisabled && GetInput(out NetworkInputData data))
+            if (/*!InputDisabled && */GetInput(out NetworkInputData data))
             {
                 UpdateCharacter(data);
 
@@ -480,7 +468,7 @@ namespace GOA
 
         void LoopDyingState()
         {
-            if (!InputDisabled && GetInput(out NetworkInputData data))
+            if (/*!InputDisabled && */GetInput(out NetworkInputData data))
             {
                 UpdateCharacter(data);
 
@@ -491,7 +479,7 @@ namespace GOA
 
         void LoopDeadState()
         {
-            if (!InputDisabled && GetInput(out NetworkInputData data))
+            if (/*!InputDisabled && */GetInput(out NetworkInputData data))
             {
                 UpdateCharacter(data);
 

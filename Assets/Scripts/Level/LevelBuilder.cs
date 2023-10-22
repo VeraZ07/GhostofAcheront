@@ -1,4 +1,4 @@
-#define TEST_PUZZLE
+//#define TEST_PUZZLE
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -73,42 +73,6 @@ namespace GOA.Level
         private void Awake()
         {
             PuzzleController.OnPuzzleControllerSpawned += HandleOnPuzzleControllerSpawned;
-        }
-
-        private void Start()
-        {
-            //int seed = FindObjectOfType<GameManager>().GameSeed;
-
-            //Random.InitState(seed);
-            //Debug.Log("Seed:" + seed);
-            
-            //Create();
-            
-        }
-
-        private void Update()
-        {
-
-            //if (Input.GetKeyDown(KeyCode.Alpha1))
-            //{
-            //    LevelSize = 0;
-            //    Create();
-            //}
-            //if (Input.GetKeyDown(KeyCode.Alpha2))
-            //{
-            //    LevelSize = 1;
-            //    Create();
-            //}
-            //if (Input.GetKeyDown(KeyCode.Alpha3))
-            //{
-            //    LevelSize = 2;
-            //    Create();
-            //}
-            //if (Input.GetKeyDown(KeyCode.Alpha4))
-            //{
-            //    LevelSize = 3;
-            //    Create();
-            //}
         }
 
         private void OnDestroy()
@@ -186,8 +150,8 @@ namespace GOA.Level
             //TestPuzzle("JigSawPuzzleAsset", 0);
             //TestPuzzle("MemoryPuzzleAsset", 0);
             //TestPuzzle("FifteenPuzzleAsset", 0);
-            TestPuzzle("ArrowPuzzleAsset", 0);
-            //TestPuzzle("GlobeCoopPuzzleAsset", 0);
+            //TestPuzzle("ArrowPuzzleAsset", 0);
+            TestPuzzle("GlobeCoopPuzzleAsset", 0);
 #endif
 
             CreateUniqueObjects();
@@ -1557,7 +1521,7 @@ namespace GOA.Level
 #if UNITY_EDITOR
             //seed = 1481849213;
             //seed = -440185720;
-            seed = -511521315;
+            //seed = -511521315;
 #endif
 
             Random.InitState(seed);
@@ -1695,35 +1659,35 @@ namespace GOA.Level
         /// </summary>
         /// <param name="position"></param>
         /// <returns></returns>
-        public int GetTheClosestTileId(Vector3 position)
-        {
-            int tileId = -1;
-            if (TryGetTileIdByWorldPosition(position, out tileId))
-            {
-                Debug.Log($"Player died inside the labirinth - tile:{tileId}");
-            }
-            else
-            {
-                // Get the closest between the enter and exit tiles   
-                int enterTileId = connections.Find(c => c.IsInitialConnection()).TargetTileId;
-                int exitTileId = connections.Find(c => c.IsFinalConnection()).SourceTileId;
-                Tile enterTile = tiles[enterTileId];
-                Tile exitTile = tiles[exitTileId];
-                if (Vector3.Distance(position, enterTile.GetPosition()) < Vector3.Distance(position, exitTile.GetPosition()))
-                {
-                    // Enter is closer
-                    Debug.Log($"Player died near the entrance");
-                    tileId = enterTileId;
-                }
-                else
-                {
-                    // Exit is closer
-                    Debug.Log($"Player died near the exit");
-                    tileId = exitTileId;
-                }
-            }
-            return tileId;
-        }
+        //public int GetTheClosestTileId(Vector3 position)
+        //{
+        //    int tileId = -1;
+        //    if (TryGetTileIdByWorldPosition(position, out tileId))
+        //    {
+        //        Debug.Log($"Player died inside the labirinth - tile:{tileId}");
+        //    }
+        //    else
+        //    {
+        //        // Get the closest between the enter and exit tiles   
+        //        int enterTileId = connections.Find(c => c.IsInitialConnection()).TargetTileId;
+        //        int exitTileId = connections.Find(c => c.IsFinalConnection()).SourceTileId;
+        //        Tile enterTile = tiles[enterTileId];
+        //        Tile exitTile = tiles[exitTileId];
+        //        if (Vector3.Distance(position, enterTile.GetPosition()) < Vector3.Distance(position, exitTile.GetPosition()))
+        //        {
+        //            // Enter is closer
+        //            Debug.Log($"Player died near the entrance");
+        //            tileId = enterTileId;
+        //        }
+        //        else
+        //        {
+        //            // Exit is closer
+        //            Debug.Log($"Player died near the exit");
+        //            tileId = exitTileId;
+        //        }
+        //    }
+        //    return tileId;
+        //}
        
         public Sector GetSector(int id)
         {
@@ -1745,12 +1709,6 @@ namespace GOA.Level
             if (step == 0)
             {
                 List<PuzzleAsset> puzzleCollection = new List<PuzzleAsset>(Resources.LoadAll<PuzzleAsset>(System.IO.Path.Combine(PuzzleAsset.ResourceFolder, theme.ToString()))).FindAll(p => !p.name.ToLower().StartsWith("_"));
-
-                Debug.Log("PuzzleCollection.Count:" + puzzleCollection.Count);
-                foreach (PuzzleAsset asset in puzzleCollection)
-                {
-                    Debug.Log("PuzzleAsset:" + asset.name);
-                }
 
                 // Get all gates
                 List<CustomObject> gates = customObjects.FindAll(g => g.GetType() == typeof(Gate));
@@ -1776,25 +1734,17 @@ namespace GOA.Level
                 Puzzle puzzle = puzzles[0];
                 GameObject sp = GameObject.FindGameObjectWithTag("PlayerSpawnPoint");
 
-                Debug.Log("SpawnPoint exists:" + sp);
-
                 if(puzzle.GetType() == typeof(PicturePuzzle))
                 {
-                    Debug.LogFormat("Testing puzzle - id:{0}", puzzles.IndexOf(puzzle));
-
                     float rOff = 0f;
                     CustomObject obj = customObjects[(puzzle as PicturePuzzle).PictureId];
-                    Debug.LogFormat("Testing puzzle - picture object:{0}", obj);
                     obj.SceneObject.transform.position = sp.transform.position + sp.transform.forward * 7f + sp.transform.right * rOff;
                     obj.SceneObject.transform.forward = -sp.transform.forward;
                     rOff += -4f;
                         foreach (int id in (puzzle as PicturePuzzle).PieceIds)
                         {
                             obj = customObjects[id];
-                            Debug.LogFormat("Testing puzzle - piece id:{0}, piece obj:{1}", id, obj);
-                        Debug.Log("Pickers.Count:" + FindObjectsOfType<Picker>().Length);
                             Picker picker = new List<Picker>(FindObjectsOfType<Picker>()).Find(p => p.CustomObjectId == id);
-                            Debug.LogFormat("Testing puzzle - picker:{0}", picker);
                             picker.transform.position = sp.transform.position + sp.transform.forward * 7f + sp.transform.right * rOff;
                             obj.SceneObject.transform.position = picker.transform.position;
                             rOff += 4f;
@@ -1804,8 +1754,6 @@ namespace GOA.Level
 
                 if (puzzle.GetType() == typeof(HandlesPuzzle))
                 {
-                    Debug.LogFormat("Testing puzzle - id:{0}", puzzles.IndexOf(puzzle));
-
                     float rOff = 0f;
                     for(int i=0; i< (puzzle as HandlesPuzzle).Handles.Count; i++)
                     {

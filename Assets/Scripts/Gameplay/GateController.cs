@@ -38,18 +38,7 @@ namespace GOA
 
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-#if UNITY_EDITOR
-            //if (Input.GetKeyDown(KeyCode.L))
-            //{
-            //    Open();
-            //}
-#endif
-
-        }
-
+ 
         private void OnEnable()
         {
             PuzzleController.OnSolvedChangedCallback += HandleOnPuzzleSolved;

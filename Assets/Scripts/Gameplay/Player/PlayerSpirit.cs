@@ -73,8 +73,6 @@ namespace GOA
         // Update is called once per frame
         void Update()
         {
-            //if (Input.GetKeyDown(KeyCode.R))
-            //    reunion = true;
 
             if (!HasStateAuthority || reviving || !ready)
                 return;
