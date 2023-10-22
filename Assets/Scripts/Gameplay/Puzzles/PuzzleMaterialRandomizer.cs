@@ -28,7 +28,6 @@ namespace GOA
         void Start()
         {
             Material mat = materials[Random.Range(0, materials.Count)];
-
             foreach(RendererElement element in elements)
             {
                 Material[] mats = element.renderer.materials;

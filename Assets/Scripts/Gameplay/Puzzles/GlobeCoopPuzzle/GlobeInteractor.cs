@@ -51,7 +51,6 @@ namespace GOA
         IEnumerator ExplodeInLight()
         {
             yield return new WaitForSeconds(1f);
-            Debug.Log($"Explode index:{puzzleController.GetGlobeIndex(this)}");
             DOTween.To(() => colorRenderer.material.GetColor("_EmissiveColor"), (x) => colorRenderer.material.SetColor("_EmissiveColor", x), baseColor * emissiveSteps[2], .25f);
         }
 
@@ -82,7 +81,6 @@ namespace GOA
        
         public void LightUp()
         {
-            Debug.Log($"LightUp index:{puzzleController.GetGlobeIndex(this)}");
             // Light up the globe
             DOTween.To(() => colorRenderer.material.GetColor("_EmissiveColor"), (x) => colorRenderer.material.SetColor("_EmissiveColor", x), baseColor * emissiveSteps[1], lightTime);
             

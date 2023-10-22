@@ -416,11 +416,7 @@ namespace GOA.Level
 
             public override void CreateSceneObjects()
             {
-                for (int i = 0; i < 50; i++)
-                {
-                    Debug.Log($"RNDDDDDD:{Random.Range(0, 100)}");
-                }
-
+                
                 foreach (int frameId in frameIds)
                 {
                     builder.CustomObjects[frameId].CreateSceneObject();

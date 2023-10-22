@@ -204,8 +204,6 @@ namespace GOA
 
         bool CheckPathStartingFromWest(int id)
         {
-            Debug.Log($"PUZZLE - id:{id}");
-
             // Get the first id moving rom west to north
             int startingId = id;
             bool found = false;
@@ -223,7 +221,6 @@ namespace GOA
 
             if (found)
             {
-                Debug.Log($"PUZZLE - found tile to north:{id}");
                 // Check from north to east
                 found = false;
                 stop = false;
@@ -240,7 +237,6 @@ namespace GOA
 
                 if (found)
                 {
-                    Debug.Log($"PUZZLE - found tile to east:{id}");
                     // Check from west to south
                     found = false;
                     stop = false;
@@ -256,7 +252,6 @@ namespace GOA
                     }
                     if (found)
                     {
-                        Debug.Log($"PUZZLE - found tile to south:{id}");
                         // Check from south to west
                         found = false;
                         stop = false;
@@ -272,7 +267,6 @@ namespace GOA
                         }
                         if (found)
                         {
-                            Debug.Log($"PUZZLE - found closed tile:{id}");
                             return true;
                         }
                             

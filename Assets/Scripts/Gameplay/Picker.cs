@@ -62,16 +62,12 @@ namespace GOA
             if (!root)
                 root = transform;
 
-            Debug.Log("Spawning picker:" + name);
-            //if (!Empty)
-            {
-                LevelBuilder builder = FindObjectOfType<LevelBuilder>();
-                CustomObject co = builder.CustomObjects[CustomObjectId];
-                sceneObject = co.SceneObject;
-                Debug.Log("Spawning picker - found scene object:" + sceneObject.name);
-                objectToRotate = sceneObject.transform.GetChild(0).GetChild(0);
+            LevelBuilder builder = FindObjectOfType<LevelBuilder>();
+            CustomObject co = builder.CustomObjects[CustomObjectId];
+            sceneObject = co.SceneObject;
+            objectToRotate = sceneObject.transform.GetChild(0).GetChild(0);
                
-            }
+           
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
@@ -83,7 +79,6 @@ namespace GOA
 
         public void StartInteraction(PlayerController playerController)
         {
-            Debug.Log("Interact " + playerController.PlayerId);
             if (IsInteractionEnabled())
                 StartCoroutine(PickUp(playerController));
                 

@@ -366,7 +366,6 @@ namespace GOA
             if (!Runner.IsServer && !Runner.IsSharedModeMasterClient)
                 return;
 
-            Debug.Log($"RPCInteract - target:{interactableId}, value:{value}");
             IInteractable interactable = InteractableManager.Instance.GetInteractable(interactableId);
             if (value)
                 interactable.StartInteraction(this);
@@ -557,7 +556,6 @@ namespace GOA
             // UNCOMMENT WHEN READY
             if (HasStateAuthority)
             {
-                Debug.Log("Create spirit:" + gameObject.name);
                 // Spawn the player spirit
                 spirit = Runner.Spawn(spiritPrefab, transform.position, Quaternion.identity);
             }

@@ -36,7 +36,6 @@ namespace GOA
         public void Init()
         {
             interactables = new List<IInteractable>(FindObjectsOfType<Interactable>());
-            Debug.Log("Interactables:" + interactables.Count);
         }
     }
 

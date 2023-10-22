@@ -42,7 +42,6 @@ namespace GOA.Level
                 // We need to spawn a globe for each player
                 for(int i=0; i<playerCount; i++)
                 {
-                    Debug.Log("Creating globe");
                     // Create the custom object
                     CustomObject co = new CustomObject(builder, (asset as GlobeCoopPuzzleAsset).GlobeAsset);
                     builder.customObjects.Add(co);

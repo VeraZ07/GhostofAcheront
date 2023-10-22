@@ -165,12 +165,12 @@ namespace GOA.Level
             //
             ChooseMonsterSpawnTile();
 
-            
+
             // 
             // Load geometry
             //
             BuildGeometry();
-
+           
             // 
             // Create lighting
             //
@@ -184,14 +184,11 @@ namespace GOA.Level
 
 
             // 
-            // Spawn monster ( server only )
+            // Spawn monster
             //
 #if !TEST_PUZZLE
-            if(SessionManager.Instance.Runner.IsServer || SessionManager.Instance.Runner.IsSharedModeMasterClient)
-                SpawnMonster();
+            SpawnMonster();
 #endif
-
-            Debug.LogFormat("LevelBuilder - Level built in {0} seconds.", (System.DateTime.Now-startTime).TotalSeconds);
 
 #if TEST_PUZZLE
             //TestPuzzle(null, 1);
@@ -206,6 +203,8 @@ namespace GOA.Level
             // Optimize decals
             //
             OptimizeDecals();
+
+            Debug.LogFormat("LevelBuilder - Level built in {0} seconds.", (System.DateTime.Now - startTime).TotalSeconds);
         }
 
         void OptimizeDecals()
@@ -225,12 +224,15 @@ namespace GOA.Level
             MonsterAsset ma = assets[Random.Range(0, assets.Count)];
             Vector3 position = tiles[monsterStartingTileId].GetPosition() + 2f * ( Vector3.right + Vector3.back );
 
-           
-            SessionManager.Instance.Runner.Spawn(ma.Prefab, position, Quaternion.identity, null, 
-                (r,o) => 
+            if (SessionManager.Instance.Runner.IsServer || SessionManager.Instance.Runner.IsSharedModeMasterClient)
+            {
+                SessionManager.Instance.Runner.Spawn(ma.Prefab, position, Quaternion.identity, null,
+                (r, o) =>
                 {
                     o.GetComponent<MonsterController>().Init();
                 });
+            }
+                
         }
 
         void CreateDecals() 
@@ -1279,8 +1281,8 @@ namespace GOA.Level
             int tileId = startConnection.TargetTileId;
 
 #if UNITY_EDITOR || TEST
-            monsterStartingTileId = tileId;
-            return;
+            //monsterStartingTileId = tileId;
+            //return;
 #endif
 
             // Get the initial sector
@@ -1492,6 +1494,8 @@ namespace GOA.Level
                 puzzleCollection.RemoveAll(p => p.CoopOnly);
             }
            
+
+
             // Get all gates
             List<CustomObject> gates = customObjects.FindAll(g => g.GetType() == typeof(Gate));
             
