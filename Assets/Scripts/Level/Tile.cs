@@ -608,6 +608,12 @@ namespace GOA.Level
                 return string.Format(" {0}:{1} ", sectorIndex, asset.name);
             }
 
+           
+        }
+
+        public bool TileIsFree(int tileId)
+        {
+            return !(customObjects.Exists(c => c.TileId == tileId) || dynamicObjects.Exists(d => d.TileId == tileId));
         }
     }
 

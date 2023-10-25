@@ -133,7 +133,7 @@ namespace GOA
 
             // Is the room full?
             // If a player quit the game the session info is not updated soon, so we must check the actual number of players 
-            if (runner.GameMode != GameMode.Single && ( runner.SessionInfo.PlayerCount < runner.SessionInfo.MaxPlayers || players.Length < runner.SessionInfo.MaxPlayers))
+            if (runner.GameMode != GameMode.Single && ( runner.SessionInfo.PlayerCount < 2/*runner.SessionInfo.MaxPlayers*/ || players.Length < 2/*runner.SessionInfo.MaxPlayers*/))
                 return false;
             
             foreach (Player player in players)
@@ -548,10 +548,35 @@ namespace GOA
 
 #if USE_HOST_MIGRATION
                 SessionManager.Instance.PushSnapshot();
-#endif
+#endif          
+                List<PlayerController> players = new List<PlayerController>(FindObjectsOfType<PlayerController>());
+                PlayerController local = players.Find(p => p.HasInputAuthority);
+                if(local.State != (int)PlayerState.Sacrificed && local.State != (int)PlayerState.Escaped)
+                {
+                    // Player quit the game, so we do the same
+                    QuitSession(ShutdownReason.GameClosed);
+                }
+                else
+                {
+                    // I'm the last one
+                    if (players.Count == 1)
+                        QuitSession();
+                }
+                
 
-                StartCoroutine(CheckDeadOrAliveDelayed());
+                //StartCoroutine(CheckDeadOrAliveDelayed());
             }
+            else // Client side
+            {
+                List<PlayerController> players = new List<PlayerController>(FindObjectsOfType<PlayerController>());
+                PlayerController local = players.Find(p => p.HasInputAuthority);
+                if (local.State != (int)PlayerState.Sacrificed && local.State != (int)PlayerState.Escaped)
+                {
+                    // Player quit the game, so we do the same
+                    QuitSession(ShutdownReason.GameClosed);
+                }
+            }
+
 
             OnPlayerLeftCallback?.Invoke(runner, playerRef);
             
@@ -740,10 +765,10 @@ namespace GOA
             StartSession(args);
         }
 
-        public void QuitSession()
+        public void QuitSession(ShutdownReason reason = ShutdownReason.Ok)
         {
             
-            Task t = runner.Shutdown(false, ShutdownReason.Ok, true).ContinueWith((t) =>
+            Task t = runner.Shutdown(false, reason, true).ContinueWith((t) =>
             {
                 if (t.IsCompleted)
                 {

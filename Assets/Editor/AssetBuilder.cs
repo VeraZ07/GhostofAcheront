@@ -283,6 +283,27 @@ namespace GOA.Editor
 
             Selection.activeObject = asset;
         }
+
+        [MenuItem("Assets/Create/GOA/ObjectGroupAsset")]
+        public static void CreateObjectGroupAsset()
+        {
+            ObjectGroupAsset asset = ScriptableObject.CreateInstance<ObjectGroupAsset>();
+
+            string name = "ObjectGroupAsset.asset";
+
+            string folder = System.IO.Path.Combine(ResourceFolder, ObjectGroupAsset.ResourceFolder);
+
+            if (!System.IO.Directory.Exists(folder))
+                System.IO.Directory.CreateDirectory(folder);
+
+            AssetDatabase.CreateAsset(asset, System.IO.Path.Combine(folder, name));
+
+            AssetDatabase.SaveAssets();
+
+            EditorUtility.FocusProjectWindow();
+
+            Selection.activeObject = asset;
+        }
     }
 
 }

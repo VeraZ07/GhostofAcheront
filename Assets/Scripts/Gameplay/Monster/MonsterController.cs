@@ -101,7 +101,7 @@ namespace GOA
             NavMesh.pathfindingIterationsPerFrame = 250;
             agent.enabled = true;
 
-            
+            SetState((int)MonsterState.Idle);
         }
 
 #if UNITY_EDITOR || TEST
@@ -129,7 +129,7 @@ namespace GOA
                 // Get the level builder
                 builder = FindObjectOfType<LevelBuilder>();
 
-                SetState((int)MonsterState.Idle);
+                //SetState((int)MonsterState.Idle);
 
             }
                 
@@ -222,7 +222,7 @@ namespace GOA
                         break;
                 }
             }
-            
+           
             
         }
 

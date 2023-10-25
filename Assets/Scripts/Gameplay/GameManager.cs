@@ -78,17 +78,17 @@ namespace GOA
         }
 
         
-        IEnumerator SetSacrificedStateDelayed(PlayerController player, float delay)
-        {
-            yield return new WaitForSeconds(delay);
-            player.RpcSetSacrificedState();
-        }
+        //IEnumerator SetSacrificedStateDelayed(PlayerController player, float delay)
+        //{
+        //    yield return new WaitForSeconds(delay);
+        //    player.RpcSetSacrificedState();
+        //}
 
-        IEnumerator SetEscapedStateDelayed(PlayerController player, float delay)
-        {
-            yield return new WaitForSeconds(delay);
-            player.SetEscapedState();
-        }
+        //IEnumerator SetEscapedStateDelayed(PlayerController player, float delay)
+        //{
+        //    yield return new WaitForSeconds(delay);
+        //    player.SetEscapedState();
+        //}
 
         /// <summary>
         /// Server only
@@ -119,9 +119,10 @@ namespace GOA
             {
                 foreach (PlayerController p in all)
                 {
-                  
+
                     if (p.HasInputAuthority)
-                        StartCoroutine(SetSacrificedStateDelayed(p, 1.5f));
+                        p.SetSacrificedState();
+                    //StartCoroutine(SetSacrificedStateDelayed(p, 1.5f));
                     else
                         p.RpcSetSacrificedState();
                         //p.SetSacrificedState();
@@ -164,7 +165,7 @@ namespace GOA
         public void YouLose()
         {
             OnGameLose?.Invoke();
-            StartCoroutine(QuitGameDelayed(5f));
+            StartCoroutine(QuitGameDelayed((Runner.IsServer || Runner.IsSharedModeMasterClient) ? 5f : 4f));
         }
 
         public void PlayerEnteredTheEscapeTrigger(PlayerController player)
@@ -224,7 +225,7 @@ namespace GOA
             foreach (PlayerController p in aliveAll)
             {
                 if (p.HasInputAuthority)
-                    StartCoroutine(SetEscapedStateDelayed(p, 1.5f));
+                    p.SetEscapedState();
                 else
                     p.RpcSetEscapedState();
                     //p.SetEscapedState();
@@ -237,7 +238,7 @@ namespace GOA
             foreach (PlayerController p in deadAll)
             {
                 if (p.HasInputAuthority)
-                    StartCoroutine(SetSacrificedStateDelayed(p, 1.5f));
+                    p.SetSacrificedState();
                 else
                     p.RpcSetSacrificedState();
                     //p.SetSacrificedState();

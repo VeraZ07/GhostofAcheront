@@ -49,7 +49,8 @@ namespace GOA.Level
                 sceneObject = Instantiate(asset.Prefab, builder.GeometryRoot);
                 sceneObject.transform.position = builder.tiles[tileId].GetPosition();
                 if(direction != Vector3.zero)
-                    sceneObject.transform.GetChild(0).transform.forward = direction;
+                    sceneObject.transform.GetChild(0).forward = direction;
+                    
 
             }
 
@@ -205,7 +206,7 @@ namespace GOA.Level
                 
             }
         }
-
+              
        
     }
 }

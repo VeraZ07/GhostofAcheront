@@ -518,7 +518,7 @@ namespace GOA
                 State = (int)PlayerState.Dying;
         }
 
-        void SetSacrificedState()
+        public void SetSacrificedState()
         {
             if(HasStateAuthority)
                 State = (int)PlayerState.Sacrificed;

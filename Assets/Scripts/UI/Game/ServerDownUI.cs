@@ -37,7 +37,7 @@ namespace GOA.UI
 
         void HandleOnShutdownCallback(ShutdownReason reason)
         {
-            if(reason == ShutdownReason.DisconnectedByPluginLogic)
+            if(reason == ShutdownReason.GameClosed)
             {
                 panel.SetActive(true);
             }

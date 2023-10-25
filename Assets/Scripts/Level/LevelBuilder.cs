@@ -65,9 +65,6 @@ namespace GOA.Level
         {
             get { return geometryRoot; }
         }
-
-
-        int monsterStartingTileId = 0;
               
 
         private void Awake()
@@ -154,17 +151,27 @@ namespace GOA.Level
             TestPuzzle("GlobeCoopPuzzleAsset", 0);
 #endif
 
+            //
+            // Create cosmetic objects 
+            //
             CreateUniqueObjects();
 
+            //
+            // Create decals
+            //
             CreateDecals();
 
             
 
             // 
-            // Set the monster spawn tile
+            // Create the monster
             //
-            ChooseMonsterSpawnTile();
+            CreateMonster();
 
+            // 
+            // Create strange things, such as the bull
+            //
+            CreateOtherCreatures();
 
             // 
             // Load geometry
@@ -187,7 +194,9 @@ namespace GOA.Level
             // Spawn monster
             //
 #if !TEST_PUZZLE
+            Debug.Log($"Before rnd:{Random.Range(0, 1000)}");
             SpawnMonster();
+            Debug.Log($"After rnd:{Random.Range(0, 1000)}");
 #endif
 
 #if TEST_PUZZLE
@@ -200,11 +209,62 @@ namespace GOA.Level
             }
 #endif
             //
+            // Spawn from object groups
+            //
+            SpawnFromObjectGroups();
+
+            //
             // Optimize decals
             //
             OptimizeDecals();
+            
 
             Debug.LogFormat("LevelBuilder - Level built in {0} seconds.", (System.DateTime.Now - startTime).TotalSeconds);
+        }
+
+        void SpawnFromObjectGroups()
+        {
+            foreach (ObjectGroup og in objectGroups)
+                og.SpawnNetworkedObjects();
+        }
+
+        void CreateOtherCreatures()
+        {
+            // Load all the possible creatures assets
+            string folder = System.IO.Path.Combine(ObjectGroupAsset.ResourceFolder, "Creatures");
+            List<ObjectGroupAsset> assets = new List<ObjectGroupAsset>(Resources.LoadAll<ObjectGroupAsset>(folder)).FindAll(a => !a.name.StartsWith("_") && a.Weight > 0);
+            // Add weights
+            List<ObjectGroupAsset> tmp = new List<ObjectGroupAsset>();
+            foreach(ObjectGroupAsset oba in assets)
+            {
+                for (int i = 0; i < oba.Weight; i++)
+                    tmp.Add(oba);
+            }
+            assets = tmp;
+
+            int diceMax = 10;
+            // Loop through each sector
+            for(int i=0; i<sectors.Length; i++)
+            {
+                if (assets.Count == 0)
+                    return;
+
+                // Check for adding another creature
+                //if (Random.Range(0, diceMax) > 0)
+                //    continue;
+
+                // Get the creature to add
+                ObjectGroupAsset asset = assets[Random.Range(0, assets.Count)];
+                // We want to add a creature just once
+                assets.RemoveAll(c => c == asset);
+
+                // Build 
+                objectGroups.Add(new BullObjectGroup(this, asset, i));
+                objectGroups[objectGroups.Count-1].Build();
+            }
+
+            
+            
         }
 
         void OptimizeDecals()
@@ -220,19 +280,24 @@ namespace GOA.Level
 
         void SpawnMonster()
         {
-            List<MonsterAsset> assets = new List<MonsterAsset>(Resources.LoadAll<MonsterAsset>(System.IO.Path.Combine(MonsterAsset.ResourceFolder, theme.ToString()))).FindAll(a => !a.name.StartsWith("_"));
-            MonsterAsset ma = assets[Random.Range(0, assets.Count)];
-            Vector3 position = tiles[monsterStartingTileId].GetPosition() + 2f * ( Vector3.right + Vector3.back );
+            DynamicObject monster;
+            TryGetDynamicObjectByAssetType(typeof(MonsterAsset), out monster);
+
+            //List<MonsterAsset> assets = new List<MonsterAsset>(Resources.LoadAll<MonsterAsset>(System.IO.Path.Combine(MonsterAsset.ResourceFolder, theme.ToString()))).FindAll(a => !a.name.StartsWith("_"));
+            //Debug.Log($"Monster Before rnd:{Random.Range(0, 1000)}");
+            //MonsterAsset ma = assets[Random.Range(0, assets.Count)];
+            //Debug.Log($"Monster After rnd:{Random.Range(0, 1000)}");
+            Vector3 position = tiles[monster.TileId].GetPosition() + 2f * ( Vector3.right + Vector3.back );
 
             if (SessionManager.Instance.Runner.IsServer || SessionManager.Instance.Runner.IsSharedModeMasterClient)
             {
-                SessionManager.Instance.Runner.Spawn(ma.Prefab, position, Quaternion.identity, null,
+                SessionManager.Instance.Runner.Spawn((monster.Asset as MonsterAsset).Prefab, position, Quaternion.identity, null,
                 (r, o) =>
                 {
                     o.GetComponent<MonsterController>().Init();
                 });
             }
-                
+
         }
 
         void CreateDecals() 
@@ -585,8 +650,11 @@ namespace GOA.Level
                     co.CreateSceneObject();
             }
 
-            
-            
+            // Object group
+            foreach(ObjectGroup og in objectGroups)
+            {
+                og.CreateSceneObjects();
+            }
         }
 
         void BakeNavigationMesh()
@@ -1273,9 +1341,14 @@ namespace GOA.Level
             return ret;
         }
 
-        void ChooseMonsterSpawnTile()
+        void CreateMonster()
         {
-            
+            // Choosing monster
+            List<MonsterAsset> assets = new List<MonsterAsset>(Resources.LoadAll<MonsterAsset>(System.IO.Path.Combine(MonsterAsset.ResourceFolder, theme.ToString()))).FindAll(a => !a.name.StartsWith("_"));
+            Debug.Log($"Monster Before rnd:{Random.Range(0, 1000)}");
+            MonsterAsset ma = assets[Random.Range(0, assets.Count)];
+            Debug.Log($"Monster After rnd:{Random.Range(0, 1000)}");
+
             // Get the starting tile
             Connection startConnection = connections.Find(c => c.IsInitialConnection());
             int tileId = startConnection.TargetTileId;
@@ -1304,8 +1377,10 @@ namespace GOA.Level
                 availables.Add(tid);
             }
 
-            monsterStartingTileId = availables[Random.Range(0, availables.Count)];
-      
+            int spawnTileId = availables[Random.Range(0, availables.Count)];
+
+            // Add the monster to the dynamic list
+            dynamicObjects.Add(new DynamicObject(ma, spawnTileId));
         }
 
         
@@ -1509,6 +1584,7 @@ namespace GOA.Level
 
                 // Get a random puzzle
                 PuzzleAsset asset = puzzleCollection[Random.Range(0, puzzleCollection.Count)];
+                asset = puzzleCollection.Find(p => p.name.StartsWith("JigSaw"));
 #if UNITY_EDITOR
                 //asset = puzzleCollection.Find(p => p.name.StartsWith("JigSaw"));
 #endif
