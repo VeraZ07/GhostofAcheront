@@ -47,7 +47,7 @@ namespace GOA.Level
             public void CreateSceneObject()
             {
                 sceneObject = Instantiate(asset.Prefab, builder.GeometryRoot);
-                sceneObject.transform.position = builder.tiles[tileId].GetPosition();
+                sceneObject.transform.position = builder.tiles[tileId].GetPivotPosition();
                 if(direction != Vector3.zero)
                     sceneObject.transform.GetChild(0).forward = direction;
                     

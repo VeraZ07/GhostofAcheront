@@ -287,7 +287,7 @@ namespace GOA.Level
             //Debug.Log($"Monster Before rnd:{Random.Range(0, 1000)}");
             //MonsterAsset ma = assets[Random.Range(0, assets.Count)];
             //Debug.Log($"Monster After rnd:{Random.Range(0, 1000)}");
-            Vector3 position = tiles[monster.TileId].GetPosition() + 2f * ( Vector3.right + Vector3.back );
+            Vector3 position = tiles[monster.TileId].GetCenterPosition();
 
             if (SessionManager.Instance.Runner.IsServer || SessionManager.Instance.Runner.IsSharedModeMasterClient)
             {
@@ -1380,7 +1380,7 @@ namespace GOA.Level
             int spawnTileId = availables[Random.Range(0, availables.Count)];
 
             // Add the monster to the dynamic list
-            dynamicObjects.Add(new DynamicObject(ma, spawnTileId));
+            dynamicObjects.Add(new DynamicObject(this, ma, spawnTileId));
         }
 
         

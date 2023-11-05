@@ -109,7 +109,7 @@ namespace GOA.Level
                 
 
                 // Put the volume in the right position
-                fogObject.transform.position = tiles[id].GetPosition();
+                fogObject.transform.position = tiles[id].GetPivotPosition();
                 fogObject.transform.rotation = Quaternion.identity;
 
                 LocalVolumetricFog fogVolume = fogObject.GetComponentInChildren<LocalVolumetricFog>();
@@ -234,13 +234,13 @@ namespace GOA.Level
                 {
                     // Create the light
                     light = Instantiate(floatingLightPrefabList[Random.Range(0, floatingLightPrefabList.Count)], lightingRoot);
-                    light.transform.position = tiles[id].GetPosition();
+                    light.transform.position = tiles[id].GetPivotPosition();
                     light.transform.rotation = Quaternion.identity;
                 }
                 else
                 {
                     light = Instantiate(crackLightPrefabList[Random.Range(0, crackLightPrefabList.Count)], lightingRoot);
-                    light.transform.position = tiles[id].GetPosition();
+                    light.transform.position = tiles[id].GetPivotPosition();
                     light.transform.GetChild(0).localEulerAngles = Vector3.up * Random.Range(-180f, 180f);
                 }
                 floatingLightDictionary.Add(id, light);
@@ -285,7 +285,7 @@ namespace GOA.Level
 
                 // Create the light
                 GameObject light = Instantiate(crackLightPrefabList[Random.Range(0, crackLightPrefabList.Count)], lightingRoot);
-                light.transform.position = tiles[id].GetPosition();
+                light.transform.position = tiles[id].GetPivotPosition();
                 light.transform.GetChild(0).rotation = Quaternion.LookRotation(Vector3.up * Random.Range(-180f, 180f));
                 crackLightDictionary.Add(id, light);
                                 

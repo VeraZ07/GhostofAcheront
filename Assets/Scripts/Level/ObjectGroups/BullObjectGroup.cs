@@ -38,7 +38,7 @@ namespace GOA.Level
                 }
                 int tId = freeTileIds[Random.Range(0, freeTileIds.Count)];
                 // Create a new dynamic object
-                Builder.AddDynamicObject(new DynamicObject(bullAsset, tId));
+                Builder.AddDynamicObject(new DynamicObject(Builder, bullAsset, tId));
                 // Store the id
                 bullId = Builder.DynamicObjectCount - 1;
             }
@@ -52,8 +52,9 @@ namespace GOA.Level
             {
                 // Get the 
                 LevelBuilder.DynamicObject bull = Builder.GetDynamicObjectById(bullId);
-                Vector3 spawnPoint = Builder.GetTile(bull.TileId).GetPosition() + 2f * (Vector3.right + Vector3.back);
-                SessionManager.Instance.Runner.Spawn((bull.Asset as CustomObjectAsset).Prefab, spawnPoint, Quaternion.identity, null);
+                Vector3 spawnPoint = Builder.GetTile(bull.TileId).GetCenterPosition();
+                
+                SessionManager.Instance.Runner.Spawn((bull.Asset as CustomObjectAsset).Prefab, spawnPoint, Quaternion.identity, null, (r, o) => { o.GetComponent<BullController>().Init(this); });
             }
         }
     }

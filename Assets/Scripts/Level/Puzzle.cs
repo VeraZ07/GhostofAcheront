@@ -668,7 +668,7 @@ namespace GOA.Level
                     int id = pieceIds[i];
                     CustomObject co = builder.CustomObjects[id];
                     Tile tile = builder.tiles[co.TileId];
-                    Vector3 pos = tile.GetPosition();
+                    Vector3 pos = tile.GetPivotPosition();
                     NetworkObject no = SessionManager.Instance.Runner.Spawn((Asset as PicturePuzzleAsset).PickerPrefab, pos, Quaternion.identity, null,
                     (r, o) =>
                     {

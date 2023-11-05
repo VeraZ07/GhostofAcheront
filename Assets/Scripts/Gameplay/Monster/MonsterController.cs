@@ -98,7 +98,7 @@ namespace GOA
         void Start()
         {
             //Hide();
-            NavMesh.pathfindingIterationsPerFrame = 250;
+            NavMesh.pathfindingIterationsPerFrame = GameConfig.PathfindingIterationsPerFrame;// 250;
             agent.enabled = true;
 
             SetState((int)MonsterState.Idle);
@@ -312,7 +312,7 @@ namespace GOA
 
         void LoopIdleState()
         {
-            timer -= Time.fixedDeltaTime;
+            timer -= Runner.DeltaTime;
             
             if(timer < 0) // Prepare for state changing
             {
@@ -514,7 +514,7 @@ namespace GOA
                 Sector sector = builder.GetCurrentPlayingSector();
                 
                 int targetTileId = sector.TileIds[Random.Range(0, sector.TileIds.Count)];
-                Vector3 pos = builder.GetTile(targetTileId).GetPosition();
+                Vector3 pos = builder.GetTile(targetTileId).GetPivotPosition();
                 pos += Vector3.right * Tile.Size * .5f + Vector3.back * Tile.Size * .5f;
                 return pos;
             }

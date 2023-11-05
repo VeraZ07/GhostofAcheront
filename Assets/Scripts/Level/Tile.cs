@@ -78,7 +78,7 @@ namespace GOA.Level
                 return isUpperBorder || isRightBorder || isLeftBorder || isBottomBorder;
             }
 
-            public Vector3 GetPosition()
+            public Vector3 GetPivotPosition()
             {
                 int index = new List<Tile>(builder.tiles).IndexOf(this);
 
@@ -92,6 +92,11 @@ namespace GOA.Level
                 pos.z = -row * Size;
 
                 return pos;
+            }
+
+            public Vector3 GetCenterPosition()
+            {
+                return GetPivotPosition() + 0.5f * LevelBuilder.TileSize * (Vector3.right + Vector3.back);
             }
 
             public void CheckForPillars()

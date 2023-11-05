@@ -28,10 +28,17 @@ namespace GOA.Level
                 get { return tileId; }
             }
 
-            public DynamicObject(ScriptableObject asset, int tileId)
+            LevelBuilder builder;
+            public LevelBuilder Builder
+            {
+                get { return builder; }
+            }
+
+            public DynamicObject(LevelBuilder builder, ScriptableObject asset, int tileId)
             {
                 this.asset = asset;
                 this.tileId = tileId;
+                this.builder = builder;
             }
         }
 

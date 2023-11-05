@@ -12,18 +12,18 @@ namespace GOA.Level
         {
             [SerializeField]
             ObjectGroupAsset asset;
-            protected ObjectGroupAsset Asset
+            public ObjectGroupAsset Asset
             {
                 get { return asset; }
             }
             [SerializeField]
             int sectorId;
-            protected int SectorId
+            public int SectorId
             {
                 get { return sectorId; }
             }
             LevelBuilder builder;
-            protected LevelBuilder Builder
+            public LevelBuilder Builder
             {
                 get { return builder; }
             }

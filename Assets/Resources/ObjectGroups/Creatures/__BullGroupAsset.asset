@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d56024e164eae8d40b0f77f971158ac1, type: 3}
-  m_Name: BullGroupAsset
+  m_Name: __BullGroupAsset
   m_EditorClassIdentifier: 
   assets:
   - {fileID: 11400000, guid: ebcf8b2bc1abe9f429fafb357e138515, type: 2}

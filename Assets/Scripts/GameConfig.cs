@@ -9,6 +9,7 @@ namespace GOA
         public const float InteractionCooldown = .5f;
         public const float MainSceneId = 0;
         public const float GameSceneId = 1;
+        public const int PathfindingIterationsPerFrame = 250;
     }
 
 
